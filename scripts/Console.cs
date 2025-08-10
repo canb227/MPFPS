@@ -30,11 +30,13 @@ public partial class Console : Node
         LimboConsole.Info($"  Connected to Steam: {Global.bIsSteamConnected}");
         LimboConsole.Info($"  Status of connection to Steam Relay Network: {Global.network.GetSteamNetworkStatus().ToString()}");
         LimboConsole.Info($"  SteamID: {Global.steamid}");
-
-
     }
 
-
+    public void netTest()
+    {
+        LimboConsole.Info("Sending Test Packets...");
+        Global.network.SendChatMessageToAllPeers("hello world");
+    }
 
     public void TestConsole1()
     {

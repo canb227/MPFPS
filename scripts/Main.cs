@@ -24,6 +24,15 @@ public partial class Main : Node
         
     }
 
+    public override void _Notification(int what)
+    {
+        if (what == NotificationWMCloseRequest)
+        {
+            Global.network.Cleanup();
+            GetTree().Quit(); // default behavior
+        }
+    }
+
     
 
 }

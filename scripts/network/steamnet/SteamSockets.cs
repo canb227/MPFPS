@@ -1,9 +1,15 @@
 using Google.Protobuf;
 using Steamworks;
 using System;
+
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static SteamSockets;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /// <summary>
@@ -52,6 +58,9 @@ public class SteamSockets
     /// Fires when our connection the Steam Relay Network changes, this typically signals connecting or disconnecting, or if something has gone wrong (ie internet drops)
     /// </summary>
     Callback<SteamRelayNetworkStatus_t> SteamRelayNetworkStatusChangedCallback;
+
+    public delegate void NewConnectionEstablished(SteamNetworkingIdentity identity);
+    public static event NewConnectionEstablished NewConnectionEstablishedEvent;
 
     public SteamSockets()
     {
@@ -119,14 +128,16 @@ public class SteamSockets
                 {
                     Logging.Log($"Accepting connection request from {param.m_info.m_identityRemote.GetSteamID64()}.","SteamNet");
                     SteamNetworkingSockets.AcceptConnection(param.m_hConn);
-                    pendingConnections.Remove(param.m_info.m_identityRemote);
-                    activeConnections.Add(param.m_info.m_identityRemote, param.m_hConn);
-                    SteamNetworkingSockets.SetConnectionPollGroup(param.m_hConn,pollGroup);
+                    
                 }
                 break;
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_FindingRoute:
                 break;
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+                pendingConnections.Remove(param.m_info.m_identityRemote);
+                activeConnections.Add(param.m_info.m_identityRemote, param.m_hConn);
+                SteamNetworkingSockets.SetConnectionPollGroup(param.m_hConn, pollGroup);
+                NewConnectionEstablishedEvent?.Invoke(param.m_info.m_identityRemote);
                 Logging.Log($"Connection established with {param.m_info.m_identityRemote.GetSteamID64()}.","SteamNet");
                 break;
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
@@ -194,7 +205,7 @@ public class SteamSockets
 
 
 
-    public long[] SendBytesToUser(SteamNetworkingIdentity identity, byte[] data, int length, int sidechannel=0)
+    public long SendBytesToUser(SteamNetworkingIdentity identity, byte[] data, int length, int sidechannel=0)
     {
         //Allocate memory for the steam message. https://partner.steamgames.com/doc/api/ISteamNetworkingUtils#AllocateMessage
         nint allocatedMessage = SteamNetworkingUtils.AllocateMessage(length);
@@ -221,6 +232,17 @@ public class SteamSockets
         long[] results = new long[1];
         SteamNetworkingSockets.SendMessages(1, msgs,results);
 
+        return results[0];
+    }
+
+    public long[] SendBytesToAllPeers(byte[] data, int length, int sidechannel)
+    {
+        long[] results = new long[activeConnections.Count];
+        List<SteamNetworkingIdentity> peerList = activeConnections.Keys.ToList();
+        for (int i = 0; i < activeConnections.Count; i++)
+        {
+            results[i] = SendBytesToUser(peerList[i], data, length, sidechannel);
+        }
         return results;
     }
 
@@ -229,5 +251,18 @@ public class SteamSockets
         nint[] messages = new nint[maxMessages];
         SteamNetworkingSockets.ReceiveMessagesOnPollGroup(pollGroup, messages, maxMessages);
         return messages;
+    }
+
+    public void DisconnectFromUser(SteamNetworkingIdentity identity)
+    {
+        SteamNetworkingSockets.CloseConnection(activeConnections[identity], 0, "Quit", false);
+    }
+
+    public void DisconnectFromAllUsers()
+    {
+        foreach (SteamNetworkingIdentity identity in activeConnections.Keys)
+        {
+            DisconnectFromUser(identity);
+        }
     }
 }

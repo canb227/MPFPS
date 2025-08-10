@@ -22,7 +22,17 @@ public partial class NetworkManager : Node
     {
         SteamNet = new SteamSockets();
         m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
+        SteamNet.StartListenSocket();
+    }
 
+    public override void _Process(double delta)
+    {
+        nint[] messages = SteamNet.ReceiveMessages(100);
+        for (int i = 0; i < messages.Length; i++)
+        {
+            SteamNetworkingMessage_t msg = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
+            Logging.Log($"Message arrived on pollgroup from: {msg.m_identityPeer.GetSteamID64()} with side channel {msg.m_nUserData} and payload size {msg.m_cbSize}");
+        }
     }
 
     public bool IsConnected()
@@ -46,5 +56,16 @@ public partial class NetworkManager : Node
         SteamNet.AttemptConnectionToUser(NetworkUtils.SteamIDStringToIdentity(param.m_rgchConnect));
     }
 
+    public void SendChatMessageToAllPeers(string message)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(message);
+        Logging.Log($"Sending message to all peers with size {bytes.Length}");
+        SteamNet.SendBytesToAllPeers(bytes, bytes.Length, 1);
+    }
+
+    public void Cleanup()
+    {
+        SteamNet.DisconnectFromAllUsers();
+    }
 }
 
