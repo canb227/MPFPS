@@ -246,11 +246,9 @@ public class SteamSockets
         return results;
     }
 
-    public nint[] ReceiveMessages(int maxMessages)
+    public int ReceiveMessages(nint[] messages, int maxMessages)
     {
-        nint[] messages = new nint[maxMessages];
-        SteamNetworkingSockets.ReceiveMessagesOnPollGroup(pollGroup, messages, maxMessages);
-        return messages;
+        return SteamNetworkingSockets.ReceiveMessagesOnPollGroup(pollGroup, messages, maxMessages);
     }
 
     public void DisconnectFromUser(SteamNetworkingIdentity identity)

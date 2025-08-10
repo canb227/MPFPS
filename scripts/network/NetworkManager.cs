@@ -27,8 +27,9 @@ public partial class NetworkManager : Node
 
     public override void _Process(double delta)
     {
-        nint[] messages = SteamNet.ReceiveMessages(100);
-        for (int i = 0; i < messages.Length; i++)
+        nint[] messages = new nint[100];
+        int numMessages = SteamNet.ReceiveMessages(messages, 100);
+        for (int i = 0; i < numMessages; i++)
         {
             SteamNetworkingMessage_t msg = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
             Logging.Log($"Message arrived on pollgroup from: {msg.m_identityPeer.GetSteamID64()} with side channel {msg.m_nUserData} and payload size {msg.m_cbSize}");
