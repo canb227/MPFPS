@@ -151,6 +151,32 @@ public class SteamSockets
     {
         steamRelayNetworkStatus = param;
         Logging.Log($"Steam Relay Network Status has changed to: {param.m_eAvail}", "SteamNet");
+        switch (param.m_eAvail)
+        {
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_CannotTry:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Failed:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Previously:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Retrying:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_NeverTried:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Waiting:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Attempting:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Current:
+                SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Unknown:
+                break;
+            case ESteamNetworkingAvailability.k_ESteamNetworkingAvailability__Force32bit:
+                break;
+            default:
+                break;
+        }
     }
 
     private bool ShouldAcceptConnectionFrom(SteamNetworkingIdentity m_identityRemote)
