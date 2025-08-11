@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 public partial class NetworkManager : Node
 {
-    private SteamNetworkInterface SteamNet;
+  public SteamNetworkInterface SteamNet;
 
     private int defaultMaxMessagesPerFramePerChannel = 10;
 
