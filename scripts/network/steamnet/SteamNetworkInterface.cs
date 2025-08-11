@@ -99,7 +99,7 @@ public interface SteamNetworkInterface
     /// <param name="channel"></param>
     /// <param name="msg"></param>
     /// <returns>true if a message was set, false if the channel had no messages</returns>
-    public bool GetNextPendingSteamMessageOnChannel(NetworkManager.NetworkChannel channel, out SteamNetworkingMessage_t msg);
+    public bool GetNextPendingSteamMessageOnChannel(NetworkManager.NetworkChannel channel, out nint msg);
 
     /// <summary>
     /// Pulls up to maxNumMessages off of the requested channel
@@ -107,7 +107,7 @@ public interface SteamNetworkInterface
     /// <param name="channel"></param>
     /// <param name=""></param>
     /// <returns>number of messages actually retrieved</returns>
-    public int GetNumPendingSteamMessagesOnChannel(NetworkManager.NetworkChannel channel, int maxNumMessages, out List<SteamNetworkingMessage_t> messages);
+    public int GetNumPendingSteamMessagesOnChannel(NetworkManager.NetworkChannel channel, int maxNumMessages, out nint[] messages);
     public void HandleSteamMessage(SteamNetworkingMessage_t message);
     public void EnableLoopback();
     public void DisableLoopback();

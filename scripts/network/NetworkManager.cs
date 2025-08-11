@@ -48,12 +48,13 @@ public partial class NetworkManager : Node
 
         foreach (NetworkChannel channel in Enum.GetValues(typeof(NetworkChannel)))
         {
-            int numMessages = SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out List<SteamNetworkingMessage_t> messages);
+            int numMessages = SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out nint[] messages);
             for (int i = 0; i <numMessages; i++)
             {
-                SteamNetworkingMessage_t message = messages[i];
+                SteamNetworkingMessage_t message = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
                 Logging.Log($"Message received from {message.m_identityPeer.GetSteamID64()} on channel {channel}", "SteamNetWire");
                 HandleSteamMessage(message, channel);
+                SteamNetworkingMessage_t.Release(messages[i]);
             }
 
         }
@@ -72,7 +73,6 @@ public partial class NetworkManager : Node
             default:
                 break;
         }
-        message.Release();
     }
 
     public EResult SendMessage(IMessage message,ulong steamID,NetworkChannel channel, int sendFlags=NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)

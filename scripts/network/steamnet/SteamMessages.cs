@@ -116,7 +116,7 @@ public class SteamMessages : SteamNetworkInterface
     private void OnSessionFailed(SteamNetworkingMessagesSessionFailed_t param)
     {
         if (!IsOnline) return;
-        Logging.Warn($"Session with {param.m_info.m_identityRemote} has failed. Reason: {param.m_info.m_eEndReason}", "SteamNet");
+        Logging.Warn($"Session with {param.m_info.m_identityRemote.GetSteamID64()} has failed. Reason: {param.m_info.m_eEndReason.ToString()}", "SteamNet");
     }
 
     /// <summary>
@@ -282,32 +282,26 @@ public class SteamMessages : SteamNetworkInterface
         return results;
     }
 
-    public bool GetNextPendingSteamMessageOnChannel(NetworkManager.NetworkChannel channel, out SteamNetworkingMessage_t msg)
+    public bool GetNextPendingSteamMessageOnChannel(NetworkManager.NetworkChannel channel, out nint pmsg)
     {
         nint[] messagePointer = new nint[1];
         int success = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messagePointer, 1);
         if (success == 1)
         {
-            msg = SteamNetworkingMessage_t.FromIntPtr(messagePointer[0]);
+            pmsg=messagePointer[0];
             return true;
         }
         else
         {
-            msg = new();
+            pmsg = 0;
             return false;
         }
     }
 
-    public int GetNumPendingSteamMessagesOnChannel(NetworkManager.NetworkChannel channel, int maxNumMessages, out List<SteamNetworkingMessage_t> messages)
+    public int GetNumPendingSteamMessagesOnChannel(NetworkManager.NetworkChannel channel, int maxNumMessages, out nint[] messagePointers)
     {
-        messages = new();
-        nint[] messagePointers = new nint[maxNumMessages];
+        messagePointers = new nint[maxNumMessages];
         int numMessages = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messagePointers, maxNumMessages);
-        if (numMessages == 0) return 0;
-        for (int i = 0;i<numMessages;i++)
-        {
-            messages.Add(SteamNetworkingMessage_t.FromIntPtr(messagePointers[i]));
-        }
         return numMessages;
     }
 
