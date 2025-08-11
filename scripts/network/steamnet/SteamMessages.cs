@@ -144,6 +144,7 @@ public class SteamMessages : SteamNetworkInterface
                 if (SteamNetworkingMessages.AcceptSessionWithUser(ref identity))
                 {
                     PeerList.Add(identity);
+                    SendBytesToUser([1], identity, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
                     Logging.Log("SecureMode is on - User is friend or trusted, establishing session", "SteamNet");
                 }
                 else
@@ -161,6 +162,7 @@ public class SteamMessages : SteamNetworkInterface
 
             if (SteamNetworkingMessages.AcceptSessionWithUser(ref identity))
             {
+                SendBytesToUser([1], identity, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
                 PeerList.Add(identity);
                 Logging.Log("SecureMode is off, establishing session", "SteamNet");
             }
@@ -311,8 +313,10 @@ public class SteamMessages : SteamNetworkInterface
 
     public void HandleSteamMessage(SteamNetworkingMessage_t message)
     {
+
         byte[] data = NetworkUtils.UnwrapSteamMessage(message);
         SteamNetByteFlag flag = (SteamNetByteFlag)data[0];
+        Logging.Log($"SteamNet Handling message - flag detected as:{flag.ToString()}","SteamNet");
         switch (flag)
         {
             case SteamNetByteFlag.SessionRequest:
@@ -322,7 +326,7 @@ public class SteamMessages : SteamNetworkInterface
                 PeerList.Add(message.m_identityPeer);
                 break;
             default:
-                break;
+                throw new NotImplementedException("SteamNet Encountered an unexpected flag - exploding");
         }
     }
 
