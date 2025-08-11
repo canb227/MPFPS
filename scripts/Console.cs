@@ -91,10 +91,7 @@ public partial class Console : Node
 
     public void Chat(string message)
     {
-        //ChatManager.Chat(message);
-        Global.network.SteamNet.SendBytesToAllPeers([0], NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(76561199221338666), NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(76561199221338666), NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+        ChatManager.Chat(message);
     }
     public void SetMaxLoggingVerbosity()
     {
