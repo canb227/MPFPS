@@ -64,7 +64,7 @@ public partial class Console : Node
     {
         ulong id = ulong.Parse(ids);
         LimboConsole.Info($"Sending dummy byte on SteamNet channel to {id}");
-        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(id), NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+        LimboConsole.Info($"Test Result: {Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(id), NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)}");
     }
 
     public void netstatus()

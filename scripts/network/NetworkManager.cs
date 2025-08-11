@@ -72,6 +72,7 @@ public partial class NetworkManager : Node
             default:
                 break;
         }
+        message.Release();
     }
 
     public EResult SendMessage(IMessage message,ulong steamID,NetworkChannel channel, int sendFlags=NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
