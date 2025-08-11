@@ -59,6 +59,8 @@ public partial class Console : Node
         }
     }
 
+    
+
     public void Chat(string message)
     {
         ChatManager.Chat(message);

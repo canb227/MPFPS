@@ -44,14 +44,17 @@ public partial class NetworkManager : Node
 
     public override void _Process(double delta)
     {
+
         foreach (NetworkChannel channel in channelsToRead)
         {
-            SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out List<SteamNetworkingMessage_t> messages);
-            foreach (SteamNetworkingMessage_t message in messages)
+            int numMessages = SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out List<SteamNetworkingMessage_t> messages);
+            for (int i = 0; i <numMessages; i++)
             {
-                Logging.Log($"Message received from {message.m_identityPeer.GetSteamID64()} on channel {channel}","SteamNetWire");
-                HandleSteamMessage(message,channel);
+                SteamNetworkingMessage_t message = messages[i];
+                Logging.Log($"Message received from {message.m_identityPeer.GetSteamID64()} on channel {channel}", "SteamNetWire");
+                HandleSteamMessage(message, channel);
             }
+
         }
     }
 
