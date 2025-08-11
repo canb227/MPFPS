@@ -65,7 +65,7 @@ public class SteamMessages : SteamNetworkInterface
 
     public bool GoOnline()
     {
-        SteamNetworkingUtils.InitRelayNetworkAccess();
+
         //Registers the session request and failed events with the function to call when those events happen.
         //These are coming from the Steamworks API - look them up there.
         SessionRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
