@@ -143,8 +143,8 @@ internal class SteamMessages : SteamNetworkInterface
 
                 if (SteamNetworkingMessages.AcceptSessionWithUser(ref identity))
                 {
+                    PeerList.Add(identity);
                     Logging.Log("SecureMode is on - User is friend or trusted, establishing session", "SteamNet");
-                    AddNewPeer(identity);
                 }
                 else
                 {
@@ -161,38 +161,14 @@ internal class SteamMessages : SteamNetworkInterface
 
             if (SteamNetworkingMessages.AcceptSessionWithUser(ref identity))
             {
+                PeerList.Add(identity);
                 Logging.Log("SecureMode is off, establishing session", "SteamNet");
-                AddNewPeer(identity);
             }
             else
             {
                 Logging.Error($"Unknown error accepting session with user {steamID}", "SteamNet");
             }
         }
-    }
-
-    private void AddNewPeer(SteamNetworkingIdentity newPeer)
-    {
-        if (PeerList.Contains(newPeer)) return;
-
-        foreach (var currentPeer in PeerList)
-        {
-            byte[] currentPeerID = BitConverter.GetBytes(currentPeer.GetSteamID64());
-            byte[] flagPlusCurrentPeerID = new byte[9];
-            flagPlusCurrentPeerID[0] = (byte)SteamNetByteFlag.AddPeer;
-            currentPeerID.CopyTo(flagPlusCurrentPeerID, 1);
-            SendBytesToUser(flagPlusCurrentPeerID, newPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-
-            byte[] peerID = BitConverter.GetBytes(newPeer.GetSteamID64());
-            byte[] flagPlusNewPeerID = new byte[9];
-            flagPlusNewPeerID[0] = (byte)SteamNetByteFlag.AddPeer;
-            currentPeerID.CopyTo(flagPlusNewPeerID, 1);
-            SendBytesToUser(flagPlusNewPeerID, currentPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-        }
-
-        PeerList.Add(newPeer);
-        SendBytesToUser([(byte)SteamNetByteFlag.SessionAccepted], newPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-        
     }
 
     public bool AddTrustedUser(ulong steamID)
@@ -342,12 +318,8 @@ internal class SteamMessages : SteamNetworkInterface
             case SteamNetByteFlag.SessionRequest:
                 break;
             case SteamNetByteFlag.SessionAccepted:
-                AddNewPeer(message.m_identityPeer);
-                break;
-            case SteamNetByteFlag.AddPeer:
-                ulong id = BitConverter.ToUInt64(data, 1);
-                AddTrustedUser(id);
-                AddNewPeer(NetworkUtils.SteamIDToIdentity(id));
+                Logging.Warn($"Session with {message.m_identityPeer} has been established.", "SteamNet");
+                PeerList.Add(message.m_identityPeer);
                 break;
             default:
                 break;
