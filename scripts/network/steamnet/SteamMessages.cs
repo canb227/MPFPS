@@ -173,28 +173,26 @@ internal class SteamMessages : SteamNetworkInterface
 
     private void AddNewPeer(SteamNetworkingIdentity newPeer)
     {
-        if (!PeerList.Contains(newPeer))
+        if (PeerList.Contains(newPeer)) return;
+
+        foreach (var currentPeer in PeerList)
         {
+            byte[] currentPeerID = BitConverter.GetBytes(currentPeer.GetSteamID64());
+            byte[] flagPlusCurrentPeerID = new byte[9];
+            flagPlusCurrentPeerID[0] = (byte)SteamNetByteFlag.AddPeer;
+            currentPeerID.CopyTo(flagPlusCurrentPeerID, 1);
+            SendBytesToUser(flagPlusCurrentPeerID, newPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
 
-            foreach (var currentPeer in PeerList)
-            {
-                if (currentPeer.Equals(newPeer)) continue;
-                byte[] currentPeerID = BitConverter.GetBytes(currentPeer.GetSteamID64());
-                byte[] flagPlusCurrentPeerID = new byte[9];
-                flagPlusCurrentPeerID[0] = (byte)SteamNetByteFlag.AddPeer;
-                currentPeerID.CopyTo(flagPlusCurrentPeerID, 1);
-                SendBytesToUser(flagPlusCurrentPeerID, newPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-
-                byte[] peerID = BitConverter.GetBytes(newPeer.GetSteamID64());
-                byte[] flagPlusNewPeerID = new byte[9];
-                flagPlusNewPeerID[0] = (byte)SteamNetByteFlag.AddPeer;
-                currentPeerID.CopyTo(flagPlusNewPeerID, 1);
-                SendBytesToUser(flagPlusNewPeerID, currentPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-            }
-
-            PeerList.Add(newPeer);
-            SendBytesToUser([(byte)SteamNetByteFlag.SessionAccepted], newPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+            byte[] peerID = BitConverter.GetBytes(newPeer.GetSteamID64());
+            byte[] flagPlusNewPeerID = new byte[9];
+            flagPlusNewPeerID[0] = (byte)SteamNetByteFlag.AddPeer;
+            currentPeerID.CopyTo(flagPlusNewPeerID, 1);
+            SendBytesToUser(flagPlusNewPeerID, currentPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         }
+
+        PeerList.Add(newPeer);
+        SendBytesToUser([(byte)SteamNetByteFlag.SessionAccepted], newPeer, NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+        
     }
 
     public bool AddTrustedUser(ulong steamID)
