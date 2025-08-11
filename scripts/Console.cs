@@ -3,6 +3,7 @@ using Limbo.Console.Sharp;
 using NetworkMessages;
 using Steamworks;
 using System.Collections.Generic;
+using System.Security.Principal;
 
 /// <summary>
 /// Using (MIT licensed) LimboConsole (https://github.com/limbonaut/limbo_console) to provide a simple console interface. 
@@ -25,6 +26,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.netstatus), "netstatus", "Prints the current network status.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "chat", "Sends a chat message to all peers");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "say", "Sends a chat message to all peers");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.conninfo), "conninfo", "shoot me");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SetMaxLoggingVerbosity), "LOGGING_SetMaxLoggingVerbosity", "turns on all logging verbosity");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SilenceLogCategory), "LOGGING_SilenceLogCategory", "silences a single log prefix");
@@ -37,6 +39,25 @@ public partial class Console : Node
         LimboConsole.Info($"  Connected to Steam: {Global.bIsSteamConnected}");
         LimboConsole.Info($"  Status of connection to Steam Relay Network: {Global.network.GetSteamRelayNetworkStatus()}");
         LimboConsole.Info($"  SteamID: {Global.steamid}");
+    }
+
+    public void conninfo(ulong id)
+    {
+        LimboConsole.Info("Status of connection with peer: " + id);
+        Global.network.SteamNet.GetConnectionInfo(NetworkUtils.SteamIDToIdentity(id),out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
+        LimboConsole.Info($"id:{info.m_identityRemote} state:{info.m_eState} ping:{status.m_nPing} realtimeState:{status.m_eState} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
+    }
+
+    public void SendTestChatChannel(ulong id)
+    {
+        LimboConsole.Info($"Sending dummy byte on Chat channel to {id}" );
+        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(id), NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+    }
+
+    public void SendTestSteamNetChannel(ulong id)
+    {
+        LimboConsole.Info($"Sending dummy byte on SteamNet channel to {id}");
+        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(id), NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
     }
 
     public void netstatus()
@@ -63,7 +84,10 @@ public partial class Console : Node
 
     public void Chat(string message)
     {
-        ChatManager.Chat(message);
+        //ChatManager.Chat(message);
+        Global.network.SteamNet.SendBytesToAllPeers([0], NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(76561199221338666), NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+        Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(76561199221338666), NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
     }
     public void SetMaxLoggingVerbosity()
     {

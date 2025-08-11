@@ -40,6 +40,7 @@ public partial class NetworkManager : Node
         SteamNet.EnableLoopback();
         m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
         SteamFriends.SetRichPresence("connect",Global.steamid.ToString());
+
     }
 
     public override void _Process(double delta)
