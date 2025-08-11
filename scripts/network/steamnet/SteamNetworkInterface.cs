@@ -111,6 +111,8 @@ public interface SteamNetworkInterface
     public void HandleSteamMessage(SteamNetworkingMessage_t message);
     public void EnableLoopback();
     public void DisableLoopback();
+
+    public List<ulong> GetConnectedPeerList();
     public ESteamNetworkingAvailability GetSteamRelayNetworkStatus();
 
 }

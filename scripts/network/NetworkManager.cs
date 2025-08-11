@@ -121,5 +121,10 @@ public partial class NetworkManager : Node
                 break;
         }
     }
+
+    public List<ulong> GetConnectedPeerList()
+    {
+        return SteamNet.GetConnectedPeerList();
+    }
 }
 

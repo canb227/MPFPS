@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MPFPS.scripts.lobby
+
+public class Lobby
 {
-    internal class Lobby
-    {
-    }
+    public List<ulong> LobbyPeers;
+
 }
+

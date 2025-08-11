@@ -9,7 +9,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-internal class SteamMessages : SteamNetworkInterface
+public class SteamMessages : SteamNetworkInterface
 {
 
     public List<SteamNetworkingIdentity> PeerList = new List<SteamNetworkingIdentity>();
@@ -302,9 +302,9 @@ internal class SteamMessages : SteamNetworkInterface
         nint[] messagePointers = new nint[maxNumMessages];
         int numMessages = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messagePointers, maxNumMessages);
         if (numMessages == 0) return 0;
-        foreach (nint messagePointer in messagePointers)
+        for (int i = 0;i<numMessages;i++)
         {
-            messages.Add(SteamNetworkingMessage_t.FromIntPtr(messagePointer));
+            messages.Add(SteamNetworkingMessage_t.FromIntPtr(messagePointers[i]));
         }
         return numMessages;
     }
@@ -331,6 +331,16 @@ internal class SteamMessages : SteamNetworkInterface
     public ESteamNetworkingAvailability GetSteamRelayNetworkStatus()
     {
         return SteamRelayNetworkingStatus;
+    }
+
+    public List<ulong> GetConnectedPeerList()
+    {
+        List<ulong> peerList = new List<ulong>();
+        foreach(var peer in PeerList)
+        {
+            peerList.Add(peer.GetSteamID64());
+        }
+        return peerList;
     }
 }
 

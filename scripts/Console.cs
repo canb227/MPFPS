@@ -2,6 +2,7 @@ using Godot;
 using Limbo.Console.Sharp;
 using NetworkMessages;
 using Steamworks;
+using System.Collections.Generic;
 
 /// <summary>
 /// Using (MIT licensed) LimboConsole (https://github.com/limbonaut/limbo_console) to provide a simple console interface. 
@@ -21,6 +22,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.TestConsole3), "TestConsole3", "Runs a test with one mandatory (int) args");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.TestConsole4), "TestConsole4", "Runs a test with two mandatory (string) args");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.status), "status", "Prints the current game status.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.netstatus), "netstatus", "Prints the current network status.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "chat", "Sends a chat message to all peers");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "say", "Sends a chat message to all peers");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SetMaxLoggingVerbosity), "LOGGING_SetMaxLoggingVerbosity", "turns on all logging verbosity");
@@ -35,6 +37,26 @@ public partial class Console : Node
         LimboConsole.Info($"  Connected to Steam: {Global.bIsSteamConnected}");
         LimboConsole.Info($"  Status of connection to Steam Relay Network: {Global.network.GetSteamRelayNetworkStatus()}");
         LimboConsole.Info($"  SteamID: {Global.steamid}");
+    }
+
+    public void netstatus()
+    {
+        LimboConsole.Info("Network Status");
+        List<ulong> list = Global.network.GetConnectedPeerList();
+        LimboConsole.Info($"  Number of active connections: {list.Count}");
+        LimboConsole.Info($"  Peer List ------------------------------------");
+        foreach (ulong item in list)
+        {
+            if (item==Global.steamid)
+            {
+                LimboConsole.Info($"  Name: LOCAL_LOOPBACK SteamID:N/A");
+            }
+            else
+            {
+                LimboConsole.Info($"  Name: {SteamFriends.GetFriendPersonaName(new CSteamID(item))} SteamID:{item}");
+            }
+             
+        }
     }
 
     public void Chat(string message)

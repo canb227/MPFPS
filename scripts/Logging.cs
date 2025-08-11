@@ -8,7 +8,8 @@ using System.Collections.Generic;
 public static class Logging
 {
 
-    public static List<string> SilencedPrefixesDefault = ["SteamNetWire","ChatDebug"];
+    //public static List<string> SilencedPrefixesDefault = ["SteamNetWire","ChatDebug"];
+    public static List<string> SilencedPrefixesDefault = [];
     public static List<string> SilencedPrefixes = SilencedPrefixesDefault;
     //Todo: add real logging (to file) at some poitn
 
