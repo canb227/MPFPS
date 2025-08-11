@@ -16,11 +16,8 @@ public class ChatManager
 
     public static void HandleSteamMessage(SteamNetworkingMessage_t message)
     {
-        byte[] textAsBytes = new byte[message.m_cbSize];
-        Marshal.Copy(message.m_pData, textAsBytes, 0, message.m_cbSize);
-        Logging.Log($"please god: {Encoding.UTF8.GetString(textAsBytes, 0, textAsBytes.Length)}","ChatDebug");
-        //ChatMessage chatMessage = ChatMessage.Parser.ParseFrom(NetworkUtils.UnwrapSteamMessage(message));
-        //HandleChatMessage(chatMessage,message.m_identityPeer.GetSteamID64());
+        ChatMessage chatMessage = ChatMessage.Parser.ParseFrom(NetworkUtils.UnwrapSteamMessage(message));
+        HandleChatMessage(chatMessage,message.m_identityPeer.GetSteamID64());
     }
 
     public static void HandleChatMessage(ChatMessage chatMessage,ulong fromUser)
@@ -43,10 +40,7 @@ public class ChatManager
 
     public static List<(ulong,EResult)> SendChatMessageToAllUsers(ChatMessage message)
     {
-        byte[] bytes = Encoding.UTF8.GetBytes(message.Message);
-        Global.network.SteamNet.SendBytesToAllPeers(bytes, NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_Reliable);
-        return new();
-        //return Global.network.BroadcastMessage(message, NetworkManager.NetworkChannel.Chat);
+        return Global.network.BroadcastMessage(message, NetworkManager.NetworkChannel.Chat);
     }
 
     public static void Chat(string message)

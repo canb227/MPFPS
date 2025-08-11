@@ -46,7 +46,7 @@ public partial class NetworkManager : Node
     public override void _Process(double delta)
     {
 
-        foreach (NetworkChannel channel in channelsToRead)
+        foreach (NetworkChannel channel in Enum.GetValues(typeof(NetworkChannel)))
         {
             int numMessages = SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out List<SteamNetworkingMessage_t> messages);
             for (int i = 0; i <numMessages; i++)

@@ -27,6 +27,8 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "chat", "Sends a chat message to all peers");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "say", "Sends a chat message to all peers");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.conninfo), "conninfo", "shoot me");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.SendTestChatChannel), "devNetTestChat", "shoot me");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.SendTestSteamNetChannel), "devNetTestSteam", "shoot me");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SetMaxLoggingVerbosity), "LOGGING_SetMaxLoggingVerbosity", "turns on all logging verbosity");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SilenceLogCategory), "LOGGING_SilenceLogCategory", "silences a single log prefix");
@@ -41,21 +43,26 @@ public partial class Console : Node
         LimboConsole.Info($"  SteamID: {Global.steamid}");
     }
 
-    public void conninfo(ulong id)
+    public void conninfo(string ids)
     {
-        LimboConsole.Info("Status of connection with peer: " + id);
+        ulong id = ulong.Parse(ids);
+        LimboConsole.Info($"Status of connection with peer: {id}");
         Global.network.SteamNet.GetConnectionInfo(NetworkUtils.SteamIDToIdentity(id),out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
         LimboConsole.Info($"id:{info.m_identityRemote} state:{info.m_eState} ping:{status.m_nPing} realtimeState:{status.m_eState} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
     }
 
-    public void SendTestChatChannel(ulong id)
+ 
+
+    public void SendTestChatChannel(string ids)
     {
+        ulong id = ulong.Parse(ids);
         LimboConsole.Info($"Sending dummy byte on Chat channel to {id}" );
         Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(id), NetworkManager.NetworkChannel.Chat, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
     }
 
-    public void SendTestSteamNetChannel(ulong id)
+    public void SendTestSteamNetChannel(string ids)
     {
+        ulong id = ulong.Parse(ids);
         LimboConsole.Info($"Sending dummy byte on SteamNet channel to {id}");
         Global.network.SteamNet.SendBytesToUser([0], NetworkUtils.SteamIDToIdentity(id), NetworkManager.NetworkChannel.SteamNet, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
     }
