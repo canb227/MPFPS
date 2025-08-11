@@ -21,6 +21,11 @@ Global="*res://scripts/Global.cs"
 ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 LimboConsole="*res://addons/limbo_console/limbo_console.gd"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [dotnet]
 
 project/assembly_name="MPFPS"

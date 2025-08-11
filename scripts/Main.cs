@@ -26,9 +26,11 @@ public partial class Main : Node
 
     public override void _Notification(int what)
     {
+        //app gets a close request (like hitting the (X) button in windows)
+        //Does not fire if process gets killed - you cant really do anything about that
         if (what == NotificationWMCloseRequest)
         {
-            Global.network.Cleanup();
+            Global.network.NetworkCleanup();
             GetTree().Quit(); // default behavior
         }
     }

@@ -1,4 +1,6 @@
 using Godot;
+using Google.Protobuf;
+using NetworkMessages;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,21 @@ using System.Threading.Tasks;
 
 public partial class NetworkManager : Node
 {
-    private SteamSockets SteamNet;
+    private SteamNetworkInterface SteamNet;
 
+    private int defaultMaxMessagesPerFramePerChannel = 10;
+
+    private bool loopbackNetworkSim = true;
+    private double loopbackNetworkDelay = 0.1f;
+    private double loopbackNetworkDelayVariance = 0.1f;
+
+    public enum NetworkChannel
+    {
+        SteamNet = 0,
+        Chat = 1,
+    }
+
+    public NetworkChannel[] channelsToRead = [0];
 
     /// <summary>
     /// Fires for lots of reasons, including: Clicking "Join to Player" in Steam and Accepting an invite to play in Steam.
@@ -20,53 +35,91 @@ public partial class NetworkManager : Node
 
     public override void _Ready()
     {
-        SteamNet = new SteamSockets();
+        SteamNet = new SteamMessages();
+        SteamNet.GoOnline();
+        SteamNet.EnableLoopback();
         m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
-        SteamNet.StartListenSocket();
+
     }
 
     public override void _Process(double delta)
     {
-        nint[] messages = new nint[100];
-        int numMessages = SteamNet.ReceiveMessages(messages, 100);
-        for (int i = 0; i < numMessages; i++)
+        foreach (NetworkChannel channel in channelsToRead)
         {
-            SteamNetworkingMessage_t msg = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
-            Logging.Log($"Message arrived on pollgroup from: {msg.m_identityPeer.GetSteamID64()} with side channel {msg.m_nUserData} and payload size {msg.m_cbSize}");
+            SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out List<SteamNetworkingMessage_t> messages);
+            foreach (SteamNetworkingMessage_t message in messages)
+            {
+                Logging.Log($"Message received from {message.m_identityPeer.GetSteamID64()} on channel {channel}","SteamNetWire");
+                HandleSteamMessage(message,channel);
+            }
         }
     }
 
-    public bool IsConnected()
+    private void HandleSteamMessage(SteamNetworkingMessage_t message, NetworkChannel channel)
     {
-        return (SteamNet.activeConnections.Count > 0);
+        switch (channel)
+        {
+            case NetworkChannel.SteamNet:
+                SteamNet.HandleSteamMessage(message);
+                break;
+            case NetworkChannel.Chat:
+                ChatManager.HandleSteamMessage(message);
+                break;
+            default:
+                break;
+        }
     }
 
-    public bool IsConnectedToUser(SteamNetworkingIdentity identity)
+    public EResult SendMessage(IMessage message,ulong steamID,NetworkChannel channel, int sendFlags=NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
-        return (SteamNet.activeConnections.ContainsKey(identity));
+        return SteamNet.SendMessageToUser(message, NetworkUtils.SteamIDToIdentity(steamID),channel,sendFlags);
     }
 
-    public ESteamNetworkingAvailability GetSteamNetworkStatus()
+    public List<(ulong,EResult)> BroadcastMessage(IMessage message, NetworkChannel channel, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
-        return SteamNet.steamRelayNetworkStatus.m_eAvail;
+        List<(ulong peer,EResult result)> results = new List<(ulong,EResult)>();
+        foreach ( (SteamNetworkingIdentity peer,EResult result) in SteamNet.SendMessageToAllPeers(message,channel,sendFlags))
+        {
+            results.Add((peer.GetSteamID64(), result));
+        }
+        return results;
     }
 
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
     {
-        Logging.Log($"Steam Rich Presence Join Requested to: {param.m_rgchConnect}. Attempting to join...","Network");
+        Logging.Log($"Steam Rich Presence Join Requested to: {param.m_rgchConnect}. Attempting to join...","SteamAPI");
         SteamNet.AttemptConnectionToUser(NetworkUtils.SteamIDStringToIdentity(param.m_rgchConnect));
     }
 
-    public void SendChatMessageToAllPeers(string message)
+    public ESteamNetworkingAvailability GetSteamRelayNetworkStatus()
     {
-        byte[] bytes = Encoding.UTF8.GetBytes(message);
-        Logging.Log($"Sending message to all peers with size {bytes.Length}");
-        SteamNet.SendBytesToAllPeers(bytes, bytes.Length, 1);
+        return SteamNet.GetSteamRelayNetworkStatus();
     }
 
-    public void Cleanup()
+    public void NetworkCleanup()
     {
         SteamNet.DisconnectFromAllUsers();
+        SteamNet.GoOffline();
+    }
+
+    public async void Loopback(IMessage message, SteamNetworkingIdentity identity, NetworkManager.NetworkChannel channel,int sendFlags)
+    {
+
+        if (loopbackNetworkSim)
+        {
+            await ToSignal(GetTree().CreateTimer(loopbackNetworkDelay + (new Random().NextDouble() * loopbackNetworkDelayVariance)), "timeout");
+        }
+        Logging.Log($"Message received on Loopback on channel {channel}", "SteamNetWire");
+        switch (channel)
+        {
+            case NetworkManager.NetworkChannel.SteamNet:
+                break;
+            case NetworkManager.NetworkChannel.Chat:
+                ChatManager.HandleChatMessage(message as ChatMessage, identity.GetSteamID64());
+                break;
+            default:
+                break;
+        }
     }
 }
 

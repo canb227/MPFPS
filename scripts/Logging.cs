@@ -1,11 +1,15 @@
 using Godot;
 using Limbo.Console.Sharp;
+using System.Collections.Generic;
 
 /// <summary>
 /// Static logger class to keep things organized.
 /// </summary>
 public static class Logging
 {
+
+    public static List<string> SilencedPrefixesDefault = ["SteamNetWire","ChatDebug"];
+    public static List<string> SilencedPrefixes = SilencedPrefixesDefault;
     //Todo: add real logging (to file) at some poitn
 
     /// <summary>
@@ -14,8 +18,14 @@ public static class Logging
     /// <param name="message">message to log</param>
     /// <param name="prefix">A custom prefix. Leave blank to remove prefix.</param>
     /// <param name="timestamp">If true a system timestamp is added to the message.</param>
-    public static void Log(string message, string prefix = "", bool timestamp = true)
+    public static void Log(string message, string prefix, bool timestamp = true)
     {
+        if (SilencedPrefixes.Contains(prefix))
+        {
+            return;
+        }
+
+
         string ts = "";
         if (timestamp) ts = $"[{Time.GetTimeStringFromSystem()}]";
 

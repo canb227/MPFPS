@@ -62,6 +62,7 @@ public partial class Global : Node
 
         if (SteamAPI.Init())
         {
+            SteamNetworkingUtils.InitRelayNetworkAccess();
             Logging.Log("Connection to Steam successful.", "SteamAPI");
             steamid = SteamUser.GetSteamID().m_SteamID;
             bIsSteamConnected = true;

@@ -1,16 +1,38 @@
 using Google.Protobuf;
 using Steamworks;
 using System;
-
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
+using System.Text;
+using System.Threading.Tasks;
 using static SteamSockets;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+
+////////////////////////////////
+
+//READ ME FIRST
+
+//The Steam Sockets implementation has the following BENEFITS over Messages:
+//      1. Its slightly faster
+//      2. It allows for actual network loopback (insertion into message queue), with network condition simulation
+//      3. It has an extra (int) per message of available sidechannel to store message type (doesnt need a message wrapper!)
+//      4. It is SIGNIFIGANTLY more configurable, with full control over data flows
+
+//The Steam Sockets implementation has the following DRAWBACKS over Messages:
+//      1. I CANT GET IT TO FUCKING WORK
+
+//   For any brave soul that comes after: Sending messages appears to work, SteamRelay reports successful sending of messages with trivial payloads using both a second machine and
+//      using socket pair loopbacks. In both the two machine and the loopback cases, the connection never receives any messages.
+
+
+/////////////////////////////////
+
+
+
 
 /// <summary>
 /// Ok heres the deal. SteamNetworkingSockets is the actual Steam Networking API. SteamNetworkingMessages is the "easy" version that Valve made.
@@ -27,15 +49,24 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 /// </summary>
 public class SteamSockets
 {
-    /// <summary>
-    /// SteamID to Connection Handle map - serves as a list of active peer connections
-    /// </summary>
-    public Dictionary<SteamNetworkingIdentity, HSteamNetConnection> activeConnections;
+    public const int k_nSteamNetworkingSend_NoNagle = 1;
+    public const int k_nSteamNetworkingSend_NoDelay = 4;
+    public const int k_nSteamNetworkingSend_Unreliable = 0;
+    public const int k_nSteamNetworkingSend_Reliable = 8;
+    public const int k_nSteamNetworkingSend_UnreliableNoNagle = k_nSteamNetworkingSend_Unreliable | k_nSteamNetworkingSend_NoNagle;
+    public const int k_nSteamNetworkingSend_UnreliableNoDelay = k_nSteamNetworkingSend_Unreliable | k_nSteamNetworkingSend_NoDelay | k_nSteamNetworkingSend_NoNagle;
+    public const int k_nSteamNetworkingSend_ReliableNoNagle = k_nSteamNetworkingSend_Reliable | k_nSteamNetworkingSend_NoNagle;
 
     /// <summary>
     /// SteamID to Connection Handle map - serves as a list of active peer connections
     /// </summary>
-    Dictionary<SteamNetworkingIdentity, HSteamNetConnection> pendingConnections;
+    public Dictionary<SteamNetworkingIdentity, HSteamNetConnection> connectionMap;
+
+    public List<HSteamNetConnection> connectionList;
+
+    public HSteamNetConnection LoopbackSendTo;
+    public HSteamNetConnection LoopbackReceiveOn;
+
 
     /// <summary>
     /// Groups together collections to get messages from all of them more efficiently
@@ -65,14 +96,16 @@ public class SteamSockets
     public SteamSockets()
     {
         Logging.Log("Starting Steam Sockets networking interface...", "SteamNet");
-        SteamNetworking.AllowP2PPacketRelay(true);
         SteamNetworkingUtils.InitRelayNetworkAccess(); //NOTE: Our access to the Steam Relay Network takes about 3 seconds after this call to be functional.
-        pendingConnections = new();
-        activeConnections = new();
+        connectionMap = new();
+        connectionList = new();
         pollGroup = SteamNetworkingSockets.CreatePollGroup();
 
         SteamNetConnectionStatusChangedCallback = Callback<SteamNetConnectionStatusChangedCallback_t>.Create(OnConnectionStatusChanged);
         SteamRelayNetworkStatusChangedCallback = Callback<SteamRelayNetworkStatus_t>.Create(OnRelayNetworkStatusChanged);
+
+        //SteamNetworkingUtils.SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_P2P_Transport_ICE_Enable, ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global, ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32);
+
         Logging.Log("Steam Sockets initalized.", "SteamNet");
     }
 
@@ -83,7 +116,7 @@ public class SteamSockets
 
     public void StartListenSocket()
     {
-        Logging.Log($"Opening new Steam Listen Socket...");
+        Logging.Log($"Opening new Steam Listen Socket...","SteamNet");
         List<SteamNetworkingConfigValue_t> optionsList = new();
 
         //Set the symmetric mode flag - see top of file
@@ -94,24 +127,36 @@ public class SteamSockets
         optionsList.Add(option);
 
         ListenSocket = SteamNetworkingSockets.CreateListenSocketP2P(0, optionsList.Count, optionsList.ToArray());
-        Logging.Log($"Symmetric Steam Listen Socket has been opened, waiting for messages...", "SteamNet");
+        Logging.Log($"Symmetric Steam Listen Socket ({ListenSocket.m_HSteamListenSocket}) has been opened, waiting for messages...", "SteamNet");
     }
 
+    public void EnableLoopback()
+    {
+        SteamNetworkingIdentity nullptr = new();
+        bool help = SteamNetworkingSockets.CreateSocketPair(out LoopbackSendTo, out LoopbackReceiveOn, true, ref nullptr, ref nullptr);
+        Logging.Log($"Socket Pair Success? {help} LoopbackSendTo m_conn:{ LoopbackSendTo.m_HSteamNetConnection}, LoopbackReceiveOn m_conn:{LoopbackReceiveOn.m_HSteamNetConnection}", "SteamNet");
+        SteamNetworkingSockets.ConfigureConnectionLanes(LoopbackSendTo, 1, [1], [1]);
+        SteamNetworkingSockets.ConfigureConnectionLanes(LoopbackReceiveOn, 1, [1], [1]);
+
+
+        connectionList.Add(LoopbackSendTo);
+        SteamNetworkingSockets.SetConnectionPollGroup(LoopbackReceiveOn,pollGroup);
+    }
 
     public void AttemptConnectionToUser(SteamNetworkingIdentity identity)
     {
         Logging.Log($"Sending symmetric connection request to {identity.GetSteamID64()}","SteamNet");
-        List<SteamNetworkingConfigValue_t> optionsList = new();
+        SteamNetworkingConfigValue_t[] optionsList = new SteamNetworkingConfigValue_t[1];
 
         //Set the symmetric mode flag - see top of file
         SteamNetworkingConfigValue_t option = new SteamNetworkingConfigValue_t();
         option.m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SymmetricConnect;
         option.m_val.m_int32 = 1;
         option.m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32;
-        optionsList.Add(option);
+        optionsList[0] = (option);
 
-        HSteamNetConnection conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, optionsList.Count, optionsList.ToArray());
-        pendingConnections.Add(identity, conn);
+        HSteamNetConnection conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, 1, optionsList.ToArray());
+        //pendingConnections.Add(identity, conn);
     }
 
 
@@ -124,6 +169,7 @@ public class SteamSockets
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None:
                 break;
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
+                
                 if (ShouldAcceptConnectionFrom(param.m_info.m_identityRemote))
                 {
                     Logging.Log($"Accepting connection request from {param.m_info.m_identityRemote.GetSteamID64()}.","SteamNet");
@@ -134,9 +180,16 @@ public class SteamSockets
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_FindingRoute:
                 break;
             case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
-                pendingConnections.Remove(param.m_info.m_identityRemote);
-                activeConnections.Add(param.m_info.m_identityRemote, param.m_hConn);
-                SteamNetworkingSockets.SetConnectionPollGroup(param.m_hConn, pollGroup);
+                connectionList.Add(param.m_hConn);
+                connectionMap.Add(param.m_info.m_identityRemote, param.m_hConn);
+                if (SteamNetworkingSockets.SetConnectionPollGroup(param.m_hConn, pollGroup))
+                {
+                    Logging.Log($"Sucessfully added to pollgroup. connection: {param.m_hConn} set to poll group: {pollGroup.m_HSteamNetPollGroup}","SteamNet");
+                }
+                else
+                {
+                    Logging.Error($"Error adding to pollgroup! connection: {param.m_hConn} set to poll group: {pollGroup.m_HSteamNetPollGroup}","SteamNet");
+                }
                 NewConnectionEstablishedEvent?.Invoke(param.m_info.m_identityRemote);
                 Logging.Log($"Connection established with {param.m_info.m_identityRemote.GetSteamID64()}.","SteamNet");
                 break;
@@ -196,71 +249,123 @@ public class SteamSockets
         {
             return true;
         }
-        if (pendingConnections.ContainsKey(m_identityRemote))
-        {
-            return true;
-        }
+
         return false;
     }
 
-
-
-    public long SendBytesToUser(SteamNetworkingIdentity identity, byte[] data, int length, int sidechannel=0)
-    {
-        //Allocate memory for the steam message. https://partner.steamgames.com/doc/api/ISteamNetworkingUtils#AllocateMessage
-        nint allocatedMessage = SteamNetworkingUtils.AllocateMessage(length);
-
-        //This is the C# version of dereferencing the pointer
-        SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(allocatedMessage);
-        
-        //Set who this message is going to
-        steamMessage.m_conn = activeConnections[identity];
-        
-        //Fill the memory the message payload pointer points to with the data
-        Marshal.Copy(data, 0, steamMessage.m_pData, data.Length);
-
-        //We get one int of sidechannel data
-        steamMessage.m_nUserData = sidechannel;
-
-        //This is the C# version of getting the address of the message object. This is maybe the same address as "allocatedMessage" but I dont fucking know
-        nint msg = Unsafe.As<SteamNetworkingMessage_t, nint>(ref steamMessage);
-
-        //The Steam send messages always takes an array of messages to batch send - but this just sends one
-        nint[] msgs = new nint[1];
-        msgs[1] = msg;
-
-        long[] results = new long[1];
-        SteamNetworkingSockets.SendMessages(1, msgs,results);
-
-        return results[0];
-    }
-
-    public long[] SendBytesToAllPeers(byte[] data, int length, int sidechannel)
-    {
-        long[] results = new long[activeConnections.Count];
-        List<SteamNetworkingIdentity> peerList = activeConnections.Keys.ToList();
-        for (int i = 0; i < activeConnections.Count; i++)
-        {
-            results[i] = SendBytesToUser(peerList[i], data, length, sidechannel);
-        }
-        return results;
-    }
 
     public int ReceiveMessages(nint[] messages, int maxMessages)
     {
         return SteamNetworkingSockets.ReceiveMessagesOnPollGroup(pollGroup, messages, maxMessages);
     }
 
-    public void DisconnectFromUser(SteamNetworkingIdentity identity)
+    public void DisconnectFromUser(HSteamNetConnection conn)
     {
-        SteamNetworkingSockets.CloseConnection(activeConnections[identity], 0, "Quit", false);
+        SteamNetworkingSockets.CloseConnection(conn, 0, "", false);
     }
 
     public void DisconnectFromAllUsers()
     {
-        foreach (SteamNetworkingIdentity identity in activeConnections.Keys)
+        foreach (HSteamNetConnection conn in connectionList)
         {
-            DisconnectFromUser(identity);
+            DisconnectFromUser(conn);
         }
+    }
+
+    public List<long> SendMessageToAllConnections(nint dataPointer, uint dataSize, int sendFlags)
+    {
+        List<long> results = new List<long>();
+        foreach (HSteamNetConnection conn in connectionList)
+        {
+           results.Add( SendMessageToConnection(conn, dataPointer, dataSize, sendFlags));
+        }
+        return results;
+    }
+
+    public EResult DEBUGSendMessageToConnection(HSteamNetConnection conn,nint dataPointer,uint dataSize,int sendFlags,out long msgNum)
+    {
+        return SteamNetworkingSockets.SendMessageToConnection(conn, dataPointer, dataSize, sendFlags, out msgNum);
+    }
+
+    public long SendMessageToConnection(HSteamNetConnection conn, nint dataPointer, uint dataSize, int sendFlags)
+    {
+        unsafe
+        {
+            byte[] bytes = *(byte[]*)(dataPointer);
+            Logging.Log($"Sending a message with payload (size:{dataSize}) (as string): {Encoding.UTF8.GetString(bytes, 0, bytes.Length)}", "SteamNet");
+        }
+        nint[] messages = new nint[1];
+        unsafe
+        {
+            SteamNetworkingMessage_t* msg = (SteamNetworkingMessage_t*)SteamNetworkingUtils.AllocateMessage((int)dataSize);
+            msg->m_conn = conn;
+            msg->m_nFlags = sendFlags;
+            msg->m_idxLane = 0;
+            messages[0] = (nint)msg;
+        }
+        long[] results = new long[1];
+        SteamNetworkingSockets.SendMessages(1, messages, results);
+        return results[0];
+        
+    }
+
+    public bool GoOnline()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool GoOffline()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool DisconnectFromUser(SteamNetworkingIdentity identity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public EResult SendMessageToUser(IMessage message, SteamNetworkingIdentity identity, NetworkManager.NetworkChannel channel, int sendFlags)
+    {
+        throw new NotImplementedException();
+    }
+
+    public EResult SendBytesToUser(byte[] data, SteamNetworkingIdentity identity, NetworkManager.NetworkChannel channel, int sendFlags)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<(SteamNetworkingIdentity peer, EResult result)> SendMessageToAllPeers(IMessage message, NetworkManager.NetworkChannel channel, int sendFlags)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<(SteamNetworkingIdentity peer, EResult result)> SendBytesToAllPeers(byte[] data, NetworkManager.NetworkChannel channel, int sendFlags)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsUserConnectedPeer(SteamNetworkingIdentity identity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ESteamNetworkingConnectionState GetConnectionInfo(SteamNetworkingIdentity identity, out SteamNetConnectionInfo_t connectionInfo, out SteamNetConnectionRealTimeStatus_t connectionStatus)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool GetNextPendingSteamMessageOnChannel(NetworkManager.NetworkChannel channel, out SteamNetworkingMessage_t msg)
+    {
+        throw new NotImplementedException();
+    }
+
+    public int GetNumPendingSteamMessagesOnChannel(NetworkManager.NetworkChannel channel, int maxNumMessages, out List<SteamNetworkingMessage_t> messages)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleIncomingMessage(SteamNetworkingMessage_t message)
+    {
+        throw new NotImplementedException();
     }
 }
