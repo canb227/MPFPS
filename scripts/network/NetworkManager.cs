@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 public partial class NetworkManager : Node
@@ -45,7 +46,22 @@ public partial class NetworkManager : Node
 
     public override void _Process(double delta)
     {
+        nint[] netMessages = new nint[100];
+        for (int i = 0; i < SteamNetworkingMessages.ReceiveMessagesOnChannel(0, netMessages, 100); i++)
+        {
+            SteamNetworkingMessage_t message = SteamNetworkingMessage_t.FromIntPtr(netMessages[i]); //Converts the message to a C# object
+            Logging.Log($"Message received from {message.m_identityPeer.GetSteamID64()} on channel 0", "SteamNetWire");
+            SteamNetworkingMessage_t.Release(netMessages[i]);
+        }
 
+        nint[] chatMessages = new nint[100];
+        for (int i = 0; i < SteamNetworkingMessages.ReceiveMessagesOnChannel(1, chatMessages, 100); i++)
+        {
+            SteamNetworkingMessage_t message = SteamNetworkingMessage_t.FromIntPtr(chatMessages[i]); //Converts the message to a C# object
+            Logging.Log($"Message received from {message.m_identityPeer.GetSteamID64()} on channel 1", "SteamNetWire");
+            SteamNetworkingMessage_t.Release(chatMessages[i]);
+        }
+        /*
         foreach (NetworkChannel channel in Enum.GetValues(typeof(NetworkChannel)))
         {
             int numMessages = SteamNet.GetNumPendingSteamMessagesOnChannel(channel, defaultMaxMessagesPerFramePerChannel, out nint[] messages);
@@ -57,7 +73,7 @@ public partial class NetworkManager : Node
                 SteamNetworkingMessage_t.Release(messages[i]);
             }
 
-        }
+        }8*/
     }
 
     private void HandleSteamMessage(SteamNetworkingMessage_t message, NetworkChannel channel)
