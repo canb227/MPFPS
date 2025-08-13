@@ -50,6 +50,7 @@ public partial class SimpleNetworking : Node
         {
             Logging.Log("Session Error!","Network");
         }
+        Logging.Log("Session Established.", "Network");
     }
 
     public EResult SendData(byte[] data, NetType type, ulong toSteamID)
