@@ -92,7 +92,7 @@ public partial class SimpleNetworking : Node
             byte[] payload = new byte[steamMessage.m_cbSize];
             Marshal.Copy(steamMessage.m_pData, payload, 0, payload.Length);
             NetType type = (NetType)payload[0];
-            byte[] data = (byte[])payload.Skip(1);
+            byte[] data = payload.Skip(1).ToArray();
             ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
         }
     }
