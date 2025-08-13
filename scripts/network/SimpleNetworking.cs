@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using static Godot.HttpRequest;
 
 public enum NetType
 {
     ERROR = 0,
+    NETREQUEST = 1,
+    NETACCEPT = 2,
 
-    Chat = 1,
+
 
     DEBUG_UTF8 = 254,
     EMPTY = 255
@@ -36,12 +39,18 @@ public partial class SimpleNetworking : Node
 
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
     {
-        SendData([0], NetType.EMPTY, ulong.Parse(param.m_rgchConnect));
+
+        EResult result = SendData([0], NetType.NETREQUEST, ulong.Parse(param.m_rgchConnect));
+        Logging.Log($"Session Request Sent To: {param.m_rgchConnect} Result: {result}", "Network");
     }
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
+
+        Logging.Log($"Session Request Received From: {param.m_identityRemote.GetSteamID64()}. Accepting.", "Network");
         SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
+        EResult result = SendData([0], NetType.NETACCEPT, param.m_identityRemote.GetSteamID64());
+        Logging.Log($"Session Established with: {param.m_identityRemote.GetSteamID64()}", "Network");
     }
 
     public EResult SendData(byte[] data, NetType type, ulong toSteamID)
@@ -87,7 +96,10 @@ public partial class SimpleNetworking : Node
         else Logging.Log($" MSGRCV | FROM: {fromSteamID} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
         switch (type)
             {
-                case NetType.Chat:
+                case NetType.NETREQUEST:
+                    break;
+                case NetType.NETACCEPT:
+                    Logging.Log($"Session Established with: {fromSteamID}", "Network");
                     break;
                 case NetType.DEBUG_UTF8:
                     string msg = Encoding.UTF8.GetString(data);
