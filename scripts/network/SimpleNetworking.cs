@@ -4,12 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Text;
 using static Godot.HttpRequest;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public enum NetType
 {
     ERROR = 0,
+    SYMMETRIC_HANDSHAKE = 1,
     DEBUG_UTF8 = 254,
     EMPTY = 255
 }
@@ -39,25 +42,22 @@ public partial class SimpleNetworking : Node
     {
         Logging.Log($"Invite Accepted From: {ulong.Parse(param.m_rgchConnect)}", "Network");
         Logging.Log(ulong.Parse(param.m_rgchConnect).ToString(),"Network");
+        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
+        identity.SetSteamID64(ulong.Parse(param.m_rgchConnect));
+        SendData([0], NetType.SYMMETRIC_HANDSHAKE, identity);
     }
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
+        SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
         param.m_identityRemote.ToString(out string idstring);
-        Logging.Log($"Session Request From Remote Identity: {idstring}","Network");
-        if (!SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote))
-        {
-            Logging.Log("Session Error!","Network");
-        }
-        else
-        {
-            Logging.Log("Session Established", "Network");
-        }
+        Logging.Log($"Session Request Accepted From Remote Identity: {idstring}", "Network");
+        SendData([0], NetType.SYMMETRIC_HANDSHAKE, param.m_identityRemote);
     }
+
 
     public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
-
         byte[] payload = new byte[data.Length + 1];
         payload[0] = (byte)type;
         data.CopyTo(payload, 1);
