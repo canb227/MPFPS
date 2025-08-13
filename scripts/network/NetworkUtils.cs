@@ -37,6 +37,7 @@ public static class NetworkUtils
         byte[] msgBytes = new byte[msg.m_cbSize];
         Marshal.Copy(msg.m_pData, msgBytes, 0, msg.m_cbSize);
         return msgBytes;
+  
     }
 
     /// <summary>

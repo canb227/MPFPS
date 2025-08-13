@@ -9,9 +9,11 @@ public partial class Main : Node
     public override void _Ready()
     {
         //Create the Network Manager and add it to the scene tree so it can tick per frame
-        Global.network = new();
-        Global.network.Name = "NetworkManager";
-        AddChild(Global.network);
+        //Global.network = new();
+        //Global.network.Name = "NetworkManager";
+        //AddChild(Global.network);
+
+
 
         //Create the game Console and add it to the scene tree so it can reference Godot information
         Console console = new Console();
@@ -22,6 +24,12 @@ public partial class Main : Node
         Global.world.Name = "world";
         AddChild(Global.world);
         
+        Global.snetwork = new SimpleNetworking();
+        AddChild(Global.snetwork);
+    }
+    public override void _Process(double delta)
+    {
+        
     }
 
     public override void _Notification(int what)
@@ -30,7 +38,7 @@ public partial class Main : Node
         //Does not fire if process gets killed - you cant really do anything about that
         if (what == NotificationWMCloseRequest)
         {
-            Global.network.NetworkCleanup();
+            //lobal.network.NetworkCleanup();
             GetTree().Quit(); // default behavior
         }
     }

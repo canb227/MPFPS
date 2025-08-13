@@ -31,6 +31,7 @@ public partial class Global : Node
     public static World world;
     public static EntityLoader EntityLoader = new();
     public static SceneLoader SceneLoader = new();
+    public static SimpleNetworking snetwork;
 
     //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
     public override void _Ready()

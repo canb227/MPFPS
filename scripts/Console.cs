@@ -4,6 +4,7 @@ using NetworkMessages;
 using Steamworks;
 using System.Collections.Generic;
 using System.Security.Principal;
+using System.Text;
 
 /// <summary>
 /// Using (MIT licensed) LimboConsole (https://github.com/limbonaut/limbo_console) to provide a simple console interface. 
@@ -33,6 +34,8 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SilenceLogCategory), "LOGGING_SilenceLogCategory", "silences a single log prefix");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.loopbacktest), "loopbacktest", "snetwork");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.send), "send", "snetwork");
     }
     public void status()
     {
@@ -51,7 +54,17 @@ public partial class Console : Node
         LimboConsole.Info($"id:{info.m_identityRemote} state:{info.m_eState} ping:{status.m_nPing} realtimeState:{status.m_eState} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
     }
 
- 
+    public void loopbacktest(string message)
+    {
+        LimboConsole.Info($"Sending test on loopback...");
+        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message),NetType.DEBUG_UTF8,Global.steamid);
+    }
+
+    public void send(string id, string message)
+    {
+        LimboConsole.Info($"Sending test on snetwork...");
+        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, ulong.Parse(id));
+    }
 
     public void SendTestChatChannel(string ids)
     {
