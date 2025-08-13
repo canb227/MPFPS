@@ -16,8 +16,6 @@ public enum NetType
 
 public partial class SimpleNetworking : Node
 {
-    List<SteamNetworkingIdentity> peers = new();
-
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
     Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
@@ -44,28 +42,27 @@ public partial class SimpleNetworking : Node
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
-        SteamNetworkingIdentity id = param.m_identityRemote;
-        peers.Add(id);
-        if (!SteamNetworkingMessages.AcceptSessionWithUser(ref id))
+        Logging.Log($"Session Request From Remote Identity: {param.m_identityRemote.ToString()}","Network");
+        if (!SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote))
         {
             Logging.Log("Session Error!","Network");
         }
-        Logging.Log("Session Established.", "Network");
+        Logging.Log("Session Established", "Network");
     }
 
-    public EResult SendData(byte[] data, NetType type, ulong toSteamID)
+    public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
+
         byte[] payload = new byte[data.Length + 1];
         payload[0] = (byte)type;
         data.CopyTo(payload, 1);
+
         nint ptr = Marshal.AllocHGlobal(payload.Length);
+
         Marshal.Copy(payload, 0, ptr, payload.Length);
-        CSteamID cSteamID = new CSteamID(toSteamID);
-        SteamNetworkingIdentity remoteIdentity = new();
-        remoteIdentity.SetSteamID(cSteamID);
-        remoteIdentity.m_eType = ESteamNetworkingIdentityType.k_ESteamNetworkingIdentityType_SteamID;
+
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
-        Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(cSteamID)}({toSteamID}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
+        Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({remoteIdentity.ToString()}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         return result;
     }
 
@@ -79,8 +76,8 @@ public partial class SimpleNetworking : Node
             Marshal.Copy(steamMessage.m_pData, payload, 0, payload.Length);
             NetType type = (NetType)payload[0];
             byte[] data = payload.Skip(1).ToArray();
-            Logging.Log($" MSGRCV | FROM: {steamMessage.m_identityPeer.GetSteamID64()} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
-            ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
+            Logging.Log($" MSGRCV | FROM: {steamMessage.m_identityPeer.ToString()} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
+            //ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
             SteamNetworkingMessage_t.Release(messages[i]);
         }
     }
@@ -89,13 +86,7 @@ public partial class SimpleNetworking : Node
     {
         switch (type)
             {
-                case NetType.DEBUG_UTF8:
-                    string msg = Encoding.UTF8.GetString(data);
-                    Logging.Log($" HANDLER: DEBUG_UTF8 | PAYLOAD: {msg}", "NetworkWire");
-                    break;
-                case NetType.EMPTY:
-                    Logging.Log($" HANDLER: EMPTY | NO PAYLOAD ", "NetworkWire");
-                    break;
+
                 default:
                     throw new NotImplementedException($" TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
             }

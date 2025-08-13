@@ -58,13 +58,17 @@ public partial class Console : Node
     public void loopbacktest(string message)
     {
         LimboConsole.Info($"Sending test on loopback...");
-        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message),NetType.DEBUG_UTF8,Global.steamid);
+        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
+        identity.SetSteamID64(Global.steamid);
+        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
     }
 
     public void send(string id, string message)
     {
         LimboConsole.Info($"Sending test on snetwork...");
-        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, ulong.Parse(id));
+        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
+        identity.SetSteamID64(ulong.Parse(id));
+        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
     }
 
     public void SendTestChatChannel(string ids)
