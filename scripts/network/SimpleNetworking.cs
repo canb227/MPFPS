@@ -43,7 +43,7 @@ public partial class SimpleNetworking : Node
 
     private void OnSessionFailed(SteamNetworkingMessagesSessionFailed_t param)
     {
-        Logging.Log($"Session Failed with: {param.m_info.m_identityRemote} Reason: {param.m_info.m_eEndReason.ToString()}", "Network");
+        Logging.Log($"Session Failed with: {param.m_info.m_identityRemote} Reason: {((ESteamNetConnectionEnd)(param.m_info.m_eEndReason)).ToString()}", "Network");
     }
 
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
