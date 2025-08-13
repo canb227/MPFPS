@@ -22,39 +22,74 @@ public partial class SimpleNetworking : Node
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
     Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
+    Callback<SteamRelayNetworkStatus_t> RelayNetworkStatusChanged;
 
     public override void _Ready()
     {
         SessionFailed = Callback<SteamNetworkingMessagesSessionFailed_t>.Create(OnSessionFailed);
         SessionRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
         m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
+        RelayNetworkStatusChanged = Callback<SteamRelayNetworkStatus_t>.Create(OnRelayNetworkStatusChanged);
 
         SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
+        SteamNetworkHealthManager();
+    }
+
+    public async void SteamNetworkHealthManager()
+    {
+        while (true)
+        {
+            await ToSignal(GetTree().CreateTimer(1), "timeout");
+            
+            SteamNetworkingUtils.GetRelayNetworkStatus(out SteamRelayNetworkStatus_t details);
+            if (details.m_eAvail!=ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Current)
+            {
+                Logging.Log("Force retrying relay network access...","Network");
+                SteamNetworkingUtils.InitRelayNetworkAccess();
+            }
+        }
+    }
+
+    private void OnRelayNetworkStatusChanged(SteamRelayNetworkStatus_t param)
+    {
+        Logging.Log($"Connection Status to Steam Relay Network has changed: {param.m_eAvail}","Network");
     }
 
     private void OnSessionFailed(SteamNetworkingMessagesSessionFailed_t param)
     {
         param.m_info.m_identityRemote.ToString(out string idstring);
-        Logging.Log($"Session Failed with: {idstring} Reason: {((ESteamNetConnectionEnd)(param.m_info.m_eEndReason)).ToString()}", "Network");
+        Logging.Log($"Session Failed with: {idstring} Reason: {((ESteamNetConnectionEnd)(param.m_info.m_eEndReason)).ToString()} DEBUG:{param.m_info.m_szEndDebug}", "Network");
     }
 
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
     {
         Logging.Log($"Invite Accepted From: {ulong.Parse(param.m_rgchConnect)}", "Network");
         Logging.Log(ulong.Parse(param.m_rgchConnect).ToString(),"Network");
-        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
-        identity.SetSteamID64(ulong.Parse(param.m_rgchConnect));
-        SendData([0], NetType.SYMMETRIC_HANDSHAKE, identity);
     }
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
-        SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
-        param.m_identityRemote.ToString(out string idstring);
-        Logging.Log($"Session Request Accepted From Remote Identity: {idstring}", "Network");
-        SendData([0], NetType.SYMMETRIC_HANDSHAKE, param.m_identityRemote);
+        bool sessionEstablished = SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
+        if (sessionEstablished)
+        {
+            param.m_identityRemote.ToString(out string idstring);
+            Logging.Log($"New Session Established with {idstring}","Network");
+        }
+        else
+        {
+            param.m_identityRemote.ToString(out string idstring);
+            Logging.Log($"Failed to Establish New Session With {idstring}", "Network");
+        }
     }
 
+    public EResult SendDummyMessage(SteamNetworkingIdentity remoteIdentity)
+    {
+        nint ptr = new();
+        remoteIdentity.ToString(out string idstring);
+        EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, 0, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
+        Logging.Log($" MSGSND-DUMMY | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({idstring}) | RESULT: {result.ToString()}", "NetworkWire");
+        return result;
+    }
 
     public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
@@ -67,6 +102,7 @@ public partial class SimpleNetworking : Node
         Marshal.Copy(payload, 0, ptr, payload.Length);
         remoteIdentity.ToString(out string idstring);
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
+
         Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({idstring}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         return result;
     }
@@ -92,7 +128,6 @@ public partial class SimpleNetworking : Node
     {
         switch (type)
             {
-
                 default:
                     throw new NotImplementedException($" TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
             }
