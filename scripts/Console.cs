@@ -50,7 +50,8 @@ public partial class Console : Node
     {
         ulong id = ulong.Parse(ids);
         LimboConsole.Info($"Status of connection with peer: {id}");
-        Global.network.SteamNet.GetConnectionInfo(NetworkUtils.SteamIDToIdentity(id),out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
+        SteamNetworkingIdentity sid = NetworkUtils.SteamIDToIdentity(id);
+        SteamNetworkingMessages.GetSessionConnectionInfo(ref sid,out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
         LimboConsole.Info($"id:{info.m_identityRemote} state:{info.m_eState} ping:{status.m_nPing} realtimeState:{status.m_eState} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
     }
 

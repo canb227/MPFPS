@@ -22,7 +22,7 @@ public enum NetType
 public partial class SimpleNetworking : Node
 {
 
-    public bool bLoopback = true;
+    public bool bLoopback = false;
     public bool bNetworkSimulation = false;
     public double dNetworkSimulationDelay = 0.1; 
     public double dNetworkSimulationDelayVariance = 0.1; 
@@ -54,10 +54,15 @@ public partial class SimpleNetworking : Node
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
 
-        Logging.Log($"Session Request Received From: {param.m_identityRemote.GetSteamID64()}. Accepting.", "Network");
-        SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
-        EResult result = SendData([0], NetType.NETACCEPT, param.m_identityRemote.GetSteamID64());
-        Logging.Log($"Session Established with: {param.m_identityRemote.GetSteamID64()}", "Network");
+        if (SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote))
+        {
+            Logging.Log($"Session Established with: {param.m_identityRemote.GetSteamID64()}", "Network");
+        }
+        else
+        {
+            Logging.Log($"Session REJECTED with: {param.m_identityRemote.GetSteamID64()}", "Network");
+        }
+
     }
 
     public EResult SendData(byte[] data, NetType type, ulong toSteamID)
@@ -84,9 +89,8 @@ public partial class SimpleNetworking : Node
 
     public override void _Process(double delta)
     {
-        nint[] messages = new nint[10];
-        int numMessages = SteamNetworkingMessages.ReceiveMessagesOnChannel(0, messages, 10);
-        for (int i = 0; i < numMessages; i++)
+        nint[] messages = new nint[100];
+        for (int i = 0; i < SteamNetworkingMessages.ReceiveMessagesOnChannel(0, messages, 100); i++)
         {
             SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
             byte[] payload = new byte[steamMessage.m_cbSize];
