@@ -28,20 +28,27 @@ public partial class SimpleNetworking : Node
     public double dNetworkSimulationDelayVariance = 0.1; 
 
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
+    Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
     Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
 
     public override void _Ready()
     {
-        Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
+        SessionFailed = Callback<SteamNetworkingMessagesSessionFailed_t>.Create(OnSessionFailed);
+        SessionRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
         m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
         SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
+    }
+
+    private void OnSessionFailed(SteamNetworkingMessagesSessionFailed_t param)
+    {
+        Logging.Log($"Session Failed with: {param.m_info.m_identityRemote} Reason: {param.m_info.m_eEndReason.ToString()}", "Network");
     }
 
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
     {
 
         EResult result = SendData([0], NetType.NETREQUEST, ulong.Parse(param.m_rgchConnect));
-        Logging.Log($"Session Request Sent To: {param.m_rgchConnect} Result: {result}", "Network");
+        Logging.Log($"Session Request Sent To: {ulong.Parse(param.m_rgchConnect)} Result: {result}", "Network");
     }
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
