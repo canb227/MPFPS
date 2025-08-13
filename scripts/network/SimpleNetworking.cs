@@ -16,6 +16,7 @@ public enum NetType
 
 public partial class SimpleNetworking : Node
 {
+    List<SteamNetworkingIdentity> peers = new();
 
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
@@ -43,7 +44,12 @@ public partial class SimpleNetworking : Node
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
-        bool success = SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
+        SteamNetworkingIdentity id = param.m_identityRemote;
+        peers.Add(id);
+        if (!SteamNetworkingMessages.AcceptSessionWithUser(ref id))
+        {
+            Logging.Log("Session Error!","Network");
+        }
     }
 
     public EResult SendData(byte[] data, NetType type, ulong toSteamID)
