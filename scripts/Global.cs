@@ -27,7 +27,6 @@ public partial class Global : Node
 
     public static bool bIsSteamConnected = false;
 
-    public static NetworkManager network;
     public static World world;
     public static EntityLoader EntityLoader = new();
     public static SceneLoader SceneLoader = new();

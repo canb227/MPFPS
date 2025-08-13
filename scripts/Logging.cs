@@ -1,5 +1,6 @@
 using Godot;
 using Limbo.Console.Sharp;
+using Steamworks;
 using System.Collections.Generic;
 
 /// <summary>
@@ -28,7 +29,7 @@ public static class Logging
 
 
         string ts = "";
-        if (timestamp) ts = $"[{Time.GetTimeStringFromSystem()}]";
+        if (timestamp) ts = $"[{SteamNetworkingUtils.GetLocalTimestamp()}]";
 
         string customPrefix = "";
         if (prefix != "" && prefix != null) customPrefix = $"[{prefix}]";

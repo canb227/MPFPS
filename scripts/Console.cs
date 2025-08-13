@@ -19,13 +19,9 @@ public partial class Console : Node
         LimboConsole.SetEvalBaseInstance(this);
 
         //Register functions as commands 
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.TestConsole1), "TestConsole1", "Runs a simple function to test the console.");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.TestConsole2), "TestConsole2", "Runs a test with optional (string) arg");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.TestConsole3), "TestConsole3", "Runs a test with one mandatory (int) args");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.TestConsole4), "TestConsole4", "Runs a test with two mandatory (string) args");
+
         LimboConsole.RegisterCommand(new Callable(this, MethodName.status), "status", "Prints the current game status.");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "chat", "Sends a chat message to all peers");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.Chat), "say", "Sends a chat message to all peers");
+
         LimboConsole.RegisterCommand(new Callable(this, MethodName.conninfo), "conninfo", "shoot me");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SetMaxLoggingVerbosity), "LOGGING_SetMaxLoggingVerbosity", "turns on all logging verbosity");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
@@ -33,14 +29,14 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.loopbacktest), "loopbacktest", "snetwork");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.send), "send", "snetwork");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.ping), "ping", "snetwork");
+
     }
     public void status()
     {
         LimboConsole.Info("Game Status");
         LimboConsole.Info($"  Game Version: {Global.VERSION}");
         LimboConsole.Info($"  Connected to Steam: {Global.bIsSteamConnected}");
-        LimboConsole.Info($"  Status of connection to Steam Relay Network: {Global.network.GetSteamRelayNetworkStatus()}");
+        //LimboConsole.Info($"  Status of connection to Steam Relay Network: {Global.network.GetSteamRelayNetworkStatus()}");
         LimboConsole.Info($"  SteamID: {Global.steamid}");
     }
 
@@ -61,13 +57,7 @@ public partial class Console : Node
         Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
     }
 
-    public void ping(string id)
-    {
-        LimboConsole.Info($"Sending dummy test on snetwork...");
-        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
-        identity.SetSteamID64(ulong.Parse(id));
-        Global.snetwork.SendDummyMessage(identity);
-    }
+ 
 
     public void send(string id, string message)
     {
@@ -77,10 +67,7 @@ public partial class Console : Node
         Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
     }
 
-    public void Chat(string message)
-    {
-        ChatManager.Chat(message);
-    }
+
     public void SetMaxLoggingVerbosity()
     {
         LimboConsole.Info("Now printing ALL log messages to console.");
