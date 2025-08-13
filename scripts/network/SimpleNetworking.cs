@@ -94,6 +94,7 @@ public partial class SimpleNetworking : Node
             NetType type = (NetType)payload[0];
             byte[] data = payload.Skip(1).ToArray();
             ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
+            SteamNetworkingMessage_t.Release(messages[i]);
         }
     }
 
