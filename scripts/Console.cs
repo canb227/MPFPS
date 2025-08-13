@@ -50,7 +50,7 @@ public partial class Console : Node
         LimboConsole.Info($"Status of connection with peer: {id}");
         SteamNetworkingIdentity sid = NetworkUtils.SteamIDToIdentity(id);
         SteamNetworkingMessages.GetSessionConnectionInfo(ref sid,out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
-        LimboConsole.Info($"id:{info.m_identityRemote.GetSteamID64()} state:{info.m_eState} ping:{status.m_nPing} Endreason:{info.m_eEndReason} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
+        LimboConsole.Info($"id:{info.m_identityRemote.GetSteamID64()} state:{info.m_eState} ping:{status.m_nPing} Endreason:{info.m_eEndReason} string:{info.m_szEndDebug} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
     }
 
     public void loopbacktest(string message)

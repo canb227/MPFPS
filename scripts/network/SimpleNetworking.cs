@@ -12,7 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 public enum NetType
 {
     ERROR = 0,
-    SYMMETRIC_HANDSHAKE = 1,
+
     DEBUG_UTF8 = 254,
     EMPTY = 255
 }
@@ -82,7 +82,6 @@ public partial class SimpleNetworking : Node
         {
             param.m_identityRemote.ToString(out string idstring);
             Logging.Log($"New Session Established with {idstring}","Network");
-            SendDummyMessage(param.m_identityRemote);
         }
         else
         {
@@ -93,7 +92,6 @@ public partial class SimpleNetworking : Node
 
     public EResult SendDummyMessage(SteamNetworkingIdentity remoteIdentity)
     {
-        SteamNetworkingMessages.AcceptSessionWithUser(ref remoteIdentity);
         nint ptr = new();
         remoteIdentity.ToString(out string idstring);
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, 0, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
@@ -103,7 +101,6 @@ public partial class SimpleNetworking : Node
 
     public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
-        SteamNetworkingMessages.AcceptSessionWithUser(ref remoteIdentity);
         byte[] payload = new byte[data.Length + 1];
         payload[0] = (byte)type;
         data.CopyTo(payload, 1);
@@ -120,6 +117,8 @@ public partial class SimpleNetworking : Node
 
     public override void _Process(double delta)
     {
+
+        
         nint[] messages = new nint[100];
         for (int i = 0; i < SteamNetworkingMessages.ReceiveMessagesOnChannel(0, messages, 100); i++)
         {
