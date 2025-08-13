@@ -23,6 +23,7 @@ public partial class SimpleNetworking : Node
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
     Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
     Callback<SteamRelayNetworkStatus_t> RelayNetworkStatusChanged;
+    Callback<SteamNetConnectionStatusChangedCallback_t> ConnectionStatusChanged;
 
     public override void _Ready()
     {
@@ -30,9 +31,16 @@ public partial class SimpleNetworking : Node
         SessionRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
         m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
         RelayNetworkStatusChanged = Callback<SteamRelayNetworkStatus_t>.Create(OnRelayNetworkStatusChanged);
+        ConnectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create(OnConnectionStatusChanged);
 
         SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
         SteamNetworkHealthManager();
+    }
+
+    private void OnConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t param)
+    {
+        param.m_info.m_identityRemote.ToString(out string idstring);
+        Logging.Log($"Connection with peer {idstring} has changed state to: {param.m_info.m_eState}", "Network");
     }
 
     public async void SteamNetworkHealthManager()
@@ -74,6 +82,7 @@ public partial class SimpleNetworking : Node
         {
             param.m_identityRemote.ToString(out string idstring);
             Logging.Log($"New Session Established with {idstring}","Network");
+            SendDummyMessage(param.m_identityRemote);
         }
         else
         {
@@ -84,6 +93,7 @@ public partial class SimpleNetworking : Node
 
     public EResult SendDummyMessage(SteamNetworkingIdentity remoteIdentity)
     {
+        SteamNetworkingMessages.AcceptSessionWithUser(ref remoteIdentity);
         nint ptr = new();
         remoteIdentity.ToString(out string idstring);
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, 0, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
@@ -93,6 +103,7 @@ public partial class SimpleNetworking : Node
 
     public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
+        SteamNetworkingMessages.AcceptSessionWithUser(ref remoteIdentity);
         byte[] payload = new byte[data.Length + 1];
         payload[0] = (byte)type;
         data.CopyTo(payload, 1);
