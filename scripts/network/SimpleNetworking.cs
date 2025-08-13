@@ -22,6 +22,8 @@ public enum NetType
 public partial class SimpleNetworking : Node
 {
 
+    List<ulong> peers = new();
+
     public bool bLoopback = false;
     public bool bNetworkSimulation = false;
     public double dNetworkSimulationDelay = 0.1; 
@@ -53,14 +55,21 @@ public partial class SimpleNetworking : Node
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
-
-        if (SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote))
+        if (peers.Contains(param.m_identityRemote.GetSteamID64()))
         {
+            Logging.Log($"Session REJECTED with: {param.m_identityRemote.GetSteamID64()} Reason: Session Already Exists", "Network");
+            return;
+        }
+        bool success = SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
+        if (success)
+        {
+            peers.Add(param.m_identityRemote.GetSteamID64());
+            EResult result = SendData([0], NetType.NETACCEPT, param.m_identityRemote.GetSteamID64());
             Logging.Log($"Session Established with: {param.m_identityRemote.GetSteamID64()}", "Network");
         }
         else
         {
-            Logging.Log($"Session REJECTED with: {param.m_identityRemote.GetSteamID64()}", "Network");
+            Logging.Log($"Session REJECTED with: {param.m_identityRemote.GetSteamID64()} Reason: UNKNOWN", "Network");
         }
 
     }
@@ -80,7 +89,8 @@ public partial class SimpleNetworking : Node
             data.CopyTo(payload, 1);
             nint ptr = Marshal.AllocHGlobal(payload.Length);
             Marshal.Copy(payload, 0, ptr, payload.Length);
-            SteamNetworkingIdentity remoteIdentity = NetworkUtils.SteamIDToIdentity(toSteamID);
+            SteamNetworkingIdentity remoteIdentity = new();
+            remoteIdentity.SetSteamID64(toSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
         }
         Logging.Log($" MSGSND | TO: {toSteamID} | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
@@ -109,6 +119,7 @@ public partial class SimpleNetworking : Node
         switch (type)
             {
                 case NetType.NETREQUEST:
+                    Logging.Log($"Session Request from: {fromSteamID}", "Network");
                     break;
                 case NetType.NETACCEPT:
                     Logging.Log($"Session Established with: {fromSteamID}", "Network");
