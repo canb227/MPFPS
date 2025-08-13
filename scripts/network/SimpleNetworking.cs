@@ -81,6 +81,7 @@ public partial class SimpleNetworking : Node
         {
             Loopback(data, type, toSteamID);
             result = EResult.k_EResultOK;
+            Logging.Log($" MSGSND | TO: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         }
         else
         {
@@ -92,8 +93,9 @@ public partial class SimpleNetworking : Node
             SteamNetworkingIdentity remoteIdentity = new();
             remoteIdentity.SetSteamID64(toSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
+            Logging.Log($" MSGSND | TO: {toSteamID} | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         }
-        Logging.Log($" MSGSND | TO: {toSteamID} | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
+
         return result;
     }
 
@@ -107,6 +109,7 @@ public partial class SimpleNetworking : Node
             Marshal.Copy(steamMessage.m_pData, payload, 0, payload.Length);
             NetType type = (NetType)payload[0];
             byte[] data = payload.Skip(1).ToArray();
+            Logging.Log($" MSGRCV | FROM: {steamMessage.m_identityPeer.GetSteamID64()} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
             ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
             SteamNetworkingMessage_t.Release(messages[i]);
         }
@@ -114,8 +117,7 @@ public partial class SimpleNetworking : Node
 
     private void ProcessData(byte[] data, NetType type, ulong fromSteamID)
     {
-        if (fromSteamID==Global.steamid) Logging.Log($" MSGRCV | FROM: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
-        else Logging.Log($" MSGRCV | FROM: {fromSteamID} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
+
         switch (type)
             {
                 case NetType.NETREQUEST:
@@ -142,6 +144,7 @@ public partial class SimpleNetworking : Node
         {
             await ToSignal(GetTree().CreateTimer(dNetworkSimulationDelay + (new Random().NextDouble() * dNetworkSimulationDelayVariance)), "timeout");
         }
+        Logging.Log($" MSGRCV | FROM: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
         ProcessData(data, type, toSteamID);
     }
 }
