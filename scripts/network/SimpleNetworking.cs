@@ -25,10 +25,18 @@ public partial class SimpleNetworking : Node
     public double dNetworkSimulationDelayVariance = 0.1; 
 
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
+    Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
 
     public override void _Ready()
     {
         Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
+        m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
+        SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
+    }
+
+    private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
+    {
+        SendData([0], NetType.EMPTY, ulong.Parse(param.m_rgchConnect));
     }
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
