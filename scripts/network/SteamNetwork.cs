@@ -1,4 +1,5 @@
 using Godot;
+using Google.Protobuf;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,21 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 public enum NetType
 {
     ERROR = 0,
-    
-    //1
-    LOBBY = 1,
-        //Byte Types
+
+    //Byte Types
+    BYTES_LOBBY = 1,
+
 
     //100
-    
-        //IMessage Types
+
+    //IMessage Types
+    MESSAGE_LOBBY = 101,
+
 
     //200
 
-        //Other Types
 
+    //Other Types
     DEBUG_UTF8 = 254,
     EMPTY = 255
 }
@@ -37,6 +40,7 @@ public partial class SteamNetwork : Node
     Callback<SteamRelayNetworkStatus_t> RelayNetworkStatusChanged;
     Callback<SteamNetConnectionStatusChangedCallback_t> ConnectionStatusChanged;
 
+    public bool bDoLoopback = false;
     private bool bNetworkSimulation = false;
     private double dNetworkSimulationDelay = 0.05f;
     private double dNetworkSimulationDelayVariance = 0.1f;
@@ -94,6 +98,7 @@ public partial class SteamNetwork : Node
 
     public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
+        if (bDoLoopback && NetworkUtils.IsMe(remoteIdentity)) Loopback(data, type);
         byte[] payload = new byte[data.Length + 1];
         payload[0] = (byte)type;
         data.CopyTo(payload, 1);
@@ -103,6 +108,11 @@ public partial class SteamNetwork : Node
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
         Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({idstring}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         return result;
+    }
+
+    public EResult SendMessage(IMessage message, NetType type, SteamNetworkingIdentity remoteIdentity)
+    {
+        return SendData(message.ToByteArray(), type, remoteIdentity);
     }
 
     public override void _Process(double delta)
@@ -126,26 +136,34 @@ public partial class SteamNetwork : Node
     {
         switch (type)
             {
-            case NetType.LOBBY:
-                Global.Lobby.HandleLobbyMessageData(data, fromSteamID);
+
+            //BYTE TYPES
+            case NetType.BYTES_LOBBY:
+                Global.Lobby.HandleLobbyBytes(data, fromSteamID);
                 break;
+
+
+            //MESSAGE TYPES
+            case NetType.MESSAGE_LOBBY:
+                break;
+
+            //OTHER TYPES
             case NetType.DEBUG_UTF8:
-                Logging.Log($"Reencoded (UTF8) Message: {Encoding.UTF8.GetString(data)}","NetworkDEBUG");
+                Logging.Log($"Reencoded (UTF8) Message: {Encoding.UTF8.GetString(data)}", "NetworkDEBUG");
                 break;
             default:
-                throw new NotImplementedException($" TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
+                throw new NotImplementedException($" BYTES TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
             }
     }
 
-    
-    private async void Loopback(byte[] data, NetType type, ulong toSteamID)
+    private async void Loopback(byte[] data, NetType type)
     {
         if (bNetworkSimulation)
         {
             await ToSignal(GetTree().CreateTimer(dNetworkSimulationDelay + (new Random().NextDouble() * dNetworkSimulationDelayVariance)), "timeout");
         }
         Logging.Log($" MSGRCV | FROM: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
-        ProcessData(data, type, toSteamID);
+        ProcessData(data, type, Global.steamid);
     }
 }
 
