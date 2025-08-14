@@ -54,6 +54,19 @@ public partial class Console : Node
         }
     }
 
+    public void hostlobby()
+    {
+        LimboConsole.Info("Hosting a new lobby...");
+        Global.Lobby.HostNewLobby();
+    }
+
+    public void joinlobby(string ids)
+    {
+
+        LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
+        Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids));
+    }
+
     public void conninfo(string ids)
     {
         ulong id = ulong.Parse(ids);

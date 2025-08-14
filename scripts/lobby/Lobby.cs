@@ -43,10 +43,16 @@ public class Lobby
 
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
     {
-        Logging.Log($"Invite Accepted From: {ulong.Parse(param.m_rgchConnect)}", "Network");
-        Logging.Log(ulong.Parse(param.m_rgchConnect).ToString(), "Network");
+        Logging.Log($"Invite Accepted From: {ulong.Parse(param.m_rgchConnect)}", "Lobby");
+        Logging.Log(ulong.Parse(param.m_rgchConnect).ToString(), "Lobby");
         InviteAcceptedEvent?.Invoke(ulong.Parse(param.m_rgchConnect));
         SendLobbyMessage([0],LobbyMessageType.JoinRequest, ulong.Parse(param.m_rgchConnect));
+    }
+
+    public void AttemptJoinToLobby(ulong steamID)
+    {
+        Logging.Log($"Attempting to join lobby hosted by: {steamID}", "Lobby");
+        SendLobbyMessage([0], LobbyMessageType.JoinRequest, steamID);
     }
 
     public void SendLobbyMessage(byte[] data, LobbyMessageType type, ulong toSteamID)
