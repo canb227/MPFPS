@@ -29,6 +29,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.loopbacktest), "loopbacktest", "network");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.send), "send", "network");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.lobbystatus), "lobbystatus", "lobbystatus");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.hostlobby), "hostlobby", "hostlobby");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.joinlobby), "joinlobby", "joinlobby");
 
