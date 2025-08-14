@@ -16,6 +16,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="addons\limbo_console.cfg" />
     <None Include="scripts\network\proto\NetworkingProto.proto" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ using System;
 public partial class Global : Node
 {
     /// <summary>
-    /// Semantic version compliant (https://semver.org/) string
+    /// semver (https://semver.org/)
     /// </summary>
     public const string VERSION = "0.0.1";
 
@@ -25,12 +25,46 @@ public partial class Global : Node
     /// </summary>
 	public static ulong steamid = 0;
 
+    /// <summary>
+    /// true if the game has succesfully connected to Steam's API - don't call Steamworks functions until after this is true
+    /// </summary>
     public static bool bIsSteamConnected = false;
 
+
+
+
+
+    //Node Derived Singletons (On scene tree, under main)
+
+
+    /// <summary>
+    /// Holds a reference to the top-level Node3D for the game
+    /// </summary>
     public static World world;
-    public static EntityLoader EntityLoader = new();
-    public static SceneLoader SceneLoader = new();
+
+    /// <summary>
+    /// Holds a reference to the currently active networking system
+    /// </summary>
     public static SimpleNetworking snetwork;
+
+
+
+
+    //Non-Node Singletons
+
+
+    /// <summary>
+    /// holds  a reference to the static Entity Name -> Entity Scene Library/Loader
+    /// </summary>
+    public static EntityLoader EntityLoader = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static SceneLoader SceneLoader = new();
+
+    public static Lobby Lobby = new();
+
 
     //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
     public override void _Ready()
@@ -38,7 +72,19 @@ public partial class Global : Node
 
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
+        Logging.Start();
+        Logging.Log($" mkdir user://saves                    | {DirAccess.MakeDirAbsolute("user://saves").ToString()}", "FirstTimeSetup");
+        Logging.Log($" mkdir user://config                  | {DirAccess.MakeDirAbsolute("user://config").ToString()}", "FirstTimeSetup");
+        Logging.Log($" mkdir user://logs                      | {DirAccess.MakeDirAbsolute("user://logs").ToString()}", "FirstTimeSetup");
+        Logging.Log($" mkdir user://saves/{Global.steamid}   | {DirAccess.MakeDirAbsolute("user://saves/" + Global.steamid).ToString()}", "FirstTimeSetup");
+        Logging.Log($" mkdir user://config/{Global.steamid} | {DirAccess.MakeDirAbsolute("user://config/" + Global.steamid).ToString()}", "FirstTimeSetup");
+        Logging.Log($" mkdir user://logs/{Global.steamid}     | {DirAccess.MakeDirAbsolute("user://logs/" + Global.steamid).ToString()}", "FirstTimeSetup");
+        Logging.Log("Connection to Steam successful.", "SteamAPI");
+        Logging.Log($"Steam ID: {steamid}", "SteamAPI");
+
+
     }
+
     /// <summary>
     /// Starts up the SteamAPI using SteamWorks.Net. After this the user will show as playing the game and Steamworks functions will be functional.
     /// </summary>
@@ -50,28 +96,32 @@ public partial class Global : Node
         {
             if (SteamAPI.RestartAppIfNecessary((AppId_t)APP_ID)) //ALWAYS RETURNS FALSE IF app_id.txt IS PRESENT IN ROOT FOLDER
             {
-                Logging.Error("Steam is not running. Starting Steam then relaunching game", "SteamAPI");
+                GD.PushError("Steam is not running. Starting Steam then relaunching game", "SteamAPI");
                 GetTree().Quit();
             }
         }
         catch (System.DllNotFoundException e)
         {
-            Logging.Error("Steam DLLs not found. steam_api.dll, steam_api.lib, steam_api64.dll, steam_api64.lib are all expected in the game root folder.", "SteamAPI");
-            GetTree().Quit();
+            GD.PushError("steam_api64.dll not found. steam_api64.dll is expected in the game root folder.", "SteamAPI");
+            throw;
         }
 
         if (SteamAPI.Init())
         {
             SteamNetworkingUtils.InitRelayNetworkAccess();
-            Logging.Log("Connection to Steam successful.", "SteamAPI");
             steamid = SteamUser.GetSteamID().m_SteamID;
             bIsSteamConnected = true;
-            Logging.Log($"Steam ID: {steamid}", "SteamAPI");
+            
         }
         else
         {
-            Logging.Error("Steam not initialized", "SteamAPI");
+            GD.PushError("Steam not initialized", "SteamAPI");
         }
+    }
+
+    private void FirstTimeSetup()
+    {
+
     }
 
     public override void _Process(double delta)

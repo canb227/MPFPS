@@ -12,6 +12,18 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 public enum NetType
 {
     ERROR = 0,
+    
+    //1
+    LOBBY = 1,
+        //Byte Types
+
+    //100
+    
+        //IMessage Types
+
+    //200
+
+        //Other Types
 
     DEBUG_UTF8 = 254,
     EMPTY = 255
@@ -21,10 +33,9 @@ public partial class SimpleNetworking : Node
 {
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
-    Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
+
     Callback<SteamRelayNetworkStatus_t> RelayNetworkStatusChanged;
     Callback<SteamNetConnectionStatusChangedCallback_t> ConnectionStatusChanged;
-
 
     private bool bNetworkSimulation = false;
     private double dNetworkSimulationDelay = 0.05f;
@@ -34,10 +45,7 @@ public partial class SimpleNetworking : Node
     {
         SessionFailed = Callback<SteamNetworkingMessagesSessionFailed_t>.Create(OnSessionFailed);
         SessionRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
-        m_GameRichPresenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnGameRichPresenceJoinRequested);
         RelayNetworkStatusChanged = Callback<SteamRelayNetworkStatus_t>.Create(OnRelayNetworkStatusChanged);
-
-        SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
         SteamNetworkHealthManager();
     }
 
@@ -67,11 +75,7 @@ public partial class SimpleNetworking : Node
         Logging.Log($"Session Failed with: {idstring} Reason: {((ESteamNetConnectionEnd)(param.m_info.m_eEndReason)).ToString()} DEBUG:{param.m_info.m_szEndDebug}", "NetworkSession");
     }
 
-    private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
-    {
-        Logging.Log($"Invite Accepted From: {ulong.Parse(param.m_rgchConnect)}", "Network");
-        Logging.Log(ulong.Parse(param.m_rgchConnect).ToString(),"Network");
-    }
+
 
     void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
@@ -122,8 +126,14 @@ public partial class SimpleNetworking : Node
     {
         switch (type)
             {
-                default:
-                    throw new NotImplementedException($" TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
+            case NetType.LOBBY:
+                Global.Lobby.HandleLobbyMessageData(data, fromSteamID);
+                break;
+            case NetType.DEBUG_UTF8:
+                Logging.Log($"Reencoded (UTF8) Message: {Encoding.UTF8.GetString(data)}","NetworkDEBUG");
+                break;
+            default:
+                throw new NotImplementedException($" TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
             }
     }
 

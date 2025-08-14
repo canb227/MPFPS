@@ -36,7 +36,6 @@ public partial class Console : Node
         LimboConsole.Info("Game Status");
         LimboConsole.Info($"  Game Version: {Global.VERSION}");
         LimboConsole.Info($"  Connected to Steam: {Global.bIsSteamConnected}");
-        //LimboConsole.Info($"  Status of connection to Steam Relay Network: {Global.network.GetSteamRelayNetworkStatus()}");
         LimboConsole.Info($"  SteamID: {Global.steamid}");
     }
 
@@ -71,51 +70,21 @@ public partial class Console : Node
     public void SetMaxLoggingVerbosity()
     {
         LimboConsole.Info("Now printing ALL log messages to console.");
-        Logging.SilencedPrefixes = new();
+        Logging.UnSilenceAllPrefixes();
     }
     public void ResetLoggingVerbosity()
     {
         LimboConsole.Info("Now printing only standard log messages to console.");
-        Logging.SilencedPrefixes = Logging.SilencedPrefixesDefault;
+        Logging.ResetSilencedPrefixesToDefault();
     }
     public void SilenceLogCategory(string category)
     {
         LimboConsole.Info($"Silencing prefix [{category}]");
-        Logging.SilencedPrefixes.Add(category);
+        Logging.SilencePrefix(category);
     }
     public void UnSilenceLogCategory(string category)
     {
         LimboConsole.Info($"UnSilencing prefix [{category}]");
-        Logging.SilencedPrefixes.Remove(category);
+        Logging.UnSilencePrefix(category);
     }
-    public void TestConsole1()
-    {
-        LimboConsole.Info("Info is a standard line.");
-        LimboConsole.PrintBoxed("boxed is fun");
-        LimboConsole.PrintLine("This prints to Godot output too.", true);
-        LimboConsole.PrintLine("This is the same as Info.", false);
-        LimboConsole.Error("This is Error.");
-        LimboConsole.Warn("This is Warn");
-    }
-
-    public void TestConsole2(string optionalArgument)
-    {
-        LimboConsole.Info("Singular nullable arguments are considered optional.");
-        LimboConsole.Info($"Optional Argument: {optionalArgument}");
-    }
-
-
-    public void TestConsole3(int mandatoryArgument)
-    {
-        LimboConsole.Info("non-nullable (int) parameters are considered mandatory");
-        LimboConsole.Info($"Mandatory Argument: {mandatoryArgument}");
-    }
-
-    public void TestConsole4(string optionalArgument1, string optionalArgument2)
-    {
-        LimboConsole.Info("multiple of any argument makes them all required");
-        LimboConsole.Info($"Optional Argument: {optionalArgument1} and {optionalArgument2}");
-
-    }
-
 }
