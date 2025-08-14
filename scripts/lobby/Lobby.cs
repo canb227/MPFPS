@@ -14,7 +14,7 @@ public enum LobbyMessageType
 
 public class Lobby
 {
-    public List<ulong> LobbyPeers;
+    public HashSet<ulong> LobbyPeers = new();
     public ulong LobbyHost;
 
     public bool bInLobby = false;
@@ -76,6 +76,7 @@ public class Lobby
                 if (bInLobby && bIsLobbyHost)
                 {
                     Logging.Log($"Accepting Join Request from {fromSteamID}","Lobby");
+                    LobbyPeers.Add(fromSteamID);
                     SendLobbyMessage([0], LobbyMessageType.JoinAccepted, fromSteamID);
                 }
                 else
