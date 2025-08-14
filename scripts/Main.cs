@@ -15,8 +15,8 @@ public partial class Main : Node
         AddChild(console);
 
         //Start the network up and add it to the scene tree so it ticks once per frame 
-        Global.snetwork = new SimpleNetworking();
-        AddChild(Global.snetwork);
+        Global.network = new SteamNetwork();
+        AddChild(Global.network);
 
         //Fire up the game world and add it to the scenetree to organize  3d nodes
         Global.world = new World();

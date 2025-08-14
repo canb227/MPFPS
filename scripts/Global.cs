@@ -45,7 +45,7 @@ public partial class Global : Node
     /// <summary>
     /// Holds a reference to the currently active networking system
     /// </summary>
-    public static SimpleNetworking snetwork;
+    public static SteamNetwork network;
 
 
 

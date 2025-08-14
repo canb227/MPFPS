@@ -12,10 +12,6 @@ using System.Runtime.InteropServices;
 public static class NetworkUtils
 {
 
-
-
-    public static TypeRegistry TypeRegistry = TypeRegistry.FromFiles(GameMessage.Descriptor.File);
-
     //  Steam Networking takes a bitflag string to configure message settings. Look them up in the steamworks API
     //  These options effectively switch between UDP and TCP-like behavior, and have signifigant implications on the functionality and performance of networking. Handle with care.
     public const int k_nSteamNetworkingSend_NoNagle = 1;
@@ -25,20 +21,6 @@ public static class NetworkUtils
     public const int k_nSteamNetworkingSend_UnreliableNoNagle = k_nSteamNetworkingSend_Unreliable | k_nSteamNetworkingSend_NoNagle;
     public const int k_nSteamNetworkingSend_UnreliableNoDelay = k_nSteamNetworkingSend_Unreliable | k_nSteamNetworkingSend_NoDelay | k_nSteamNetworkingSend_NoNagle;
     public const int k_nSteamNetworkingSend_ReliableNoNagle = k_nSteamNetworkingSend_Reliable | k_nSteamNetworkingSend_NoNagle;
-
-    /// <summary>
-    /// Extracts and converts the payload inside a Steam message into one of the Protobuf Parsable types. See [MessageType].Parse.ParseFrom().
-    /// In practice, this is unwrapping the original payload object from the Steam Message wrapper.
-    /// </summary>
-    /// <param name="msg">a fully valid Steam Message</param>
-    /// <returns>the payload of the Steam Message converted into a type compatible with Parser.ParseFrom()</returns>
-    public static byte[] UnwrapSteamMessage(SteamNetworkingMessage_t msg)
-    {
-        byte[] msgBytes = new byte[msg.m_cbSize];
-        Marshal.Copy(msg.m_pData, msgBytes, 0, msg.m_cbSize);
-        return msgBytes;
-  
-    }
 
     /// <summary>
     /// Returns true if the provided steamID corresponds to our own Steam Account, false otherwise.
@@ -95,22 +77,6 @@ public static class NetworkUtils
         return id;
     }
 
-    public static GameMessage ConstructFullMessage(IMessage payload, MessageType type, bool broadcast, bool toServer, ulong targetUser)
-    {
-        GameMessage msg = new GameMessage();
-        msg.Sender = Global.steamid;
-        msg.SendTime = Utils.GetTime();
-        msg.SendTick = Global.world.GetTick();
-        msg.Broadcast = broadcast;
-        msg.ToServer = toServer;
-        msg.TargetUser = targetUser;
-        msg.Type = type;
-        msg.Payload = Any.Pack(payload);
-
-        msg.Payload.Unpack(NetworkUtils.TypeRegistry);
-
-        return msg;
-    }
 
     internal static SteamNetworkingIdentity SteamIDStringToIdentity(string m_rgchConnect)
     {

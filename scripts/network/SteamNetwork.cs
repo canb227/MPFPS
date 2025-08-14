@@ -29,7 +29,7 @@ public enum NetType
     EMPTY = 255
 }
 
-public partial class SimpleNetworking : Node
+public partial class SteamNetwork : Node
 {
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;

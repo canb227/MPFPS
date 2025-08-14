@@ -57,7 +57,7 @@ public class Lobby
         data.CopyTo(newData, 1);
         SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
         identity.SetSteamID64(toSteamID);
-        Global.snetwork.SendData(data, NetType.LOBBY, identity);
+        Global.network.SendData(data, NetType.LOBBY, identity);
     }
 
     public void HandleLobbyMessageData(byte[] data, ulong fromSteamID)

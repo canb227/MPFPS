@@ -27,8 +27,8 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SilenceLogCategory), "LOGGING_SilenceLogCategory", "silences a single log prefix");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.loopbacktest), "loopbacktest", "snetwork");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.send), "send", "snetwork");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.loopbacktest), "loopbacktest", "network");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.send), "send", "network");
 
     }
     public void status()
@@ -37,6 +37,21 @@ public partial class Console : Node
         LimboConsole.Info($"  Game Version: {Global.VERSION}");
         LimboConsole.Info($"  Connected to Steam: {Global.bIsSteamConnected}");
         LimboConsole.Info($"  SteamID: {Global.steamid}");
+    }
+
+    public void lobbystatus()
+    {
+        LimboConsole.Info("Lobby Status");
+        LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
+        if (!Global.Lobby.bInLobby) return;
+        LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
+        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHost}");
+        LimboConsole.Info($"  Number of players in lobby: {Global.Lobby.LobbyPeers.Count+1}");
+        LimboConsole.Info($"  Peer List --------------------------------------------------------------");
+        foreach(ulong peer in Global.Lobby.LobbyPeers)
+        {
+            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
+        }
     }
 
     public void conninfo(string ids)
@@ -53,17 +68,17 @@ public partial class Console : Node
         LimboConsole.Info($"Sending test on loopback...");
         SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
         identity.SetSteamID64(Global.steamid);
-        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
+        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
     }
 
  
 
     public void send(string id, string message)
     {
-        LimboConsole.Info($"Sending test on snetwork...");
+        LimboConsole.Info($"Sending test on network...");
         SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
         identity.SetSteamID64(ulong.Parse(id));
-        Global.snetwork.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
+        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
     }
 
 
