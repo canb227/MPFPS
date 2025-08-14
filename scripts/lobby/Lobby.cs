@@ -12,7 +12,7 @@ public enum LobbyMessageType
     PeerListRequest = 3,
     PeerListResponse = 4,
 
-
+    
 
     ERROR_AlreadyPeer = 200,
     ERROR_JoinRejected = 201,
@@ -115,7 +115,6 @@ public class Lobby
                     {
                         SendLobbyMessage([0], LobbyMessageType.ERROR_AlreadyPeer, fromSteamID);
                     }
-
                 }                
                 break;
             case LobbyMessageType.JoinAccepted:

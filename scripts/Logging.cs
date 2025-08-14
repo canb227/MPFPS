@@ -22,7 +22,7 @@ public static class Logging
     /// <summary>
     /// List of Log Prefixes (categories) to silence
     /// </summary>
-    public static List<string> SilencedPrefixes = ["FirstTimeSetup","LoggingMeta","NetworkRelay"];
+    public static List<string> SilencedPrefixes = ["FirstTimeSetup","LoggingMeta","NetworkRelay","NetworkSession"];
 
     /// <summary>
     /// Is true if Logger is functioning.
@@ -35,22 +35,29 @@ public static class Logging
     private static FileAccess logFile = null;
     private static bool writeToFile = false;
 
-    internal static void Start()
+    /// <summary>
+    /// Starts up the logging engine. Logging functions don't work until after this called.
+    /// </summary>
+    public static void Start()
     {
         IsStarted = true;
-        if (bSaveLogsToFile)
+    }
+
+    /// <summary>
+    /// Starts logging to file
+    /// </summary>
+    public static void StartLoggingToFile()
+    {
+        string logName = $"[{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}]--[{DateTime.Now.Hour};{DateTime.Now.Minute};{DateTime.Now.Second}].txt";
+        string fileName = $"user://logs/{Global.steamid.ToString()}/{logName}";
+        Logging.Log($"Starting log file at: {fileName}", "LoggingMeta");
+        Logging.logFile = FileAccess.Open(fileName, FileAccess.ModeFlags.WriteRead);
+        if (Logging.logFile == null)
         {
-            string logName = $"[{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}]--[{DateTime.Now.Hour};{DateTime.Now.Minute};{DateTime.Now.Second}].txt";
-            string fileName = $"user://logs/{Global.steamid.ToString()}/{logName}";
-            Logging.Log($"Starting log file at: {fileName}","LoggingMeta");
-            Logging.logFile = FileAccess.Open(fileName,FileAccess.ModeFlags.WriteRead);
-            if (Logging.logFile == null)
-            {
-                GD.PushError($"Error creating log file: {FileAccess.GetOpenError().ToString()}");
-            }
-            Logging.Log($"Log file created succesfully.", "LoggingMeta");
-            writeToFile = true;
+            GD.PushError($"Error creating log file: {FileAccess.GetOpenError().ToString()}");
         }
+        Logging.Log($"Log file created succesfully.", "LoggingMeta");
+        writeToFile = true;
     }
 
     /// <summary>
@@ -76,13 +83,13 @@ public static class Logging
         GD.Print(customPrefix + ts + message);
         if (writeToFile)
         {
-            if (!logFile.StoreLine(customPrefix + ts + message))
+            if (logFile.StoreLine(customPrefix + ts + message))
             {
-                GD.PrintErr("LOG TO FILE ERROR");
+                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a serious performance hit.
             }
             else
             {
-                logFile.Flush();
+                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing info!");
             }
         }
     }
@@ -109,13 +116,13 @@ public static class Logging
         GD.Print(customPrefix + ts + message);
         if (writeToFile)
         {
-            if (!logFile.StoreLine(customPrefix + ts + message))
+            if (logFile.StoreLine(customPrefix + ts + message))
             {
-                GD.PrintErr("LOG TO FILE ERROR");
+                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a serious performance hit.
             }
             else
             {
-                logFile.Flush();
+                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing info!");
             }
         }
     }
@@ -139,36 +146,36 @@ public static class Logging
         if (prefix != "" && prefix != null) customPrefix = $"[{prefix}]";
 
         LimboConsole.Error(customPrefix + ts + message);
-        GD.PrintErr(customPrefix + ts + message);
+        GD.PushError(customPrefix + ts + message);
         if (writeToFile)
         {
-            if (!logFile.StoreLine(customPrefix + ts + message))
+            if (logFile.StoreLine(customPrefix + ts + message))
             {
-                GD.PrintErr("LOG TO FILE ERROR");
+                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a serious performance hit.
             }
             else
             {
-                logFile.Flush();
+                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing info!");
             }
         }
     }
 
-    internal static void UnSilenceAllPrefixes()
+    public static void UnSilenceAllPrefixes()
     {
         SilencedPrefixesCurrent = new();
     }
 
-    internal static void ResetSilencedPrefixesToDefault()
+    public static void ResetSilencedPrefixesToDefault()
     {
         SilencedPrefixesCurrent = new(SilencedPrefixes);
     }
 
-    internal static void SilencePrefix(string category)
+    public static void SilencePrefix(string category)
     {
         SilencedPrefixesCurrent.Add(category);
     }
 
-    internal static void UnSilencePrefix(string category)
+    public static void UnSilencePrefix(string category)
     {
         SilencedPrefixesCurrent.Remove(category);
     }

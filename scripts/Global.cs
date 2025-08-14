@@ -6,7 +6,6 @@ using System;
 /// Singleton that autoloads right after Godot engine init. Can be statically referenced using "Global." anywhere.
 /// This class is for storing universally useful references to objects.
 /// </summary>
-
 public partial class Global : Node
 {
     /// <summary>
@@ -30,12 +29,8 @@ public partial class Global : Node
     /// </summary>
     public static bool bIsSteamConnected = false;
 
-
-
-
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Node Derived Singletons (On scene tree, under main)
-
 
     /// <summary>
     /// Holds a reference to the top-level Node3D for the game
@@ -48,10 +43,8 @@ public partial class Global : Node
     public static SteamNetwork network;
 
 
-
-
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Non-Node Singletons
-
 
     /// <summary>
     /// holds  a reference to the static Entity Name -> Entity Scene Library/Loader
@@ -59,10 +52,13 @@ public partial class Global : Node
     public static EntityLoader EntityLoader = new();
 
     /// <summary>
-    /// 
+    /// holds  a reference to the static level Name -> level Scene Library/Loader
     /// </summary>
     public static SceneLoader SceneLoader = new();
 
+    /// <summary>
+    /// holds a reference to the lobby system that is always running in the background
+    /// </summary>
     public static Lobby Lobby = new();
 
 
@@ -73,15 +69,21 @@ public partial class Global : Node
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
         Logging.Start();
+
         Logging.Log($" mkdir user://saves                    | {DirAccess.MakeDirAbsolute("user://saves").ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://config                  | {DirAccess.MakeDirAbsolute("user://config").ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://logs                      | {DirAccess.MakeDirAbsolute("user://logs").ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://saves/{Global.steamid}   | {DirAccess.MakeDirAbsolute("user://saves/" + Global.steamid).ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://config/{Global.steamid} | {DirAccess.MakeDirAbsolute("user://config/" + Global.steamid).ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://logs/{Global.steamid}     | {DirAccess.MakeDirAbsolute("user://logs/" + Global.steamid).ToString()}", "FirstTimeSetup");
+
+        if (Logging.bSaveLogsToFile)
+        {
+            Logging.StartLoggingToFile();
+        }
+
         Logging.Log("Connection to Steam successful.", "SteamAPI");
         Logging.Log($"Steam ID: {steamid}", "SteamAPI");
-
 
     }
 
@@ -117,11 +119,6 @@ public partial class Global : Node
         {
             GD.PushError("Steam not initialized", "SteamAPI");
         }
-    }
-
-    private void FirstTimeSetup()
-    {
-
     }
 
     public override void _Process(double delta)

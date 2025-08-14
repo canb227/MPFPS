@@ -60,7 +60,6 @@ public static class NetworkUtils
     public static bool IsFriend(ulong steamID)
     {
         SteamNetworkingIdentity identity = new();
-        identity.SetSteamID64(steamID);
         identity.SetSteamID(new CSteamID(steamID));
         return IsFriend(identity);
     }
