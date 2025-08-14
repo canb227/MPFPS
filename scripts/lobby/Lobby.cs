@@ -1,6 +1,7 @@
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 
 public enum LobbyMessageType
@@ -10,12 +11,16 @@ public enum LobbyMessageType
     JoinAccepted = 2,
     PeerListRequest = 3,
     PeerListResponse = 4,
+
+
+
+    ERROR_AlreadyPeer = 200,
 }
 
 public class Lobby
 {
     public HashSet<ulong> LobbyPeers = new();
-    public ulong LobbyHost;
+    public ulong LobbyHostSteamID;
 
     public bool bInLobby = false;
     public bool bIsLobbyHost = false;
@@ -39,6 +44,7 @@ public class Lobby
         SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
         bInLobby = true;
         bIsLobbyHost = true;
+        LobbyHostSteamID = Global.steamid;
         JoinedToLobbyEvent?.Invoke(Global.steamid);
     }
 
@@ -58,7 +64,7 @@ public class Lobby
 
     public void SendLobbyMessage(byte[] data, LobbyMessageType type, ulong toSteamID)
     {
-        Logging.Log($"Sending Lobby Message with type {type.ToString()} to {toSteamID} | data length:{data.Length}","Lobby");
+        Logging.Log($"Sending Lobby Message with type {type.ToString()} to {toSteamID} | payload length:{data.Length}","Lobby");
         byte[] newData = new byte[data.Length + 1];
         newData[0] = (byte)type;
         data.CopyTo(newData, 1);
@@ -67,49 +73,84 @@ public class Lobby
         Global.network.SendData(newData, NetType.LOBBY, identity);
     }
 
-    public void HandleLobbyMessageData(byte[] data, ulong fromSteamID)
+    public void HandleLobbyMessageData(byte[] payload, ulong fromSteamID)
     {
-        Logging.Log($"Lobby Message from {fromSteamID} has type {((LobbyMessageType)data[0]).ToString()}","Lobby");
-        switch ((LobbyMessageType)data[0])
+        Logging.Log($"Lobby Message from {fromSteamID} has type {((LobbyMessageType)payload[0]).ToString()}","Lobby");
+        LobbyMessageType type = (LobbyMessageType)payload[0];
+        byte[] data = payload.Skip(1).ToArray();
+        switch (type)
         {
             case LobbyMessageType.JoinRequest:
-                if (bInLobby && bIsLobbyHost)
+                if (!bInLobby)
                 {
-                    Logging.Log($"Accepting Join Request from {fromSteamID}","Lobby");
+                    Logging.Warn("Ignoring unexpected Join Request! We are not in a lobby!", "Lobby");
+                    break;
+                }
+                if (bIsLobbyHost)
+                {
+                    Logging.Log($"Accepting Join Request from {fromSteamID} as Host","Lobby");
                     LobbyPeers.Add(fromSteamID);
-                    SendLobbyMessage([0], LobbyMessageType.JoinAccepted, fromSteamID);
+                    SendLobbyMessage([1], LobbyMessageType.JoinAccepted, fromSteamID);
                 }
                 else
                 {
-                    Logging.Warn("Ignoring unexpected Join Request! We are not hosting anything.","Lobby");
+                    Logging.Log($"Accepting Join Request from {fromSteamID} as non-host", "Lobby");
+                    if (LobbyPeers.Add(fromSteamID))
+                    {
+                        SendLobbyMessage([0], LobbyMessageType.JoinAccepted, fromSteamID);
+                    }
+                    else
+                    {
+                        SendLobbyMessage([0], LobbyMessageType.ERROR_AlreadyPeer, fromSteamID);
+                    }
+
                 }                
                 break;
             case LobbyMessageType.JoinAccepted:
-                Logging.Log($"Successfully joined to {fromSteamID}", "Lobby");
-                LobbyPeers.Add(fromSteamID);
-                LobbyHost = fromSteamID;
-                JoinedToLobbyEvent?.Invoke(fromSteamID);
-                break;
+                if (data[0]==1) // we just joined the host look alive
+                {
+                    Logging.Log($"Successfully joined to host {fromSteamID}. Sending request for other peers.", "Lobby");
+                    LobbyPeers.Add(fromSteamID);
+                    LobbyHostSteamID = fromSteamID;
+                    SteamFriends.SetRichPresence("connect", fromSteamID.ToString());
+                    JoinedToLobbyEvent?.Invoke(fromSteamID);
+                    SendLobbyMessage([0], LobbyMessageType.PeerListRequest, fromSteamID);
+                    break;
+                }
+                else if (data[0]==0) // established a peer connection to a non host
+                {
+                    Logging.Log($"Successfully joined to non-host {fromSteamID}. Sending request for other peers.", "Lobby");
+                    LobbyPeers.Add(fromSteamID);
+                    SendLobbyMessage([0], LobbyMessageType.PeerListRequest, fromSteamID);
+                    break;
+                }
+                else
+                {
+                    throw new ArgumentException($"Malformed JoinAccepted Message | First Byte: {((int)data[0])}");
+                }
+
             case LobbyMessageType.PeerListRequest:
-                foreach(ulong peerID in LobbyPeers)
+                Logging.Log($"Request for peers from {fromSteamID}. Sending peer data.", "Lobby");
+                foreach (ulong peerID in LobbyPeers)
                 {
                     SendLobbyMessage(BitConverter.GetBytes(peerID),LobbyMessageType.PeerListResponse,fromSteamID);
                 }
                 break;
             case LobbyMessageType.PeerListResponse:
-                ulong newPeerID = BitConverter.ToUInt64(data, 1);
-                if (LobbyPeers.Contains(newPeerID))
+
+                ulong newPeerID = BitConverter.ToUInt64(data, 0);
+                if (LobbyPeers.Add(newPeerID))
                 {
-                    Logging.Log($"Ignoring shared peer {newPeerID}, they are already our peer.", "Lobby");
+                    Logging.Log($"Received data on new shared peer {newPeerID}, requesting to join it", "Lobby");
+                    SendLobbyMessage([0], LobbyMessageType.JoinRequest, newPeerID);
                 }
                 else
                 {
-                    Logging.Log($"Attempting to join to shared peer {newPeerID}", "Lobby");
-                    SendLobbyMessage([0], LobbyMessageType.JoinRequest, newPeerID);
+                    Logging.Log($"Received data on duplicate peer {newPeerID}, ignoring.", "Lobby");
                 }
-                break;
+                    break;
             default:
-                throw new ArgumentException($"Malformed Lobby Message | First Byte: {((int)data[0]).ToString()}");
+                throw new ArgumentException($"Malformed Lobby Message | First Byte: {((int)payload[0])} Cast As LobbyMessageType:{((LobbyMessageType)payload[0]).ToString()}");
                 break;
         }
     }

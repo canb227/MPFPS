@@ -48,7 +48,7 @@ public partial class Console : Node
         LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
         if (!Global.Lobby.bInLobby) return;
         LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
-        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHost}");
+        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
         LimboConsole.Info($"  Number of players in lobby: {Global.Lobby.LobbyPeers.Count+1}");
         LimboConsole.Info($"  Peer List --------------------------------------------------------------");
         foreach(ulong peer in Global.Lobby.LobbyPeers)
