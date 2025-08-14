@@ -35,6 +35,7 @@ public class Lobby
 
     public void HostNewLobby()
     {
+        Logging.Log($"Hosting a new lobby and enabling steam rich presence.", "Lobby");
         SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
         bInLobby = true;
         bIsLobbyHost = true;
@@ -57,13 +58,13 @@ public class Lobby
 
     public void SendLobbyMessage(byte[] data, LobbyMessageType type, ulong toSteamID)
     {
-        Logging.Log($"Sending Lobby Message with type {type.ToString()} to {toSteamID}","Lobby");
+        Logging.Log($"Sending Lobby Message with type {type.ToString()} to {toSteamID} | data length:{data.Length}","Lobby");
         byte[] newData = new byte[data.Length + 1];
         newData[0] = (byte)type;
         data.CopyTo(newData, 1);
         SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
         identity.SetSteamID64(toSteamID);
-        Global.network.SendData(data, NetType.LOBBY, identity);
+        Global.network.SendData(newData, NetType.LOBBY, identity);
     }
 
     public void HandleLobbyMessageData(byte[] data, ulong fromSteamID)
