@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://b2x81sac4k550"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lg43y"]
+sky_horizon_color = Color(0.7419155, 0.62632006, 0.5819008, 1)
+
+[sub_resource type="Sky" id="Sky_0iyi7"]
+sky_material = SubResource("ProceduralSkyMaterial_lg43y")
+
+[sub_resource type="Environment" id="Environment_kgam2"]
+background_mode = 2
+sky = SubResource("Sky_0iyi7")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_cp1bv"]
+noise_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jqdd4"]
+width = 2048
+height = 2048
+noise = SubResource("FastNoiseLite_cp1bv")
+seamless = true
+as_normal_map = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g3bbe"]
+albedo_color = Color(0.34781694, 0.34781697, 0.3478169, 1)
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_jqdd4")
+
+[node name="DebugFlat" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kgam2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.27946034, -0.18996282, 0.94117796, 0, 0.9802333, 0.19784556, -0.96015733, 0.055289987, -0.27393633, 0, 15.370197, 0)
+light_color = Color(0.99999887, 0.9393035, 0.898465, 1)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7291565, 0, -0.28858185)
+use_collision = true
+size = Vector3(50.72943, 1, 49.413864)
+material = SubResource("StandardMaterial3D_g3bbe")

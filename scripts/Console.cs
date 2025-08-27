@@ -1,8 +1,9 @@
 using Godot;
 using Limbo.Console.Sharp;
-using NetworkMessages;
 using Steamworks;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using System.Text;
 
@@ -20,20 +21,40 @@ public partial class Console : Node
 
         //Register functions as commands 
 
+        ////////////////////////////////////// GENERAL ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.status), "status", "Prints the current game status.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.openuserdir), "openuserdir", "Opens native file explorer to the user dir.");
 
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.conninfo), "conninfo", "shoot me");
+        ////////////////////////////////////// LOGGING ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SetMaxLoggingVerbosity), "LOGGING_SetMaxLoggingVerbosity", "turns on all logging verbosity");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.SilenceLogCategory), "LOGGING_SilenceLogCategory", "silences a single log prefix");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
+
+        ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.loopbacktest), "loopbacktest", "network");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.send), "send", "network");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.conninfo), "conninfo", "shoot me");
+
+        ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.lobbystatus), "lobbystatus", "lobbystatus");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.hostlobby), "hostlobby", "hostlobby");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.joinlobby), "joinlobby", "joinlobby");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.leavelobby), "leavelobby", "leavelobby");
 
+        ////////////////////////////////////// SESSION ///////////////////////////////////////////////
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.sessionstatus), "sessionstatus", "sessionstatus");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.startsession), "startsession", "startsession");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.endsession), "endsession", "endsession");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.startgame), "startgame", "startgame");
+
+        ////////////////////////////////////// INPUT ///////////////////////////////////////////////
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.parsekeystring), "parsekeystring", "parsekeystring");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.bind), "bind", "bind");
     }
+
+
+    ////////////////////////////////////// GENERAL ///////////////////////////////////////////////
     public void status()
     {
         LimboConsole.Info("Game Status");
@@ -42,62 +63,14 @@ public partial class Console : Node
         LimboConsole.Info($"  SteamID: {Global.steamid}");
     }
 
-    public void lobbystatus()
-    {
-        LimboConsole.Info("Lobby Status");
-        LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
-        if (!Global.Lobby.bInLobby) return;
-        LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
-        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
-        LimboConsole.Info($"  Number of players in lobby: {Global.Lobby.LobbyPeers.Count+1}");
-        LimboConsole.Info($"  Peer List --------------------------------------------------------------");
-        foreach(ulong peer in Global.Lobby.LobbyPeers)
-        {
-            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
-        }
-    }
-
-    public void hostlobby()
-    {
-        LimboConsole.Info("Hosting a new lobby...");
-        Global.Lobby.HostNewLobby();
-    }
-
-    public void joinlobby(string ids)
+    public void openuserdir()
     {
 
-        LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
-        Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids));
-    }
-
-    public void conninfo(string ids)
-    {
-        ulong id = ulong.Parse(ids);
-        LimboConsole.Info($"Status of connection with peer: {id}");
-        SteamNetworkingIdentity sid = NetworkUtils.SteamIDToIdentity(id);
-        SteamNetworkingMessages.GetSessionConnectionInfo(ref sid,out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
-        LimboConsole.Info($"id:{info.m_identityRemote.GetSteamID64()} state:{info.m_eState} ping:{status.m_nPing} Endreason:{info.m_eEndReason} string:{info.m_szEndDebug} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
-    }
-
-    public void loopbacktest(string message)
-    {
-        LimboConsole.Info($"Sending test on loopback...");
-        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
-        identity.SetSteamID64(Global.steamid);
-        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
-    }
-
- 
-
-    public void send(string id, string message)
-    {
-        LimboConsole.Info($"Sending test on network...");
-        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
-        identity.SetSteamID64(ulong.Parse(id));
-        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
+        OS.ShellOpen(OS.GetUserDataDir());
     }
 
 
+    ////////////////////////////////////// LOGGING ///////////////////////////////////////////////
     public void SetMaxLoggingVerbosity()
     {
         LimboConsole.Info("Now printing ALL log messages to console.");
@@ -117,5 +90,137 @@ public partial class Console : Node
     {
         LimboConsole.Info($"UnSilencing prefix [{category}]");
         Logging.UnSilencePrefix(category);
+    }
+
+
+    ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
+    public void conninfo(string ids)
+    {
+        ulong id = ulong.Parse(ids);
+        LimboConsole.Info($"Status of connection with peer: {id}");
+        SteamNetworkingIdentity sid = NetworkUtils.SteamIDToIdentity(id);
+        SteamNetworkingMessages.GetSessionConnectionInfo(ref sid, out SteamNetConnectionInfo_t info, out SteamNetConnectionRealTimeStatus_t status);
+        LimboConsole.Info($"id:{info.m_identityRemote.GetSteamID64()} state:{info.m_eState} ping:{status.m_nPing} Endreason:{info.m_eEndReason} string:{info.m_szEndDebug} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
+    }
+
+    public void loopbacktest(string message)
+    {
+        LimboConsole.Info($"Sending test on loopback...");
+        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
+        identity.SetSteamID64(Global.steamid);
+        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
+    }
+
+    public void send(string id, string message)
+    {
+        LimboConsole.Info($"Sending test on network...");
+        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
+        identity.SetSteamID64(ulong.Parse(id));
+        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
+    }
+
+
+    ////////////////////////////////////// SESSSION ///////////////////////////////////////////////
+    public void sessionstatus()
+    {
+        LimboConsole.Info("Session Status");
+        LimboConsole.Info($"  In Session?: {Global.GameSession!=null}");
+        if (Global.GameSession == null) return;
+        LimboConsole.Info($"  Number of players in session: {Global.GameSession.playerData.Count}");
+        LimboConsole.Info($"  Session Player List --------------------------------------------------------------");
+        foreach (var player in Global.GameSession.playerData)
+        {
+            if (player.Key==Global.steamid)
+            {
+                LimboConsole.Info($"ME  Name:{SteamFriends.GetFriendPersonaName(new CSteamID(player.Key))} | ID:{player.Key} | State: {player.Value.state} | DblCheckID: {player.Value.steamID}");
+            }
+            else
+            {
+                LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(player.Key))} | ID:{player.Key} | State: {player.Value.state} | DblCheckID: {player.Value.steamID}");
+            }
+        }
+    }
+
+    public void startsession()
+    {
+        LimboConsole.Info("Direct starting new session...");
+        Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(),Global.Lobby.LobbyHostSteamID);
+    }
+
+    public void endsession()
+    {
+        LimboConsole.Info("Direct ending session...");
+        Global.GameSession.EndSession();
+    }
+
+    public void startgame()
+    {
+        if (Global.GameSession.sessionAuthority == Global.steamid)
+        {
+            LimboConsole.Info("Direct starting game...");
+            Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
+        }
+        else
+        {
+            LimboConsole.Error("Only the host can start the game.");
+        }
+
+    }
+    ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
+    public void lobbystatus()
+    {
+        LimboConsole.Info("Lobby Status");
+        LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
+        if (!Global.Lobby.bInLobby) return;
+        LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
+        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
+        LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
+        LimboConsole.Info($"  Peer List --------------------------------------------------------------");
+        foreach(ulong peer in Global.Lobby.lobbyPeers)
+        {
+            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
+        }
+    }
+
+    public void hostlobby()
+    {
+        LimboConsole.Info("Hosting a new lobby...");
+        Global.Lobby.HostNewLobby();
+    }
+
+    public void joinlobby(string ids)
+    {
+
+        LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
+        Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids));
+    }
+
+    public void leavelobby()
+    {
+        LimboConsole.Info($"Leaving current lobby...");
+        Global.Lobby.LeaveLobby(true);
+    }
+
+
+    ////////////////////////////////////// INPUT ///////////////////////////////////////////////
+    public void parsekeystring(string keyString)
+    {
+        try
+        {
+            Key key = (Key)Enum.Parse(typeof(Key), keyString);
+            LimboConsole.Info($"You entered string '{keyString}' - we parsed that to KEY_STRING: {key.ToString()} KEY_CODE: {(int)key}");
+        }
+        catch (Exception e)
+        {
+            LimboConsole.Error($"Key parse failed: {e.ToString()}");
+        }
+
+    }
+
+    public void bind(string keyString, string actionName)
+    {
+        Key key = (Key)Enum.Parse(typeof(Key), keyString);
+        LimboConsole.Info("P");
+        Global.InputMap.BindKeyString(keyString, actionName);
     }
 }

@@ -1,8 +1,0 @@
-syntax = "proto3";
-package NetworkMessages;
-import "google/protobuf/any.proto";
-
-message ChatMessage
-{
-	string message = 2;
-}

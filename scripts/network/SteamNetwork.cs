@@ -1,50 +1,54 @@
 using Godot;
-using Google.Protobuf;
 using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
+using System.Threading.Tasks;
 using static Godot.HttpRequest;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /// <summary>
 /// one byte (0-255) value for network message type
 /// </summary>
-public enum NetType
+public enum NetType : byte
 {
     ERROR = 0,
 
-    //Byte Types
-    BYTES_LOBBY = 1,
-
-
-    //100
-
-    //IMessage Types
-    MESSAGE_LOBBY = 101,
-
-
-    //200
-
+    LOBBY_BYTES = 1,
+    SESSION_BYTES = 2,
 
     //Other Types
     DEBUG_UTF8 = 254,
-    EMPTY = 255
+    EMPTY = 255,
 }
 
 /// <summary>
 /// Handles low level networking functions - implemented using SteamMessages
 /// </summary>
-public partial class SteamNetwork : Node
+public class SteamNetwork
 {
-
+    /// <summary>
+    /// Fires when we get packets from a user we haven't seen yet. The incoming packets are in stasis until we accept this request.
+    /// </summary>
     Callback<SteamNetworkingMessagesSessionRequest_t> SessionRequest;
+
+    /// <summary>
+    /// Fires when the low-level steam network session fails. Bad news.
+    /// </summary>
     Callback<SteamNetworkingMessagesSessionFailed_t> SessionFailed;
 
+    /// <summary>
+    /// Fires when our connection to the Steam Relay Network changes
+    /// </summary>
     Callback<SteamRelayNetworkStatus_t> RelayNetworkStatusChanged;
+
+    /// <summary>
+    /// deprecated? I think this doesnt fire at all when using the auto-session management baked into SteamMessages.
+    /// </summary>
     Callback<SteamNetConnectionStatusChangedCallback_t> ConnectionStatusChanged;
 
     /// <summary>
@@ -54,18 +58,27 @@ public partial class SteamNetwork : Node
 
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
+    /// <para>IMPORTANT: Look. This has to be true or else everything breaks because we take advantage of loopback to unify our multiplayer and singleplayer code down the line.</para>
     /// <para>IMPORTANT: Does not fully replicate network message process. Skips payload memory allocation and payload byte packing.</para>
     /// </summary>
-    public bool bDoLoopback = false;
+    public const bool bDoLoopback = true;
 
     /// <summary>
     /// If true, introduce artifical network conditions to loopback messages. TESTING ONLY
     /// </summary>
     private bool bNetworkSimulation = false;
-    private double dNetworkSimulationDelay = 0.05f;
-    private double dNetworkSimulationDelayVariance = 0.1f;
 
-    public override void _Ready()
+    /// <summary>
+    /// Base miliseconds to delay all loopback messages
+    /// </summary>
+    private int iNetworkSimulationDelayMS = 50;
+
+    /// <summary>
+    /// Randomly add between 0 and this value number of miliseconds to the base delay
+    /// </summary>
+    private int iNetworkSimulationDelayVarianceMS = 100;
+
+    public SteamNetwork()
     {
         SessionFailed = Callback<SteamNetworkingMessagesSessionFailed_t>.Create(OnSessionFailed);
         SessionRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
@@ -74,6 +87,7 @@ public partial class SteamNetwork : Node
         //Uncomment this if steam relay network is being stupid
         //SteamNetworkHealthManager();
     }
+ 
 
     /// <summary>
     /// Attempts to maintain connection with Steam Relay Network - runs forever once called!
@@ -82,8 +96,8 @@ public partial class SteamNetwork : Node
     {
         while (true)
         {
-            await ToSignal(GetTree().CreateTimer(1), "timeout");
-            
+            await Task.Delay(1000);
+
             SteamNetworkingUtils.GetRelayNetworkStatus(out SteamRelayNetworkStatus_t details);
             if (details.m_eAvail!=ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Current)
             {
@@ -148,11 +162,9 @@ public partial class SteamNetwork : Node
             Loopback(data, type); 
             return EResult.k_EResultOK;
         }
-        byte[] payload = new byte[data.Length + 1];
-        payload[0] = (byte)type;
-        data.CopyTo(payload, 1);
-        nint ptr = Marshal.AllocHGlobal(payload.Length);
-        Marshal.Copy(payload, 0, ptr, payload.Length);
+        byte[] payload = NetworkUtils.WrapSteamPayload(data, type);
+        
+        nint ptr = NetworkUtils.BytesToPtr(payload);
         remoteIdentity.ToString(out string idstring);
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
         Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({idstring}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
@@ -160,31 +172,98 @@ public partial class SteamNetwork : Node
     }
 
     /// <summary>
-    /// Helper function for sending Google Protobuf Messages. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
+    /// Helper that sends the byte array to a list of SteamNetworkingIdentities. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="type"></param>
+    /// <param name="remoteIdentities"></param>
+    /// <returns></returns>
+    public List<EResult> BroadcastData(byte[] data, NetType type, List<SteamNetworkingIdentity> remoteIdentities)
+    {
+        List<EResult> retval = new List<EResult>();
+        foreach (SteamNetworkingIdentity identity in remoteIdentities)
+        {
+            retval.Add(SendData(data, type, identity));
+        }
+        return retval;
+    }
+
+    /// <summary>
+    /// Helper that sends the byte array to a list of steamIDs. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="type"></param>
+    /// <param name="remoteIdentities"></param>
+    /// <returns></returns>
+    public List<EResult> BroadcastData(byte[] data, NetType type, List<ulong> remoteSteamIDs)
+    {
+        List<EResult> retval = new List<EResult>();
+        foreach (ulong identity in remoteSteamIDs)
+        {
+            retval.Add(SendData(data, type, NetworkUtils.SteamIDToIdentity(identity)));
+        }
+        return retval;
+    }
+
+    /// <summary>
+    /// Helper function for sending structs. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
     /// </summary>
     /// <param name="message"></param>
     /// <param name="type"></param>
     /// <param name="remoteIdentity"></param>
     /// <returns></returns>
-    public EResult SendMessage(IMessage message, NetType type, SteamNetworkingIdentity remoteIdentity)
+    public EResult SendStruct<T>(T structure, NetType type, SteamNetworkingIdentity remoteIdentity)
     {
-        return SendData(message.ToByteArray(), type, remoteIdentity);
+        return SendData(NetworkUtils.StructToBytes<T>(structure), type, remoteIdentity);
+    }
+
+
+    /// <summary>
+    /// Helper that sends the struct to a list of SteamNetworkingIdentities.. See <see cref="SendStruct{T}(T, NetType, SteamNetworkingIdentity)"/>
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="type"></param>
+    /// <param name="remoteIdentities"></param>
+    /// <returns></returns>
+    public List<EResult> BroadcastStruct<T>(T structure, NetType type, List<SteamNetworkingIdentity> remoteIdentities)
+    {
+        List<EResult> retval = new List<EResult>();
+        foreach (SteamNetworkingIdentity identity in remoteIdentities)
+        {
+            retval.Add(SendStruct(structure, type, identity));
+        }
+        return retval;
+    }
+
+    /// <summary>
+    /// Helper that sends the struct to a list of steamIDs. See <see cref="SendStruct{T}(T, NetType, SteamNetworkingIdentity)"/>
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="type"></param>
+    /// <param name="remoteIdentities"></param>
+    /// <returns></returns>
+    public List<EResult> BroadcastStruct<T>(T structure, NetType type, List<ulong> remoteSteamIDs)
+    {
+        List<EResult> retval = new List<EResult>();
+        foreach (ulong identity in remoteSteamIDs)
+        {
+            retval.Add(SendStruct(structure, type, NetworkUtils.SteamIDToIdentity(identity)));
+        }
+        return retval;
     }
 
     /// <summary>
     /// Message queue pump that pulls up to a set number of messages off the queue per frame. Deconstructs the byte array payload into the one-byte type (derived from the first byte of payload) and the byte array data (the rest of the payload).
     /// </summary>
     /// <param name="delta"></param>
-    public override void _Process(double delta)
+    public void PerFrame(double delta)
     {
         nint[] messages = new nint[maxMessagePerFrame];
         for (int i = 0; i < SteamNetworkingMessages.ReceiveMessagesOnChannel(0, messages, maxMessagePerFrame); i++)
         {
             SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
-            byte[] payload = new byte[steamMessage.m_cbSize];
-            Marshal.Copy(steamMessage.m_pData, payload, 0, payload.Length);
-            NetType type = (NetType)payload[0];
-            byte[] data = payload.Skip(1).ToArray();
+            byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
+            NetworkUtils.UnwrapSteamPayload(payload, out byte[] data, out NetType type);
             steamMessage.m_identityPeer.ToString(out string idstring);
             Logging.Log($" MSGRCV | FROM: {idstring} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
             ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
@@ -204,18 +283,18 @@ public partial class SteamNetwork : Node
         switch (type)
             {
 
-            //BYTE TYPES
-            case NetType.BYTES_LOBBY:
+            ///////////////////////////////////  LOBBY   /////////////////////
+            case NetType.LOBBY_BYTES:
                 Global.Lobby.HandleLobbyBytes(data, fromSteamID);
                 break;
 
 
-            //MESSAGE TYPES
-            case NetType.MESSAGE_LOBBY:
-                //Global.Lobby.HandleLobbyMessage(data, fromSteamID);
+            ///////////////////////////////////  SESSION  /////////////////////
+            case NetType.SESSION_BYTES:
+                Global.GameSession?.HandleSessionMessageBytes(data,fromSteamID);
                 break;
 
-            //OTHER TYPES
+            ///////////////////////////////////  OTHER  /////////////////////
             case NetType.DEBUG_UTF8:
                 Logging.Log($"Reencoded (UTF8) Message: {Encoding.UTF8.GetString(data)}", "NetworkDEBUG");
                 break;
@@ -235,10 +314,15 @@ public partial class SteamNetwork : Node
     {
         if (bNetworkSimulation)
         {
-            await ToSignal(GetTree().CreateTimer(dNetworkSimulationDelay + (new Random().NextDouble() * dNetworkSimulationDelayVariance)), "timeout");
+            await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
         }
         Logging.Log($" MSGRCV | FROM: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
         ProcessData(data, type, Global.steamid);
+    }
+
+    public void Tick(double delta)
+    {
+
     }
 }
 

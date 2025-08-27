@@ -1,5 +1,4 @@
 using Godot;
-using Google.Protobuf.WellKnownTypes;
 using Limbo.Console.Sharp;
 using Microsoft.VisualBasic;
 using Steamworks;
@@ -22,7 +21,7 @@ public static class Logging
     /// <summary>
     /// List of Log Prefixes (categories) to silence
     /// </summary>
-    public static List<string> SilencedPrefixes = ["FirstTimeSetup","LoggingMeta","NetworkRelay","NetworkSession"];
+    public static List<string> SilencedPrefixes = ["FirstTimeSetup","LoggingMeta","NetworkRelay","NetworkSession", "GameSessionWire","NetworkWire"];
 
     /// <summary>
     /// Is true if Logger is functioning.
@@ -89,7 +88,7 @@ public static class Logging
             }
             else
             {
-                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing info!");
+                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing options!");
             }
         }
     }
@@ -122,7 +121,7 @@ public static class Logging
             }
             else
             {
-                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing info!");
+                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing options!");
             }
         }
     }
@@ -155,7 +154,7 @@ public static class Logging
             }
             else
             {
-                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing info!");
+                GD.PrintErr("ALERT! LOG TO FILE ERROR! Log file may be missing options!");
             }
         }
     }

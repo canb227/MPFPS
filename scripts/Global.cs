@@ -29,6 +29,7 @@ public partial class Global : Node
     /// </summary>
     public static bool bIsSteamConnected = false;
 
+    public static bool DrawDebugScreens = false;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Node Derived Singletons (On scene tree, under main)
 
@@ -42,6 +43,8 @@ public partial class Global : Node
     /// </summary>
     public static SteamNetwork network;
 
+    public static UI ui;
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Non-Node Singletons
@@ -49,17 +52,23 @@ public partial class Global : Node
     /// <summary>
     /// holds  a reference to the static Entity Name -> Entity Scene Library/Loader
     /// </summary>
-    public static EntityLoader EntityLoader = new();
+    public static EntityLoader EntityLoader;
 
     /// <summary>
     /// holds  a reference to the static level Name -> level Scene Library/Loader
     /// </summary>
-    public static SceneLoader SceneLoader = new();
+    public static SceneLoader SceneLoader;
 
     /// <summary>
     /// holds a reference to the lobby system that is always running in the background
     /// </summary>
-    public static Lobby Lobby = new();
+    public static Lobby Lobby;
+
+    public static InputMapManager InputMap;
+
+    public static Config Config;
+
+    public static GameSession GameSession;
 
 
     //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
@@ -68,7 +77,7 @@ public partial class Global : Node
 
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
-        Logging.Start();
+        Logging.Start(); //Also start logging here instead of Main so its ready super early to log stuff
 
         Logging.Log($" mkdir user://saves                    | {DirAccess.MakeDirAbsolute("user://saves").ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://config                  | {DirAccess.MakeDirAbsolute("user://config").ToString()}", "FirstTimeSetup");
@@ -85,6 +94,7 @@ public partial class Global : Node
         Logging.Log("Connection to Steam successful.", "SteamAPI");
         Logging.Log($"Steam ID: {steamid}", "SteamAPI");
 
+        //From here next code ran is in Main.cs's _Ready()
     }
 
     /// <summary>
@@ -92,7 +102,6 @@ public partial class Global : Node
     /// </summary>
     public void SteamInit()
     {
-
         Logging.Log("Initializing Steam API...", "SteamAPI");
         try
         {
@@ -120,11 +129,4 @@ public partial class Global : Node
             GD.PushError("Steam not initialized", "SteamAPI");
         }
     }
-
-    public override void _Process(double delta)
-    {
-        SteamAPI.RunCallbacks();
-    }
-
-
 }

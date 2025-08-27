@@ -1,0 +1,271 @@
+[gd_scene format=3 uid="uid://cumv488ua8v8i"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.164058, 0.157242, 0.151379, 1)
+
+[node name="title2" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.02
+anchor_top = 0.03
+anchor_right = 0.02
+anchor_bottom = 0.03
+offset_left = -15.04
+offset_top = -11.44
+offset_right = 71.96
+offset_bottom = 11.56
+text = "Lobby"
+
+[node name="NewGameStatus" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.822
+anchor_right = 0.822
+offset_left = -43.944
+offset_top = 57.0
+offset_right = 43.056
+offset_bottom = 80.0
+text = "NEW GAME"
+
+[node name="ReadyStatus" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.656
+anchor_right = 0.656
+offset_left = 94.288
+offset_top = 490.0
+offset_right = 244.288
+offset_bottom = 513.0
+text = "Players NOT READY"
+
+[node name="PlayerListBox" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.00694444
+anchor_top = 0.0895062
+anchor_right = 0.608507
+anchor_bottom = 0.476852
+offset_bottom = -3.05176e-05
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="PlayerListBox"]
+layout_mode = 0
+offset_left = -2.28882e-05
+offset_top = -26.0
+offset_right = 151.0
+offset_bottom = -2.99998
+grow_horizontal = 2
+text = "Connected Players"
+
+[node name="bg" type="ColorRect" parent="PlayerListBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.254902, 0.254902, 0.254902, 0.658824)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PlayerListBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Players" type="MarginContainer" parent="PlayerListBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PlayersVbox" type="VBoxContainer" parent="PlayerListBox/ScrollContainer/Players"]
+layout_mode = 2
+
+[node name="b_invite" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.019
+anchor_bottom = 0.019
+offset_left = 186.0
+offset_top = -0.312001
+offset_right = 450.0
+offset_bottom = 34.688
+text = "Invite Players"
+
+[node name="b_newgame" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.658
+anchor_right = 0.658
+offset_left = 162.984
+offset_top = 535.0
+offset_right = 373.984
+offset_bottom = 616.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Start Game"
+
+[node name="b_loadgame" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.655
+anchor_right = 0.655
+offset_left = -18.5601
+offset_top = 536.0
+offset_right = 145.44
+offset_bottom = 617.0
+text = "Load Game"
+
+[node name="newgameoptions" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.661
+anchor_right = 0.661
+offset_left = -0.472351
+offset_top = 122.0
+offset_right = 367.528
+offset_bottom = 423.0
+metadata/_edit_use_anchors_ = true
+
+[node name="worldgentype" type="OptionButton" parent="newgameoptions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.074
+anchor_top = 0.098
+anchor_right = 1.074
+anchor_bottom = 0.098
+offset_left = -230.233
+offset_top = -17.534
+offset_right = -68.2327
+offset_bottom = 17.466
+
+[node name="Label" type="Label" parent="newgameoptions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.067
+anchor_top = 0.095
+anchor_right = 1.067
+anchor_bottom = 0.095
+offset_left = -361.657
+offset_top = -11.385
+offset_right = -250.657
+offset_bottom = 11.615
+text = "worldgen type"
+
+[node name="worldgensize" type="OptionButton" parent="newgameoptions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.071
+anchor_top = 0.09
+anchor_right = 1.071
+anchor_bottom = 0.09
+offset_left = -229.129
+offset_top = 62.53
+offset_right = -67.1288
+offset_bottom = 97.53
+
+[node name="Label2" type="Label" parent="newgameoptions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.07
+anchor_top = 0.095
+anchor_right = 1.07
+anchor_bottom = 0.095
+offset_left = -360.761
+offset_top = 68.615
+offset_right = -249.761
+offset_bottom = 91.615
+text = "worldgen size"
+
+[node name="newgamehide" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 753.0
+offset_top = 107.0
+offset_right = -26.0
+offset_bottom = -177.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.364706, 0.352941, 0.345098, 0.807843)
+
+[node name="chat" type="Control" parent="."]
+layout_mode = 1
+anchor_top = 0.5
+anchor_right = 0.605
+anchor_bottom = 0.985
+offset_left = 18.0
+offset_top = -2.0
+offset_right = 0.039978
+offset_bottom = -0.280029
+
+[node name="chatbar" type="TextEdit" parent="chat"]
+layout_mode = 0
+anchor_left = -0.00147275
+anchor_top = 0.860759
+anchor_right = 0.861561
+anchor_bottom = 0.996835
+placeholder_text = "Chat: "
+metadata/_edit_use_anchors_ = true
+
+[node name="chatbox" type="PanelContainer" parent="chat"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.00441826
+anchor_top = 0.00316456
+anchor_right = 1.00442
+anchor_bottom = 0.81962
+metadata/_edit_use_anchors_ = true
+
+[node name="chattext" type="RichTextLabel" parent="chat/chatbox"]
+layout_mode = 2
+
+[node name="send" type="Button" parent="chat"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.873
+anchor_top = 0.858
+anchor_right = 1.006
+anchor_bottom = 1.0
+offset_left = 0.232971
+offset_top = -0.128021
+offset_right = -0.0740356
+offset_bottom = -1.0
+text = "Send"
+
+[node name="addAI" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.014
+anchor_bottom = 0.014
+offset_left = 549.0
+offset_top = -0.0720005
+offset_right = 695.0
+offset_bottom = 41.928
+text = "Add New AI"
+
+[connection signal="pressed" from="b_invite" to="." method="OnInviteButtonPressed"]
+[connection signal="pressed" from="b_newgame" to="." method="OnStartGameButtonPressed"]
+[connection signal="pressed" from="b_loadgame" to="." method="OnLoadButtonPressed"]
+[connection signal="item_selected" from="newgameoptions/worldgentype" to="." method="_on_worldgentype_item_selected"]
+[connection signal="item_selected" from="newgameoptions/worldgensize" to="." method="_on_worldgensize_item_selected"]
+[connection signal="pressed" from="chat/send" to="." method="onChatSendButtonPressed"]

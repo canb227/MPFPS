@@ -10,9 +10,6 @@ sky_material = SubResource("ProceduralSkyMaterial_7kgkq")
 background_mode = 2
 sky = SubResource("Sky_0iyi7")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1bqr5"]
-size = Vector3(5, 5, 5)
-
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4s63c"]
 noise_type = 0
 
@@ -66,6 +63,9 @@ _data = {
 &"spin": SubResource("Animation_mrr7a")
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_1bqr5"]
+size = Vector3(5, 5, 5)
+
 [node name="DebugPlatform" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -75,12 +75,6 @@ environment = SubResource("Environment_nab8h")
 transform = Transform3D(-0.27946034, -0.18996282, 0.94117796, 0, 0.9802333, 0.19784556, -0.96015733, 0.055289987, -0.27393633, 0, 15.370197, 0)
 light_color = Color(0.99999887, 0.9393035, 0.898465, 1)
 shadow_enabled = true
-
-[node name="PlayerSpawnBox" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.496555, 9.178258, -5.6667533)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerSpawnBox"]
-shape = SubResource("BoxShape3D_1bqr5")
 
 [node name="statics" type="Node3D" parent="."]
 
@@ -453,3 +447,11 @@ libraries = {
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-0.451754, 0.40092215, -0.7969817, 0, 0.89333445, 0.44939253, 0.89214253, 0.20301485, -0.40356743, -11.690974, 15.536028, -10.035044)
+
+[node name="meta" type="Node" parent="."]
+
+[node name="spawnBox" type="Area3D" parent="meta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.496555, 9.178258, -5.6667533)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="meta/spawnBox"]
+shape = SubResource("BoxShape3D_1bqr5")
