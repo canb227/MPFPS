@@ -1,8 +1,6 @@
 using Steamworks;
-using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /// <summary>
 /// Static library for useful networking functions
@@ -20,16 +18,17 @@ public static class NetworkUtils
     public const int k_nSteamNetworkingSend_UnreliableNoDelay = k_nSteamNetworkingSend_Unreliable | k_nSteamNetworkingSend_NoDelay | k_nSteamNetworkingSend_NoNagle;
     public const int k_nSteamNetworkingSend_ReliableNoNagle = k_nSteamNetworkingSend_Reliable | k_nSteamNetworkingSend_NoNagle;
 
-    public static bool IsUserHost(ulong steamID)
-    {
-        if (Global.Lobby.LobbyHostSteamID == 0) return false;
-        return (Global.Lobby.LobbyHostSteamID == steamID);
-    }
-
     //The following six functions process pretty much every single bit of information going across the network.
     //The latter four process much of the non-networked stuff too.
     //TODO: Make sure these don't suck
     //TODO: Switch to unsafe code blocks for performance gain - ONLY IF NEEDED: EXPOSES DIRECT MEMORY ACCESS VULNERABILITY
+
+    /// <summary>
+    /// Unpacks a Steam Message payload into the one byte type enum and the actual data. This function completes even if the message is malformed, so be careful.
+    /// </summary>
+    /// <param name="payload"></param>
+    /// <param name="data"></param>
+    /// <param name="type"></param>
     public static void UnwrapSteamPayload(byte[] payload, out byte[] data, out NetType type)
     {
         data = new byte[payload.Length];
@@ -37,6 +36,12 @@ public static class NetworkUtils
         data = payload.Skip(1).ToArray();
     }
 
+    /// <summary>
+    /// Packs a byte array and a type into the correct format for a Steam Message payload.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static byte[] WrapSteamPayload(byte[] data, NetType type)
     {
         byte[] payload = new byte[data.Length + 1];
@@ -45,6 +50,12 @@ public static class NetworkUtils
         return payload;
     }
 
+    /// <summary>
+    /// Given a pointer to unmanaged memory and a length (in bytes), COPIES that many bytes from the pointer into a new byte array.
+    /// </summary>
+    /// <param name="ptr"></param>
+    /// <param name="length"></param>
+    /// <returns>A byte array holding a copy of the first (length) number of bytes in the unmanaged memory location indicated by the provided pointer.</returns>
     public static byte[] PtrToBytes(nint ptr, int length)
     {
         byte[] data = new byte[length];
@@ -52,6 +63,11 @@ public static class NetworkUtils
         return data;
     }
 
+    /// <summary>
+    /// Given a byte array, generates a new pointer to unmanaged memory, allocates memory equal to the length of the array, and COPIES the bytes from the array into the location pointed by the pointer 
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns>A pointer to newly allocated unmanaged memory holding a copy of the bytes in the given array.</returns>
     public static nint BytesToPtr(byte[] data)
     {
         nint ptr = Marshal.AllocHGlobal(data.Length);
@@ -59,6 +75,12 @@ public static class NetworkUtils
         return ptr;
     }
 
+    /// <summary>
+    /// Transforms a given struct of type T into a newly allocated byte array. NOTE: The struct must have a compile time constant size in memory (no reference types!)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="structure"></param>
+    /// <returns></returns>
     public static byte[] StructToBytes<T>(T structure)
     {
         byte[] data = new byte[Marshal.SizeOf<PlayerOptions>()];
@@ -68,6 +90,12 @@ public static class NetworkUtils
         return data;
     }
 
+    /// <summary>
+    /// Transforms a given byte array into a newly allocated struct of type T. Should only ever be called on byte arrays created by <see cref="StructToBytes{T}(T)"/>. NOTE: The struct must have a compile time constant size in memory (no reference types!)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static T BytesToStruct<T>(byte[] data)
     {
         nint ptr = Marshal.AllocHGlobal(data.Length);
@@ -129,8 +157,12 @@ public static class NetworkUtils
         return id;
     }
 
-
-    internal static SteamNetworkingIdentity SteamIDStringToIdentity(string m_rgchConnect)
+    /// <summary>
+    /// Helper function to turn a string containing only numbers into a SteamNetworkingIdentity with the SteamID parsed from the string.
+    /// </summary>
+    /// <param name="m_rgchConnect"></param>
+    /// <returns></returns>
+    public static SteamNetworkingIdentity SteamIDStringToIdentity(string m_rgchConnect)
     {
         return SteamIDToIdentity(ulong.Parse(m_rgchConnect));
     }

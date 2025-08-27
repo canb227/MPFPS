@@ -113,7 +113,7 @@ public class Lobby
     /// <param name="leaveCurrent">If true, leave the current lobby before making a new one. If false, throws an error if trying to host while in a lobby.</param>
     public void HostNewLobby(bool leaveCurrent = false)
     {
-        if(bInLobby)
+        if (bInLobby)
         {
             if (leaveCurrent)
             {
@@ -122,7 +122,7 @@ public class Lobby
             }
             else
             {
-                Logging.Error($"Cannot host a new lobby while still in a lobby. Leave first!","Lobby");
+                Logging.Error($"Cannot host a new lobby while still in a lobby. Leave first!", "Lobby");
             }
         }
         Logging.Log($"Hosting a new lobby and enabling steam rich presence.", "Lobby");
@@ -144,7 +144,7 @@ public class Lobby
     private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
     {
         Logging.Log($"RichPresence join to {ulong.Parse(param.m_rgchConnect)} requested, sending them a join request...", "Lobby");
-        AttemptJoinToLobby( ulong.Parse(param.m_rgchConnect), true);
+        AttemptJoinToLobby(ulong.Parse(param.m_rgchConnect), true);
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ public class Lobby
     /// <returns></returns>
     public EResult SendLobbyMessage(byte[] data, LobbyMessageType type, ulong toSteamID)
     {
-        Logging.Log($"Sending Lobby Message with type {type.ToString()} to {toSteamID} | payload length:{data.Length}","LobbyWire");
+        Logging.Log($"Sending Lobby Message with type {type.ToString()} to {toSteamID} | payload length:{data.Length}", "LobbyWire");
         byte[] newData = new byte[data.Length + 1];
         newData[0] = (byte)type;
         data.CopyTo(newData, 1);
@@ -199,8 +199,8 @@ public class Lobby
     /// <returns></returns>
     public List<EResult> BroadcastLobbyMessage(byte[] data, LobbyMessageType type)
 
-    { 
-        Logging.Log($"Broadcasting Lobby Message to all {lobbyPeers.Count} peers in our Lobby...","LobbyWire");
+    {
+        Logging.Log($"Broadcasting Lobby Message to all {lobbyPeers.Count} peers in our Lobby...", "LobbyWire");
         List<EResult> retval = new List<EResult>();
         foreach (ulong steamID in lobbyPeers)
         {
@@ -246,6 +246,9 @@ public class Lobby
         }
     }
 
+    /// <summary>
+    /// Bail out of the lobby and tell everyone I've suffered a fatal error. 
+    /// </summary>
     public void ErrorOutOfLobby()
     {
         Logging.Log($"Attempting to tell my peers I'm leaving because of a critical error", "Lobby");
@@ -257,11 +260,22 @@ public class Lobby
         LeaveLobby(true);
     }
 
+    /// <summary>
+    /// Core processor for incoming network messages with LOBBY type. NOTE: messages sent to ourself are loopbacked and received here
+    /// </summary>
+    /// <param name="payload"></param>
+    /// <param name="fromSteamID"></param>
+    /// <exception cref="ArgumentException"></exception>
     public void HandleLobbyBytes(byte[] payload, ulong fromSteamID)
     {
-        Logging.Log($"Lobby Message from {fromSteamID} has type {((LobbyMessageType)payload[0]).ToString()}","LobbyWire");
+        Logging.Log($"Lobby Message from {fromSteamID} has type {((LobbyMessageType)payload[0]).ToString()}", "LobbyWire");
+
+        //We know by virtue of the NetType.LOBBY that the sender (is supposed to) set the first byte of the message payload to a LobbyMessageType value
+        //Here we split off that one byte, and use it to process the rest of the message correctly.
         LobbyMessageType type = (LobbyMessageType)payload[0];
         byte[] data = payload.Skip(1).ToArray();
+
+        //TODO: Better documentation/organization of this messy switch statement
         switch (type)
         {
             case LobbyMessageType.JoinRequest:
@@ -273,7 +287,7 @@ public class Lobby
                 }
                 if (bIsLobbyHost)
                 {
-                    Logging.Log($"Accepting Join Request from {fromSteamID} as Host","Lobby");
+                    Logging.Log($"Accepting Join Request from {fromSteamID} as Host", "Lobby");
                     if (lobbyPeers.Add(fromSteamID))
                     {
                         NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
@@ -296,7 +310,7 @@ public class Lobby
                     {
                         SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.ERROR_AlreadyPeer, fromSteamID);
                     }
-                }                
+                }
                 break;
             case LobbyMessageType.JoinAccepted:
                 if (data[0] == (byte)LobbyHostFlag.FromHost) // we just joined the host look alive
@@ -350,7 +364,7 @@ public class Lobby
                 foreach (ulong peerID in lobbyPeers)
                 {
                     if (peerID == fromSteamID) continue;
-                    SendLobbyMessage(BitConverter.GetBytes(peerID),LobbyMessageType.PeerListResponse,fromSteamID);
+                    SendLobbyMessage(BitConverter.GetBytes(peerID), LobbyMessageType.PeerListResponse, fromSteamID);
                 }
                 break;
             case LobbyMessageType.PeerListResponse:
@@ -379,7 +393,7 @@ public class Lobby
                     //The Lobby host just quit the game
                     //TODO: Implement Lobby Host Migration. In theory this could just pick a random person, but all of the peers need to come to the same conclusion somehow.
                     Logging.Warn("Host migration not implemented. Closing lobby!", "Lobby");
-                    LeaveLobby(true,false);
+                    LeaveLobby(true, false);
                 }
                 break;
             case LobbyMessageType.Leave_Error:
@@ -394,7 +408,7 @@ public class Lobby
                     Logging.Warn("The Host just errored out of our lobby, attempting to migrate.", "Lobby");
                     //The Lobby host just quit the game
                     //TODO: Implement Lobby Host Migration. In theory this could just pick a random person, but all of the peers need to come to the same conclusion somehow.
-                    Logging.Warn("Host migration not implemented. Closing lobby!","Lobby");
+                    Logging.Warn("Host migration not implemented. Closing lobby!", "Lobby");
                     LeaveLobby();
                 }
                 break;

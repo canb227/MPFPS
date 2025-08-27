@@ -1,31 +1,25 @@
 using Godot;
-using Steamworks;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 
 public partial class World : Node3D
 {
     bool IsServer = false;
-    Dictionary<ulong,Entity> entities = new();
+    Dictionary<ulong, Entity> entities = new();
 
     public ulong defaultAuthority;
 
     private ulong tick = 0;
     private Node meta = null;
-    private Node3D root= null;
+    private Node3D root = null;
 
     public override void _Ready()
     {
         Global.world = this;
-        Logging.Log($"Game world ready for commands.","World");
+        Logging.Log($"Game world ready for commands.", "World");
         SetPhysicsProcess(false);
     }
-    
+
     public Entity FindEntity(ulong eid)
     {
         entities.TryGetValue(eid, out var entity);
@@ -45,7 +39,7 @@ public partial class World : Node3D
 
     public void LoadRootSceneByName(string sceneName)
     {
-        if (Global.SceneLoader.getScenePathFromName(sceneName, out string scenePath)) 
+        if (Global.SceneLoader.getScenePathFromName(sceneName, out string scenePath))
         {
             LoadRootSceneByPath(scenePath);
         }
@@ -67,7 +61,7 @@ public partial class World : Node3D
     }
     public void SpawnEntityRequest(ulong eid, Vector3 pos)
     {
-        if (defaultAuthority==Global.steamid)
+        if (defaultAuthority == Global.steamid)
         {
             SpawnEntityRequest ser = new SpawnEntityRequest();
             ser.eid = eid;
@@ -86,7 +80,7 @@ public partial class World : Node3D
     }
     internal void StartGame()
     {
-        
+
     }
 }
 

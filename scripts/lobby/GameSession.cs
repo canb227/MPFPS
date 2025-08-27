@@ -3,9 +3,6 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 /// <summary>
 /// GameSession is an abstraction of the actual game we're going to play. Upstream of GameSession is the Lobby, which provides the lobbyPeers and alerts us when our peer list changes. 
@@ -16,7 +13,7 @@ public class GameSession
     /// <summary>
     /// stores the list of players in this session alongside a huge heap of important info about them. 
     /// This list includes any player that has ever been in the session even if they arent currently (unless explicitly forgotten) to support rejoins and game loading.
-    /// Sorted so that everyone's list is in the same order.
+    /// Sorted so that everyone's list is in the same order (TESTING THIS BIT STILL).
     /// </summary>
     public SortedDictionary<ulong, PlayerData> playerData = new();
 
@@ -59,7 +56,9 @@ public class GameSession
     public delegate void GameSessionPlayerReconnect(ulong playerSteamID);
     public static event GameSessionPlayerReconnect GameSessionPlayerReconnectEvent;
 
-
+    /// <summary>
+    /// Tracks the number of player's we're waiting for to finish loading
+    /// </summary>
     private int numberPlayersStillLoading;
 
     /// <summary>
@@ -84,8 +83,8 @@ public class GameSession
         }
 
         Logging.Log($"Started a new GameSession with {playerData.Count} players, and session authority: {sessionAuthority}", "GameSession");
-        
-        if (playerData[sessionAuthority].state==PlayerState.INGAME_OK)
+
+        if (playerData[sessionAuthority].state == PlayerState.INGAME_OK)
         {
             Logging.Log($"The game host is already in-game, are you trying to reconnect?", "GameSession");
             throw new NotImplementedException("Mid game join dun work");
@@ -157,8 +156,6 @@ public class GameSession
     /// </summary>
     public void EndSession()
     {
-        //Session cleanup/ending logic
-        Logging.Warn($"Ending a session does not correctly end the game!! pls fix", "GameSession");
         playerData = new();
         sessionOptions = new();
         sessionAuthority = new();
@@ -167,8 +164,14 @@ public class GameSession
         Lobby.NewLobbyPeerAddedEvent -= OnNewLobbyPeerAdded;
         Lobby.LobbyPeerRemovedEvent -= OnLobbyPeerRemoved;
         Lobby.LeftLobbyEvent -= OnLeftLobby;
+
+        //TODO: Do we need to do any other session cleanup here? Saving player progression, other stuff?
     }
 
+    /// <summary>
+    /// Attempt to restablish a correct session state with a player that has joined before, left, and is now rejoining.
+    /// </summary>
+    /// <param name="newPlayerSteamID"></param>
     public void AttemptSessionResumption(ulong newPlayerSteamID)
     {
         //TODO: Session resumption logic
@@ -177,6 +180,10 @@ public class GameSession
         return;
     }
 
+    /// <summary>
+    /// Add a brand new player with the given steamID to our gamesession, create a new PlayerData object for them, and push relevant events. This user must be in our Lobby.
+    /// </summary>
+    /// <param name="newPlayerSteamID"></param>
     public void AddToSession(ulong newPlayerSteamID)
     {
         Logging.Log($"Adding player {newPlayerSteamID} to gameSession.", "GameSession");
@@ -193,9 +200,14 @@ public class GameSession
 
         if (!NetworkUtils.IsMe(newPlayerSteamID))
         {
+            //Ask the new player for their information so we can cache it.
             Logging.Log($"Player isnt me, requesting data.", "GameSession");
             SendSessionMessage([0], SessionMessageType.REQUEST_PROGRESSION, newPlayerSteamID);
             SendSessionMessage([0], SessionMessageType.REQUEST_CONFIG, newPlayerSteamID);
+
+            //TODO: Investigate potential race conditions involving PlayerOptions.
+            //The new joiner asks the hosts for default PlayerOptions values, but we ask the new joiner for them.
+            //If this request gets to them before the host's response (if our ping/connection is signifigantly faster to the peer than the peer's connection to the host), things might explode.
             SendSessionMessage([0], SessionMessageType.REQUEST_PLAYEROPTIONS, newPlayerSteamID);
         }
         else
@@ -203,13 +215,15 @@ public class GameSession
             Logging.Log($"Player is me, loading local data", "GameSession");
             pd.progression = Global.Config.loadedPlayerProgression;
             pd.config = Global.Config.loadedPlayerConfig;
-            if (Global.steamid==sessionAuthority)
+            if (Global.steamid == sessionAuthority)
             {
                 pd.options = GenerateOptions(Global.steamid);
                 pd.state = PlayerState.PREGAME_OK;
             }
             else
             {
+                //TODO: Investigate potential race conditions involving PlayerOptions.
+                //We ask the host for our PlayerOptions, but might get a request for the results before we get them from the host under some network conditions.
                 SendSessionMessage([0], SessionMessageType.REQUEST_ASSIGNPLAYEROPTIONS, sessionAuthority);
             }
         }
@@ -255,7 +269,12 @@ public class GameSession
         return retval;
     }
 
-
+    /// <summary>
+    /// Core handler for incoming SESSION typed network messages. Works just the Lobby one, strips off the first byte to use as a routing flag
+    /// </summary>
+    /// <param name="payload"></param>
+    /// <param name="fromSteamID"></param>
+    /// <exception cref="ArgumentException"></exception>
     public void HandleSessionMessageBytes(byte[] payload, ulong fromSteamID)
     {
         Logging.Log($"Session Message from {fromSteamID} has type {((SessionMessageType)payload[0]).ToString()}", "GameSessionWire");
@@ -264,6 +283,7 @@ public class GameSession
         switch (type)
         {
 
+            //Request Message Handlers
             case SessionMessageType.REQUEST_CONFIG:
                 byte[] config_data = NetworkUtils.StructToBytes(playerData[Global.steamid].config);
                 SendSessionMessage(config_data, SessionMessageType.RESPONSE_CONFIG, fromSteamID);
@@ -297,6 +317,7 @@ public class GameSession
                     break;
                 }
 
+            //Response Message Handlers
             case SessionMessageType.RESPONSE_CONFIG:
                 PlayerConfig cfg = NetworkUtils.BytesToStruct<PlayerConfig>(data);
                 playerData[fromSteamID].config = cfg;
@@ -327,6 +348,7 @@ public class GameSession
                 playerData[Global.steamid].state = PlayerState.PREGAME_OK;
                 break;
 
+            //Command Message Handlers
             case SessionMessageType.COMMAND_STARTGAME:
                 if (fromSteamID == sessionAuthority)
                 {
@@ -361,11 +383,23 @@ public class GameSession
         }
     }
 
+    /// <summary>
+    /// The host uses this function to pick PlayerOptions for a newly joined player. The idea is that some PlayerOptions are best assigned by the host.
+    /// Think assigning everyone a unique color, or assigning teams, or other stuff.
+    /// </summary>
+    /// <param name="fromSteamID"></param>
+    /// <returns></returns>
     private PlayerOptions GenerateOptions(ulong fromSteamID)
     {
         return new();
     }
 
+    /// <summary>
+    /// When we get a PlayerState message in <see cref="HandleSessionMessageBytes(byte[], ulong)"/> it can trigger other behavior. Split that handling off into a seperate function just for organizational purposes.
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="fromSteamID"></param>
+    /// <exception cref="ArgumentException"></exception>
     private void HandlePlayerState(PlayerState state, ulong fromSteamID)
     {
         switch (state)
@@ -399,6 +433,9 @@ public class GameSession
     }
 }
 
+/// <summary>
+/// Class to hold all the data we store about each player. It's a class instead of a struct to remind me that I shouldn't be shoving this entire across the wire.
+/// </summary>
 public class PlayerData
 {
     public ulong steamID; //steamID
@@ -410,7 +447,9 @@ public class PlayerData
     public bool removed = false; // if true, this player is not in the gamesession at the moment
 }
 
-
+/// <summary>
+/// Simple enum to decribe player's state.
+/// </summary>
 public enum PlayerState : byte
 {
     NONE = 0,
@@ -425,6 +464,10 @@ public enum PlayerState : byte
     INGAME_DONELOADING = 13,
 }
 
+/// <summary>
+/// Struct that holds all possible per-player options for the session. This can be anything from color choices, team number, maybe class or loadout selections, anything!
+/// (Some conditions apply, fields must be basic type or struct of basic types.)
+/// </summary>
 public struct PlayerOptions
 {
 
@@ -436,13 +479,20 @@ public struct PlayerOptions
     }
 }
 
+/// <summary>
+/// Struct that holds all possible per-session options. Normally only changable by the session authority.
+/// Think difficulty settings, map selection, game mode settings, that stuff.
+/// </summary>
 public struct SessionOptions
 {
     public int DEBUG_DIRECTLOADMAPINDEX;
     public bool DEBUG_DIRECTLOADMAP;
 }
 
-public enum SessionMessageType
+/// <summary>
+/// one byte enum value to store session message type information
+/// </summary>
+public enum SessionMessageType : byte
 {
     ERROR = 0,
 
@@ -459,6 +509,6 @@ public enum SessionMessageType
     RESPONSE_PLAYERSTATE = 14,
     RESPONSE_SESSIONOPTIONS = 15,
     RESPONSE_ASSIGNPLAYEROPTIONS = 16,
-    
+
     COMMAND_STARTGAME = 21,
 }

@@ -8,8 +8,9 @@ public static class Utils
 {
     internal static ulong GetTime()
     {
-        return (ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+        return (ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
+
     internal static Texture2D GetMediumSteamAvatar(ulong id)
     {
         int avatarHandle = SteamFriends.GetMediumFriendAvatar(new CSteamID(id));
@@ -21,6 +22,7 @@ public static class Utils
         ImageTexture texture = ImageTexture.CreateFromImage(testImage);
         return texture;
     }
+
     internal static bool IsFirstLaunch()
     {
         if (DirAccess.DirExistsAbsolute("user://saves"))

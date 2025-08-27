@@ -1,27 +1,55 @@
 using Godot;
-using Limbo.Console.Sharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tomlyn;
 
+/// <summary>
+/// Handles saving/loading input maps from disk, and also handles dynamic key remapping.
+/// </summary>
 public class InputMapManager
 {
+    /// <summary>
+    /// An in-memory cached version of the player's inputmap file that is saved to disk. Any changes made to this version will (try) to be automatically saved to disk.
+    /// </summary>
     public PlayerInputMap loadedPlayerInputMap;
 
+    /// <summary>
+    /// List of possible input actions that we can bind keys to. Also holds display names for each input for use in remap screens or other places.
+    /// You can safely change display names at any time, as they are not tied to any functionality.
+    /// </summary>
+    public readonly Dictionary<string, string> InputActionList = new() {
+
+        { "MOVE_FORWARD", "Forward" },
+        { "MOVE_BACKWARD", "Backward" },
+        { "MOVE_LEFT", "Strafe Left" },
+        { "MOVE_RIGHT", "Strafe Right" },
+        { "JUMP", "Jump/Mount" },
+        { "FIRE", "Fire Primary Weapon" },
+        { "AIM", "Aim Down Sights (ADS)" },
+        { "AIM_TOGGLE", "Toggle Aim Down Sights (ADS)" },
+        { "USE", "Interact" },
+        { "SPRINT", "Sprint" },
+        { "SPRINT_TOGGLE", "Toggle Sprint" },
+        { "CROUCH", "Toggle Crouch" },
+        { "CROUCH_TOGGLE", "Toggle Crouch" },
+    };
+
+    /// <summary>
+    /// Loads the player's input map file from disk and registers all of the keybinds with the engine. If no changes are made to keybinds in game, this is the only thing the InputMapManager will do.
+    /// </summary>
     public void InitInputMap()
     {
         Logging.Log($"Starting InputMapManager...", "InputMapping");
         LoadPlayerInputMap();
 
-        foreach (string inputActionName in loadedPlayerInputMap.InputActionList)
+        //First we load the names of all our actions and register them with the engine. This is a programmatic version of adding them in Godot Editor->Project->Project Settings->Input Map.
+        foreach (string inputActionName in InputActionList.Keys)
         {
             InputMap.AddAction(inputActionName);
         }
-        Logging.Log($"Successfully loaded {loadedPlayerInputMap.InputActionList.Count} total possible actions", "InputMapping");
+        Logging.Log($"Successfully loaded {InputActionList.Count} total possible actions", "InputMapping");
 
+        //Next we load all of our keyboard keybinds and assign them to the indicated action. This is a programmatic version of adding a specific keybind to an action in Godot Editor->Project->Project Settings->Input Map.
         foreach (Key key in loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Keys)
         {
             InputEventKey keyEvent = new();
@@ -30,6 +58,7 @@ public class InputMapManager
         }
         Logging.Log($"Successfully loaded {loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Count} Keyboard binds.", "InputMapping");
 
+        //Next we load all of our mouse button binds and assign them to the indicated action. This is a programmatic version of adding a specific keybind to an action in Godot Editor->Project->Project Settings->Input Map.
         foreach (MouseButton mb in loadedPlayerInputMap.MouseButtonToActionMap.Keys)
         {
             InputEventMouseButton mbEvent = new();
@@ -38,6 +67,7 @@ public class InputMapManager
         }
         Logging.Log($"Successfully loaded {loadedPlayerInputMap.MouseButtonToActionMap.Count} Mouse Button binds", "InputMapping");
 
+        //Next we load all of our gamepad button binds and assign them to the indicated action. This is a programmatic version of adding a specific keybind to an action in Godot Editor->Project->Project Settings->Input Map.
         foreach (JoyButton jb in loadedPlayerInputMap.JoypadButtonToActionMap.Keys)
         {
             InputEventJoypadButton jbEvent = new();
@@ -46,9 +76,14 @@ public class InputMapManager
         }
         Logging.Log($"Successfully loaded {loadedPlayerInputMap.JoypadButtonToActionMap.Count} Gamepad Button binds", "InputMapping");
 
-        Logging.Log($"InputMap loading complete. Loaded a total of {loadedPlayerInputMap.JoypadButtonToActionMap.Count+loadedPlayerInputMap.MouseButtonToActionMap.Count+loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Count} binds.", "InputMapping");
+        Logging.Log($"InputMap loading complete. Loaded a total of {loadedPlayerInputMap.JoypadButtonToActionMap.Count + loadedPlayerInputMap.MouseButtonToActionMap.Count + loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Count} binds.", "InputMapping");
     }
 
+    /// <summary>
+    /// Unbinds a key, removing its association with any action, then save the updated inputmap to disk.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public string UnbindKey(Key key)
     {
         if (loadedPlayerInputMap.KeyboardKeyCodeToActionMap.ContainsKey((int)key))
@@ -69,6 +104,12 @@ public class InputMapManager
         }
     }
 
+    /// <summary>
+    /// Binds a key to an action using the key's name/label. This is kinda shit, I recommend using <see cref="BindKey(Key, string, bool)"/> instead/
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="action"></param>
+    /// <param name="overwrite"></param>
     public void BindKeyString(string key, string action, bool overwrite = false)
     {
         Key keyCode = Key.None;
@@ -78,9 +119,9 @@ public class InputMapManager
         }
         catch (Exception e)
         {
-            Logging.Error($"Key parse failed: {e.ToString()}","InputMapping");
+            Logging.Error($"Key parse failed: {e.ToString()}", "InputMapping");
         }
-        if (keyCode!=Key.None)
+        if (keyCode != Key.None)
         {
             BindKey(keyCode, action, overwrite);
         }
@@ -90,6 +131,12 @@ public class InputMapManager
         }
     }
 
+    /// <summary>
+    /// Binds a key to an action.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="action"></param>
+    /// <param name="overwrite"></param>
     public void BindKey(Key key, string action, bool overwrite = false)
     {
         InputEventKey inputEventKey = new();
@@ -121,11 +168,17 @@ public class InputMapManager
         SavePlayerInputMap();
     }
 
+    /// <summary>
+    /// Attempts to load the player's inputmap file from disk. 
+    /// If the file doesnt exist, it makes a new one with all fields set to defaults. 
+    /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
+    /// See <see cref="NetworkUtils.BytesToStruct{T}(byte[])"/> for details on the transformation.
+    /// </summary>
     public void LoadPlayerInputMap()
     {
-        
+
         string filePath = $"user://config/{Global.steamid}/input.toml";
-        Logging.Log($"Attempting to load player input map at {filePath}","InputMapping");
+        Logging.Log($"Attempting to load player input map at {filePath}", "InputMapping");
         if (FileAccess.FileExists(filePath))
         {
             FileAccess file = FileAccess.Open(filePath, FileAccess.ModeFlags.ReadWrite);
@@ -159,6 +212,11 @@ public class InputMapManager
         }
     }
 
+    /// <summary>
+    /// Attempts to save the current loadedPlayerInputMap object to disk. If the file already exists (it always does except for first start), make a backup first before overwriting.
+    /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
+    /// See <see cref="NetworkUtils.StructToBytes{T}(T)"/> for details on the transformation.
+    /// </summary>
     public void SavePlayerInputMap()
     {
         string filePath = $"user://config/{Global.steamid}/input.toml";
@@ -181,7 +239,5 @@ public class InputMapManager
         {
             Logging.Log($"Saving input map failed! Reason: {FileAccess.GetOpenError().ToString()}", "InputMapping");
         }
-
     }
-
 }

@@ -1,10 +1,7 @@
 using Godot;
 using Limbo.Console.Sharp;
-using Microsoft.VisualBasic;
-using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 /// <summary>
 /// Static logger class to keep things organized.
@@ -21,7 +18,7 @@ public static class Logging
     /// <summary>
     /// List of Log Prefixes (categories) to silence
     /// </summary>
-    public static List<string> SilencedPrefixes = ["FirstTimeSetup","LoggingMeta","NetworkRelay","NetworkSession", "GameSessionWire","NetworkWire"];
+    public static List<string> SilencedPrefixes = ["FirstTimeSetup", "LoggingMeta", "NetworkRelay", "NetworkSession", "GameSessionWire", "NetworkWire"];
 
     /// <summary>
     /// Is true if Logger is functioning.

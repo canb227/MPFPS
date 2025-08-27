@@ -1,6 +1,5 @@
 using Godot;
 using Steamworks;
-using System;
 
 /// <summary>
 /// Singleton that autoloads right after Godot engine init. Can be statically referenced using "Global." anywhere.
@@ -29,7 +28,12 @@ public partial class Global : Node
     /// </summary>
     public static bool bIsSteamConnected = false;
 
+    /// <summary>
+    /// If true, draw ImGUI debug screens (if any are active)
+    /// </summary>
     public static bool DrawDebugScreens = false;
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Node Derived Singletons (On scene tree, under main)
 
@@ -38,16 +42,20 @@ public partial class Global : Node
     /// </summary>
     public static World world;
 
-    /// <summary>
-    /// Holds a reference to the currently active networking system
-    /// </summary>
-    public static SteamNetwork network;
 
+    /// <summary>
+    /// Holds a reference to the currently active UI system
+    /// </summary>
     public static UI ui;
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Non-Node Singletons
+
+    /// <summary>
+    /// Holds a reference to the currently active networking system
+    /// </summary>
+    public static SteamNetwork network;
 
     /// <summary>
     /// holds  a reference to the static Entity Name -> Entity Scene Library/Loader
@@ -64,16 +72,25 @@ public partial class Global : Node
     /// </summary>
     public static Lobby Lobby;
 
+    /// <summary>
+    /// Holds a reference to the InputMapManager, useful for rebinding keys
+    /// </summary>
     public static InputMapManager InputMap;
 
+    /// <summary>
+    /// Handles saving and loading to/from disk player settings and meta-progression
+    /// </summary>
     public static Config Config;
 
+    /// <summary>
+    /// holds a reference to the current GameSession if there is one. Might be null.
+    /// </summary>
     public static GameSession GameSession;
 
 
     //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
     public override void _Ready()
-    { 
+    {
 
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
@@ -122,7 +139,7 @@ public partial class Global : Node
             SteamNetworkingUtils.InitRelayNetworkAccess();
             steamid = SteamUser.GetSteamID().m_SteamID;
             bIsSteamConnected = true;
-            
+
         }
         else
         {

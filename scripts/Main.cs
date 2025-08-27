@@ -9,79 +9,100 @@ using System;
 /// </summary>
 public partial class Main : Node
 {
-
+    //This runs after Global._Ready(), and handles most of our startup. (Logging and Steam are handled earlier in Global)
     public override void _Ready()
     {
-
-        Logging.Log($"PreGameLoading player config and save files...","Main");
+        //First up, start up the config system and register a static reference to it in Global. Despite its name, this system handles both user configuration settings and user savefiles/meta-progression tracking
+        //It'll automatically load up the Config file and the Progression files from disk for the logged in user from the user:// Godot file location.
+        //If they don't exist it makes them.
+        Logging.Log($"Starting Config system and Loading player config and save files...", "Main");
         Global.Config = new();
         Global.Config.InitConfig();
-        //TODO: Load graphics settings
 
+        //TODO: Load saved graphics settings (resolution, maybe UI scaling?) and apply them before we load the UI
+
+        //Next fire up the UI system and register a static reference to it in Global. It doesn't do anything automatically yet but should probably start showing the relevant splash screens right away.
+        //The UI system inherits the Control node,and gets added to the Godot scenetree as a child of main so it can render UI correctly.
         Logging.Log("Starting UI...", "Main");
         Global.ui = new();
         Global.ui.Name = "UIManager";
         AddChild(Global.ui);
+
         //TODO: We can show some splash screens and random bullshit while the below runs
 
+        //Boot up the InputMapManager, register a reference with Global, and tell it to load our input settings from disk, or make a new file if there isnt one.
+        //This is basically a "in-code" version of the Godot input mapper, which lets us do dynamic keybinding and saving remapped keys.
         Logging.Log($"Starting InputMapManager Handler and loading input map file...", "Main");
         Global.InputMap = new();
         Global.InputMap.InitInputMap();
 
+        //Start the in-game console. Using MIT licensed LimboConsole for the implementation with most extra features disabled/stripped out.
+        //Doesnt get a Global reference because no one should need it.
+        //Check out the Console class to see how commands are managed and added.
+        //Uses a special dev key (`) to toggle, bypassing the input system (see _Input() below)
         Logging.Log($"Starting in-game console...", "Main");
         Console console = new Console();
         console.Name = "InGameConsole";
-        AddChild(console);//Console gets to be on the scene tree for "reasons" (expression evaluation (not using this feature atm but :shrug:))
+        AddChild(console);
 
+        //Fires up the core networking component and registers a global reference to it. Doesn't trigger any behaviour right away, but once this is started we are able to receive packets over the Steam Relay Network.
         Logging.Log($"Starting core Networking manager...", "Main");
         Global.network = new SteamNetwork();
 
+        //Start the "world", the root Node3D for the game, register a global reference for it, and add it to the scenetree as a child of main so it can render 3D stuff.
         Logging.Log($"Starting world/level/3DNode manager...", "Main");
         Global.world = new World();
         Global.world.Name = "World";
         AddChild(Global.world);
 
-        //TODO:any other startup stuff goes here - maybe preloading or smth idk
+        //TODO: Trigger preloading and shader stuff here if needed, using the above world node
 
-        //Do the Lobby stuff last so no one tries to join us before we're ready
+        //TODO: Add additonal start up items here.
+
+        //Create the Lobby system, register a reference to it with Global, and "host" a new lobby right away.
+        //Hosting a lobby is what allows us to be joinable in Steam, adding the "join to" button for Friends, and adding the "invite to play" button on friends for us.
+        //We do this last so that no one tries to join us until after core systems are ready.
         Logging.Log($"Starting Lobby system and auto-hosting lobby to make us joinable thru steam", "Main");
         Global.Lobby = new();
         Global.Lobby.HostNewLobby();
 
+        //TODO: Wait for splash screens to be done, wait for preloading and shaders and shit to be done.
 
-        //TODO: make sure the splash screens and random bullshit are done before continuing
-
-        //At this point we're setup and ready to go. First, let's check and see if Steam auto-launched the game because we accepted an invite while the game was closed.
         Logging.Log("Startup complete!", "Main");
+        //At this point we're setup and ready to go. First, let's check and see if Steam auto-launched the game because we accepted an invite while the game was closed.
         SteamApps.GetLaunchCommandLine(out string commandLine, 1024);
-        Logging.Log("Checking for Launch Arguments...","Main");
+        Logging.Log("Checking for Launch Arguments...", "Main");
         if (!string.IsNullOrEmpty(commandLine))
         {
-            Logging.Log($"Launch Argument detected: {commandLine}","Main");
-            Logging.Log($"Interperting arg as SteamID to immediately join...","Main");
+            Logging.Log($"Launch Argument detected: {commandLine}", "Main");
+            Logging.Log($"Interperting arg as SteamID to immediately join...", "Main");
             ulong cmdLineSteamID = 0;
 
             //TODO: Parse launch arg string, its in some weird format like '+connect steamid' or some shit I need to test it
             throw new NotImplementedException("Joining to another player while the game is not open is not implmented yet.");
 
             Global.Lobby.AttemptJoinToLobby(cmdLineSteamID);
+            return;
         }
         else
         {
-            Logging.Log("No Launch Command Line found - continuing normally.","Main");
+            Logging.Log("No Launch Command Line found - continuing normally.", "Main");
         }
 
-        //TODO: start main menu UI here
+        //TODO: Show main menu/intro screen/whatever
 
+        //If we launched the game normally, startup is now fully complete
     }
 
-    //Run all the stuff below once per frame.
+    //To help maintain an understanding of exactly what runs every frame, and in what order, main is the only thing that has a _Process()
+    //Here we call out to everything else that needs to run once per frame.
+    //Experimental approach, we'll see how it goes.
     public override void _Process(double delta)
     {
         SteamAPI.RunCallbacks();
         Global.network.PerFrame(delta);
         Global.world.PerFrame(delta);
-        if (Global.GameSession != null && Global.GameSession.playerData!=null)
+        if (Global.GameSession != null && Global.GameSession.playerData != null)
         {
             foreach (var player in Global.GameSession.playerData)
             {
@@ -91,35 +112,47 @@ public partial class Main : Node
 
     }
 
-    //Run all the stuff below once per tick (60ticks/second)
+    //_PhysicsProcess gets called 60 times a second (by default). We are using it to establish a tickrate that is disconnected from the framerate.
+    //We can adjust the tick rate by changing the engine's physics rate.
+    //Uses same approach as described above with _Process()
     public override void _PhysicsProcess(double delta)
     {
         Global.network.Tick(delta);
         Global.world.Tick(delta);
     }
 
+    /// <summary>
+    /// This bypasses any input systems we wrote and just directly looks to see if a specific keycode is pressed.
+    /// Used to handle important dev inputs like the console and debug toggles
+    /// </summary>
+    /// <param name="event"></param>
     public override void _Input(InputEvent @event)
     {
         //right bracket and tilde are special dev keys that bypass the input handling system
         if (@event is InputEventKey k && k.Pressed)
         {
             //right bracket toggles ImGUI debug overlays
-            if (k.Keycode==Key.Bracketright)
+            if (k.Keycode == Key.Bracketright)
             {
                 Global.DrawDebugScreens = !Global.DrawDebugScreens;
                 GetViewport().SetInputAsHandled();
             }
             //backtick/tilde toggles the console
-            else if (k.Keycode==Key.Quoteleft)
+            else if (k.Keycode == Key.Quoteleft)
             {
                 LimboConsole.ToggleConsole();
                 GetViewport().SetInputAsHandled();
             }
-        }    
+        }
     }
+
+    /// <summary>
+    /// Notifications are usually system interrupts of various kinds. We handle them here in main to stay organized.
+    /// </summary>
+    /// <param name="what"></param>
     public override void _Notification(int what)
     {
-        //app gets a close request (like hitting the (X) button in windows)
+        //this notification shows up if the app gets a close request (like hitting the (X) button in windows)
         //Does not fire if process gets killed - you cant really do anything about that
         if (what == NotificationWMCloseRequest)
         {

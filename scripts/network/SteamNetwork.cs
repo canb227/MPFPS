@@ -1,15 +1,8 @@
-using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using static Godot.HttpRequest;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /// <summary>
 /// one byte (0-255) value for network message type
@@ -87,7 +80,7 @@ public class SteamNetwork
         //Uncomment this if steam relay network is being stupid
         //SteamNetworkHealthManager();
     }
- 
+
 
     /// <summary>
     /// Attempts to maintain connection with Steam Relay Network - runs forever once called!
@@ -99,9 +92,9 @@ public class SteamNetwork
             await Task.Delay(1000);
 
             SteamNetworkingUtils.GetRelayNetworkStatus(out SteamRelayNetworkStatus_t details);
-            if (details.m_eAvail!=ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Current)
+            if (details.m_eAvail != ESteamNetworkingAvailability.k_ESteamNetworkingAvailability_Current)
             {
-                Logging.Warn("Steam Relay Networking not connected, force retrying access...","NetworkRelay");
+                Logging.Warn("Steam Relay Networking not connected, force retrying access...", "NetworkRelay");
                 SteamNetworkingUtils.InitRelayNetworkAccess();
             }
         }
@@ -113,7 +106,7 @@ public class SteamNetwork
     /// <param name="param"></param>
     private void OnRelayNetworkStatusChanged(SteamRelayNetworkStatus_t param)
     {
-        Logging.Log($"Connection Status to Steam Relay Network has changed: {param.m_eAvail}","NetworkRelay");
+        Logging.Log($"Connection Status to Steam Relay Network has changed: {param.m_eAvail}", "NetworkRelay");
     }
 
     /// <summary>
@@ -139,7 +132,7 @@ public class SteamNetwork
         if (sessionEstablished)
         {
             param.m_identityRemote.ToString(out string idstring);
-            Logging.Log($"New Session Established with {idstring}","NetworkSession");
+            Logging.Log($"New Session Established with {idstring}", "NetworkSession");
         }
         else
         {
@@ -159,11 +152,11 @@ public class SteamNetwork
     {
         if (bDoLoopback && NetworkUtils.IsMe(remoteIdentity))
         {
-            Loopback(data, type); 
+            Loopback(data, type);
             return EResult.k_EResultOK;
         }
         byte[] payload = NetworkUtils.WrapSteamPayload(data, type);
-        
+
         nint ptr = NetworkUtils.BytesToPtr(payload);
         remoteIdentity.ToString(out string idstring);
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
@@ -281,7 +274,7 @@ public class SteamNetwork
     private void ProcessData(byte[] data, NetType type, ulong fromSteamID)
     {
         switch (type)
-            {
+        {
 
             ///////////////////////////////////  LOBBY   /////////////////////
             case NetType.LOBBY_BYTES:
@@ -291,7 +284,7 @@ public class SteamNetwork
 
             ///////////////////////////////////  SESSION  /////////////////////
             case NetType.SESSION_BYTES:
-                Global.GameSession?.HandleSessionMessageBytes(data,fromSteamID);
+                Global.GameSession?.HandleSessionMessageBytes(data, fromSteamID);
                 break;
 
             ///////////////////////////////////  OTHER  /////////////////////
@@ -300,7 +293,7 @@ public class SteamNetwork
                 break;
             default:
                 throw new NotImplementedException($" BYTES TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
-            }
+        }
     }
 
     /// <summary>

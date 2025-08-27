@@ -2,7 +2,6 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 public partial class DebugScreen : Control
 {
@@ -41,7 +40,7 @@ public partial class DebugScreen : Control
 
     };
 
-    public  static List<string> directLoadMap_mapIconPaths = new()
+    public static List<string> directLoadMap_mapIconPaths = new()
     {
 
         { "res://assets/ui/img/debugMapScreenie.png" },
@@ -58,7 +57,7 @@ public partial class DebugScreen : Control
     };
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
-	{
+    {
         //basic
         StartGameButton = GetNode<Button>("start");
         QuitGameButton = GetNode<Button>("quit");
@@ -66,7 +65,7 @@ public partial class DebugScreen : Control
         //direct load
         directLoadMap_loadCheck = GetNode<CheckBox>("directLoadMap/loadCheck");
         directLoadMap_mapList = GetNode<OptionButton>("directLoadMap/mapList");
-		directLoadMap_hidePanel = GetNode<Panel>("directLoadMap/hide");
+        directLoadMap_hidePanel = GetNode<Panel>("directLoadMap/hide");
         directLoadMap_mapImage = GetNode<TextureRect>("directLoadMap/img");
 
         //session box
@@ -150,7 +149,7 @@ public partial class DebugScreen : Control
 
     private void DirectLoadMap_loadCheck_Toggled(bool toggledOn)
     {
-       
+
         if (toggledOn)
         {
             Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP = true;
@@ -169,6 +168,6 @@ public partial class DebugScreen : Control
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
-	{
-	}
+    {
+    }
 }

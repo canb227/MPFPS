@@ -1,16 +1,35 @@
 using Godot;
 
-public class Config
+/// <summary>
+/// Handles loading and saving from/to disk for player save files, progression, and config settings.
+/// </summary>
+public class Config //TODO: Rename this ConfigManager or smth idk?
 {
+    /// <summary>
+    /// An in-memory cached version of the player's progression file that is saved to disk. Any changes made to this version will (try) to be automatically saved to disk.
+    /// </summary>
     public PlayerProgression loadedPlayerProgression;
+
+    /// <summary>
+    /// An in-memory cached version of the player's config file that is saved to disk. Any changes made to this version will (try) to be automatically saved to disk.
+    /// </summary>
     public PlayerConfig loadedPlayerConfig;
 
+    /// <summary>
+    /// Loads the player config and player progression from file and stores them in the loadedPlayerProgression and loadedPlayerConfig fields in this object.
+    /// </summary>
     public void InitConfig()
     {
         LoadPlayerProgression();
         LoadPlayerConfig();
     }
 
+    /// <summary>
+    /// Attempts to load the player's progression file from disk. 
+    /// If the file doesnt exist, it makes a new one with all fields set to defaults. 
+    /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
+    /// See <see cref="NetworkUtils.BytesToStruct{T}(byte[])"/> for details on the transformation.
+    /// </summary>
     public void LoadPlayerProgression()
     {
         string filePath = $"user://saves/{Global.steamid}/progression.bytes";
@@ -37,6 +56,11 @@ public class Config
         }
     }
 
+    /// <summary>
+    /// Attempts to save the current loadedPlayerProgression object to disk. If the file already exists (it always does except for first start), make a backup first before overwriting.
+    /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
+    /// See <see cref="NetworkUtils.StructToBytes{T}(T)"/> for details on the transformation.
+    /// </summary>
     public void SavePlayerProgression()
     {
         string filePath = $"user://saves/{Global.steamid}/progression.bytes";
@@ -61,15 +85,20 @@ public class Config
 
     }
 
-
+    /// <summary>
+    /// Attempts to load the player's config file from disk. 
+    /// If the file doesnt exist, it makes a new one with all fields set to defaults. 
+    /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
+    /// See <see cref="NetworkUtils.BytesToStruct{T}(byte[])"/> for details on the transformation.
+    /// </summary>
     public void LoadPlayerConfig()
-    { 
+    {
         string filePath = $"user://config/{Global.steamid}/config.bytes";
         Logging.Log($"Attempting to load player config at {filePath}", "Config");
         if (FileAccess.FileExists(filePath))
         {
             FileAccess file = FileAccess.Open(filePath, FileAccess.ModeFlags.ReadWrite);
-            if (file!=null)
+            if (file != null)
             {
                 loadedPlayerConfig = NetworkUtils.BytesToStruct<PlayerConfig>(file.GetBuffer((long)file.GetLength()));
                 Logging.Log($"Successfully loaded player config!", "Config");
@@ -88,6 +117,11 @@ public class Config
         }
     }
 
+    /// <summary>
+    /// Attempts to save the current loadedPlayerConfig object to disk. If the file already exists (it always does except for first start), make a backup first before overwriting.
+    /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
+    /// See <see cref="NetworkUtils.StructToBytes{T}(T)"/> for details on the transformation.
+    /// </summary>
     public void SavePlayerConfig()
     {
         string filePath = $"user://config/{Global.steamid}/config.bytes";
@@ -109,9 +143,6 @@ public class Config
         {
             Logging.Warn($"Failed to save player config at {filePath}. Reason: {FileAccess.GetOpenError().ToString()}", "Config");
         }
-
     }
-
-
 }
 

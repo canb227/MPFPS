@@ -1,10 +1,6 @@
 using Godot;
 using ImGuiNET;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 public partial class PlayerController : Controller
@@ -30,7 +26,7 @@ public partial class PlayerController : Controller
 
     public void Possess(Character character)
     {
-        
+
         possessedCharacter = character;
         throw new NotImplementedException();
     }
@@ -76,7 +72,7 @@ public partial class PlayerController : Controller
 
     public void PerFrame(double delta)
     {
-        if (userSteamID==Global.steamid && Global.DrawDebugScreens)
+        if (userSteamID == Global.steamid && Global.DrawDebugScreens)
         {
             PlayerControllerDebugDraw();
         }

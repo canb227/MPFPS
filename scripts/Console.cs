@@ -2,9 +2,7 @@ using Godot;
 using Limbo.Console.Sharp;
 using Steamworks;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using System.Text;
 
 /// <summary>
@@ -124,13 +122,13 @@ public partial class Console : Node
     public void sessionstatus()
     {
         LimboConsole.Info("Session Status");
-        LimboConsole.Info($"  In Session?: {Global.GameSession!=null}");
+        LimboConsole.Info($"  In Session?: {Global.GameSession != null}");
         if (Global.GameSession == null) return;
         LimboConsole.Info($"  Number of players in session: {Global.GameSession.playerData.Count}");
         LimboConsole.Info($"  Session Player List --------------------------------------------------------------");
         foreach (var player in Global.GameSession.playerData)
         {
-            if (player.Key==Global.steamid)
+            if (player.Key == Global.steamid)
             {
                 LimboConsole.Info($"ME  Name:{SteamFriends.GetFriendPersonaName(new CSteamID(player.Key))} | ID:{player.Key} | State: {player.Value.state} | DblCheckID: {player.Value.steamID}");
             }
@@ -144,7 +142,7 @@ public partial class Console : Node
     public void startsession()
     {
         LimboConsole.Info("Direct starting new session...");
-        Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(),Global.Lobby.LobbyHostSteamID);
+        Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(), Global.Lobby.LobbyHostSteamID);
     }
 
     public void endsession()
@@ -176,7 +174,7 @@ public partial class Console : Node
         LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
         LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
         LimboConsole.Info($"  Peer List --------------------------------------------------------------");
-        foreach(ulong peer in Global.Lobby.lobbyPeers)
+        foreach (ulong peer in Global.Lobby.lobbyPeers)
         {
             LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
         }
