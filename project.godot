@@ -24,10 +24,11 @@ LimboConsole="*res://addons/limbo_console/limbo_console.gd"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=3440
+window/size/viewport_height=1440
+window/size/mode=4
+window/size/borderless=true
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_width"
 
 [dotnet]
 
@@ -58,8 +59,9 @@ limbo_console_search_history={
 [physics]
 
 3d/run_on_separate_thread=true
-common/physics_jitter_fix=0.0
+common/physics_ticks_per_second=30
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

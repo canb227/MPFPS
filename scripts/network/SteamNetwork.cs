@@ -1,8 +1,10 @@
+using GameMessages;
 using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static Lobby;
 
 /// <summary>
 /// one byte (0-255) value for network message type
@@ -14,9 +16,17 @@ public enum NetType : byte
     LOBBY_BYTES = 1,
     SESSION_BYTES = 2,
 
+    LOBBY_PROTO = 101,
+    SESSION_PROTO = 102,
+
+    SPAWN_GAMEOBJECT = 120,
+
+    PLAYERCONTROLLER = 130,
+
     //Other Types
     DEBUG_UTF8 = 254,
     EMPTY = 255,
+
 }
 
 /// <summary>
@@ -52,9 +62,14 @@ public class SteamNetwork
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
     /// <para>IMPORTANT: Look. This has to be true or else everything breaks because we take advantage of loopback to unify our multiplayer and singleplayer code down the line.</para>
-    /// <para>IMPORTANT: Does not fully replicate network message process. Skips payload memory allocation and payload byte packing.</para>
+    /// <para>IMPORTANT: Does not fully replicate network message process. </para>
     /// </summary>
     public const bool bDoLoopback = true;
+
+    /// <summary>
+    /// If true, pack and unpack loopback messages as if they were being sent across the network. Negatively impacts performance but can help test for issues.
+    /// </summary>
+    public const bool bLoopbackMemoryAllocation = false;
 
     /// <summary>
     /// If true, introduce artifical network conditions to loopback messages. TESTING ONLY
@@ -70,6 +85,16 @@ public class SteamNetwork
     /// Randomly add between 0 and this value number of miliseconds to the base delay
     /// </summary>
     private int iNetworkSimulationDelayVarianceMS = 100;
+
+    public bool BandwidthTrackerEnabled = false;
+    public double BandwidthTrackerWindow = 1;
+    public double BandwidthTrackerTimer = 0;
+    public int SendBandwidthTracker = 0;
+    public int ReceiveBandwidthTracker = 0;
+
+
+    public delegate void NetworkPCMessage(PlayerControllerMessage msg);
+    public static event NetworkPCMessage NetworkPCMessageEvent;
 
     public SteamNetwork()
     {
@@ -155,11 +180,12 @@ public class SteamNetwork
             Loopback(data, type);
             return EResult.k_EResultOK;
         }
+        SendBandwidthTracker += data.Length;
         byte[] payload = NetworkUtils.WrapSteamPayload(data, type);
-
         nint ptr = NetworkUtils.BytesToPtr(payload);
-        remoteIdentity.ToString(out string idstring);
         EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
+        remoteIdentity.ToString(out string idstring);
+        //This debug statement technically has a (very) small performance overhead even when NetworkWire is silenced, due to the line above it.
         Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({idstring}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         return result;
     }
@@ -256,9 +282,11 @@ public class SteamNetwork
         {
             SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
             byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
+
             NetworkUtils.UnwrapSteamPayload(payload, out byte[] data, out NetType type);
             steamMessage.m_identityPeer.ToString(out string idstring);
-            Logging.Log($" MSGRCV | FROM: {idstring} | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
+            ReceiveBandwidthTracker += data.Length;
+            Logging.Log($" MSGRCV | FROM: {idstring} | TYPE: {type.ToString()} | SIZE: {data.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire"); //This debug statement technically has a (very) small performance overhead even when NetworkWire is silenced, due to the line above it.
             ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
             SteamNetworkingMessage_t.Release(messages[i]);
         }
@@ -287,6 +315,16 @@ public class SteamNetwork
                 Global.GameSession?.HandleSessionMessageBytes(data, fromSteamID);
                 break;
 
+            ///////////////////////////////////  SPAWN ///////////////////////
+            case NetType.SPAWN_GAMEOBJECT:
+                SpawnRequestor.HandleSpawnGameObjectProto(data, fromSteamID);
+                break;
+
+            /////////////////////////////////// PLAYERS /////////////////////
+            case NetType.PLAYERCONTROLLER:
+                NetworkPCMessageEvent?.Invoke(PlayerControllerMessage.Parser.ParseFrom(data));
+                break;
+
             ///////////////////////////////////  OTHER  /////////////////////
             case NetType.DEBUG_UTF8:
                 Logging.Log($"Reencoded (UTF8) Message: {Encoding.UTF8.GetString(data)}", "NetworkDEBUG");
@@ -299,23 +337,51 @@ public class SteamNetwork
     /// <summary>
     /// Takes the same parameters as a SendData() but just routes the message back to ourselves with optional network simulation.
     /// See <see cref="bDoLoopback"/>
-    /// <para>IMPORTANT: Does not fully replicate network message process. Skips payload memory allocation and payload byte packing.</para>
+    /// <para>IMPORTANT: Does not fully replicate network message process.</para>
     /// </summary>
     /// <param name="data"></param>
     /// <param name="type"></param>
     private async void Loopback(byte[] data, NetType type)
     {
-        if (bNetworkSimulation)
-        {
-            await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
-        }
+        ReceiveBandwidthTracker += data.Length;
         Logging.Log($" MSGRCV | FROM: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
-        ProcessData(data, type, Global.steamid);
+        if (bLoopbackMemoryAllocation)
+        {
+            byte[] senderPayload = NetworkUtils.WrapSteamPayload(data, type);
+            nint senderPayloadPtr = NetworkUtils.BytesToPtr(senderPayload);
+
+            if (bNetworkSimulation)
+            {
+                await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
+            }
+
+            byte[] rcvPayload = NetworkUtils.PtrToBytes(senderPayloadPtr,senderPayload.Length);
+            NetworkUtils.UnwrapSteamPayload(rcvPayload, out byte[] rcvData, out NetType rcvType);
+            ProcessData(rcvData, rcvType, Global.steamid);
+        }
+        else
+        {
+            if (bNetworkSimulation)
+            {
+                await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
+            }
+            ProcessData(data, type, Global.steamid);
+        }
     }
 
     public void Tick(double delta)
     {
-
+        if (BandwidthTrackerEnabled)
+        {
+            BandwidthTrackerTimer += delta;
+            if (BandwidthTrackerTimer > BandwidthTrackerWindow)
+            {
+                Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker}", "BandwidthTracker");
+                SendBandwidthTracker = 0;
+                ReceiveBandwidthTracker = 0;
+                BandwidthTrackerTimer = 0;
+            }
+        }
     }
 }
 

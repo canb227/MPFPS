@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://dpvmxye6crgdd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_p8adj"]
+font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_uo7ie"]
+font_size = 64
+
+[node name="LoadingScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 825.0
+offset_right = 1871.0
+offset_bottom = 1052.0
+
+[node name="description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 820.0
+offset_top = 752.0
+offset_right = 1116.0
+offset_bottom = 802.0
+text = "PLEASE SET ME"
+label_settings = SubResource("LabelSettings_p8adj")
+
+[node name="title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 859.0
+offset_top = 21.0
+offset_right = 1135.0
+offset_bottom = 109.0
+text = "Loading!"
+label_settings = SubResource("LabelSettings_uo7ie")

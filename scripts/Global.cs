@@ -33,6 +33,7 @@ public partial class Global : Node
     /// </summary>
     public static bool DrawDebugScreens = false;
 
+    public static Node instance;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Node Derived Singletons (On scene tree, under main)
@@ -56,11 +57,6 @@ public partial class Global : Node
     /// Holds a reference to the currently active networking system
     /// </summary>
     public static SteamNetwork network;
-
-    /// <summary>
-    /// holds  a reference to the static Entity Name -> Entity Scene Library/Loader
-    /// </summary>
-    public static EntityLoader EntityLoader;
 
     /// <summary>
     /// holds  a reference to the static level Name -> level Scene Library/Loader
@@ -91,6 +87,7 @@ public partial class Global : Node
     //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
     public override void _Ready()
     {
+        instance = this;
 
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 

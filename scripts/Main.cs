@@ -2,6 +2,8 @@ using Godot;
 using Limbo.Console.Sharp;
 using Steamworks;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Our entry point after our autoloads (Global) finish loading
@@ -9,8 +11,13 @@ using System;
 /// </summary>
 public partial class Main : Node
 {
+
+    public bool bConsoleOpen = false;
+    public Input.MouseModeEnum stashedMouseMouseMode = Input.MouseModeEnum.Max;
+
+
     //This runs after Global._Ready(), and handles most of our startup. (Logging and Steam are handled earlier in Global)
-    public override void _Ready()
+    public async override void _Ready()
     {
         //First up, start up the config system and register a static reference to it in Global. Despite its name, this system handles both user configuration settings and user savefiles/meta-progression tracking
         //It'll automatically load up the Config file and the Progression files from disk for the logged in user from the user:// Godot file location.
@@ -57,6 +64,13 @@ public partial class Main : Node
 
         //TODO: Trigger preloading and shader stuff here if needed, using the above world node
 
+        Global.ui.StartLoadingScreen();
+        Global.ui.SetLoadingScreenDescription("Compiling Shaders...");
+
+        await DoSomeLongShit();
+
+        Global.ui.StopLoadingScreen();
+
         //TODO: Add additonal start up items here.
 
         //Create the Lobby system, register a reference to it with Global, and "host" a new lobby right away.
@@ -90,8 +104,23 @@ public partial class Main : Node
         }
 
         //TODO: Show main menu/intro screen/whatever
+        Global.ui.SwitchFullScreenUI("UI_MainMenu");
 
         //If we launched the game normally, startup is now fully complete
+    }
+
+    private async Task DoSomeLongShit()
+    {
+        await ToSignal(GetTree().CreateTimer(.1f), SceneTreeTimer.SignalName.Timeout);
+        Global.ui.UpdateLoadingScreenProgressBar(20);
+        await ToSignal(GetTree().CreateTimer(.1f), SceneTreeTimer.SignalName.Timeout);
+        Global.ui.UpdateLoadingScreenProgressBar(40);
+        await ToSignal(GetTree().CreateTimer(.1f), SceneTreeTimer.SignalName.Timeout);
+        Global.ui.UpdateLoadingScreenProgressBar(60);
+        await ToSignal(GetTree().CreateTimer(.1f), SceneTreeTimer.SignalName.Timeout);
+        Global.ui.UpdateLoadingScreenProgressBar(80);
+        await ToSignal(GetTree().CreateTimer(.1f), SceneTreeTimer.SignalName.Timeout);
+        Global.ui.UpdateLoadingScreenProgressBar(100);
     }
 
     //To help maintain an understanding of exactly what runs every frame, and in what order, main is the only thing that has a _Process()
@@ -102,12 +131,9 @@ public partial class Main : Node
         SteamAPI.RunCallbacks();
         Global.network.PerFrame(delta);
         Global.world.PerFrame(delta);
-        if (Global.GameSession != null && Global.GameSession.playerData != null)
+        foreach (Controller controller in Global.world.controllers.Values)
         {
-            foreach (var player in Global.GameSession.playerData)
-            {
-                player.Value.playerController.PerFrame(delta);
-            }
+            controller.PerFrame(delta);
         }
 
     }
@@ -119,6 +145,53 @@ public partial class Main : Node
     {
         Global.network.Tick(delta);
         Global.world.Tick(delta);
+        foreach (Controller controller in Global.world.controllers.Values)
+        {
+            controller.Tick(delta);
+        }
+
+
+
+
+        if (bConsoleOpen)
+        {
+            ConsolePicker();
+        }
+
+    }
+
+    private void ConsolePicker()
+    {
+        if (Input.IsActionJustPressed("FIRE"))
+        {
+            var mpos = GetViewport().GetMousePosition();
+            PlayerCharacter pc = ((PlayerCharacter)Global.GameSession.playerData[Global.steamid].playerController.possessedCharacter);
+            if (pc != null)
+            {
+                var from = pc.cam.ProjectRayOrigin(mpos);
+                var to = from + pc.cam.ProjectRayNormal(mpos) * 1000;
+                var space = pc.GetWorld3D().DirectSpaceState;
+                var query = PhysicsRayQueryParameters3D.Create(from, to);
+                query.CollideWithAreas = true;
+                query.CollideWithBodies = true;
+                query.Exclude = [pc.body.GetRid()];
+                var result = space.IntersectRay(query);
+
+                Node bob = (Node)result["collider"];
+                if (bob.GetParent() is GameObject go)
+                {
+                    Logging.Log($"You just clicked on a gameobject with name {go.Name}, id {go.GetUID()}", "Picker");
+                    TextEdit cmdBar = GetTree().Root.GetNode<TextEdit>("LimboConsole/@PanelContainer@3/@VBoxContainer@4/@TextEdit@12");
+                    cmdBar.Text += go.GetUID();
+                    cmdBar.SetCaretColumn(cmdBar.Text.Length);
+                }
+                else
+                {
+                    Logging.Log($"You just clicked on non game object {result["collider"]}  at pos {result["position"]} (ID: {result["collider_id"]})", "Picker");
+                }
+                
+            }
+        }
     }
 
     /// <summary>
@@ -140,10 +213,27 @@ public partial class Main : Node
             //backtick/tilde toggles the console
             else if (k.Keycode == Key.Quoteleft)
             {
-                LimboConsole.ToggleConsole();
+                if (bConsoleOpen)
+                {
+                    bConsoleOpen = false;
+                    LimboConsole.CloseConsole();
+                    if (Input.MouseMode==Input.MouseModeEnum.Visible)
+                    {
+                        Input.MouseMode = stashedMouseMouseMode;
+                    }
+
+                }
+                else
+                {
+                    bConsoleOpen = true;
+                    stashedMouseMouseMode = Input.MouseMode;
+                    LimboConsole.OpenConsole();
+                    Input.MouseMode = Input.MouseModeEnum.Visible;
+                }
                 GetViewport().SetInputAsHandled();
             }
         }
+
     }
 
     /// <summary>
@@ -156,8 +246,15 @@ public partial class Main : Node
         //Does not fire if process gets killed - you cant really do anything about that
         if (what == NotificationWMCloseRequest)
         {
-            //lobal.network.NetworkCleanup();
-            GetTree().Quit(); // default behavior
+            QuitGame();
         }
+    }
+
+    public static void QuitGame()
+    {
+        Global.Config.SavePlayerProgression();
+        Global.Config.SavePlayerConfig();
+        Global.InputMap.SavePlayerInputMap();
+        Global.instance.GetTree().Quit();
     }
 }

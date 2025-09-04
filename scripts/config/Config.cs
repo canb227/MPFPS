@@ -115,6 +115,7 @@ public class Config //TODO: Rename this ConfigManager or smth idk?
             loadedPlayerConfig = cfg;
             SavePlayerConfig();
         }
+        Logging.Log($"SENS: {loadedPlayerConfig.mouseSensY}","temp");
     }
 
     /// <summary>

@@ -1,24 +1,105 @@
 using Godot;
+using System;
+using System.Collections.Generic;
 
-public partial class UI : Control
+public partial class UI : Node
 {
+
+    public Control currentFullScreenUI;
+
+    public Control currentLoadingScreen;
+    public ProgressBar loadingProgressBar;
+
+
+    public Dictionary<string, string> UIScenePaths = new Dictionary<string, string>()
+    {
+        { "NONE", "" },
+        { "DEBUG_launcher","res://scenes/ui/DebugScreen.tscn" },
+        { "UI_LoadingScreen","res://scenes/ui/LoadingScreen.tscn" },
+        { "UI_MainMenu", "res://scenes/ui/MainMenu.tscn" },
+    };
+
 
 
     public override void _Ready()
     {
-
+       
     }
 
-    public void LoadDebugSessionScreen()
+    public void SwitchFullScreenUI(string sceneName)
     {
-        PackedScene pck = ResourceLoader.Load<PackedScene>("res://scenes/ui/DebugScreen.tscn");
-        Control dbg = pck.Instantiate<Control>();
-        dbg.Name = "dbg";
-        AddChild(dbg);
+        Logging.Log($"Setting fullscreen UI to: {sceneName}.", "UI");
+        ClearFullScreenUI();
+        if (sceneName.Equals("NONE"))
+        {
+            return;
+        }
+
+        Control loadedUI = LoadUI(sceneName); 
+        currentFullScreenUI = loadedUI;
+        currentFullScreenUI.Show();
     }
 
-    internal void HideDebugScreen()
+    private Control LoadUI(string sceneName)
     {
-        GetNode<Control>("dbg").Hide();
+        Control loadedUI = ResourceLoader.Load<PackedScene>(UIScenePaths[sceneName]).Instantiate<Control>();
+        loadedUI.Name = sceneName;
+        loadedUI.Hide();
+        AddChild(loadedUI);
+        return loadedUI;
+    }
+
+    private void ClearFullScreenUI()
+    {
+        Logging.Log($"Clearing fullscreen UI", "UI");
+        if (currentFullScreenUI!=null) currentFullScreenUI.Hide();
+        currentFullScreenUI = null;
+    }
+
+    internal void StartLoadingScreen(string loadingScreenSceneName = "UI_LoadingScreen")
+    {
+        Logging.Log($"Bringing up loading screen.", "UI_Loading");
+        ClearFullScreenUI();
+        Control loadingScreen = LoadUI(loadingScreenSceneName);
+        currentLoadingScreen = loadingScreen;
+        loadingProgressBar = loadingScreen.GetNode<ProgressBar>("bar");
+        loadingScreen.Show();
+    }
+
+    internal void UpdateLoadingScreenProgressBar(double progress)
+    {
+        if (loadingProgressBar != null)
+        {
+            loadingProgressBar.Value = progress;
+            Logging.Log($"Updating loading screen bar to: {progress}", "UI_Loading");
+        }
+        else
+        {
+            Logging.Error("There is no valid loading screen loaded, cannot update progress bar value.", "UI_Loading");
+        }
+    }
+
+    public void SetLoadingScreenDescription(string description)
+    {
+        Logging.Log($"Setting load screen progress description to: {description}", "UI_Loading");
+        currentLoadingScreen.GetNode<Label>("description").Text = description;
+    }
+
+    internal void StopLoadingScreen()
+    {
+        Logging.Log($"Removing and resetting loading screen.", "UI_Loading");
+        loadingProgressBar.Value = 0;
+        currentLoadingScreen.GetNode<Label>("description").Text = "PLEASE SET ME";
+        currentLoadingScreen.Hide();
+    }
+
+    internal void PregameWaitingForPlayers()
+    {
+        //probably like, load our UI, but gray it out or smth and put "waiting for players on screen?"
+    }
+
+    internal void InGameStart()
+    {
+        Logging.Log("Enabling ingame UI.","UI");
     }
 }

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxat7ap5xuarm"]
+
+[ext_resource type="Script" uid="uid://dorclmu52c3m7" path="res://scripts/entities/GameObject.cs" id="1_itkb2"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hlf5b"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_itkb2"]
+
+[node name="Ball" type="Node3D"]
+script = ExtResource("1_itkb2")
+metadata/_custom_type_script = "uid://dorclmu52c3m7"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_hlf5b")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("SphereMesh_itkb2")

@@ -1,8 +1,10 @@
+using GameMessages;
 using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 /// <summary>
 /// GameSession is an abstraction of the actual game we're going to play. Upstream of GameSession is the Lobby, which provides the lobbyPeers and alerts us when our peer list changes. 
@@ -57,9 +59,19 @@ public class GameSession
     public static event GameSessionPlayerReconnect GameSessionPlayerReconnectEvent;
 
     /// <summary>
+    /// Fires when we get option assignments from the host.
+    /// </summary>
+    public delegate void GameSessionOptionsAssigned();
+    public static event GameSessionOptionsAssigned GameSessionOptionsAssignedEvent;
+
+
+    /// <summary>
     /// Tracks the number of player's we're waiting for to finish loading
     /// </summary>
     private int numberPlayersStillLoading;
+
+
+
 
     /// <summary>
     /// Creates a new GameSession that listens for lobby events, and pre-populate it with the given list of peers.
@@ -77,6 +89,7 @@ public class GameSession
         Lobby.LobbyPeerRemovedEvent += OnLobbyPeerRemoved;
         Lobby.LeftLobbyEvent += OnLeftLobby;
         sessionAuthority = hostID;
+        Global.world.defaultAuthority = sessionAuthority;
         foreach (ulong peerID in peers)
         {
             AddToSession(peerID);
@@ -192,11 +205,18 @@ public class GameSession
             Logging.Error($"This player is not in our lobby and cannot be added to the session. Something has gone very wrong.", "GameSession");
             return;
         }
+
+        if (playerData.ContainsKey(newPlayerSteamID))
+        {
+            Logging.Warn($"This player is already in our session. Something has gone wrong.", "GameSession");
+        }
+
         PlayerData pd = new();
         pd.steamID = newPlayerSteamID;
         pd.options = new PlayerOptions();
         pd.state = PlayerState.PREGAME_WAITINGFORINFO;
         pd.playerController = new(newPlayerSteamID);
+        Global.world.AddChild(pd.playerController);
 
         if (!NetworkUtils.IsMe(newPlayerSteamID))
         {
@@ -270,7 +290,7 @@ public class GameSession
     }
 
     /// <summary>
-    /// Core handler for incoming SESSION typed network messages. Works just the Lobby one, strips off the first byte to use as a routing flag
+    /// Core handler for incoming SESSION typed network messages. Works just like the Lobby one, strips off the first byte to use as a routing flag
     /// </summary>
     /// <param name="payload"></param>
     /// <param name="fromSteamID"></param>
@@ -308,7 +328,7 @@ public class GameSession
                 if (Global.steamid == sessionAuthority)
                 {
                     byte[] apopt_data = NetworkUtils.StructToBytes(GenerateOptions(fromSteamID));
-                    SendSessionMessage(apopt_data, SessionMessageType.RESPONSE_PLAYEROPTIONS, fromSteamID);
+                    SendSessionMessage(apopt_data, SessionMessageType.RESPONSE_ASSIGNPLAYEROPTIONS, fromSteamID);
                     break;
                 }
                 else
@@ -352,7 +372,6 @@ public class GameSession
             case SessionMessageType.COMMAND_STARTGAME:
                 if (fromSteamID == sessionAuthority)
                 {
-
                     numberPlayersStillLoading = playerData.Count;
                     playerData[Global.steamid].state = PlayerState.PREGAME_LOADING;
                     Logging.Log($"Host has just commanded us to start the game, starting loading and informing peers", "GameSession");
@@ -360,9 +379,7 @@ public class GameSession
                     new_state_data[0] = (byte)(playerData[Global.steamid].state);
                     BroadcastSessionMessage(new_state_data, SessionMessageType.RESPONSE_PLAYERSTATE);
 
-                    //Loading Loading Loading
-                    //Loading screen bar go wheeee
-                    //pre-load pre-cache idk
+                    StartLoadingGame();
 
                     playerData[Global.steamid].state = PlayerState.PREGAME_DONELOADING;
                     Logging.Log($"We're done loading! Informing peers and waiting for others to finish.", "GameSession");
@@ -370,7 +387,7 @@ public class GameSession
                     new2_state_data[0] = (byte)(playerData[Global.steamid].state);
                     BroadcastSessionMessage(new2_state_data, SessionMessageType.RESPONSE_PLAYERSTATE);
 
-                    //We're done loading maybe drop the loading screen but keep controls frozen or smth?
+
                 }
                 else
                 {
@@ -381,6 +398,15 @@ public class GameSession
             default:
                 throw new ArgumentException($"Malformed Session Message | First Byte: {((int)payload[0])} Cast As SessionMessageType:{((SessionMessageType)payload[0]).ToString()}");
         }
+    }
+
+    private void StartLoadingGame()
+    {
+        Global.ui.StartLoadingScreen();
+        Global.ui.SetLoadingScreenDescription("Loading game world...");
+        Global.world.LoadWorld();
+        Global.ui.StopLoadingScreen();
+        Global.ui.PregameWaitingForPlayers();
     }
 
     /// <summary>
@@ -416,7 +442,8 @@ public class GameSession
                 if (numberPlayersStillLoading == 0)
                 {
                     Logging.Log("All players are done loading. Starting game and informing peers I'm starting game.", "GameSession");
-                    //TODO: Start the game lol
+                    Global.world.InGameStart();
+                    Global.ui.InGameStart();
                     playerData[Global.steamid].state = PlayerState.INGAME_OK;
                     BroadcastSessionMessage([(byte)(playerData[Global.steamid].state)], SessionMessageType.RESPONSE_PLAYERSTATE);
                 }
@@ -492,7 +519,7 @@ public struct SessionOptions
 /// <summary>
 /// one byte enum value to store session message type information
 /// </summary>
-public enum SessionMessageType : byte
+public enum SessionMessageType
 {
     ERROR = 0,
 

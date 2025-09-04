@@ -1,13 +1,19 @@
+using GameMessages;
 using Godot;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 public partial class World : Node3D
 {
-    bool IsServer = false;
-    Dictionary<ulong, Entity> entities = new();
+
+    public Dictionary<ulong, GameObject> entities = new();
+    public Dictionary<ulong, Controller> controllers = new();
 
     public ulong defaultAuthority;
+
+    public Vector3 defaultSpawnLocation = new Vector3(0,0,0);
 
     private ulong tick = 0;
     private Node meta = null;
@@ -18,16 +24,7 @@ public partial class World : Node3D
         Global.world = this;
         Logging.Log($"Game world ready for commands.", "World");
         SetPhysicsProcess(false);
-    }
-
-    public Entity FindEntity(ulong eid)
-    {
-        entities.TryGetValue(eid, out var entity);
-        return entity;
-    }
-    public void StartWorld()
-    {
-        SetPhysicsProcess(true);
+        entities[0] = new GameObject();
     }
 
     public void LoadRootSceneByPath(string scenePath)
@@ -59,33 +56,41 @@ public partial class World : Node3D
     {
 
     }
-    public void SpawnEntityRequest(ulong eid, Vector3 pos)
+
+
+    internal void LoadWorld()
     {
-        if (defaultAuthority == Global.steamid)
+        if (Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP)
         {
-            SpawnEntityRequest ser = new SpawnEntityRequest();
-            ser.eid = eid;
-            ser.pos = pos;
-            //Global.GameSession.BroadcastStruct(ser, NetType.ENTITY_SPAWN);
+            int mapIndex = Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX;
+            string scenePath = DebugScreen.directLoadMap_mapPaths[mapIndex];           
+            LoadRootSceneByPath(scenePath);
         }
-        else
-        {
-            SpawnEntityRequest ser = new SpawnEntityRequest();
-            ser.eid = eid;
-            ser.pos = pos;
-            //send to server
-        }
-
-
     }
-    internal void StartGame()
+
+    internal void InGameStart()
     {
-
+        
     }
-}
 
-struct SpawnEntityRequest
-{
-    public ulong eid;
-    public Vector3 pos;
+    internal ulong AssignNewID()
+    {
+        Random rng = new Random();
+        ulong id = 0;
+        while (entities.ContainsKey(id))
+        {
+            id = (ulong)rng.NextInt64();
+        }
+        return id;
+    }
+
+    internal void SpawnGameObject(SpawnGameObjectData msg)
+    {
+        GameObject obj = GameObjectLoader.LoadGameObjectInstance(msg.ObjName);
+        obj.SetUID(msg.WithID);
+        obj.Name = msg.ObjName;
+        entities[obj.GetUID()] = obj;
+        obj.Position = new Vector3(msg.SpawnX, msg.SpawnY, msg.SpawnZ);
+        AddChild(obj);
+    }
 }

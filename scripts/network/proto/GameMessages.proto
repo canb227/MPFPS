@@ -1,0 +1,113 @@
+syntax = "proto3";
+package GameMessages;
+
+enum SessionProtoMessageType
+{
+    SESSION_ERROR = 0;
+
+    REQUEST_CONFIG = 1;
+    REQUEST_PROGRESSION = 2;
+    REQUEST_PLAYEROPTIONS = 3;
+    REQUEST_PLAYERSTATE = 4;
+    REQUEST_SESSIONOPTIONS = 5;
+    REQUEST_ASSIGNPLAYEROPTIONS = 6;
+
+    RESPONSE_CONFIG = 11;
+    RESPONSE_PROGRESSION = 12;
+    RESPONSE_PLAYEROPTIONS = 13;
+    RESPONSE_PLAYERSTATE = 14;
+    RESPONSE_SESSIONOPTIONS = 15;
+    RESPONSE_ASSIGNPLAYEROPTIONS = 16;
+
+    COMMAND_STARTGAME = 21;
+}
+
+message SessionMessage
+{
+	uint64 sender = 1;
+    SessionProtoMessageType type = 2;
+}
+
+
+message SpawnGameObjectData
+{
+    bool request = 1;
+    uint64 sender = 2;
+    uint64 authority = 3;
+
+    string objName = 4;
+
+    float spawnX = 5;
+    float spawnY = 6;
+    float spawnZ = 7;
+
+    optional uint64 withID = 8;
+    optional uint64 requestorAutoPossess = 9;
+}
+
+message SimpleGameObjectSync
+{
+    bool request = 1;
+    uint64 sender = 2;
+    uint64 authority = 3;
+
+    uint64 target = 4;
+
+    float posX = 5;
+    float posY = 6;
+    float posZ = 7;
+
+    float rotX = 8;
+    float rotY = 9;
+    float rotZ = 10;
+
+    float velX = 11;
+    float velY = 12;
+    float velZ = 13;
+
+    float torqueX = 14;
+    float torqueY = 15;
+    float torqueZ = 16;
+
+    map<string, float> fData = 17;
+    map<string, uint64> ulData = 18;
+    map<string, bool> bData = 19;
+}
+
+
+enum PlayerControllerMessageType
+{
+    PC_ERROR = 0;
+
+    POSSESS = 1;
+
+    INPUT_ONE = 11;
+    INPUT_FULL = 12;
+}
+
+message PlayerControllerMessage
+{
+    bool request = 1;
+    uint64 sender = 2;
+    uint64 authority = 3;
+
+    PlayerControllerMessageType type = 4;
+
+    uint64 target = 5;
+    uint64 other = 6;
+
+    map<string,ActionInput> inputs = 7;
+    float MovementVectorX = 8;
+    float MovementVectorY = 9;
+    float RotateVectorAccumulatorX = 10;
+    float RotateVectorAccumulatorY = 11;
+}
+
+message ActionInput 
+{
+    string actionName = 1;
+    bool pressed = 2;
+    bool released = 3;
+    bool justPressed = 4;
+    bool changed =5;
+}

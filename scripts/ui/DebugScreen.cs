@@ -1,4 +1,5 @@
 using Godot;
+using Limbo.Console.Sharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -94,6 +95,11 @@ public partial class DebugScreen : Control
             directLoadMap_mapList.AddItem(map);
         }
 
+        foreach (ulong player in Global.GameSession.playerData.Keys)
+        {
+            GameSession_NewPlayerEvent(player);
+        }
+
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
@@ -112,7 +118,15 @@ public partial class DebugScreen : Control
 
     private void StartGameButton_Pressed()
     {
-
+        if (Global.GameSession.sessionAuthority == Global.steamid)
+        {
+            Logging.Log("Direct starting game...", "DebugScreen");
+            Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
+        }
+        else
+        {
+            Logging.Error("Only the host can start the game.", "DebugScreen");
+        }
     }
 
     private void GameSession_OptionsChangedEvent()

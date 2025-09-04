@@ -64,7 +64,7 @@ _data = {
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1bqr5"]
-size = Vector3(5, 5, 5)
+size = Vector3(19.871216, 44.73023, 66.47327)
 
 [node name="DebugPlatform" type="Node3D"]
 
@@ -445,13 +445,14 @@ libraries = {
 &"": SubResource("AnimationLibrary_5wac7")
 }
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-0.451754, 0.40092215, -0.7969817, 0, 0.89333445, 0.44939253, 0.89214253, 0.20301485, -0.40356743, -11.690974, 15.536028, -10.035044)
-
 [node name="meta" type="Node" parent="."]
 
 [node name="spawnBox" type="Area3D" parent="meta"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.496555, 9.178258, -5.6667533)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.605976, 9.178258, -5.6667533)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="meta/spawnBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.683933, 2.9020243, 17.023483)
 shape = SubResource("BoxShape3D_1bqr5")
+
+[node name="defaultSpawn" type="Marker3D" parent="meta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)

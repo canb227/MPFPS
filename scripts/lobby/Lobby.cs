@@ -18,6 +18,7 @@ public enum LobbyMessageType : byte
 
     ERROR_AlreadyPeer = 200,
     ERROR_JoinRejectedNotInLobby = 201,
+    ERROR_NotFriend = 202,
 }
 
 /// <summary>
@@ -31,8 +32,8 @@ public enum LobbyHostFlag : byte
 }
 
 /// <summary>
-/// The lobby provides a promise that you and every single player in your game are all connected to eachother, and can send messages either to the lobby host or to any other peer. 
-/// It handles the connection graph needed to facilitate that, and pumps out events when notable events take place. Any other code can hook into these events for various purposes.
+/// The lobby provides a promise that you and every other player in your game are all connected to eachother, and can send messages either to the lobby host or to any other peer. 
+/// It handles the connection graph needed to facilitate that, and pumps out event invocations when notable events take place. Any other code can hook into these events for various purposes.
 /// Lobby is the second layer of the multiplayer abstraction system, after SteamNetwork. SteamNetwork handles actual connections and data with no understanding of friends or lobbies or hosts.
 /// Lobby should not be handling gameplay related tasks - its job starts and ends at keeping LobbyPeers perfectly maintained.
 /// </summary>
@@ -40,7 +41,7 @@ public class Lobby
 {
     /// <summary>
     /// The most useful output of the Lobby system is the LobbyPeers list. It is a list of peers that we are connected to, and thus represents the list of users we are able to send messages to, and the list of users in our game.
-    /// One of the peers in LobbyPeers is the Lobby Host, who has a few extra jobs in keeping everyone in line. The lobby host does not have any inherent networking authority (they are not the server), its just an arbitrary designation
+    /// One of the peers in LobbyPeers is the Lobby Host, who has a few extra jobs in keeping everyone in line. The lobby host does not have any inherent networking authority (they are not technically hosting the lobby), its just an arbitrary designation
     /// given to the first person to start the lobby.
     /// </summary>
     public HashSet<ulong> lobbyPeers = new();
@@ -62,38 +63,45 @@ public class Lobby
     public bool bIsLobbyHost = false;
 
     /// <summary>
+    /// If true, when hosting a lobby, only let our steam friends in. (Does nothing if not host)
+    /// </summary>
+    public bool bFriendsOnly = true;
+
+    /// <summary>
     /// An automagical Steam callback that fires whenever the local user does any of the following:
     /// 1. Clicks "accept" on a steam invite, 2. clicks "join game" in the friends menu. 3. Probably other stuff idk
     /// <para>Regardless, the parameter contains the steamID of the friend in question, and the value stored in that friend's rich presence dict under the "connect" key. </para>
     /// </summary>
     Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
 
+    //Event delegates. Blame C#
     public delegate void HostedNewLobby();
+    public delegate void JoinedToLobby(ulong hostSteamID);
+    public delegate void NewLobbyPeerAdded(ulong newPlayerSteamID);
+    public delegate void LobbyPeerRemoved(ulong removedPlayerSteamID);
+    public delegate void LeftLobby();
+
     /// <summary>
     /// Fires when we host a new lobby. We try to keep a lobby open at all times to allow friends to join us, so this fires semi-frequently as the user leaves/switches lobbies.
     /// This event is lowkey not that helpful I think. Might be good to trigger some preloads or smth.
     /// </summary>
     public static event HostedNewLobby HostedNewLobbyEvent;
 
-    public delegate void JoinedToLobby(ulong hostSteamID);
     /// <summary>
     /// Fires when we join a lobby, including our own after hosting. Once this fires we should be safe to query lobby state.
     /// </summary>
     public static event JoinedToLobby JoinedToLobbyEvent;
 
-    public delegate void NewLobbyPeerAdded(ulong newPlayerSteamID);
     /// <summary>
-    /// Fires when a someone new joins the lobby that we're in, including ourselves.
+    /// Fires when a someone new joins the lobby that we're in, including ourselves and the host of the lobby as we join the first time.
     /// </summary>
     public static event NewLobbyPeerAdded NewLobbyPeerAddedEvent;
 
-    public delegate void LobbyPeerRemoved(ulong removedPlayerSteamID);
     /// <summary>
     /// Fires when a someone leaves the lobby that we're in. DOES NOT FIRE WHEN WE LEAVE A LOBBY. See <see cref="LeftLobbyEvent"/>.
     /// </summary>
     public static event LobbyPeerRemoved LobbyPeerRemovedEvent;
 
-    public delegate void LeftLobby();
     /// <summary>
     /// Fires when we leave a lobby.
     /// </summary>
@@ -126,25 +134,10 @@ public class Lobby
             }
         }
         Logging.Log($"Hosting a new lobby and enabling steam rich presence.", "Lobby");
-        SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
-        bInLobby = true;
         bIsLobbyHost = true;
         LobbyHostSteamID = Global.steamid;
-        lobbyPeers = new();
-        lobbyPeers.Add(Global.steamid);
+        LobbyJoinedInternal(LobbyHostSteamID);
         HostedNewLobbyEvent?.Invoke();
-        JoinedToLobbyEvent?.Invoke(Global.steamid);
-        NewLobbyPeerAddedEvent?.Invoke(Global.steamid);
-    }
-
-    /// <summary>
-    /// See <see cref="m_GameRichPresenceJoinRequested"/>
-    /// </summary>
-    /// <param name="param"></param>
-    private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
-    {
-        Logging.Log($"RichPresence join to {ulong.Parse(param.m_rgchConnect)} requested, sending them a join request...", "Lobby");
-        AttemptJoinToLobby(ulong.Parse(param.m_rgchConnect), true);
     }
 
     /// <summary>
@@ -171,6 +164,8 @@ public class Lobby
         Logging.Log($"Attempting to join lobby hosted by: {steamID}", "Lobby");
         SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.JoinRequest, steamID);
     }
+
+
 
     /// <summary>
     /// Packs the data byte array into the correct format for a Lobby Message, which takes a one byte type flag and sets it as the first byte of the message payload.
@@ -232,7 +227,6 @@ public class Lobby
                     SendLobbyMessage([flag], LobbyMessageType.Leave_Quit, peer);
                 }
             }
-
             SteamFriends.ClearRichPresence();
             bInLobby = false;
             bIsLobbyHost = false;
@@ -274,86 +268,84 @@ public class Lobby
         //Here we split off that one byte, and use it to process the rest of the message correctly.
         LobbyMessageType type = (LobbyMessageType)payload[0];
         byte[] data = payload.Skip(1).ToArray();
-
+        byte hostFlag = bIsLobbyHost ? (byte)LobbyHostFlag.FromHost : (byte)LobbyHostFlag.FromNonHost;
         //TODO: Better documentation/organization of this messy switch statement
+        //
+        //   HOST POV
+        //   Trigger:                     Response:                             Side Effect:
+        //   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        //   Get Join Request          Send Join Accepted               Add sender to peer list, fire NewLobbyPeerAddedEvent
+        //   Get Peer List Request     Send Peer List Response(s)       None
+        //   Get Join Accepted         None                             None
+        //   Get Peer List Response    None                             None
+        //
+        //
+        //   CLIENT POV
+        //   Trigger:                            Response:                               Side Effect:
+        //   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        //   Get Join Accepted From Host      Send Peer List Request                 Fire JoinedToLobbyEvent
+        //   Get Join Accepted From non-Host  Send Peer List Request                 Add sender to peer list, fire NewLobbyPeerAddedEvent
+        //   Get Join Request                 Send Join Accepted                     Add sender to peer list, fire NewLobbyPeerAddedEvent
+        //   Get Peer List Request            Send Peer List Response(s)             None
+        //   Get Peer List Response           None                                   Send Join Request to listed peer
+        //
         switch (type)
         {
+
             case LobbyMessageType.JoinRequest:
                 if (!bInLobby)
                 {
                     Logging.Warn("Ignoring unexpected Join Request! We are not in a lobby!", "Lobby");
-                    SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.ERROR_JoinRejectedNotInLobby, fromSteamID);
+                    SendLobbyMessage([hostFlag], LobbyMessageType.ERROR_JoinRejectedNotInLobby, fromSteamID);
                     break;
                 }
-                if (bIsLobbyHost)
+                if (lobbyPeers.Contains(fromSteamID))
                 {
-                    Logging.Log($"Accepting Join Request from {fromSteamID} as Host", "Lobby");
-                    if (lobbyPeers.Add(fromSteamID))
-                    {
-                        NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
-                        SendLobbyMessage([(byte)LobbyHostFlag.FromHost], LobbyMessageType.JoinAccepted, fromSteamID);
-                    }
-                    else
-                    {
-                        SendLobbyMessage([(byte)LobbyHostFlag.FromHost], LobbyMessageType.ERROR_AlreadyPeer, fromSteamID);
-                    }
+                    Logging.Log($"Declining Join Request from {fromSteamID} - They are already our peer", "Lobby");
+                    SendLobbyMessage([hostFlag], LobbyMessageType.ERROR_AlreadyPeer, fromSteamID);
+                    break;
                 }
-                else
+                if (bIsLobbyHost && bFriendsOnly && SteamFriends.GetFriendRelationship(new CSteamID(fromSteamID)) != EFriendRelationship.k_EFriendRelationshipFriend)
                 {
-                    Logging.Log($"Accepting Join Request from {fromSteamID} as non-host", "Lobby");
-                    if (lobbyPeers.Add(fromSteamID))
-                    {
-                        NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
-                        SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.JoinAccepted, fromSteamID);
-                    }
-                    else
-                    {
-                        SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.ERROR_AlreadyPeer, fromSteamID);
-                    }
+                    Logging.Log($"Join Request REJECTED from {fromSteamID} as Host, because this user is not our friend and we are in friend only mode.", "Lobby");
+                    SendLobbyMessage([hostFlag], LobbyMessageType.ERROR_NotFriend, fromSteamID);
+                    break;
                 }
+                Logging.Log($"Accepting Join Request from {fromSteamID} as Host", "Lobby");
+                AddNewPeer(fromSteamID);
+                SendLobbyMessage([hostFlag], LobbyMessageType.JoinAccepted, fromSteamID);
                 break;
+
             case LobbyMessageType.JoinAccepted:
                 if (data[0] == (byte)LobbyHostFlag.FromHost) // we just joined the host look alive
                 {
+                    if (lobbyPeers.Contains(fromSteamID))
+                    {
+                        Logging.Warn($"Our join request to host {fromSteamID} was accepted but we already have them as a peer. What happened?", "Lobby");
+                        break;
+                    }
                     if (bInLobby)
                     {
                         Logging.Warn($"We're already in a lobby but just joined another!", "Lobby");
                         Logging.Warn($"Leaving current lobby before joining the new one...", "Lobby");
                         LeaveLobby(false);
                     }
-                    if (lobbyPeers.Add(fromSteamID))
-                    {
-                        Logging.Log($"Successfully joined to host {fromSteamID}. Sending request for other peers.", "Lobby");
-                        lobbyPeers.Add(fromSteamID);
-                        LobbyHostSteamID = fromSteamID;
-                        bInLobby = true;
-                        SteamFriends.SetRichPresence("connect", fromSteamID.ToString());
-                        lobbyPeers.Add(Global.steamid);
-                        JoinedToLobbyEvent?.Invoke(fromSteamID);
-                        NewLobbyPeerAddedEvent?.Invoke(Global.steamid);
-                        SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.PeerListRequest, fromSteamID);
-                        break;
-                    }
-                    else
-                    {
-                        Logging.Warn($"Our join request to host {fromSteamID} was accepted but we already have them as a peer. What happened?", "Lobby");
-                        break;
-                    }
+                    Logging.Log($"Successfully joined to host {fromSteamID}. Sending request for other peers.", "Lobby");
+                    LobbyJoinedInternal(LobbyHostSteamID);
+                    SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.PeerListRequest, fromSteamID);
+                    break;
                 }
                 else if (data[0] == (byte)LobbyHostFlag.FromNonHost) // established a peer connection to a non host
                 {
-                    if (lobbyPeers.Add(fromSteamID))
-                    {
-                        Logging.Log($"Successfully joined to non-host {fromSteamID}. Sending request for other peers.", "Lobby");
-                        NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
-                        SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.PeerListRequest, fromSteamID);
-                        break;
-                    }
-                    else
+                    if (lobbyPeers.Contains(fromSteamID))
                     {
                         Logging.Warn($"Our join request to non-host {fromSteamID} was accepted but we already have them as a peer. What happened?", "Lobby");
                         break;
                     }
+                    Logging.Log($"Successfully joined to non-host {fromSteamID}. Sending request for other peers.", "Lobby");
+                    AddNewPeer(fromSteamID);
+                    SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.PeerListRequest, fromSteamID);
+                    break;
                 }
                 else
                 {
@@ -369,7 +361,7 @@ public class Lobby
                 break;
             case LobbyMessageType.PeerListResponse:
                 ulong newPeerID = BitConverter.ToUInt64(data, 0);
-                if (lobbyPeers.Add(newPeerID))
+                if (!lobbyPeers.Contains(newPeerID))
                 {
                     Logging.Log($"Received data on new shared peer {newPeerID}, requesting to join it", "Lobby");
                     SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.JoinRequest, newPeerID);
@@ -420,10 +412,51 @@ public class Lobby
             case LobbyMessageType.ERROR_JoinRejectedNotInLobby:
                 Logging.Warn($"Join Request rejected because the user we're trying to join is not in a lobby.", "Lobby");
                 break;
+            case LobbyMessageType.ERROR_NotFriend:
+                Logging.Warn($"Join Request rejected because the user is in friends only mode and we are not a friend.", "Lobby");
+                break;
             default:
                 throw new ArgumentException($"Malformed Lobby Message | First Byte: {((int)payload[0])} Cast As LobbyMessageType:{((LobbyMessageType)payload[0]).ToString()}");
                 break;
         }
     }
-}
 
+    /// <summary>
+    /// See <see cref="m_GameRichPresenceJoinRequested"/>
+    /// </summary>
+    /// <param name="param"></param>
+    private void OnGameRichPresenceJoinRequested(GameRichPresenceJoinRequested_t param)
+    {
+        Logging.Log($"RichPresence join to {ulong.Parse(param.m_rgchConnect)} requested, sending them a join request...", "Lobby");
+        AttemptJoinToLobby(ulong.Parse(param.m_rgchConnect), true);
+    }
+
+    /// <summary>
+    /// simple helper to add a new peer to the lobby peer list
+    /// </summary>
+    /// <param name="fromSteamID"></param>
+    private void AddNewPeer(ulong fromSteamID)
+    {
+        lobbyPeers.Add(fromSteamID);
+        NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
+    }
+
+    /// <summary>
+    /// helper to handle joining to new lobby logic
+    /// </summary>
+    /// <param name="hostSteamID"></param>
+    private void LobbyJoinedInternal(ulong hostSteamID)
+    {
+        bInLobby = true;
+        SteamFriends.SetRichPresence("connect", hostSteamID.ToString());
+
+        lobbyPeers = new();
+
+        if (!NetworkUtils.IsMe(hostSteamID)) AddNewPeer(hostSteamID);
+        AddNewPeer(Global.steamid);
+
+        JoinedToLobbyEvent?.Invoke(hostSteamID);
+
+        Global.GameSession = new(lobbyPeers.ToList(), hostSteamID);
+    }
+}
