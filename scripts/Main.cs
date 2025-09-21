@@ -1,4 +1,5 @@
 using Godot;
+using ImGuiNET;
 using Limbo.Console.Sharp;
 using Steamworks;
 using System;
@@ -12,13 +13,14 @@ using System.Threading.Tasks;
 public partial class Main : Node
 {
 
-    public bool bConsoleOpen = false;
+
     public Input.MouseModeEnum stashedMouseMouseMode = Input.MouseModeEnum.Max;
 
 
     //This runs after Global._Ready(), and handles most of our startup. (Logging and Steam are handled earlier in Global)
     public async override void _Ready()
     {
+        
         //First up, start up the config system and register a static reference to it in Global. Despite its name, this system handles both user configuration settings and user savefiles/meta-progression tracking
         //It'll automatically load up the Config file and the Progression files from disk for the logged in user from the user:// Godot file location.
         //If they don't exist it makes them.
@@ -52,33 +54,34 @@ public partial class Main : Node
         console.Name = "InGameConsole";
         AddChild(console);
 
-        //Fires up the core networking component and registers a global reference to it. Doesn't trigger any behaviour right away, but once this is started we are able to receive packets over the Steam Relay Network.
-        Logging.Log($"Starting core Networking manager...", "Main");
-        Global.network = new SteamNetwork();
 
-        //Start the "world", the root Node3D for the game, register a global reference for it, and add it to the scenetree as a child of main so it can render 3D stuff.
-        Logging.Log($"Starting world/level/3DNode manager...", "Main");
-        Global.world = new World();
-        Global.world.Name = "World";
-        AddChild(Global.world);
+        if(!Global.OFFLINE_MODE)
+        {
+            //Fires up the core networking component and registers a global reference to it. Doesn't trigger any behaviour right away, but once this is started we are able to receive packets over the Steam Relay Network.
+            Logging.Log($"Starting core Networking manager...", "Main");
+            Global.network = new SteamNetworkManager();
+        }
+        else
+        {
+            Logging.Log($"Starting faked debug network for local testing!", "Main");
+            Logging.Warn("WARNING! OFFLINE MODE IS ON! STEAM NETWORKING FUNCTIONS WILL NOT WORK!","Main");
+            Global.network = new OfflineNetworkManager();
+        }
+        Global.network.Name = "network";
+        AddChild(Global.network);
 
-        //TODO: Trigger preloading and shader stuff here if needed, using the above world node
+        Global.GameState = new();
+        Global.GameState.Name = "GameState";
+        AddChild(Global.GameState);
+    
+        //TODO: Trigger preloading and shader stuff here if needed
 
         Global.ui.StartLoadingScreen();
         Global.ui.SetLoadingScreenDescription("Compiling Shaders...");
-
+        
         await DoSomeLongShit();
 
         Global.ui.StopLoadingScreen();
-
-        //TODO: Add additonal start up items here.
-
-        //Create the Lobby system, register a reference to it with Global, and "host" a new lobby right away.
-        //Hosting a lobby is what allows us to be joinable in Steam, adding the "join to" button for Friends, and adding the "invite to play" button on friends for us.
-        //We do this last so that no one tries to join us until after core systems are ready.
-        Logging.Log($"Starting Lobby system and auto-hosting lobby to make us joinable thru steam", "Main");
-        Global.Lobby = new();
-        Global.Lobby.HostNewLobby();
 
         //TODO: Wait for splash screens to be done, wait for preloading and shaders and shit to be done.
 
@@ -94,8 +97,6 @@ public partial class Main : Node
 
             //TODO: Parse launch arg string, its in some weird format like '+connect steamid' or some shit I need to test it
             throw new NotImplementedException("Joining to another player while the game is not open is not implmented yet.");
-
-            Global.Lobby.AttemptJoinToLobby(cmdLineSteamID);
             return;
         }
         else
@@ -126,34 +127,20 @@ public partial class Main : Node
     //To help maintain an understanding of exactly what runs every frame, and in what order, main is the only thing that has a _Process()
     //Here we call out to everything else that needs to run once per frame.
     //Experimental approach, we'll see how it goes.
+    //NOTE: Largely abandoning the above due to it doesnt help and it makes physics management in Godot a huge pain in the ass.
     public override void _Process(double delta)
     {
         SteamAPI.RunCallbacks();
-        Global.network.PerFrame(delta);
-        Global.world.PerFrame(delta);
-        foreach (Controller controller in Global.world.controllers.Values)
-        {
-            controller.PerFrame(delta);
-        }
+
 
     }
 
-    //_PhysicsProcess gets called 60 times a second (by default). We are using it to establish a tickrate that is disconnected from the framerate.
-    //We can adjust the tick rate by changing the engine's physics rate.
-    //Uses same approach as described above with _Process()
+
     public override void _PhysicsProcess(double delta)
     {
-        Global.network.Tick(delta);
-        Global.world.Tick(delta);
-        foreach (Controller controller in Global.world.controllers.Values)
-        {
-            controller.Tick(delta);
-        }
 
 
-
-
-        if (bConsoleOpen)
+        if (Global.bConsoleOpen)
         {
             ConsolePicker();
         }
@@ -165,31 +152,33 @@ public partial class Main : Node
         if (Input.IsActionJustPressed("FIRE"))
         {
             var mpos = GetViewport().GetMousePosition();
-            PlayerCharacter pc = ((PlayerCharacter)Global.GameSession.playerData[Global.steamid].playerController.possessedCharacter);
-            if (pc != null)
+            var from = GetViewport().GetCamera3D().ProjectRayOrigin(mpos);
+            var to = from + GetViewport().GetCamera3D().ProjectRayNormal(mpos) * 1000;
+            var space = Global.GameState.world.GetWorld3D().DirectSpaceState;
+            var query = PhysicsRayQueryParameters3D.Create(from, to);
+            query.CollideWithAreas = true;
+            query.CollideWithBodies = true;
+            var result = space.IntersectRay(query);
+            if (result.TryGetValue("collision", out Variant col))
             {
-                var from = pc.cam.ProjectRayOrigin(mpos);
-                var to = from + pc.cam.ProjectRayNormal(mpos) * 1000;
-                var space = pc.GetWorld3D().DirectSpaceState;
-                var query = PhysicsRayQueryParameters3D.Create(from, to);
-                query.CollideWithAreas = true;
-                query.CollideWithBodies = true;
-                query.Exclude = [pc.body.GetRid()];
-                var result = space.IntersectRay(query);
-
-                Node bob = (Node)result["collider"];
-                if (bob.GetParent() is GameObject go)
+                Node collision = (Node)col;
+                if (collision.GetParent() is Node3D node)
                 {
-                    Logging.Log($"You just clicked on a gameobject with name {go.Name}, id {go.GetUID()}", "Picker");
-                    TextEdit cmdBar = GetTree().Root.GetNode<TextEdit>("LimboConsole/@PanelContainer@3/@VBoxContainer@4/@TextEdit@12");
-                    cmdBar.Text += go.GetUID();
-                    cmdBar.SetCaretColumn(cmdBar.Text.Length);
+                    Logging.Log($"You just clicked on a node that has a collider child!", "Picker");
+                    //DisplayServer.ClipboardSet(go.GetInstanceID().ToString());
+                    //TextEdit cmdBar = GetTree().Root.GetNode<TextEdit>("LimboConsole/@PanelContainer@3/@VBoxContainer@4/@TextEdit@12");
+                    //cmdBar.Text += go.GetUID();
+                    //cmdBar.SetCaretColumn(cmdBar.Text.Length);
                 }
                 else
                 {
-                    Logging.Log($"You just clicked on non game object {result["collider"]}  at pos {result["position"]} (ID: {result["collider_id"]})", "Picker");
+                    Logging.Log($"You just clicked on node without a collider. howd you do that.", "Picker");
                 }
-                
+            }
+            else
+            {
+                Logging.Log($"No Pick collision detected. From {from}, to {to}", "Picker");
+
             }
         }
     }
@@ -208,14 +197,15 @@ public partial class Main : Node
             if (k.Keycode == Key.Bracketright)
             {
                 Global.DrawDebugScreens = !Global.DrawDebugScreens;
+                Logging.Log($"DebugScreens Active: {Global.DrawDebugScreens}", "DebugScreens");
                 GetViewport().SetInputAsHandled();
             }
             //backtick/tilde toggles the console
             else if (k.Keycode == Key.Quoteleft)
             {
-                if (bConsoleOpen)
+                if (Global.bConsoleOpen)
                 {
-                    bConsoleOpen = false;
+                    Global.bConsoleOpen = false;
                     LimboConsole.CloseConsole();
                     if (Input.MouseMode==Input.MouseModeEnum.Visible)
                     {
@@ -225,7 +215,7 @@ public partial class Main : Node
                 }
                 else
                 {
-                    bConsoleOpen = true;
+                    Global.bConsoleOpen = true;
                     stashedMouseMouseMode = Input.MouseMode;
                     LimboConsole.OpenConsole();
                     Input.MouseMode = Input.MouseModeEnum.Visible;

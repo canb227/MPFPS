@@ -3,6 +3,7 @@ using Limbo.Console.Sharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 public partial class DebugScreen : Control
 {
@@ -52,8 +53,8 @@ public partial class DebugScreen : Control
     public static List<string> directLoadMap_mapNames = new()
     {
 
-        { "DebugPlatform" },
-        { "DebugFlat" },
+        { "platform" },
+        { "flat" },
 
     };
     // Called when the node enters the scene tree for the first time.
@@ -85,100 +86,86 @@ public partial class DebugScreen : Control
         chat_send.Pressed += Chat_send_Pressed;
         StartGameButton.Pressed += StartGameButton_Pressed;
 
-        //other events
-        GameSession.GameSessionOptionsChangedEvent += GameSession_OptionsChangedEvent;
-        GameSession.GameSessionNewPlayerEvent += GameSession_NewPlayerEvent;
-
+        NetworkManager.HostedServerEvent += NetworkManager_HostedServerEvent;
+        Multiplayer.ConnectedToServer += Multiplayer_ConnectedToServer;
+        Multiplayer.PeerConnected += Multiplayer_PeerConnected;
 
         foreach (string map in directLoadMap_mapNames)
         {
             directLoadMap_mapList.AddItem(map);
         }
 
-        foreach (ulong player in Global.GameSession.playerData.Keys)
-        {
-            GameSession_NewPlayerEvent(player);
-        }
 
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
-
+        DirectLoadMap_mapList_ItemSelected(0);
     }
 
-    private void GameSession_NewPlayerEvent(ulong newPlayerSteamID)
+    private void DirectLoadMap_mapList_ItemSelected(long index)
+    {
+        directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[(int)index]));
+    }
+
+    private void DirectLoadMap_loadCheck_Toggled(bool toggledOn)
+    {
+        directLoadMap_hidePanel.Visible = !toggledOn;
+    }
+
+    private void Multiplayer_PeerConnected(long id)
+    {
+        AddNewPlayer((ulong)id);
+    }
+
+    private void Multiplayer_ConnectedToServer()
+    {
+        AddNewPlayer((ulong)Multiplayer.GetUniqueId());
+    }
+
+    private void NetworkManager_HostedServerEvent()
+    {
+        Logging.Log("Just Hosted a server! time to update the UI!", "DebugScreen");
+        AddNewPlayer((ulong)Multiplayer.GetUniqueId());
+    }
+
+    private void AddNewPlayer(ulong newPlayerSteamID)
     {
         Logging.Log($"Adding player {newPlayerSteamID} to debug screen.", "DebugScreen");
         Control playerListItem = ResourceLoader.Load<PackedScene>("res://scenes/ui/playerListItem.tscn").Instantiate<Control>();
-        playerListItem.GetNode<Label>("playername").Text = SteamFriends.GetFriendPersonaName(new CSteamID(newPlayerSteamID));
-        playerListItem.GetNode<TextureRect>("icon").Texture = Utils.GetMediumSteamAvatar(newPlayerSteamID);
-        playerListItem.GetNode<Label>("level").Text = Global.GameSession.playerData[newPlayerSteamID].progression.AccountLevel.ToString();
+        
+        if (!Global.OFFLINE_MODE)
+        {
+            playerListItem.GetNode<Label>("playername").Text = SteamFriends.GetFriendPersonaName(new CSteamID(newPlayerSteamID));
+            playerListItem.GetNode<TextureRect>("icon").Texture = Utils.GetMediumSteamAvatar(newPlayerSteamID);
+        }
+
+
         playerListItem.GetNode<Label>("id").Text = newPlayerSteamID.ToString();
         playerList_list.AddChild(playerListItem);
     }
 
     private void StartGameButton_Pressed()
     {
-        if (Global.GameSession.sessionAuthority == Global.steamid)
+        if (directLoadMap_loadCheck.ButtonPressed)
         {
-            Logging.Log("Direct starting game...", "DebugScreen");
-            Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
+            Global.GameState.Rpc(GameState.MethodName.StartGame, directLoadMap_mapNames[directLoadMap_mapList.Selected]);
         }
-        else
-        {
-            Logging.Error("Only the host can start the game.", "DebugScreen");
-        }
+
     }
 
-    private void GameSession_OptionsChangedEvent()
-    {
-        if (Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP)
-        {
-            directLoadMap = true;
-            directLoadMap_hidePanel.Visible = false;
-            StartGameButton.Text = "Start Game On Selected Map";
-            directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX]));
-            directLoadMap_mapList.Selected = Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX;
-            chat_text.AddText($"SYSTEM: Enabled map direct load; map:{directLoadMap_mapPaths[Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX]}\n");
-        }
-        else
-        {
-            directLoadMap = false;
-            directLoadMap_hidePanel.Visible = true;
-            StartGameButton.Text = "Start Game";
-            chat_text.AddText($"SYSTEM: Disabled map direct load.\n");
-        }
-    }
 
     private void Chat_send_Pressed()
     {
-        throw new NotImplementedException();
+        Rpc(MethodName.Chat, [Multiplayer.GetUniqueId().ToString(), chat_chatbar.Text]);
+        chat_chatbar.Text = "";
     }
 
-    private void DirectLoadMap_mapList_ItemSelected(long index)
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void Chat(string sender,string message)
     {
-        Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX = (int)index;
+        chat_text.Text+=($"{sender}: {message}\n");
 
-        Global.GameSession.BroadcastSessionMessage(NetworkUtils.StructToBytes<SessionOptions>(Global.GameSession.sessionOptions), SessionMessageType.RESPONSE_SESSIONOPTIONS);
     }
 
-    private void DirectLoadMap_loadCheck_Toggled(bool toggledOn)
-    {
-
-        if (toggledOn)
-        {
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP = true;
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX = 0;
-            Global.GameSession.BroadcastSessionMessage(NetworkUtils.StructToBytes<SessionOptions>(Global.GameSession.sessionOptions), SessionMessageType.RESPONSE_SESSIONOPTIONS);
-
-        }
-        else
-        {
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP = false;
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX = 0;
-            Global.GameSession.BroadcastSessionMessage(NetworkUtils.StructToBytes<SessionOptions>(Global.GameSession.sessionOptions), SessionMessageType.RESPONSE_SESSIONOPTIONS);
-
-        }
-    }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)

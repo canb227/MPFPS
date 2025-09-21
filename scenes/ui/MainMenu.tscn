@@ -16,35 +16,59 @@ grow_vertical = 2
 script = ExtResource("1_vjtqc")
 
 [node name="BUTTON_start" type="Button" parent="."]
-layout_mode = 0
-offset_left = 663.0
-offset_top = 250.0
-offset_right = 1266.0
-offset_bottom = 434.0
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -233.0
+offset_top = 310.0
+offset_right = 260.0
+offset_bottom = -618.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Start New Game"
 
 [node name="BUTTON_options" type="Button" parent="."]
-layout_mode = 0
-offset_left = 659.0
-offset_top = 529.0
-offset_right = 1262.0
-offset_bottom = 713.0
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -237.0
+offset_top = 538.0
+offset_right = 256.0
+offset_bottom = -385.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Options"
 
 [node name="BUTTON_quit" type="Button" parent="."]
-layout_mode = 0
-offset_left = 665.0
-offset_top = 817.0
-offset_right = 1268.0
-offset_bottom = 1001.0
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -254.0
+offset_top = 779.0
+offset_right = 276.0
+offset_bottom = -129.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Quit to Desktop"
 
 [node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_left = 859.0
-offset_top = 80.0
-offset_right = 1066.0
-offset_bottom = 168.0
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -89.0
+offset_top = 64.0
+offset_right = 118.0
+offset_bottom = -928.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "MPFPS"
 label_settings = SubResource("LabelSettings_0rmrm")
 
@@ -86,3 +110,19 @@ offset_top = -128.0
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("2_6jbdy")
+
+[node name="DEBUG_CLIENT" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -919.0
+offset_top = 263.0
+offset_right = -525.0
+offset_bottom = -746.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "DEBUG
+Join localhost
+DEBUG"

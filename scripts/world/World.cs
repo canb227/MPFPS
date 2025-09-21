@@ -1,96 +1,180 @@
-using GameMessages;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-
+[GlobalClass]
 public partial class World : Node3D
 {
+    private MultiplayerSpawner StaticLevelSpawner;
+    private Node3D StaticLevel;
 
-    public Dictionary<ulong, GameObject> entities = new();
-    public Dictionary<ulong, Controller> controllers = new();
+    private Node3D Players;
 
-    public ulong defaultAuthority;
+    private MultiplayerSpawner EntitySpawner;
+    private Node3D Entities;
 
-    public Vector3 defaultSpawnLocation = new Vector3(0,0,0);
+    private Dictionary<string, string> RegisteredStaticLevels = new()
+    {
+        { "Friendly Level Name", "Godot res:// path of the level's scene" },
 
-    private ulong tick = 0;
-    private Node meta = null;
-    private Node3D root = null;
+        { "platform","res://scenes/world/debugPlatform.tscn" },
+        { "flat" , "res://scenes/world/debugFlat.tscn" },
+
+
+
+
+
+
+
+
+
+
+
+    };
+
+    private Dictionary<string, string> RegisteredEntities = new()
+    {
+        { "Friendly Entity Name", "Godot res:// path of the entity's scene" },
+        { "ball", "res://scenes/Entities/ball.tscn" },
+    };
 
     public override void _Ready()
     {
-        Global.world = this;
-        Logging.Log($"Game world ready for commands.", "World");
-        SetPhysicsProcess(false);
-        entities[0] = new GameObject();
+        Players = new();
+        Players.Name = "Players";
+        AddChild(Players);
+
+        InitStaticLevelSpawner();
+        InitEntitySpawner();
     }
 
-    public void LoadRootSceneByPath(string scenePath)
+    public void ChangeLevel(string levelName, bool hardReset = false)
     {
-        root = ResourceLoader.Load<PackedScene>(scenePath).Instantiate<Node3D>();
-        AddChild(root);
-        meta = root.GetNode<Node>("meta");
-    }
-
-    public void LoadRootSceneByName(string sceneName)
-    {
-        if (Global.SceneLoader.getScenePathFromName(sceneName, out string scenePath))
+        if (!Multiplayer.IsServer())
         {
-            LoadRootSceneByPath(scenePath);
+            Logging.Warn("I am a Non-server that is trying to change the level! Are you sure you're doing this right?", "World");
+        }
+        if (RegisteredStaticLevels.ContainsKey(levelName))
+        {
+            if (hardReset)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                foreach (Node n in StaticLevel.GetChildren())
+                {
+                    StaticLevel.RemoveChild(n);
+                    n.QueueFree();
+                }
+                StaticLevel.CallDeferred(MethodName.AddChild, GD.Load<PackedScene>(RegisteredStaticLevels[levelName]).Instantiate());
+            }
+        }
+        else
+        {
+            Logging.Error($"Can't change the level: No level with name {levelName} is registered!", "World");
         }
     }
 
-    public void Tick(double delta)
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public void SpawnPlayer(int id)
     {
-        tick++;
+        Player player = ResourceLoader.Load<PackedScene>("res://scenes/Entities/player/Player.tscn").Instantiate<Player>();
+        player.playerID = id;
+        player.Name = id.ToString();
+        Players.AddChild(player);
     }
 
-    public ulong GetTick()
+    public void SpawnEntityByName(string name)
     {
-        return tick;
-    }
-
-    public void PerFrame(double delta)
-    {
-
-    }
-
-
-    internal void LoadWorld()
-    {
-        if (Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP)
+        if (!Multiplayer.IsServer())
         {
-            int mapIndex = Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX;
-            string scenePath = DebugScreen.directLoadMap_mapPaths[mapIndex];           
-            LoadRootSceneByPath(scenePath);
+            Logging.Warn("I am a Non-server that is trying to Spawn an entity! Are you sure you're doing this right?", "World");
+        }
+        if (RegisteredEntities.ContainsKey(name))
+        {
+            Entities.CallDeferred(MethodName.AddChild, [GD.Load<PackedScene>(RegisteredEntities[name]).Instantiate(),true]);
+        }
+        else
+        {
+            Logging.Error($"Can't change the level: No level with name {name} is registered!", "World");
         }
     }
 
-    internal void InGameStart()
+    public void SpawnEntity(Node3D entity)
     {
-        
+        if (!Multiplayer.IsServer())
+        {
+            Logging.Warn("I am a Non-server that is trying to spawn an entity! Are you sure you're doing this right?", "World");
+        }
+        Entities.CallDeferred(MethodName.AddChild,[entity,true]);
     }
 
-    internal ulong AssignNewID()
+    public Vector3 GetRandomSpawnLocation(int teamID)
     {
         Random rng = new Random();
-        ulong id = 0;
-        while (entities.ContainsKey(id))
-        {
-            id = (ulong)rng.NextInt64();
-        }
-        return id;
+        int height = rng.Next(1, 10);
+        return new Vector3(0, height, 0);
     }
 
-    internal void SpawnGameObject(SpawnGameObjectData msg)
+    private void InitStaticLevelSpawner()
     {
-        GameObject obj = GameObjectLoader.LoadGameObjectInstance(msg.ObjName);
-        obj.SetUID(msg.WithID);
-        obj.Name = msg.ObjName;
-        entities[obj.GetUID()] = obj;
-        obj.Position = new Vector3(msg.SpawnX, msg.SpawnY, msg.SpawnZ);
-        AddChild(obj);
+        StaticLevel = new();
+        StaticLevel.Name = "StaticLevel";
+        AddChild(StaticLevel);
+
+        StaticLevelSpawner = new();
+        StaticLevelSpawner.Name = "StaticLevelSpawner";
+        AddChild(StaticLevelSpawner);
+        StaticLevelSpawner.SpawnPath = StaticLevelSpawner.GetPathTo(StaticLevel);
+        StaticLevelSpawner.Spawned += SLSpawner_Spawned;
+        StaticLevelSpawner.Despawned += SLSpawner_Despawned;
+
+        foreach(string path in RegisteredStaticLevels.Values)
+        {
+            StaticLevelSpawner.AddSpawnableScene(path);
+        }
+    }
+    private void SLSpawner_Despawned(Node node)
+    {
+        Logging.Log($"Authority just despawned static level!", "World");
+    }
+
+    private void SLSpawner_Spawned(Node node)
+    {
+        Logging.Log($"Authority just spawned static level!", "World");
+    }
+
+    private void InitEntitySpawner()
+    {
+        Entities = new();
+        Entities.Name = "Entities";
+        AddChild(Entities);
+
+        EntitySpawner = new();
+        EntitySpawner.Name = "EntitySpawner";
+        AddChild(EntitySpawner);
+        EntitySpawner.SpawnPath = EntitySpawner.GetPathTo(Entities);
+        EntitySpawner.Spawned += ESpawner_Spawned;
+        EntitySpawner.Despawned += ESpawner_Despawned;
+
+        foreach (string path in RegisteredEntities.Values)
+        {
+            EntitySpawner.AddSpawnableScene(path);
+        }
+    }
+
+    private void ESpawner_Despawned(Node node)
+    {
+        Logging.Log($"Authority just despawned entity!", "World");
+    }
+
+    private void ESpawner_Spawned(Node node)
+    {
+        Logging.Log($"Authority just spawned entity!", "World");
     }
 }
+

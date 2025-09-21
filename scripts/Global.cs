@@ -1,5 +1,8 @@
 using Godot;
 using Steamworks;
+using System;
+
+
 
 /// <summary>
 /// Singleton that autoloads right after Godot engine init. Can be statically referenced using "Global." anywhere.
@@ -19,6 +22,11 @@ public partial class Global : Node
     public const int APP_ID = 480;
 
     /// <summary>
+    /// If true, fake steam and network connections. Allows for local testing, not for production.
+    /// </summary>
+    public const bool OFFLINE_MODE = false;
+
+    /// <summary>
     /// The SteamID of the user that launched the game. Is set to 0 if Steam Init fails.
     /// </summary>
 	public static ulong steamid = 0;
@@ -33,16 +41,14 @@ public partial class Global : Node
     /// </summary>
     public static bool DrawDebugScreens = false;
 
+    public static bool bConsoleOpen = false;
+
     public static Node instance;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Node Derived Singletons (On scene tree, under main)
 
-    /// <summary>
-    /// Holds a reference to the top-level Node3D for the game
-    /// </summary>
-    public static World world;
-
+    public static GameState GameState;
 
     /// <summary>
     /// Holds a reference to the currently active UI system
@@ -56,17 +62,9 @@ public partial class Global : Node
     /// <summary>
     /// Holds a reference to the currently active networking system
     /// </summary>
-    public static SteamNetwork network;
+    public static NetworkManager network;
 
-    /// <summary>
-    /// holds  a reference to the static level Name -> level Scene Library/Loader
-    /// </summary>
-    public static SceneLoader SceneLoader;
 
-    /// <summary>
-    /// holds a reference to the lobby system that is always running in the background
-    /// </summary>
-    public static Lobby Lobby;
 
     /// <summary>
     /// Holds a reference to the InputMapManager, useful for rebinding keys
@@ -78,16 +76,15 @@ public partial class Global : Node
     /// </summary>
     public static Config Config;
 
-    /// <summary>
-    /// holds a reference to the current GameSession if there is one. Might be null.
-    /// </summary>
-    public static GameSession GameSession;
+
 
 
     //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
     public override void _Ready()
     {
         instance = this;
+
+
 
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
@@ -108,7 +105,16 @@ public partial class Global : Node
         Logging.Log("Connection to Steam successful.", "SteamAPI");
         Logging.Log($"Steam ID: {steamid}", "SteamAPI");
 
+
+        //OverrideGodotMultiplayerInterface();
         //From here next code ran is in Main.cs's _Ready()
+    }
+
+    private void OverrideGodotMultiplayerInterface()
+    {
+        MPFPSMultiplayerAPI mpapi = new();
+        mpapi.MultiplayerPeer = null;
+        GetTree().SetMultiplayer(mpapi);
     }
 
     /// <summary>
@@ -117,6 +123,7 @@ public partial class Global : Node
     public void SteamInit()
     {
         Logging.Log("Initializing Steam API...", "SteamAPI");
+
         try
         {
             if (SteamAPI.RestartAppIfNecessary((AppId_t)APP_ID)) //ALWAYS RETURNS FALSE IF app_id.txt IS PRESENT IN ROOT FOLDER
@@ -125,7 +132,7 @@ public partial class Global : Node
                 GetTree().Quit();
             }
         }
-        catch (System.DllNotFoundException e)
+        catch (System.DllNotFoundException)
         {
             GD.PushError("steam_api64.dll not found. steam_api64.dll is expected in the game root folder.", "SteamAPI");
             throw;

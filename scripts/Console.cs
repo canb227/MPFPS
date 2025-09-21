@@ -1,11 +1,11 @@
-using GameMessages;
+
 using Godot;
 using Limbo.Console.Sharp;
+using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+
 
 /// <summary>
 /// Using (MIT licensed) LimboConsole (https://github.com/limbonaut/limbo_console) to provide a simple console interface. 
@@ -17,7 +17,7 @@ public partial class Console : Node
     public override void _Ready()
     {
 
-        LimboConsole.SetEvalBaseInstance(this);
+        //LimboConsole.SetEvalBaseInstance(this);
 
         //Register functions as commands 
 
@@ -25,7 +25,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_SetTickRate), "DEV_SetTickRate", "Dynamically changes tick rate. Almost certainly breaks stuff.");
 
         ////////////////////////////////////// GENERAL ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "status", "Prints the current game status.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "STATUS_Game", "Prints the current game status.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.OpenUserDataDirectory), "OpenUserDataDirectory", "Opens a native file explorer to the user data directory.");
 
         ////////////////////////////////////// LOGGING ///////////////////////////////////////////////
@@ -35,31 +35,17 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
 
         ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_NetworkLoopbackTestString));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_NetworkSendTestString));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_ConnectionInfo));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.MPStatus));
 
-        ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Lobby));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.HostNewLobby));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.JoinLobby));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.LeaveLobby));
-
-        ////////////////////////////////////// SESSION ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Session));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_StartSession));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_EndSession));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_StartGame));
 
         ////////////////////////////////////// INPUT ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_parsekeystring));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.bind));
 
         ////////////////////////////////////// IN GAME ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_LocalController));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.objlookup));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.level));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.spawn));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.spawnpossess));
     }
 
 
@@ -78,7 +64,25 @@ public partial class Console : Node
         OS.ShellOpen(OS.GetUserDataDir());
     }
 
+    public void MPStatus()
+    {
+        LimboConsole.Info("Networking Status:");
+        LimboConsole.Info($"Root MultiplayerAPI is: {GetTree().GetMultiplayer()}");
+        LimboConsole.Info($"NetworkManagerImpl?: Steam: {Global.network is SteamNetworkManager} Offline: {Global.network is OfflineNetworkManager}");
+        LimboConsole.Info($"MPAPI-Peer Started?: {Multiplayer.MultiplayerPeer != null}");
+        if (Multiplayer.MultiplayerPeer == null) return;
+        LimboConsole.Info($"Peer Impl?: Steam: {Multiplayer.MultiplayerPeer is MultiplayerPeerExtension} Offline: {Multiplayer.MultiplayerPeer is ENetMultiplayerPeer}");
+        LimboConsole.Info($"MPAPI-Peer Status: {Multiplayer.MultiplayerPeer.GetConnectionStatus()}");
+        LimboConsole.Info($"Net ID: {Multiplayer.GetUniqueId()}");
+        LimboConsole.Info($"Is Host?: {Multiplayer.IsServer()}");
+        LimboConsole.Info($"Number of peers: {Multiplayer.GetPeers().Length}");
+        LimboConsole.Info($"Peer List --------------------");
+        foreach (int peerID in Multiplayer.GetPeers())
+        {
+            LimboConsole.Info($"PeerID: {peerID}");
+        }
 
+    }
     ////////////////////////////////////// DEV ///////////////////////////////////////////////
 
     public void DEV_SetTickRate (int rate)
@@ -120,39 +124,23 @@ public partial class Console : Node
         LimboConsole.Info($"id:{info.m_identityRemote.GetSteamID64()} state:{info.m_eState} ping:{status.m_nPing} Endreason:{info.m_eEndReason} string:{info.m_szEndDebug} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
     }
 
-    public void DEV_NetworkLoopbackTestString(string message)
-    {
-        LimboConsole.Info($"Sending string \"{message}\" on loopback...");
-        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
-        identity.SetSteamID64(Global.steamid);
-        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
-    }
-
-    public void DEV_NetworkSendTestString(string id, string message)
-    {
-        LimboConsole.Info($"Sending string \"{message}\" to {id}...");
-        SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
-        identity.SetSteamID64(ulong.Parse(id));
-        Global.network.SendData(Encoding.UTF8.GetBytes(message), NetType.DEBUG_UTF8, identity);
-    }
-
     public void NET_EnableBandwidthTracker()
     {
         LimboConsole.Info("Network Bandwidth Tracker now reporting.");
-        Global.network.BandwidthTrackerEnabled = true;
+        //Global.network.BandwidthTrackerEnabled = true;
     }
 
     public void NET_DisableBandwidthTracker()
     {
         LimboConsole.Info("Network Bandwidth Tracker disabled.");
-        Global.network.BandwidthTrackerEnabled = false;
+        //Global.network.BandwidthTrackerEnabled = false;
     }
 
     ////////////////////////////////////// SESSSION ///////////////////////////////////////////////
     public void STATUS_Session()
     {
         LimboConsole.Info("Session Status");
-        LimboConsole.Info($"  In Session?: {Global.GameSession != null}");
+/*        LimboConsole.Info($"  In Session?: {Global.GameSession != null}");
         if (Global.GameSession == null) return;
         LimboConsole.Info($"  Number of players in session: {Global.GameSession.playerData.Count}");
         LimboConsole.Info($"  Session Player List --------------------------------------------------------------");
@@ -166,67 +154,67 @@ public partial class Console : Node
             {
                 LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(player.Key))} | ID:{player.Key} | State: {player.Value.state} | DblCheckID: {player.Value.steamID}");
             }
-        }
+        }*/
     }
 
     public void DEV_StartSession()
     {
         LimboConsole.Info("Direct starting new session...");
-        Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(), Global.Lobby.LobbyHostSteamID);
+       // Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(), Global.Lobby.LobbyHostSteamID);
     }
 
     public void DEV_EndSession()
     {
         LimboConsole.Info("Direct ending session...");
-        Global.GameSession.EndSession();
+        //Global.GameSession.EndSession();
     }
 
     public void DEV_StartGame()
     {
-        if (Global.GameSession.sessionAuthority == Global.steamid)
-        {
-            LimboConsole.Info("Direct starting game...");
-            Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
-        }
-        else
-        {
-            LimboConsole.Error("Only the host can start the game.");
-        }
+        //if (Global.GameSession.sessionAuthority == Global.steamid)
+        //{
+        //    LimboConsole.Info("Direct starting game...");
+        //    Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
+        //}
+        //else
+        //{
+        //    LimboConsole.Error("Only the host can start the game.");
+        //}
 
     }
     ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
     public void STATUS_Lobby()
     {
-        LimboConsole.Info("Lobby Status");
-        LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
-        if (!Global.Lobby.bInLobby) return;
-        LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
-        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
-        LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
-        LimboConsole.Info($"  Peer List --------------------------------------------------------------");
-        foreach (ulong peer in Global.Lobby.lobbyPeers)
-        {
-            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
-        }
+        //LimboConsole.Info("Lobby Status");
+        //LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
+        //if (!Global.Lobby.bInLobby) return;
+        //LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
+        //LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
+        //LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
+        //LimboConsole.Info($"  Peer List --------------------------------------------------------------");
+        //foreach (ulong peer in Global.Lobby.lobbyPeers)
+        //{
+        //    LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
+        //}
     }
 
     public void HostNewLobby()
     {
         LimboConsole.Info("Hosting a new lobby...");
-        Global.Lobby.HostNewLobby(true);
+       // Global.Lobby.HostNewLobby(true);
     }
 
     public void JoinLobby(string ids)
     {
 
-        LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
-        Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids),true);
+       // LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
+        //Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids),true);
     }
 
     public void LeaveLobby()
     {
         LimboConsole.Info($"Leaving current lobby...");
-        Global.Lobby.LeaveLobby(true);
+       // Global.Lobby.LeaveLobby(true);
     }
 
 
@@ -253,47 +241,18 @@ public partial class Console : Node
     }
 
     //////////////////////////////////////// In - Game ////////////////////////////////////////////////////////////////////////////
-    
-    public void STATUS_LocalController()
+    public void level(string levelName)
     {
-        PlayerController pc = Global.GameSession.playerData[Global.steamid].playerController;
-        LimboConsole.Info("Local Player Controller Status");
-        LimboConsole.Info($"  UID: {pc.GetUniqueID()}");
-        LimboConsole.Info($"  Possessing: {(pc.possessedCharacter!=null? pc.possessedCharacter.GetUID() : "null" )}");
-
+        LimboConsole.Info($"Attempting to switch static level.");
+        Global.GameState.world.ChangeLevel(levelName,true);
     }
 
-    public void objlookup(ulong UID)
+    public void spawn(string typeName)
     {
-        GameObject obj = Global.world.entities[UID];
-        LimboConsole.Info($"Found data for obj {UID}");
 
+        LimboConsole.Info($"Console: Spawning entity {typeName} at default spawn...");
+        Global.GameState.world.SpawnEntityByName(typeName);
+        
     }
 
-    public void spawn(string objName)
-    {
-        LimboConsole.Info($"Attempting to spawn object with type: {objName}");
-        SpawnGameObjectData msg = new SpawnGameObjectData();
-        msg.Authority = Global.world.defaultAuthority;
-        msg.ObjName = objName;
-        msg.Sender = Global.steamid;
-        msg.SpawnX = 0;
-        msg.SpawnY = 10;
-        msg.SpawnZ = 0;
-        SpawnRequestor.SpawnGameObject(msg);
-    }
-
-    public void spawnpossess(string objName)
-    {
-        LimboConsole.Info($"Attempting to spawn object with type: {objName}");
-        SpawnGameObjectData msg = new SpawnGameObjectData();
-        msg.Authority = Global.world.defaultAuthority;
-        msg.ObjName = objName;
-        msg.Sender = Global.steamid;
-        msg.RequestorAutoPossess = Global.steamid;
-        msg.SpawnX = 0;
-        msg.SpawnY = 10;
-        msg.SpawnZ = 0;
-        SpawnRequestor.SpawnGameObject(msg);
-    }
 }
