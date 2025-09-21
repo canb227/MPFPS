@@ -4,8 +4,7 @@ class_name GDSteamNetwork
 func _ready() -> void:
 	pass # Replace with function body.
 
-func HostServer(id:int) -> void:
-	print(id)
+func HostServer() -> void:
 	var peer = SteamMultiplayerPeer.new()
 	var error = peer.create_host(1)
 	print(error)
@@ -13,7 +12,6 @@ func HostServer(id:int) -> void:
 	
 	
 func JoinServer(id:int) -> void:
-	print(id)
 	var peer = SteamMultiplayerPeer.new()
 	var error = peer.create_client(id,1)
 	print(error)

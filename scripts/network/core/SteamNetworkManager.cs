@@ -66,7 +66,7 @@ public partial class SteamNetworkManager : NetworkManager
 
     public override void HostServer(ushort port = DEFAULT_PORT)
     {
-        node.Call("HostServer",Global.steamid);
+        node.Call("HostServer");
         if (Multiplayer.MultiplayerPeer.GetConnectionStatus() == MultiplayerPeer.ConnectionStatus.Disconnected)
         {
             Logging.Error("Hosting server failed.", "SteamNetwork");
