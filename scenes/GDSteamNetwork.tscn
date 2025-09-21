@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dlsl8kci2agfp"]
+
+[ext_resource type="Script" uid="uid://wuhxdydo6epl" path="res://scripts/network/core/GDSteamNetwork.gd" id="1_mhxy7"]
+
+[node name="GdSteamNetwork" type="Node"]
+script = ExtResource("1_mhxy7")
+metadata/_custom_type_script = "uid://wuhxdydo6epl"

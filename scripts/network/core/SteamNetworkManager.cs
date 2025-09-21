@@ -1,17 +1,22 @@
 using System;
 using Godot;
+using Godot.Collections;
 using SteamMultiplayerPeerCSharp;
 using Steamworks;
 
 public partial class SteamNetworkManager : NetworkManager
 {
-    public const ushort DEFAULT_PORT = 2272;
+    public const ushort DEFAULT_PORT = 0;
 
     protected Callback<GameRichPresenceJoinRequested_t> m_GameRichPresenceJoinRequested;
 
     private SteamMultiplayerPeer _SteamPeer;
+    private Node node;
     public override void _Ready()
     {
+
+        node = GD.Load<PackedScene>("res://scenes/GDSteamNetwork.tscn").Instantiate<Node>();
+        AddChild(node);
 
         Multiplayer.ConnectedToServer += Multiplayer_ConnectedToServer;
         Multiplayer.ConnectionFailed += Multiplayer_ConnectionFailed;
@@ -23,7 +28,8 @@ public partial class SteamNetworkManager : NetworkManager
     private void OnSteamJoinRequested(GameRichPresenceJoinRequested_t param)
     {
         Logging.Log($"Steam Rich Presence Join Requested, attempting to join a server hosted by: {param.m_steamIDFriend.m_SteamID}", "SteamNetwork");
-        JoinServer(param.m_steamIDFriend.m_SteamID);
+        //JoinServer(param.m_steamIDFriend.m_SteamID);
+        node.Call("JoinServer", param.m_steamIDFriend.m_SteamID);
         Global.ui.SwitchFullScreenUI("DEBUG_launcher");
     }
 
@@ -34,6 +40,7 @@ public partial class SteamNetworkManager : NetworkManager
 
     private void Multiplayer_PeerConnected(long id)
     {
+
         Logging.Log($"PeerConnected: {id}", "SteamNetwork");
     }
 
@@ -49,20 +56,22 @@ public partial class SteamNetworkManager : NetworkManager
 
     public override void HostServer(ushort port = DEFAULT_PORT)
     {
-        _SteamPeer = new SteamMultiplayerPeer();
-        _SteamPeer.CreateHost(port);
-        Logging.Log($"Am Server?:{Multiplayer.IsServer()}", "SteamNetwork");
-        if (_SteamPeer.MultiplayerPeer.GetConnectionStatus() == MultiplayerPeer.ConnectionStatus.Disconnected)
-        {
-            Logging.Error("Hosting server failed.", "SteamNetwork");
-        }
-        else
-        {
-            Logging.Log("Successfully hosted server. Now joinable!", "SteamNetwork");
-            SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
-            InvokeHostedServerEvent();
-        }
-        Multiplayer.MultiplayerPeer = _SteamPeer.MultiplayerPeer;
+        node.Call("HostServer");
+        //_SteamPeer = new SteamMultiplayerPeer();
+        //_SteamPeer.CreateHost(port);
+        //Logging.Log($"Am Server?:{Multiplayer.IsServer()}", "SteamNetwork");
+        //if (_SteamPeer.MultiplayerPeer.GetConnectionStatus() == MultiplayerPeer.ConnectionStatus.Disconnected)
+        //{
+        //    Logging.Error("Hosting server failed.", "SteamNetwork");
+        //}
+        //else
+        //{
+        //    Logging.Log("Successfully hosted server. Now joinable!", "SteamNetwork");
+        //    SteamFriends.SetRichPresence("connect", Global.steamid.ToString());
+        //    InvokeHostedServerEvent();
+        //}
+        //Multiplayer.MultiplayerPeer = _SteamPeer.MultiplayerPeer;
+
     }
 
     public override void JoinServer(ulong steamID, ushort port = DEFAULT_PORT)
@@ -80,6 +89,7 @@ public partial class SteamNetworkManager : NetworkManager
             SteamFriends.SetRichPresence("connect", steamID.ToString());
         }
         Multiplayer.MultiplayerPeer = _SteamPeer.MultiplayerPeer;
+
     }
 
     public override void LeaveServer()
@@ -93,6 +103,16 @@ public partial class SteamNetworkManager : NetworkManager
             InvokeLeftServerEvent();
         }
         Multiplayer.MultiplayerPeer = null;
+    }
+
+    public override ulong peerIDToUserID(int peerID)
+    {
+        return _SteamPeer.GetSteam64FromPeerId(peerID);
+    }
+
+    public override int userIDToPeerID(ulong userID)
+    {
+        return _SteamPeer.GetPeerIdFromSteam64(userID);
     }
 }
 

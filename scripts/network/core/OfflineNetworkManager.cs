@@ -87,5 +87,15 @@ public partial class OfflineNetworkManager : NetworkManager
         }
         Multiplayer.MultiplayerPeer = null;
     }
+
+    public override ulong peerIDToUserID(int peerID)
+    {
+        return (ulong)peerID;
+    }
+
+    public override int userIDToPeerID(ulong userID)
+    {
+        return (int)userID;
+    }
 }
 

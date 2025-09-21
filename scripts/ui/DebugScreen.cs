@@ -1,5 +1,6 @@
 using Godot;
 using Limbo.Console.Sharp;
+using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -134,8 +135,8 @@ public partial class DebugScreen : Control
         
         if (!Global.OFFLINE_MODE)
         {
-            playerListItem.GetNode<Label>("playername").Text = SteamFriends.GetFriendPersonaName(new CSteamID(newPlayerSteamID));
-            playerListItem.GetNode<TextureRect>("icon").Texture = Utils.GetMediumSteamAvatar(newPlayerSteamID);
+           // playerListItem.GetNode<Label>("playername").Text = SteamFriends.GetFriendPersonaName(new CSteamID(newPlayerSteamID));
+            //playerListItem.GetNode<TextureRect>("icon").Texture = Utils.GetMediumSteamAvatar(newPlayerSteamID);
         }
 
 

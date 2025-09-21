@@ -44,5 +44,7 @@ public abstract partial class NetworkManager : Node
     public abstract void HostServer(ushort port = 2272);
     public abstract void JoinServer(ulong peerID, ushort port = 2272);
     public abstract void LeaveServer();
+    public abstract ulong peerIDToUserID(int peerID);
+    public abstract int userIDToPeerID(ulong userID);
 }
 
