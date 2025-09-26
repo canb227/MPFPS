@@ -338,7 +338,14 @@ public partial class GameState : Node3D
         ImGui.Text($"ENTITY LIST --------------------------");
         foreach (IGameObject gameObject in GameObjects.Values)
         {
-            ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:{gameObject.authority} | PRIORITY:{UpdateQueue[gameObject.id]}");
+            if (gameObject.authority == Global.steamid)
+            {
+                ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:ME | PRIORITY:{UpdateQueue[gameObject.id]}");
+            }
+            else
+            {
+                ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:{gameObject.authority}");
+            }
         }
         ImGui.End();
 
