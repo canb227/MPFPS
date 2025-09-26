@@ -23,6 +23,10 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             Logging.Log($"A GOBasePlayerCharacter that I am controlling just spawned! Creating camera and hooking up inputs!", "PlayerCharacter");
             CreateAndConfigureCamera();
         }
+        else
+        {
+            Global.gameState.PlayerInputs.Add(controllingPlayerID, new PlayerInputData());
+        }
 
         input = Global.gameState.PlayerInputs[controllingPlayerID];
     }
