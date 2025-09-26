@@ -398,6 +398,7 @@ public partial class GameState : Node3D
             }
             else
             {
+                Logging.Log($"State update for unknown object, spawning it","GameState");
                 IGameObject newObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                 SpawnNewObject(newObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                 newObj.ProcessStateUpdate(stateUpdate.data);
