@@ -5,6 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
+
+//DEPRECATED
+
+
+
+
+
+
+
+
+
+
+
+
 public partial class MPFPSMultiplayerAPI : MultiplayerApiExtension
 {
     SceneMultiplayer baseMP = new();

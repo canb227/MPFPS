@@ -225,6 +225,7 @@ public partial class Main : Node
         //Does not fire if process gets killed - you cant really do anything about that
         if (what == NotificationWMCloseRequest)
         {
+            Global.Lobby.LeaveLobby();
             QuitGame();
         }
     }
