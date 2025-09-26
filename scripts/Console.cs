@@ -1,10 +1,12 @@
 
+
 using Godot;
 using Limbo.Console.Sharp;
 using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Linq;
+
 
 
 /// <summary>
@@ -18,6 +20,7 @@ public partial class Console : Node
     {
 
         //LimboConsole.SetEvalBaseInstance(this);
+        //LimboConsole.SetEvalBaseInstance(this);
 
         //Register functions as commands 
 
@@ -25,6 +28,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_SetTickRate), "DEV_SetTickRate", "Dynamically changes tick rate. Almost certainly breaks stuff.");
 
         ////////////////////////////////////// GENERAL ///////////////////////////////////////////////
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "STATUS_Game", "Prints the current game status.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "STATUS_Game", "Prints the current game status.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.OpenUserDataDirectory), "OpenUserDataDirectory", "Opens a native file explorer to the user data directory.");
 
@@ -36,7 +40,6 @@ public partial class Console : Node
 
         ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_ConnectionInfo));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.MPStatus));
 
         ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Lobby));
