@@ -20,6 +20,7 @@ public partial class Ghost : GOBasePlayerCharacter
     public override void _Ready()
     {
         base._Ready();
+        priority = 100;
     }
 
     public override void ProcessStateUpdate(byte[] _update)

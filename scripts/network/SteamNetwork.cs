@@ -81,7 +81,7 @@ public class SteamNetwork
     public bool BandwidthTrackerEnabled = true;
     public bool BandwidthTrackerCountLoopbackSend = true;
     public bool BandwidthTrackerCountLoopbackReceive = true;
-    private double BandwidthTrackerWindow = 10;
+    private double BandwidthTrackerWindow = 1;
     private double BandwidthTrackerTimer = 0;
     private int SendBandwidthTracker = 0;
     private int ReceiveBandwidthTracker = 0;

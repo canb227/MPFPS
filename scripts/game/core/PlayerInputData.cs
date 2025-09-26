@@ -21,17 +21,3 @@ public partial class PlayerInputData
     public Actions actions;
 }
 
-[Flags]
-public enum Actions
-{
-    MoveForward = 1,
-    MoveBackward = 2,
-    MoveLeft = 4,
-    MoveRight = 8,
-    
-    Jump = 16,
-    Crouch = 32,
-    Sprint = 64,
-
-    Use = 128,
-}

@@ -5,18 +5,7 @@ using ImGuiNET;
 public partial class PlayerInputHandler : Node
 {
 
-    public Dictionary<string, Actions> flagMap = new Dictionary<string, Actions>()
-    {
-        { "MOVE_FORWARD",Actions.MoveForward },
-        { "MOVE_BACKWARD",Actions.MoveBackward },
-        { "MOVE_LEFT",Actions.MoveLeft },
-        { "MOVE_RIGHT",Actions.MoveRight },
-        { "CROUCH", Actions.Crouch },
-        { "JUMP", Actions.Jump },
-        { "SPRINT", Actions.Sprint },
-        { "USE", Actions.Use },
 
-    };
 
     public override void _Ready()
     {
@@ -42,7 +31,6 @@ public partial class PlayerInputHandler : Node
                     {
                         Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~flagMap[action];
                     }
-
                 }
             }
         }

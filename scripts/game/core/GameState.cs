@@ -15,6 +15,7 @@ public partial class GameState : Node3D
     /// List of all locally tracked game objects. Keyed by object ID for quick lookup. If in object isn't in this dictionary its completely cut off from all of the logic management and networking.
     /// </summary>
     public Dictionary<ulong, IGameObject> GameObjects = new();
+    public Dictionary<ulong, float> UpdateQueue = new();
 
     /// <summary>
     /// List of references to each player's current input data. Keyed by playerID (SteamID). Our local input ends up in this dictionary under our ID.
@@ -70,6 +71,7 @@ public partial class GameState : Node3D
     private Node3D nodeStaticLevel;
     private List<Marker3D> PlayerSpawnPoints = new();
     private IGameObject debugTarget;
+    private int numUpdatesPerFrame = 1;
 
     //runs after GameState gets added to scenetree during Main.cs init
     public override void _Ready()
@@ -129,21 +131,27 @@ public partial class GameState : Node3D
         {
             if (gameObject.authority==Global.steamid)
             {
-                //If we're the authority, process the next tick of the object then send our peers an update on its state.
+                //If we're the authority, process the next tick of the object then increment its priority
                 gameObject.PerTickAuth(delta);
-
-                //WARNING: THIS WILL SEND A NETWORK PACKET FOR EVERY SINGLE OBJECT IN THE GAME WE ARE AUTHORITY OF
-                //TODO: Implement object priority queue here the moment there is even a whiff of performance issues
-
-                StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Update);
-                byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
-                Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
+                UpdateQueue[gameObject.id] += gameObject.priority;
             }
             else
             {
                 //if we're not the authority just run the local prediction and remediation code for the object
                 gameObject.PerTickLocal(delta);
             }
+        }
+
+        //grab the N highest priorirty items and send updates for those
+        var ordered = UpdateQueue.OrderByDescending(x => x.Value);
+        for (int i = 0; i < numUpdatesPerFrame && i < ordered.Count(); i++)
+        {
+            
+            var entry = ordered.ElementAt(i);
+            StateUpdatePacket stateUpdate = new StateUpdatePacket(GameObjects[entry.Key].id, GameObjects[entry.Key].GenerateStateUpdate(), GameObjects[entry.Key].type, StateUpdateFlag.Update);
+            byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
+            Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
+            UpdateQueue[entry.Key] = 0;
         }
 
         //We're always the authority over our own input state, send that to all of our peers.
@@ -211,6 +219,7 @@ public partial class GameState : Node3D
             pc.GlobalTransform = SpawnTransform;
             pc.controllingPlayerID = Global.steamid;
             SpawnNewObject(pc, GenerateNewID(), Global.steamid, pcType);
+            UpdateQueue.Add(pc.id, 0);
             StateUpdatePacket stateUpdate = new StateUpdatePacket(pc.id, pc.GenerateStateUpdate(), pc.type, StateUpdateFlag.SpawnPlayer);
             byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
             Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
@@ -230,6 +239,7 @@ public partial class GameState : Node3D
     public void SpawnObjectAsAuth(IGameObject gameObject, GameObjectType type)
     {
         SpawnNewObject(gameObject,GenerateNewID(),Global.steamid,type);
+        UpdateQueue.Add(gameObject.id, 0);
         StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Spawn);
         byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
         Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
@@ -328,7 +338,7 @@ public partial class GameState : Node3D
         ImGui.Text($"ENTITY LIST --------------------------");
         foreach (IGameObject gameObject in GameObjects.Values)
         {
-            ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:{gameObject.authority}");
+            ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:{gameObject.authority} | PRIORITY:{UpdateQueue[gameObject.id]}");
         }
         ImGui.End();
 
