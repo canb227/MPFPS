@@ -326,6 +326,20 @@ public partial class GameState : Node3D
         }
         ImGui.End();
 
+        ImGui.Begin("Peer Input Debug");
+        ImGui.Text($"Number of peer inputs: {PlayerInputs.Count}");
+        foreach (var input in PlayerInputs)
+        {
+            int count = 0;
+            foreach(var action in input.Value.actions)
+            {
+                if (action.Value == true) count++;
+
+            }
+            ImGui.Text($"Peer: {input.Key} is pressing {count} actions");
+        }
+        ImGui.End();
+
         if (debugTarget != null)
         {
             ImGui.Begin("Targetted Object Menu");
@@ -341,15 +355,16 @@ public partial class GameState : Node3D
         bool processInputs =  PlayerInputPacketBuffer.Count > 0;
         while (processInputs)
         {
-            PlayerInputData inputData = PlayerInputPacketBuffer.Dequeue();
-            if (PlayerInputs.TryGetValue(inputData.playerID, out inputData))
+            PlayerInputData newInputData = PlayerInputPacketBuffer.Dequeue();
+            if (PlayerInputs.TryGetValue(newInputData.playerID, out PlayerInputData currentInputData))
             {
-                PlayerInputs[inputData.playerID] = inputData;
+                PlayerInputs[newInputData.playerID] = newInputData;
             }
             else
             {
-                PlayerInputs.Add(inputData.playerID, inputData);
+                PlayerInputs.Add(newInputData.playerID, newInputData);
             }
+
             if (PlayerInputPacketBuffer.Count > 0)
             {
                 processInputs = true;

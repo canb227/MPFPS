@@ -13,8 +13,6 @@ public partial class PlayerInputHandler : Node
     }
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (Global.gameState.PlayerInputs[Global.steamid].playerID == 0) return;
-
         if (@event.IsActionType())
         {
             Global.gameState.PlayerInputs[Global.steamid].MovementInputVector = Input.GetVector("MOVE_FORWARD", "MOVE_BACKWARD", "MOVE_LEFT", "MOVE_RIGHT");

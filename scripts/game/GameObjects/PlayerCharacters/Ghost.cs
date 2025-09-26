@@ -20,6 +20,11 @@ public partial class Ghost : GOBasePlayerCharacter
     public override void _Ready()
     {
         base._Ready();
+        if (input == null)
+        {
+            controllingPlayerID = authority;
+            input = Global.gameState.PlayerInputs[authority];
+        }
     }
 
     public override void ProcessStateUpdate(byte[] _update)
@@ -34,6 +39,7 @@ public partial class Ghost : GOBasePlayerCharacter
         GhostUpdate update = new GhostUpdate();
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;
+        update.controllingPlayerID = controllingPlayerID;
         return MessagePackSerializer.Serialize(update);
     }
 
@@ -209,4 +215,7 @@ public struct GhostUpdate
 
     [Key(1)]
     public Vector3 Rotation;
+
+    [Key(2)]
+    public ulong controllingPlayerID;
 }
