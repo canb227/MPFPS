@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://ccwjrs8ekm5ul"]
+
+[ext_resource type="Script" uid="uid://b4hlj56wl7us7" path="res://scripts/player/PlayerInput.cs" id="1_6apru"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_y7mvk"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_p6oa3"]
+
+[node name="entity" type="Node3D"]
+
+[node name="sync" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_y7mvk")
+
+[node name="readme" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2447207, 0)
+billboard = 1
+text = "Template Entity
+1. Is or inherits Node3D
+
+If Networked:
+1. Has a MultiplayerSyncronizer node with networked properties configured
+2. Is registered with World.RegisteredEntities in source code (sorry)
+3. Spawned using Global.GameState.world.SpawnEntity() (sorry)
+
+If RigidBody3D or CharacterBody3D
+1. Has a CollisionShape3D child named \"collider\"
+2. Has a MeshInstance3D child named \"mesh\"
+
+If a Player Character:
+1. PlayerInput node named \"input\"
+2. Camera3D node named \"cam\""
+font_size = 64
+
+[node name="optional" type="Node3D" parent="."]
+
+[node name="collider" type="CollisionShape3D" parent="optional"]
+
+[node name="mesh" type="MeshInstance3D" parent="optional"]
+skeleton = NodePath("../..")
+
+[node name="cam" type="Camera3D" parent="optional"]
+
+[node name="input" type="MultiplayerSynchronizer" parent="optional"]
+replication_config = SubResource("SceneReplicationConfig_p6oa3")
+script = ExtResource("1_6apru")
+metadata/_custom_type_script = "uid://b4hlj56wl7us7"

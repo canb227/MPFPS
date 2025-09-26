@@ -1,8 +1,10 @@
 using Godot;
 using Limbo.Console.Sharp;
+using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 
 /// <summary>
@@ -57,8 +59,8 @@ public partial class DebugScreen : Control
     public static List<string> directLoadMap_mapNames = new()
     {
 
-        { "DebugPlatform" },
-        { "DebugFlat" },
+        { "platform" },
+        { "flat" },
 
     };
     // Called when the node enters the scene tree for the first time.
@@ -110,7 +112,7 @@ public partial class DebugScreen : Control
         }
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
-
+        DirectLoadMap_mapList_ItemSelected(0);
     }
 
     private void Lobby_LobbyPeerRemovedEvent(ulong removedPlayerSteamID)
@@ -153,7 +155,8 @@ public partial class DebugScreen : Control
         chat_chatbar.Text = "";
     }
 
-    private void DirectLoadMap_mapList_ItemSelected(long index)
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void Chat(string sender,string message)
     {
         directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[directLoadMap_mapList.Selected]));
     }

@@ -4,7 +4,6 @@ using MessagePack.Formatters;
 using System;
 using System.Collections.Generic;
 
-
 public sealed class GodotResolver : IFormatterResolver
 {
     public static readonly IFormatterResolver Instance = new GodotResolver();

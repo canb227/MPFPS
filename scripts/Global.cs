@@ -1,5 +1,8 @@
 using Godot;
 using Steamworks;
+using System;
+
+
 
 /// <summary>
 /// Singleton that autoloads right after Godot engine init. Can be statically referenced using "Global." anywhere.
@@ -17,6 +20,11 @@ public partial class Global : Node
     /// Unused while app_id.txt is present in root folder. Remove that file when deploying to Steam.
     /// </summary>
     public const int APP_ID = 480;
+
+    /// <summary>
+    /// If true, fake steam and network connections. Allows for local testing, not for production.
+    /// </summary>
+    public const bool OFFLINE_MODE = false;
 
     /// <summary>
     /// The SteamID of the user that launched the game. Is set to 0 if Steam Init fails.
@@ -54,7 +62,7 @@ public partial class Global : Node
     /// <summary>
     /// Holds a reference to the currently active networking system
     /// </summary>
-    public static SteamNetwork network;
+    public static NetworkManager network;
 
     /// <summary>
     /// holds a reference to the lobby system that is always running in the background
@@ -78,6 +86,8 @@ public partial class Global : Node
     {
         instance = this;
 
+
+
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
         Logging.Start(); //Also start logging here instead of Main so its ready super early to log stuff
@@ -98,7 +108,16 @@ public partial class Global : Node
         Logging.Log("Connection to Steam successful.", "SteamAPI");
         Logging.Log($"Steam ID: {steamid}", "SteamAPI");
 
+
+        //OverrideGodotMultiplayerInterface();
         //From here next code ran is in Main.cs's _Ready()
+    }
+
+    private void OverrideGodotMultiplayerInterface()
+    {
+        MPFPSMultiplayerAPI mpapi = new();
+        mpapi.MultiplayerPeer = null;
+        GetTree().SetMultiplayer(mpapi);
     }
 
     /// <summary>
@@ -107,6 +126,7 @@ public partial class Global : Node
     public void SteamInit()
     {
         Logging.Log("Initializing Steam API...", "SteamAPI");
+
         try
         {
             //SteamAPI call that checks if steam is running in the background. If it is not, it starts steam then starts the game once steam is started.
@@ -118,7 +138,7 @@ public partial class Global : Node
                 GetTree().Quit();
             }
         }
-        catch (System.DllNotFoundException e)
+        catch (System.DllNotFoundException)
         {
             //nothing works if the steam dll for our OS isn't present. We only support Windows at the moment.
             GD.PushError("steam_api64.dll not found. steam_api64.dll is expected in the game root folder.", "SteamAPI");

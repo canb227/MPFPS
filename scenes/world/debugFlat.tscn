@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b2x81sac4k550"]
+[gd_scene load_steps=8 format=3 uid="uid://b2x81sac4k550"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lg43y"]
 sky_horizon_color = Color(0.7419155, 0.62632006, 0.5819008, 1)
@@ -25,6 +25,9 @@ albedo_color = Color(0.34781694, 0.34781697, 0.3478169, 1)
 normal_enabled = true
 normal_texture = SubResource("NoiseTexture2D_jqdd4")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_lg43y"]
+size = Vector3(19.871216, 44.73023, 66.47327)
+
 [node name="DebugFlat" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -40,3 +43,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7291565, 0, -0.28858185)
 use_collision = true
 size = Vector3(50.72943, 1, 49.413864)
 material = SubResource("StandardMaterial3D_g3bbe")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.43997544, 0.29825264, -0.8470342, 0, 0.943235, 0.33212626, 0.8980098, 0.1461274, -0.41500023, -25.118319, 13.114737, -17.47462)
+
+[node name="meta" type="Node" parent="."]
+
+[node name="spawnBox" type="Area3D" parent="meta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.605976, 9.178258, -5.6667533)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="meta/spawnBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.683933, 2.9020243, 17.023483)
+shape = SubResource("BoxShape3D_lg43y")
+
+[node name="defaultSpawn" type="Marker3D" parent="meta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)

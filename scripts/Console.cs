@@ -1,6 +1,7 @@
 
 using Godot;
 using Limbo.Console.Sharp;
+using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Linq;
@@ -35,6 +36,7 @@ public partial class Console : Node
 
         ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_ConnectionInfo));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.MPStatus));
 
         ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Lobby));
@@ -73,7 +75,25 @@ public partial class Console : Node
         OS.ShellOpen(OS.GetUserDataDir());
     }
 
+    public void MPStatus()
+    {
+        LimboConsole.Info("Networking Status:");
+        LimboConsole.Info($"Root MultiplayerAPI is: {GetTree().GetMultiplayer()}");
+        LimboConsole.Info($"NetworkManagerImpl?: Steam: {Global.network is SteamNetworkManager} Offline: {Global.network is OfflineNetworkManager}");
+        LimboConsole.Info($"MPAPI-Peer Started?: {Multiplayer.MultiplayerPeer != null}");
+        if (Multiplayer.MultiplayerPeer == null) return;
+        LimboConsole.Info($"Peer Impl?: Steam: {Multiplayer.MultiplayerPeer is MultiplayerPeerExtension} Offline: {Multiplayer.MultiplayerPeer is ENetMultiplayerPeer}");
+        LimboConsole.Info($"MPAPI-Peer Status: {Multiplayer.MultiplayerPeer.GetConnectionStatus()}");
+        LimboConsole.Info($"Net ID: {Multiplayer.GetUniqueId()}");
+        LimboConsole.Info($"Is Host?: {Multiplayer.IsServer()}");
+        LimboConsole.Info($"Number of peers: {Multiplayer.GetPeers().Length}");
+        LimboConsole.Info($"Peer List --------------------");
+        foreach (int peerID in Multiplayer.GetPeers())
+        {
+            LimboConsole.Info($"PeerID: {peerID}");
+        }
 
+    }
     ////////////////////////////////////// DEV ///////////////////////////////////////////////
 
     public void DEV_SetTickRate (int rate)
@@ -118,13 +138,13 @@ public partial class Console : Node
     public void NET_EnableBandwidthTracker()
     {
         LimboConsole.Info("Network Bandwidth Tracker now reporting.");
-        Global.network.BandwidthTrackerEnabled = true;
+        //Global.network.BandwidthTrackerEnabled = true;
     }
 
     public void NET_DisableBandwidthTracker()
     {
         LimboConsole.Info("Network Bandwidth Tracker disabled.");
-        Global.network.BandwidthTrackerEnabled = false;
+        //Global.network.BandwidthTrackerEnabled = false;
     }
 
     ////////////////////////////////////// SESSSION ///////////////////////////////////////////////
@@ -176,36 +196,36 @@ public partial class Console : Node
     ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
     public void STATUS_Lobby()
     {
-        LimboConsole.Info("Lobby Status");
-        LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
-        if (!Global.Lobby.bInLobby) return;
-        LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
-        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
-        LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
-        LimboConsole.Info($"  Peer List --------------------------------------------------------------");
-        foreach (ulong peer in Global.Lobby.lobbyPeers)
-        {
-            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
-        }
+        //LimboConsole.Info("Lobby Status");
+        //LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
+        //if (!Global.Lobby.bInLobby) return;
+        //LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
+        //LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
+        //LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
+        //LimboConsole.Info($"  Peer List --------------------------------------------------------------");
+        //foreach (ulong peer in Global.Lobby.lobbyPeers)
+        //{
+        //    LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
+        //}
     }
 
     public void HostNewLobby()
     {
         LimboConsole.Info("Hosting a new lobby...");
-        Global.Lobby.HostNewLobby(true);
+       // Global.Lobby.HostNewLobby(true);
     }
 
     public void JoinLobby(string ids)
     {
 
-        LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
-        Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids),true);
+       // LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
+        //Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids),true);
     }
 
     public void LeaveLobby()
     {
         LimboConsole.Info($"Leaving current lobby...");
-        Global.Lobby.LeaveLobby(true);
+       // Global.Lobby.LeaveLobby(true);
     }
 
 

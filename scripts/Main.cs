@@ -54,9 +54,6 @@ public partial class Main : Node
         console.Name = "InGameConsole";
         AddChild(console);
 
-        //Fires up the core networking component and registers a global reference to it. Doesn't trigger any behaviour right away, but once this is started we are able to receive packets over the Steam Relay Network.
-        Logging.Log($"Starting core Networking manager...", "Main");
-        Global.network = new SteamNetwork();
 
         //Start the "world", the root Node3D for the game, register a global reference for it, and add it to the scenetree as a child of main so it can render 3D stuff.
         //Logging.Log($"Starting world/level/3DNode manager...", "Main");
@@ -64,11 +61,15 @@ public partial class Main : Node
         //Global.world.Name = "World";
         //AddChild(Global.world);
 
-        //TODO: Trigger preloading and shader stuff here if needed, using the above world node
+        Global.GameState = new();
+        Global.GameState.Name = "GameState";
+        AddChild(Global.GameState);
+    
+        //TODO: Trigger preloading and shader stuff here if needed
 
         Global.ui.StartLoadingScreen();
         Global.ui.SetLoadingScreenDescription("Compiling Shaders...");
-
+        
         await DoSomeLongShit();
 
         Global.ui.StopLoadingScreen();
@@ -101,8 +102,6 @@ public partial class Main : Node
 
             //TODO: Parse launch arg string, its in some weird format like '+connect steamid' or some shit I need to test it
             throw new NotImplementedException("Joining to another player while the game is not open is not implmented yet.");
-
-            Global.Lobby.AttemptJoinToLobby(cmdLineSteamID);
             return;
         }
         else
