@@ -4,6 +4,9 @@ using MessagePack;
 [GlobalClass]
 public partial class SimpleShape : GOBaseRigidBody
 {
+
+    Vector3 desiredPosition;
+
     public override void _Ready()
     {
         base._Ready();
@@ -17,7 +20,7 @@ public partial class SimpleShape : GOBaseRigidBody
     {
         SimpleShapeStateUpdate sssu = MessagePackSerializer.Deserialize<SimpleShapeStateUpdate>(update);
         LinearVelocity = sssu.velocity;
-        Position = Position.Slerp(sssu.position,.5f);
+        desiredPosition = sssu.position;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -35,7 +38,7 @@ public partial class SimpleShape : GOBaseRigidBody
 
     public override void PerTickLocal(double delta)
     {
-
+        Position = Position.Lerp(desiredPosition, (float)(0.1f * delta));
     }
 
     public override void PerFrameLocal(double delta)
