@@ -71,7 +71,7 @@ public partial class GameState : Node3D
     private Node3D nodeStaticLevel;
     private List<Marker3D> PlayerSpawnPoints = new();
     private IGameObject debugTarget;
-    private int numUpdatesPerFrame = 1;
+    private int numUpdatesPerFrame = 10;
 
     //runs after GameState gets added to scenetree during Main.cs init
     public override void _Ready()
@@ -421,6 +421,13 @@ public partial class GameState : Node3D
                             return;
                         }
                         updateObj.ProcessStateUpdate(stateUpdate.data);
+                    }
+                    else
+                    {
+                        Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
+                        IGameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                        SpawnNewObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
+                        fixObj.ProcessStateUpdate(stateUpdate.data);
                     }
                     break;
                 case StateUpdateFlag.Spawn:
