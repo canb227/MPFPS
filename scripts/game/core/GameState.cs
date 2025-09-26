@@ -90,6 +90,8 @@ public partial class GameState : Node3D
         PIH.Name = "LocalInput";
         AddChild(PIH);
 
+        PlayerData[Global.steamid] = new PlayerData();
+        PlayerData[Global.steamid].playerID = Global.steamid;
         //Start the game paused.
         ProcessMode = ProcessModeEnum.Disabled;
     }
@@ -146,7 +148,6 @@ public partial class GameState : Node3D
         var ordered = UpdateQueue.OrderByDescending(x => x.Value);
         for (int i = 0; i < numUpdatesPerFrame && i < ordered.Count(); i++)
         {
-            
             var entry = ordered.ElementAt(i);
             StateUpdatePacket stateUpdate = new StateUpdatePacket(GameObjects[entry.Key].id, GameObjects[entry.Key].GenerateStateUpdate(), GameObjects[entry.Key].type, StateUpdateFlag.Update);
             byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
@@ -509,7 +510,7 @@ public partial class GameState : Node3D
         Logging.Log($"Starting Game!", "GameState");
         Global.ui.StartLoadingScreen();
         LoadStaticLevel(scenePath);
-        SpawnSelf(GameObjectType.Ghost);
+        SpawnSelf(GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type);
         Global.ui.StopLoadingScreen();
         gameStarted = true;
         ProcessMode = ProcessModeEnum.Pausable;

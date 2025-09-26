@@ -9,7 +9,8 @@ public static class GameObjectLoader
     public static Dictionary<string, (GameObjectType type, string scenePath, Type cls)> GameObjectDictionary = new()
     {
         {"ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
-        {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) }
+        {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
+        {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/ghost.tscn", typeof(Tony))},
     };
 
     internal static IGameObject LoadObjectByType(GameObjectType type)
@@ -58,4 +59,5 @@ public enum GameObjectType
     ERROR,
     Ball,
     Ghost,
+    Tony,
 }

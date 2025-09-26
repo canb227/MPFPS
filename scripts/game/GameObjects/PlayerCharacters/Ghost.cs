@@ -17,6 +17,8 @@ public partial class Ghost : GOBasePlayerCharacter
 
     private PlayerCamera cam { get; set; }
 
+    public RayCast3D rayCast { get; set; }
+
     public override void _Ready()
     {
         base._Ready();
@@ -35,7 +37,6 @@ public partial class Ghost : GOBasePlayerCharacter
         GhostUpdate update = new GhostUpdate();
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;
-        update.controllingPlayerID = controllingPlayerID;
         return MessagePackSerializer.Serialize(update);
     }
 
@@ -117,57 +118,57 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override void PerTickLocal(double delta)
     {
-        if (Input.MouseMode == Input.MouseModeEnum.Captured)
-        {
-            float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
-            float newXRot = RotationDegrees.X - mouseY;
+        //if (Input.MouseMode == Input.MouseModeEnum.Captured)
+        //{
+        //    float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
+        //    float newXRot = RotationDegrees.X - mouseY;
 
-            if (newXRot > camXRotMax) { newXRot = camXRotMax; }
-            if (newXRot < camXRotMin) { newXRot = camXRotMin; }
+        //    if (newXRot > camXRotMax) { newXRot = camXRotMax; }
+        //    if (newXRot < camXRotMin) { newXRot = camXRotMin; }
 
-            RotationDegrees = new Vector3(newXRot, (float)(RotationDegrees.Y - input.LookInputVector.X * 5 * delta), RotationDegrees.Z);
-        }
-        input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
+        //    RotationDegrees = new Vector3(newXRot, (float)(RotationDegrees.Y - input.LookInputVector.X * 5 * delta), RotationDegrees.Z);
+        //}
+        //input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
 
-        float moveZ = input.MovementInputVector.X;
-        float moveX = input.MovementInputVector.Y;
+        //float moveZ = input.MovementInputVector.X;
+        //float moveX = input.MovementInputVector.Y;
 
-        Vector3 localVelocity = Transform.Basis.Inverse() * Velocity;
+        //Vector3 localVelocity = Transform.Basis.Inverse() * Velocity;
 
-        localVelocity.Y = 0;
+        //localVelocity.Y = 0;
 
-        if (moveZ == 0)
-        {
-            localVelocity.Z = 0f;
-        }
-        else
-        {
-            localVelocity.Z = moveZ * 6;
-        }
+        //if (moveZ == 0)
+        //{
+        //    localVelocity.Z = 0f;
+        //}
+        //else
+        //{
+        //    localVelocity.Z = moveZ * 6;
+        //}
 
-        if (moveX == 0)
-        {
-            localVelocity.X = 0f;
-        }
-        else
-        {
-            localVelocity.X = moveX * 6;
-        }
+        //if (moveX == 0)
+        //{
+        //    localVelocity.X = 0f;
+        //}
+        //else
+        //{
+        //    localVelocity.X = moveX * 6;
+        //}
 
-        Vector3 globalVelocity = Transform.Basis * localVelocity;
+        //Vector3 globalVelocity = Transform.Basis * localVelocity;
 
-        if (input.actions.HasFlag(Actions.Jump))
-        {
-            globalVelocity.Y = 1 * 4;
-        }
-        else if (input.actions.HasFlag(Actions.Crouch))
-        {
-            globalVelocity.Y = -1 * 4;
-        }
+        //if (input.actions.HasFlag(Actions.Jump))
+        //{
+        //    globalVelocity.Y = 1 * 4;
+        //}
+        //else if (input.actions.HasFlag(Actions.Crouch))
+        //{
+        //    globalVelocity.Y = -1 * 4;
+        //}
 
 
-        Velocity = globalVelocity;
-        MoveAndSlide();
+        //Velocity = globalVelocity;
+        //MoveAndSlide();
     }
 
     public override void PerFrameLocal(double delta)
@@ -205,6 +206,4 @@ public struct GhostUpdate
     [Key(1)]
     public Vector3 Rotation;
 
-    [Key(2)]
-    public ulong controllingPlayerID;
 }

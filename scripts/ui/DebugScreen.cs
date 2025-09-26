@@ -43,26 +43,34 @@ public partial class DebugScreen : Control
     public static List<string> directLoadMap_mapPaths = new()
     {
 
-        { "res://scenes/world/debugPlatform.tscn" },
-        { "res://scenes/world/debugFlat.tscn" },
+        "res://scenes/world/debugPlatform.tscn",
+        "res://scenes/world/debugFlat.tscn",
 
     };
 
     public static List<string> directLoadMap_mapIconPaths = new()
     {
 
-        { "res://assets/ui/img/debugMapScreenie.png" },
-        { "res://assets/ui/img/debugMapFlatScreenie.png" },
+        "res://assets/ui/img/debugMapScreenie.png",
+        "res://assets/ui/img/debugMapFlatScreenie.png",
 
     };
 
     public static List<string> directLoadMap_mapNames = new()
     {
 
-        { "platform" },
-        { "flat" },
+        "platform",
+        "flat",
 
     };
+
+    public static List<string> playerCharacters = new()
+    {
+        "ghost",
+        "tony",
+    };
+
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -110,9 +118,11 @@ public partial class DebugScreen : Control
             }
 
         }
+        DirectLoadMap_mapList_ItemSelected(0);
+
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
-        DirectLoadMap_mapList_ItemSelected(0);
+
     }
 
     private void DirectLoadMap_mapList_ItemSelected(long v)
@@ -145,8 +155,39 @@ public partial class DebugScreen : Control
         //playerListItem.GetNode<Label>("level").Text = Global.GameSession.playerData[newPlayerSteamID].progression.AccountLevel.ToString();
         playerListItem.GetNode<Label>("id").Text = newPlayerSteamID.ToString();
         playerListItem.Name = newPlayerSteamID.ToString();
-        playerList_list.AddChild(playerListItem);
+
+        if (newPlayerSteamID==Global.steamid)
+        {
+            foreach (string character in playerCharacters)
+            {
+                playerListItem.GetNode<OptionButton>("charSelect").AddItem(character);
+            }
+            playerListItem.GetNode<OptionButton>("charSelect").ItemSelected += (index) => OnCharSelect(playerCharacters[(int)index]);
+            playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
+        }
+        else
+        {
+            playerListItem.GetNode<OptionButton>("charSelect").Disabled = true;
+            playerListItem.GetNode<ColorPickerButton>("colorSelect").Disabled = true;
+        }
+
+            playerList_list.AddChild(playerListItem);
+
+
     }
+
+    private void OnColorSelect(Color color)
+    {
+        Global.gameState.PlayerData[Global.steamid].color = color;
+        Global.gameState.PushLocalPlayerData();
+    }
+
+    private void OnCharSelect(string character)
+    {
+        Global.gameState.PlayerData[Global.steamid].selectedCharacter = character;
+        Global.gameState.PushLocalPlayerData();
+    }
+
 
     private void StartGameButton_Pressed()
     {

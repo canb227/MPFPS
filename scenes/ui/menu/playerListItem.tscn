@@ -95,21 +95,7 @@ grow_vertical = 2
 text = "Color"
 metadata/_edit_use_anchors_ = true
 
-[node name="colorselect" type="OptionButton" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.59871686
-anchor_top = 0.0625
-anchor_right = 0.59871686
-anchor_bottom = 0.0625
-offset_left = 104.9
-offset_top = 29.0
-offset_right = 153.9
-offset_bottom = 68.0
-fit_to_longest_item = false
-metadata/_edit_use_anchors_ = true
-
-[node name="lbl_info2" type="Label" parent="."]
+[node name="lbl_char" type="Label" parent="."]
 custom_minimum_size = Vector2(0, 4.835)
 layout_mode = 1
 anchors_preset = -1
@@ -122,10 +108,10 @@ offset_right = 152.8
 offset_bottom = 27.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "info2"
+text = "character"
 metadata/_edit_use_anchors_ = true
 
-[node name="info2Select" type="OptionButton" parent="."]
+[node name="charSelect" type="OptionButton" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.7008674
@@ -156,3 +142,15 @@ offset_top = 39.0
 offset_right = 362.0
 offset_bottom = 62.0
 text = "0"
+
+[node name="colorSelect" type="ColorPickerButton" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.59400004
+anchor_right = 0.59400004
+offset_left = 108.54797
+offset_top = 30.0
+offset_right = 148.54797
+offset_bottom = 69.0
+edit_alpha = false
+edit_intensity = false
