@@ -7,6 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+
+
+//DEPRECATED
+
+
+
+
+
+
+
+
+
+
+
+
+
 public partial class OfflineNetworkManager : NetworkManager
 {
 

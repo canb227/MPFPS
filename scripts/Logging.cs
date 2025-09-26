@@ -2,6 +2,7 @@ using Godot;
 using Limbo.Console.Sharp;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Static logger class to keep things organized.
@@ -17,14 +18,14 @@ public static class Logging
     /// <summary>
     /// List of Log Prefixes (categories) to silence. Add logging categories to this to silence them - can also use the relevant console commands while the game is running to add or remove values
     /// </summary>
-    public static List<string> SilencedPrefixes = ["FirstTimeSetup", "LoggingMeta", "NetworkRelay", "NetworkSession", "GameSessionWire", "NetworkWire"];
+    public static List<string> DefaultSilencedPrefixes = ["FirstTimeSetup", "LoggingMeta", "NetworkRelay", "NetworkSession", "GameSessionWire", "NetworkWire"];
+
+    public static Dictionary<string, (bool silenced, int timesPrinted, int timesSilenced)> categories = new();
 
     /// <summary>
     /// Is true if Logger is functioning.
     /// </summary>
     public static bool IsStarted = false;
-
-    private static List<string> SilencedPrefixesCurrent = SilencedPrefixes;
     private static FileAccess logFile = null;
     private static bool writeToFile = false;
 
@@ -34,6 +35,10 @@ public static class Logging
     public static void Start()
     {
         IsStarted = true;
+        foreach (string s in DefaultSilencedPrefixes)
+        {
+            categories[s] = (true, 0, 0);
+        }
     }
 
     /// <summary>
@@ -59,11 +64,24 @@ public static class Logging
     /// <param name="message">message to log</param>
     /// <param name="prefix">A custom prefix. Leave blank to remove prefix.</param>
     /// <param name="timestamp">If true a system timestamp is added to the message.</param>
-    public static void Log(string message, string prefix, bool timestamp = true)
+    public static void Log(string message, string prefix, bool timestamp = true, bool codeTrace = false, [CallerLineNumber] int line = 0, [CallerMemberName] string caller = "", [CallerFilePath] string callerFile = "")
     {
-        if (SilencedPrefixesCurrent.Contains(prefix) || !IsStarted)
+        if (!IsStarted) return;
+        if (categories.TryGetValue(prefix,out var category))
         {
-            return;
+            if (category.silenced)
+            {
+                categories[prefix] = (category.silenced, category.timesPrinted, ++category.timesSilenced);
+                return;
+            }
+            else
+            {
+                categories[prefix] = (category.silenced, ++category.timesPrinted, category.timesSilenced);
+            }
+        }
+        else
+        {
+            categories[prefix] = (false, 1, 0);
         }
 
         string ts = "";
@@ -72,11 +90,16 @@ public static class Logging
         string customPrefix = "";
         if (prefix != "" && prefix != null) customPrefix = $"[{prefix}]";
 
-        LimboConsole.Info(customPrefix + ts + message);
-        GD.Print(customPrefix + ts + message);
+        string trace = "";
+        if (codeTrace) trace = $" [from {caller} in {callerFile.Substring(callerFile.IndexOf("scripts"))} at line {line}]";
+
+        string finalMessage = customPrefix + ts + message + trace;
+
+        LimboConsole.Info(finalMessage);
+        GD.Print(finalMessage);
         if (writeToFile)
         {
-            if (logFile.StoreLine(customPrefix + ts + message))
+            if (logFile.StoreLine(finalMessage))
             {
                 logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a non-trivial performance hit if you are logging a lot.
             }
@@ -93,23 +116,42 @@ public static class Logging
     /// <param name="message">message to log</param>
     /// <param name="prefix">A custom prefix. Leave blank to remove prefix.</param>
     /// <param name="timestamp">If true a system timestamp is added to the message.</param>
-    public static void Warn(string message, string prefix, bool timestamp = true)
+    public static void Warn(string message, string prefix, bool timestamp = true, bool codeTrace = false, [CallerLineNumber] int line = 0, [CallerMemberName] string callerMethod = "", [CallerFilePath] string callerFile = "")
     {
-        if (SilencedPrefixesCurrent.Contains(prefix) || !IsStarted)
+        if (!IsStarted) return;
+        if (categories.TryGetValue(prefix, out var category))
         {
-            return;
+            if (category.silenced)
+            {
+                categories[prefix] = (category.silenced, category.timesPrinted, ++category.timesSilenced);
+                return;
+            }
+            else
+            {
+                categories[prefix] = (category.silenced, ++category.timesPrinted, category.timesSilenced);
+            }
         }
+        else
+        {
+            categories[prefix] = (false, 1, 0);
+        }
+
         string ts = "";
         if (timestamp) ts = $"[{Time.GetTimeStringFromSystem()}]";
 
         string customPrefix = "";
         if (prefix != "" && prefix != null) customPrefix = $"[{prefix}]";
 
-        LimboConsole.Warn(customPrefix + ts + message);
-        GD.Print(customPrefix + ts + message);
+        string trace = "";
+        if (codeTrace) trace = $" [from {callerMethod} in {callerFile.Substring(callerFile.IndexOf("scripts"))} at line {line}]";
+
+        string finalMessage = customPrefix + ts + message + trace;
+
+        LimboConsole.Warn(finalMessage);
+        GD.PushWarning(finalMessage);
         if (writeToFile)
         {
-            if (logFile.StoreLine(customPrefix + ts + message))
+            if (logFile.StoreLine(finalMessage))
             {
                 logFile.Flush(); //Flush the buffer to disk per line in case we crash.  This probably incurs a non-trivial performance hit if you are logging a lot.
             }
@@ -126,23 +168,34 @@ public static class Logging
     /// <param name="message">message to log</param>
     /// <param name="prefix">A custom prefix. Leave blank to remove prefix.</param>
     /// <param name="timestamp">If true a system timestamp is added to the message.</param>
-    public static void Error(string message, string prefix, bool timestamp = true)
+    public static void Error(string message, string prefix, bool timestamp = true, bool codeTrace = false, [CallerLineNumber] int line = 0, [CallerMemberName] string callerMethod = "", [CallerFilePath] string callerFile = "")
     {
-        if (!IsStarted)
+        if (!IsStarted) return;
+        if (categories.TryGetValue(prefix, out var category))
         {
-            return;
+            categories[prefix] = (category.silenced, category.timesPrinted++, category.timesSilenced);
         }
+        else
+        {
+            categories[prefix] = (false, 1, 0);
+        }
+
         string ts = "";
         if (timestamp) ts = $"[{Time.GetTimeStringFromSystem()}]";
 
         string customPrefix = "";
         if (prefix != "" && prefix != null) customPrefix = $"[{prefix}]";
 
-        LimboConsole.Error(customPrefix + ts + message);
-        GD.PushError(customPrefix + ts + message);
+        string trace = "";
+        if (codeTrace) trace = $" [from {callerMethod} in {callerFile.Substring(callerFile.IndexOf("scripts"))} at line {line}]";
+
+        string finalMessage = customPrefix + ts + message + trace;
+
+        LimboConsole.Error(finalMessage);
+        GD.PushError(finalMessage);
         if (writeToFile)
         {
-            if (logFile.StoreLine(customPrefix + ts + message))
+            if (logFile.StoreLine(finalMessage))
             {
                 logFile.Flush(); //Flush the buffer to disk per line in case we crash.  This probably incurs a non-trivial performance hit if you are logging a lot.
             }
@@ -155,22 +208,36 @@ public static class Logging
 
     public static void UnSilenceAllPrefixes()
     {
-        SilencedPrefixesCurrent = new();
+        foreach (var entry in categories)
+        {
+            categories[entry.Key] = (false,entry.Value.timesPrinted, entry.Value.timesSilenced);
+        }
     }
 
     public static void ResetSilencedPrefixesToDefault()
     {
-        SilencedPrefixesCurrent = new(SilencedPrefixes);
+        foreach (var entry in categories)
+        {
+            if (DefaultSilencedPrefixes.Contains(entry.Key))
+            {
+                categories[entry.Key] = (true, entry.Value.timesPrinted, entry.Value.timesSilenced);
+            }
+            else
+            {
+                categories[entry.Key] = (false, entry.Value.timesPrinted, entry.Value.timesSilenced);
+            }
+
+        }
     }
 
     public static void SilencePrefix(string category)
     {
-        SilencedPrefixesCurrent.Add(category);
+        categories[category] = (true, categories[category].timesPrinted, categories[category].timesSilenced);
     }
 
     public static void UnSilencePrefix(string category)
     {
-        SilencedPrefixesCurrent.Remove(category);
+        categories[category] = (false, categories[category].timesPrinted, categories[category].timesSilenced);
     }
 }
 

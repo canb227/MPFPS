@@ -8,7 +8,7 @@ public partial class PlayerInputHandler : Node
         Global.gameState.PlayerInputs[Global.steamid].playerID = Global.steamid;
         foreach (string action in Global.InputMap.InputActionList.Keys)
         {
-            Global.gameState.PlayerInputs[Global.steamid].inputs.Add(action, false);
+            Global.gameState.PlayerInputs[Global.steamid].actions.Add(action, false);
         }
     }
     public override void _UnhandledInput(InputEvent @event)
@@ -22,7 +22,7 @@ public partial class PlayerInputHandler : Node
             {
                 if (@event.IsAction(action))
                 {
-                    Global.gameState.PlayerInputs[Global.steamid].inputs[action] = @event.IsPressed();
+                    Global.gameState.PlayerInputs[Global.steamid].actions[action] = @event.IsPressed();
                 }
             }
         }

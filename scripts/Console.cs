@@ -18,48 +18,37 @@ public partial class Console : Node
 {
     public override void _Ready()
     {
-
-        //LimboConsole.SetEvalBaseInstance(this);
-        //LimboConsole.SetEvalBaseInstance(this);
-
         //Register functions as commands 
 
-        ////////////////////////////////////// DEV ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_SetTickRate), "DEV_SetTickRate", "Dynamically changes tick rate. Almost certainly breaks stuff.");
-
         ////////////////////////////////////// GENERAL ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "STATUS_Game", "Prints the current game status.");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "STATUS_Game", "Prints the current game status.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Game), "status", "Prints the current game status.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.OpenUserDataDirectory), "OpenUserDataDirectory", "Opens a native file explorer to the user data directory.");
 
         ////////////////////////////////////// LOGGING ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.SetMaxLoggingVerbosity), "LOGGING_SetMaxLoggingVerbosity", "turns on all logging verbosity");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.ResetLoggingVerbosity), "LOGGING_ResetLoggingVerbosity", "resets log verbosity to default");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.SilenceLogCategory), "LOGGING_SilenceLogCategory", "silences a single log prefix");
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.UnSilenceLogCategory), "LOGGING_UnSilenceLogCategory", "Unsilences a single log prefix");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.logging_verbosity_max), "logging verbosity max", "turns on all logging verbosity");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.logging_verbosity_reset), "logging verbosity reset", "resets log verbosity to default");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.logging_silence), "logging silence", "silences a single log prefix");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.logging_unsilence), "logging unsilence", "Unsilences a single log prefix");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.logging_stats), "logging stats", "Prints logging stats to console");
 
         ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_ConnectionInfo));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.net_ConnectionInfo),"net connectioninfo","DEV COMMAND - Dumps info on a Steam Connection to a peer");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.net_TrackBandwidth), "net trackbandwidth", "DEV COMMAND - enables or disables bandwidth tracking");
 
         ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Lobby));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.HostNewLobby));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.JoinLobby));
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.LeaveLobby));
-
-        ////////////////////////////////////// SESSION ///////////////////////////////////////////////
-        //LimboConsole.RegisterCommand(new Callable(this, MethodName.STATUS_Session));
-        //LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_StartSession));
-        //LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_EndSession));
-        //LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_StartGame));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.lobby_status),"lobby status","Prints info about our current lobby, if we're in one.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.lobby_host),"lobby host","Hosts a new lobby, leaving our current lobby if we're in one.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.lobby_join),"lobby join","Joins a lobby hosted by the given SteamID, if there is one.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.lobby_leave),"lobby leave","Leaves our current lobby");
 
         ////////////////////////////////////// INPUT ///////////////////////////////////////////////
         LimboConsole.RegisterCommand(new Callable(this, MethodName.DEV_parsekeystring));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.bind));
 
         ////////////////////////////////////// IN GAME ///////////////////////////////////////////////
-        LimboConsole.RegisterCommand(new Callable(this, MethodName.spawnHere));
-        //LimboConsole.RegisterCommand(new Callable(this, MethodName.spawnPlayer));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.spawn),"spawn","Spawns a new instance of the given object type in front of the local player.");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.destroy),"destroy","Destroys the object with the given ID");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.impulse), "impulse", "Applies a random physics impulse to the object with the given ID");
     }
 
 
@@ -78,25 +67,6 @@ public partial class Console : Node
         OS.ShellOpen(OS.GetUserDataDir());
     }
 
-    public void MPStatus()
-    {
-        LimboConsole.Info("Networking Status:");
-        LimboConsole.Info($"Root MultiplayerAPI is: {GetTree().GetMultiplayer()}");
-        LimboConsole.Info($"NetworkManagerImpl?: Steam: {Global.network is SteamNetworkManager} Offline: {Global.network is OfflineNetworkManager}");
-        LimboConsole.Info($"MPAPI-Peer Started?: {Multiplayer.MultiplayerPeer != null}");
-        if (Multiplayer.MultiplayerPeer == null) return;
-        LimboConsole.Info($"Peer Impl?: Steam: {Multiplayer.MultiplayerPeer is MultiplayerPeerExtension} Offline: {Multiplayer.MultiplayerPeer is ENetMultiplayerPeer}");
-        LimboConsole.Info($"MPAPI-Peer Status: {Multiplayer.MultiplayerPeer.GetConnectionStatus()}");
-        LimboConsole.Info($"Net ID: {Multiplayer.GetUniqueId()}");
-        LimboConsole.Info($"Is Host?: {Multiplayer.IsServer()}");
-        LimboConsole.Info($"Number of peers: {Multiplayer.GetPeers().Length}");
-        LimboConsole.Info($"Peer List --------------------");
-        foreach (int peerID in Multiplayer.GetPeers())
-        {
-            LimboConsole.Info($"PeerID: {peerID}");
-        }
-
-    }
     ////////////////////////////////////// DEV ///////////////////////////////////////////////
 
     public void DEV_SetTickRate (int rate)
@@ -106,30 +76,43 @@ public partial class Console : Node
     }
 
     ////////////////////////////////////// LOGGING ///////////////////////////////////////////////
-    public void SetMaxLoggingVerbosity()
+    public void logging_verbosity_max()
     {
         LimboConsole.Info("Now printing ALL log messages to console.");
         Logging.UnSilenceAllPrefixes();
     }
-    public void ResetLoggingVerbosity()
+    public void logging_verbosity_reset()
     {
         LimboConsole.Info("Now printing only standard log messages to console.");
         Logging.ResetSilencedPrefixesToDefault();
     }
-    public void SilenceLogCategory(string category)
+    public void logging_silence(string category)
     {
         LimboConsole.Info($"Silencing prefix [{category}]");
         Logging.SilencePrefix(category);
     }
-    public void UnSilenceLogCategory(string category)
+    public void logging_unsilence(string category)
     {
         LimboConsole.Info($"UnSilencing prefix [{category}]");
         Logging.UnSilencePrefix(category);
     }
+    public void logging_stats()
+    {
+        LimboConsole.Info("Dumping logging stats to console...");
+        LimboConsole.Info("Category                       | Silenced?  | # Printed  | # Silenced");
+        foreach (var entry in Logging.categories)
+        {
+            string paddedName = entry.Key.PadRight(30);
+            string silenced = entry.Value.silenced.ToString().PadRight(10);
+            string timesPrinted = entry.Value.timesPrinted.ToString().PadRight(10);
+            string timesSilenced = entry.Value.timesSilenced.ToString().PadRight(10);
+            LimboConsole.Info($"{paddedName} | {silenced} | {timesPrinted} | {timesSilenced}");
+        }
 
+    }
 
     ////////////////////////////////////// NETWORKING ///////////////////////////////////////////////
-    public void DEV_ConnectionInfo(string ids)
+    public void net_ConnectionInfo(string ids)
     {
         ulong id = ulong.Parse(ids);
         LimboConsole.Info($"Status of connection with peer: {id}");
@@ -138,97 +121,55 @@ public partial class Console : Node
         LimboConsole.Info($"id:{info.m_identityRemote.GetSteamID64()} state:{info.m_eState} ping:{status.m_nPing} Endreason:{info.m_eEndReason} string:{info.m_szEndDebug} sentunacked:{status.m_cbSentUnackedReliable} pending:{status.m_cbPendingReliable}");
     }
 
-    public void NET_EnableBandwidthTracker()
+    public void net_TrackBandwidth(bool tracking, bool trackLoopback)
     {
-        LimboConsole.Info("Network Bandwidth Tracker now reporting.");
-        //Global.network.BandwidthTrackerEnabled = true;
+        if (tracking)
+        {
+            LimboConsole.Info("Network Bandwidth Tracker now reporting.");
+            Global.network.BandwidthTrackerEnabled = true;
+        }
+        else
+        {
+            LimboConsole.Info("Network Bandwidth Tracker now disabled.");
+            Global.network.BandwidthTrackerEnabled = false;
+        }
+        Global.network.BandwidthTrackerCountLoopbackSend = trackLoopback;
+        Global.network.BandwidthTrackerCountLoopbackReceive = trackLoopback;
     }
 
-    public void NET_DisableBandwidthTracker()
-    {
-        LimboConsole.Info("Network Bandwidth Tracker disabled.");
-        //Global.network.BandwidthTrackerEnabled = false;
-    }
-
-    ////////////////////////////////////// SESSSION ///////////////////////////////////////////////
-    //public void STATUS_Session()
-    //{
-    //    LimboConsole.Info("Session Status");
-    //    LimboConsole.Info($"  In Session?: {Global.GameSession != null}");
-    //    if (Global.GameSession == null) return;
-    //    LimboConsole.Info($"  Number of players in session: {Global.GameSession.playerData.Count}");
-    //    LimboConsole.Info($"  Session Player List --------------------------------------------------------------");
-    //    foreach (var player in Global.GameSession.playerData)
-    //    {
-    //        if (player.Key == Global.steamid)
-    //        {
-    //            LimboConsole.Info($"ME  Name:{SteamFriends.GetFriendPersonaName(new CSteamID(player.Key))} | ID:{player.Key} | State: {player.Value.state} | DblCheckID: {player.Value.steamID}");
-    //        }
-    //        else
-    //        {
-    //            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(player.Key))} | ID:{player.Key} | State: {player.Value.state} | DblCheckID: {player.Value.steamID}");
-    //        }
-    //    }
-    //}
-
-    //public void DEV_StartSession()
-    //{
-    //    LimboConsole.Info("Direct starting new session...");
-    //    Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(), Global.Lobby.LobbyHostSteamID);
-    //}
-
-    //public void DEV_EndSession()
-    //{
-    //    LimboConsole.Info("Direct ending session...");
-    //    Global.GameSession.EndSession();
-    //}
-
-    //public void DEV_StartGame()
-    //{
-    //    if (Global.GameSession.sessionAuthority == Global.steamid)
-    //    {
-    //        LimboConsole.Info("Direct starting game...");
-    //        Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
-    //    }
-    //    else
-    //    {
-    //        LimboConsole.Error("Only the host can start the game.");
-    //    }
-
-//    }
     ////////////////////////////////////// LOBBY ///////////////////////////////////////////////
-    public void STATUS_Lobby()
+    public void lobby_status()
     {
-        //LimboConsole.Info("Lobby Status");
-        //LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
-        //if (!Global.Lobby.bInLobby) return;
-        //LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
-        //LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
-        //LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
-        //LimboConsole.Info($"  Peer List --------------------------------------------------------------");
-        //foreach (ulong peer in Global.Lobby.lobbyPeers)
-        //{
-        //    LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
-        //}
+        LimboConsole.Info("Lobby Status");
+        LimboConsole.Info($"  In Lobby?: {Global.Lobby.bInLobby}");
+        if (!Global.Lobby.bInLobby) return;
+        LimboConsole.Info($"  Is Lobby Host?: {Global.Lobby.bIsLobbyHost}");
+        LimboConsole.Info($"  Lobby Host SteamID: {Global.Lobby.LobbyHostSteamID}");
+        LimboConsole.Info($"  Number of peers in lobby: {Global.Lobby.lobbyPeers.Count}");
+        LimboConsole.Info($"  Peer List --------------------------------------------------------------");
+        foreach (ulong peer in Global.Lobby.lobbyPeers)
+        {
+            LimboConsole.Info($"    Name:{SteamFriends.GetFriendPersonaName(new CSteamID(peer))} | ID:{peer}");
+        }
     }
 
-    public void HostNewLobby()
+    public void lobby_host()
     {
         LimboConsole.Info("Hosting a new lobby...");
-       // Global.Lobby.HostNewLobby(true);
+        Global.Lobby.HostNewLobby(true);
     }
 
-    public void JoinLobby(string ids)
+    public void lobby_join(string ids)
     {
 
-       // LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
-        //Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids),true);
+       LimboConsole.Info($"Attempting to join lobby hsoted by: {ids}");
+       Global.Lobby.AttemptJoinToLobby(ulong.Parse(ids),true);
     }
 
-    public void LeaveLobby()
+    public void lobby_leave()
     {
         LimboConsole.Info($"Leaving current lobby...");
-       // Global.Lobby.LeaveLobby(true);
+        Global.Lobby.LeaveLobby(true);
     }
 
 
@@ -244,28 +185,40 @@ public partial class Console : Node
         {
             LimboConsole.Error($"Key parse failed: {e.ToString()}");
         }
-
     }
 
     public void bind(string keyString, string actionName)
     {
         Key key = (Key)Enum.Parse(typeof(Key), keyString);
-        LimboConsole.Info("P");
+        LimboConsole.Info($"Attempting to bind Key: {key.ToString()} to action: {actionName}");
         Global.InputMap.BindKeyString(keyString, actionName);
     }
 
-
     ////////////////////////////////////// IN GAME ///////////////////////////////////////////////
     
-    public void spawnHere(string objectName)
+    public void spawn(string objectName)
     {
         IGameObject obj = GameObjectLoader.LoadObjectByTypeName(objectName, out GameObjectType type);
         Global.gameState.SpawnObjectAsAuth(obj,type);
-        (obj as Node3D).GlobalPosition = Global.gameState.GetLocalPlayerCharacter().GlobalPosition + new Vector3(0, 5, 1);
+        var playerForwardVector = -Global.gameState.GetLocalPlayerCharacter().GlobalTransform.Basis.Z.Normalized();
+        var spawnPosition = Global.gameState.GetLocalPlayerCharacter().GlobalPosition + (playerForwardVector * 5);
+        (obj as Node3D).GlobalPosition = spawnPosition;
     }
 
-    public void remove(ulong id)
+    public void destroy(ulong id)
     {
         Global.gameState.DestroyAsAuth(id);
+    }
+
+    public void impulse(ulong id)
+    {
+        if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
+        {
+            if (obj is GOBaseRigidBody phys)
+            {
+                Vector3 forceVector = new Vector3(Random.Shared.Next(-10, 10), Random.Shared.Next(-10, 10), Random.Shared.Next(-10, 10));
+                phys.ApplyCentralImpulse(forceVector);
+            }
+        }
     }
 }

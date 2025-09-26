@@ -37,14 +37,6 @@ public partial class Main : Node
         Global.ui.Name = "UIManager";
         AddChild(Global.ui);
 
-        //TODO: We can show some splash screens and random bullshit while the below runs
-
-        //Boot up the InputMapManager, register a reference with Global, and tell it to load our input settings from disk, or make a new file if there isnt one.
-        //This is basically a "in-code" version of the Godot input mapper, which lets us do dynamic keybinding and saving remapped keys.
-        Logging.Log($"Starting InputMapManager Handler and loading input map file...", "Main");
-        Global.InputMap = new();
-        Global.InputMap.InitInputMap();
-
         //Start the in-game console. Using MIT licensed LimboConsole for the implementation with most extra features disabled/stripped out.
         //Doesnt get a Global reference because no one should need it.
         //Check out the Console class to see how commands are managed and added.
@@ -54,41 +46,32 @@ public partial class Main : Node
         console.Name = "InGameConsole";
         AddChild(console);
 
-
-        //Start the "world", the root Node3D for the game, register a global reference for it, and add it to the scenetree as a child of main so it can render 3D stuff.
-        //Logging.Log($"Starting world/level/3DNode manager...", "Main");
-        //Global.world = new GameWorld();
-        //Global.world.Name = "World";
-        //AddChild(Global.world);
-
-        Global.GameState = new();
-        Global.GameState.Name = "GameState";
-        AddChild(Global.GameState);
-    
-        //TODO: Trigger preloading and shader stuff here if needed
-
+        //Now we can show the loading screen and do all the heavier stuff
         Global.ui.StartLoadingScreen();
         Global.ui.SetLoadingScreenDescription("Compiling Shaders...");
-        
+
+        //Boot up the InputMapManager, register a reference with Global, and tell it to load our input settings from disk, or make a new file if there isnt one.
+        //This is basically a "in-code" version of the Godot input mapper, which lets us do dynamic keybinding and saving remapped keys.
+        Logging.Log($"Starting InputMapManager Handler and loading input map file...", "Main");
+        Global.InputMap = new();
+        Global.InputMap.InitInputMap();
+
+        //TODO: Add additonal start up items here.
         await DoSomeLongShit();
 
-        Global.ui.StopLoadingScreen();
-
+        //Core game state manager - handles world state, network sync, etc.
         Global.gameState = new GameState();
         Global.gameState.Name = "GameState";
         AddChild(Global.gameState);
 
-
-        //TODO: Add additonal start up items here.
+        Global.ui.StopLoadingScreen();
 
         //Create the Lobby system, register a reference to it with Global, and "host" a new lobby right away.
         //Hosting a lobby is what allows us to be joinable in Steam, adding the "join to" button for Friends, and adding the "invite to play" button on friends for us.
         //We do this last so that no one tries to join us until after core systems are ready.
-        Logging.Log($"Starting Lobby system and auto-hosting lobby to make us joinable thru steam", "Main");
+        Logging.Log($"Starting Lobby system and auto-hosting lobby to make us joinable thru steam", "Main", true,true);
         Global.Lobby = new();
         Global.Lobby.HostNewLobby();
-
-        //TODO: Wait for splash screens to be done, wait for preloading and shaders and shit to be done.
 
         Logging.Log("Startup complete!", "Main");
         //At this point we're setup and ready to go. First, let's check and see if Steam auto-launched the game because we accepted an invite while the game was closed.
@@ -129,10 +112,7 @@ public partial class Main : Node
         Global.ui.UpdateLoadingScreenProgressBar(100);
     }
 
-    //To help maintain an understanding of exactly what runs every frame, and in what order, main is the only thing that has a _Process()
-    //Here we call out to everything else that needs to run once per frame.
-    //Experimental approach, we'll see how it goes.
-    //NOTE: Largely abandoning the above due to it doesnt help and it makes physics management in Godot a huge pain in the ass.
+    //Runs once per frame
     public override void _Process(double delta)
     {
         SteamAPI.RunCallbacks();
@@ -142,8 +122,6 @@ public partial class Main : Node
 
     //_PhysicsProcess gets called 60 times a second (by default). We are using it to establish a tickrate that is disconnected from the framerate.
     //We can adjust the tick rate by changing the engine's physics rate.
-    //Uses same approach as described above with _Process()
-    //NOTE: Largely abandoning the above due to it doesnt help and it makes physics management in Godot a huge pain in the ass.
     public override void _PhysicsProcess(double delta)
     {
         Global.network.Tick(delta);
@@ -157,7 +135,7 @@ public partial class Main : Node
 
     private void ConsolePicker()
     {
-        if (Input.IsActionJustPressed("FIRE"))
+        if (Global.bConsoleOpen && Global.gameState.gameStarted && Input.IsActionJustPressed("FIRE"))
         {
             var mpos = GetViewport().GetMousePosition();
             GOBasePlayerCharacter pc = Global.gameState.GetLocalPlayerCharacter();

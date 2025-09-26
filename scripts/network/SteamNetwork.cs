@@ -79,8 +79,8 @@ public class SteamNetwork
     private const int iNetworkSimulationDelayVarianceMS = 100;
 
     public bool BandwidthTrackerEnabled = true;
-    private const bool BandwidthTrackerCountLoopbackSend = true;
-    private const bool BandwidthTrackerCountLoopbackReceive = true;
+    public bool BandwidthTrackerCountLoopbackSend = true;
+    public bool BandwidthTrackerCountLoopbackReceive = true;
     private double BandwidthTrackerWindow = 10;
     private double BandwidthTrackerTimer = 0;
     private int SendBandwidthTracker = 0;

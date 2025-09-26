@@ -13,10 +13,10 @@ public partial class SimpleShape : GOBaseRigidBody
 
     public override byte[] GenerateStateUpdate()
     {
-        SimpleShapeStateUpdate bsu = new();
-        bsu.velocity = LinearVelocity;
-        bsu.position = GlobalPosition;
-        return MessagePackSerializer.Serialize(bsu);
+        SimpleShapeStateUpdate sssu = new();
+        sssu.velocity = LinearVelocity;
+        sssu.position = GlobalPosition;
+        return MessagePackSerializer.Serialize(sssu);
     }
 
     public override void PerTickAuth(double delta)

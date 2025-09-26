@@ -4,6 +4,22 @@ using Godot.Collections;
 using SteamMultiplayerPeerCSharp;
 using Steamworks;
 
+
+
+
+//DEPRECATED
+
+
+
+
+
+
+
+
+
+
+
+
 public partial class SteamNetworkManager : NetworkManager
 {
     public const ushort DEFAULT_PORT = 0;

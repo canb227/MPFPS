@@ -62,7 +62,7 @@ public partial class Global : Node
     /// <summary>
     /// Holds a reference to the currently active networking system
     /// </summary>
-    public static NetworkManager network;
+    public static SteamNetwork network = new();
 
     /// <summary>
     /// holds a reference to the lobby system that is always running in the background

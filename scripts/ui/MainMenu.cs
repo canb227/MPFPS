@@ -10,22 +10,6 @@ public partial class MainMenu : Control
         GetNode<Button>("BUTTON_start").Pressed += OnStartPressed;
         GetNode<Button>("BUTTON_options").Pressed += OnOptionsPressed;
         GetNode<Button>("BUTTON_quit").Pressed += OnQuitPressed;
-        if (Global.OFFLINE_MODE)
-        {
-            GetNode<Button>("DEBUG_CLIENT").Pressed += OnDebugClientPressed;
-        }
-        else
-        {
-            GetNode<Button>("DEBUG_CLIENT").Visible = false;
-        }
-
-    }
-
-    private void OnDebugClientPressed()
-    {
-
-        Global.network.JoinServer(0);
-        Global.ui.SwitchFullScreenUI("DEBUG_launcher");
     }
 
     private void OnQuitPressed()

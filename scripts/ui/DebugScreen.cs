@@ -115,6 +115,11 @@ public partial class DebugScreen : Control
         DirectLoadMap_mapList_ItemSelected(0);
     }
 
+    private void DirectLoadMap_mapList_ItemSelected(long v)
+    {
+        directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[directLoadMap_mapList.Selected]));
+    }
+
     private void Lobby_LobbyPeerRemovedEvent(ulong removedPlayerSteamID)
     {
         playerList_list.GetNode(removedPlayerSteamID.ToString()).QueueFree();
@@ -155,10 +160,5 @@ public partial class DebugScreen : Control
         chat_chatbar.Text = "";
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void Chat(string sender,string message)
-    {
-        directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[directLoadMap_mapList.Selected]));
-    }
 
 }
