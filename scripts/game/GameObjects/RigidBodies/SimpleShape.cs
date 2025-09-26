@@ -4,11 +4,20 @@ using MessagePack;
 [GlobalClass]
 public partial class SimpleShape : GOBaseRigidBody
 {
+    public override void _Ready()
+    {
+        base._Ready();
+        if (authority!=Global.steamid)
+        {
+            SetPhysicsProcess(false);
+        }
+    }
+
     public override void ProcessStateUpdate(byte[] update)
     {
         SimpleShapeStateUpdate sssu = MessagePackSerializer.Deserialize<SimpleShapeStateUpdate>(update);
         LinearVelocity = sssu.velocity;
-        Position = sssu.position;
+        Position = Position.Slerp(sssu.position,.5f);
     }
 
     public override byte[] GenerateStateUpdate()
