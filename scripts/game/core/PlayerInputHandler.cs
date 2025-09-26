@@ -25,11 +25,11 @@ public partial class PlayerInputHandler : Node
                 {
                     if(@event.IsPressed())
                     {
-                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | flagMap[action];
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | Global.InputMap.flagMap[action];
                     }
                     else if (@event.IsReleased())
                     {
-                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~flagMap[action];
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~Global.InputMap.flagMap[action];
                     }
                 }
             }
