@@ -2,6 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// UI manager singleton. I don't really love this so I didn't document it as to not form an attachment.
+/// </summary>
 public partial class UI : Node
 {
 
@@ -11,20 +15,29 @@ public partial class UI : Node
     public ProgressBar loadingProgressBar;
 
 
-    public Dictionary<string, string> UIScenePaths = new Dictionary<string, string>()
+    public Dictionary<string, string> FullScreenUIScenePaths = new Dictionary<string, string>()
     {
         { "NONE", "" },
-        { "DEBUG_launcher","res://scenes/ui/DebugScreen.tscn" },
-        { "UI_LoadingScreen","res://scenes/ui/LoadingScreen.tscn" },
-        { "UI_MainMenu", "res://scenes/ui/MainMenu.tscn" },
+        { "DEBUG_Launcher","res://scenes/ui/menu/DebugScreen.tscn" },
+        { "UI_LoadingScreen","res://scenes/ui/menu/LoadingScreen.tscn" },
+        { "UI_MainMenu", "res://scenes/ui/menu/MainMenu.tscn" },
+        { "BasePlayerHUD", "res://scenes/ui/hud/BasePlayerHUD.tscn" },
     };
 
-
-
-    public override void _Ready()
+    public void ToLobbyUI()
     {
-       
+        SwitchFullScreenUI("DEBUG_Launcher");
     }
+
+    public void ToGameUI()
+    {
+        SwitchFullScreenUI("BasePlayerHUD");
+    }
+    internal void ToMainMenuUI()
+    {
+        SwitchFullScreenUI("UI_MainMenu");
+    }
+
 
     public void SwitchFullScreenUI(string sceneName)
     {
@@ -42,7 +55,7 @@ public partial class UI : Node
 
     private Control LoadUI(string sceneName)
     {
-        Control loadedUI = ResourceLoader.Load<PackedScene>(UIScenePaths[sceneName]).Instantiate<Control>();
+        Control loadedUI = ResourceLoader.Load<PackedScene>(FullScreenUIScenePaths[sceneName]).Instantiate<Control>();
         loadedUI.Name = sceneName;
         loadedUI.Hide();
         AddChild(loadedUI);
@@ -93,13 +106,14 @@ public partial class UI : Node
         currentLoadingScreen.Hide();
     }
 
-    internal void PregameWaitingForPlayers()
-    {
-        //probably like, load our UI, but gray it out or smth and put "waiting for players on screen?"
-    }
 
-    internal void InGameStart()
-    {
-        Logging.Log("Enabling ingame UI.","UI");
-    }
+    //internal void PregameWaitingForPlayers()
+    //{
+    //    //probably like, load our UI, but gray it out or smth and put "waiting for players on screen?"
+    //}
+
+    //internal void InGameStart()
+    //{
+    //    Logging.Log("Enabling ingame UI.","UI");
+    //}
 }

@@ -1,10 +1,13 @@
 using Steamworks;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 /// <summary>
 /// Static library for useful networking functions
 /// </summary>
+/// 
 public static class NetworkUtils
 {
 
@@ -22,33 +25,6 @@ public static class NetworkUtils
     //The latter four process much of the non-networked stuff too.
     //TODO: Make sure these don't suck
     //TODO: Switch to unsafe code blocks for performance gain - ONLY IF NEEDED: EXPOSES DIRECT MEMORY ACCESS VULNERABILITY
-
-    /// <summary>
-    /// Unpacks a Steam Message payload into the one byte type enum and the actual data. This function completes even if the message is malformed, so be careful.
-    /// </summary>
-    /// <param name="payload"></param>
-    /// <param name="data"></param>
-    /// <param name="type"></param>
-    public static void UnwrapSteamPayload(byte[] payload, out byte[] data, out NetType type)
-    {
-        data = new byte[payload.Length];
-        type = (NetType)payload[0];
-        data = payload.Skip(1).ToArray();
-    }
-
-    /// <summary>
-    /// Packs a byte array and a type into the correct format for a Steam Message payload.
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static byte[] WrapSteamPayload(byte[] data, NetType type)
-    {
-        byte[] payload = new byte[data.Length + 1];
-        payload[0] = (byte)type;
-        data.CopyTo(payload, 1);
-        return payload;
-    }
 
     /// <summary>
     /// Given a pointer to unmanaged memory and a length (in bytes), COPIES that many bytes from the pointer into a new byte array.
@@ -83,10 +59,10 @@ public static class NetworkUtils
     /// <returns></returns>
     public static byte[] StructToBytes<T>(T structure)
     {
-        byte[] data = new byte[Marshal.SizeOf<PlayerOptions>()];
-        nint ptr = Marshal.AllocHGlobal(Marshal.SizeOf<PlayerOptions>());
+        byte[] data = new byte[Marshal.SizeOf<T>()];
+        nint ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
         Marshal.StructureToPtr<T>(structure, ptr, true);
-        Marshal.Copy(ptr, data, 0, Marshal.SizeOf<PlayerOptions>());
+        Marshal.Copy(ptr, data, 0, Marshal.SizeOf<T>());
         return data;
     }
 
@@ -166,7 +142,5 @@ public static class NetworkUtils
     {
         return SteamIDToIdentity(ulong.Parse(m_rgchConnect));
     }
-
-
 }
 

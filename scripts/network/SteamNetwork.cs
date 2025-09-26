@@ -1,39 +1,31 @@
-using GameMessages;
+
+using MessagePack;
+using MessagePack.Resolvers;
 using Steamworks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.Specialized;
+using System.Dynamic;
 using System.Threading.Tasks;
-using static Lobby;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-/// <summary>
-/// one byte (0-255) value for network message type
-/// </summary>
-public enum NetType : byte
+public enum Channel
 {
     ERROR = 0,
-
-    LOBBY_BYTES = 1,
-    SESSION_BYTES = 2,
-
-    LOBBY_PROTO = 101,
-    SESSION_PROTO = 102,
-
-    SPAWN_GAMEOBJECT = 120,
-
-    PLAYERCONTROLLER = 130,
-
-    //Other Types
-    DEBUG_UTF8 = 254,
-    EMPTY = 255,
-
+    LobbyMessageBytes = 1,
+    GameObjectState = 2,
+    PlayerInput = 3,
+    GameStateOptions =4,
+    PlayerData = 5,
+    NetCommands = 6,
 }
-
 /// <summary>
 /// Handles low level networking functions - implemented using SteamMessages
 /// </summary>
 public class SteamNetwork
 {
+
     /// <summary>
     /// Fires when we get packets from a user we haven't seen yet. The incoming packets are in stasis until we accept this request.
     /// </summary>
@@ -57,44 +49,46 @@ public class SteamNetwork
     /// <summary>
     /// Max number of messages to attempt to process per frame. If we get frame delays because of spiky network traffic this needs turned down
     /// </summary>
-    public int maxMessagePerFrame = 100;
+    private int maxMessagePerFramePerChannel = 100;
 
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
     /// <para>IMPORTANT: Look. This has to be true or else everything breaks because we take advantage of loopback to unify our multiplayer and singleplayer code down the line.</para>
     /// <para>IMPORTANT: Does not fully replicate network message process. </para>
     /// </summary>
-    public const bool bDoLoopback = true;
+    private const bool bDoLoopback = true;
 
     /// <summary>
     /// If true, pack and unpack loopback messages as if they were being sent across the network. Negatively impacts performance but can help test for issues.
     /// </summary>
-    public const bool bLoopbackMemoryAllocation = false;
+    private const bool bLoopbackMemoryAllocation = false;
 
     /// <summary>
     /// If true, introduce artifical network conditions to loopback messages. TESTING ONLY
     /// </summary>
-    private bool bNetworkSimulation = false;
+    private const bool bNetworkSimulation = false;
 
     /// <summary>
     /// Base miliseconds to delay all loopback messages
     /// </summary>
-    private int iNetworkSimulationDelayMS = 50;
+    private const int iNetworkSimulationDelayMS = 50;
 
     /// <summary>
     /// Randomly add between 0 and this value number of miliseconds to the base delay
     /// </summary>
-    private int iNetworkSimulationDelayVarianceMS = 100;
+    private const int iNetworkSimulationDelayVarianceMS = 100;
 
-    public bool BandwidthTrackerEnabled = false;
-    public double BandwidthTrackerWindow = 1;
-    public double BandwidthTrackerTimer = 0;
-    public int SendBandwidthTracker = 0;
-    public int ReceiveBandwidthTracker = 0;
+    public bool BandwidthTrackerEnabled = true;
+    private const bool BandwidthTrackerCountLoopbackSend = true;
+    private const bool BandwidthTrackerCountLoopbackReceive = true;
+    private double BandwidthTrackerWindow = 10;
+    private double BandwidthTrackerTimer = 0;
+    private int SendBandwidthTracker = 0;
+    private int ReceiveBandwidthTracker = 0;
+    private bool UltraDetailWireLogging = true;
 
-
-    public delegate void NetworkPCMessage(PlayerControllerMessage msg);
-    public static event NetworkPCMessage NetworkPCMessageEvent;
+    public delegate void SteamNetworkingMessageReceived(Channel channel, byte[] payload, ulong sender);
+    public static event SteamNetworkingMessageReceived SteamNetworkingMessageReceivedEvent;
 
     public SteamNetwork()
     {
@@ -104,13 +98,18 @@ public class SteamNetwork
 
         //Uncomment this if steam relay network is being stupid
         //SteamNetworkHealthManager();
+
+        var resolver = MessagePack.Resolvers.CompositeResolver.Create(GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance);
+        var options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
+        MessagePackSerializer.DefaultOptions = options;
     }
+
 
 
     /// <summary>
     /// Attempts to maintain connection with Steam Relay Network - runs forever once called!
     /// </summary>
-    public async void SteamNetworkHealthManager()
+    private async void SteamNetworkHealthManager()
     {
         while (true)
         {
@@ -151,7 +150,7 @@ public class SteamNetwork
     /// Sending a message to a user causes their session requests to be auto-accepted (including any pending) for the remainder of the game runtime.
     /// </summary>
     /// <param name="param"></param>
-    void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
+    private void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t param)
     {
         bool sessionEstablished = SteamNetworkingMessages.AcceptSessionWithUser(ref param.m_identityRemote);
         if (sessionEstablished)
@@ -166,46 +165,70 @@ public class SteamNetwork
         }
     }
 
+    public EResult SendStruct<T>(T structure, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    {
+        byte[] data = NetworkUtils.StructToBytes(structure);
+        return SendData(data, channel, remoteSteamID, sendFlags);
+    }
+
+    public List<EResult> BroadcastStruct<T>(T structure, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    {
+        List<EResult> retval = new List<EResult>();
+        foreach (ulong identity in remoteSteamIDs)
+        {
+            retval.Add(SendStruct(structure, channel, identity, sendFlags));
+        }
+        return retval;
+    }
+
+    public EResult SendExpando(ExpandoObject obj, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    {
+        byte[] data = MessagePackSerializer.Serialize(obj, ContractlessStandardResolver.Options);
+        if (UltraDetailWireLogging)
+        {
+            Logging.Log(MessagePackSerializer.ConvertToJson(data, ContractlessStandardResolver.Options),"UltraDetailWireLogging");
+        }
+        return SendData(data, channel, remoteSteamID, sendFlags);
+    }
+
+    public List<EResult> BroadcastExpando(ExpandoObject obj, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    {
+        List<EResult> retval = new List<EResult>();
+        foreach (ulong identity in remoteSteamIDs)
+        {
+            retval.Add(SendExpando(obj, channel, identity, sendFlags));
+        }
+        return retval;
+    }
+
+
     /// <summary>
     /// Sends an array of bytes plus a one-byte type enum to the specified user. See <see cref="OnSessionRequest(SteamNetworkingMessagesSessionRequest_t)"/> for session establishment rules.
     /// </summary>
     /// <param name="data">byte array to send</param>
     /// <param name="type">type of data you are sending</param>
-    /// <param name="remoteIdentity"> User to send data to. I recommend the <see cref="NetworkUtils.SteamIDToIdentity(ulong)"/> function for this.</param>
+    /// <param name="remoteSteamID"> User to send data to.</param>
     /// <returns>An EResult enum value indicating the result of the send. A value of k_EResultOK indicates that the message was constructed and placed into the Steam Relay Network. A value of k_EResultOK DOES NOT mean that the message was actually delivered.</returns>
-    public EResult SendData(byte[] data, NetType type, SteamNetworkingIdentity remoteIdentity)
+    public EResult SendData(byte[] data, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
-        if (bDoLoopback && NetworkUtils.IsMe(remoteIdentity))
+        EResult result;
+        if (bDoLoopback && NetworkUtils.IsMe(remoteSteamID))
         {
-            Loopback(data, type);
-            return EResult.k_EResultOK;
+            Loopback(channel, data);
+            result = EResult.k_EResultOK;
         }
-        SendBandwidthTracker += data.Length;
-        byte[] payload = NetworkUtils.WrapSteamPayload(data, type);
-        nint ptr = NetworkUtils.BytesToPtr(payload);
-        EResult result = SteamNetworkingMessages.SendMessageToUser(ref remoteIdentity, ptr, (uint)payload.Length, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle, 0);
-        remoteIdentity.ToString(out string idstring);
-        //This debug statement technically has a (very) small performance overhead even when NetworkWire is silenced, due to the line above it.
-        Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(remoteIdentity.GetSteamID())}({idstring}) | TYPE: {type.ToString()} | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
+        else
+        {
+            SendBandwidthTracker += data.Length;
+            nint ptr = NetworkUtils.BytesToPtr(data);
+            SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
+            result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
+            Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
+        }
         return result;
     }
 
-    /// <summary>
-    /// Helper that sends the byte array to a list of SteamNetworkingIdentities. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="type"></param>
-    /// <param name="remoteIdentities"></param>
-    /// <returns></returns>
-    public List<EResult> BroadcastData(byte[] data, NetType type, List<SteamNetworkingIdentity> remoteIdentities)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (SteamNetworkingIdentity identity in remoteIdentities)
-        {
-            retval.Add(SendData(data, type, identity));
-        }
-        return retval;
-    }
+
 
     /// <summary>
     /// Helper that sends the byte array to a list of steamIDs. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
@@ -214,123 +237,64 @@ public class SteamNetwork
     /// <param name="type"></param>
     /// <param name="remoteIdentities"></param>
     /// <returns></returns>
-    public List<EResult> BroadcastData(byte[] data, NetType type, List<ulong> remoteSteamIDs)
+    public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
         List<EResult> retval = new List<EResult>();
         foreach (ulong identity in remoteSteamIDs)
         {
-            retval.Add(SendData(data, type, NetworkUtils.SteamIDToIdentity(identity)));
+            retval.Add(SendData(data, channel, identity));
         }
         return retval;
     }
 
     /// <summary>
-    /// Helper function for sending structs. See <see cref="SendData(byte[], NetType, SteamNetworkingIdentity)"/>
-    /// </summary>
-    /// <param name="message"></param>
-    /// <param name="type"></param>
-    /// <param name="remoteIdentity"></param>
-    /// <returns></returns>
-    public EResult SendStruct<T>(T structure, NetType type, SteamNetworkingIdentity remoteIdentity)
-    {
-        return SendData(NetworkUtils.StructToBytes<T>(structure), type, remoteIdentity);
-    }
-
-
-    /// <summary>
-    /// Helper that sends the struct to a list of SteamNetworkingIdentities.. See <see cref="SendStruct{T}(T, NetType, SteamNetworkingIdentity)"/>
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="type"></param>
-    /// <param name="remoteIdentities"></param>
-    /// <returns></returns>
-    public List<EResult> BroadcastStruct<T>(T structure, NetType type, List<SteamNetworkingIdentity> remoteIdentities)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (SteamNetworkingIdentity identity in remoteIdentities)
-        {
-            retval.Add(SendStruct(structure, type, identity));
-        }
-        return retval;
-    }
-
-    /// <summary>
-    /// Helper that sends the struct to a list of steamIDs. See <see cref="SendStruct{T}(T, NetType, SteamNetworkingIdentity)"/>
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="type"></param>
-    /// <param name="remoteIdentities"></param>
-    /// <returns></returns>
-    public List<EResult> BroadcastStruct<T>(T structure, NetType type, List<ulong> remoteSteamIDs)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (ulong identity in remoteSteamIDs)
-        {
-            retval.Add(SendStruct(structure, type, NetworkUtils.SteamIDToIdentity(identity)));
-        }
-        return retval;
-    }
-
-    /// <summary>
-    /// Message queue pump that pulls up to a set number of messages off the queue per frame. Deconstructs the byte array payload into the one-byte type (derived from the first byte of payload) and the byte array data (the rest of the payload).
+    /// Message queue pump that pulls up to a set number of messages off the queue per frame.
     /// </summary>
     /// <param name="delta"></param>
     public void PerFrame(double delta)
     {
-        nint[] messages = new nint[maxMessagePerFrame];
-        for (int i = 0; i < SteamNetworkingMessages.ReceiveMessagesOnChannel(0, messages, maxMessagePerFrame); i++)
+        foreach (Channel channel in Enum.GetValues(typeof(Channel)))
         {
-            SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[i]);
-            byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
-
-            NetworkUtils.UnwrapSteamPayload(payload, out byte[] data, out NetType type);
-            steamMessage.m_identityPeer.ToString(out string idstring);
-            ReceiveBandwidthTracker += data.Length;
-            Logging.Log($" MSGRCV | FROM: {idstring} | TYPE: {type.ToString()} | SIZE: {data.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire"); //This debug statement technically has a (very) small performance overhead even when NetworkWire is silenced, due to the line above it.
-            ProcessData(data, type, steamMessage.m_identityPeer.GetSteamID64());
-            SteamNetworkingMessage_t.Release(messages[i]);
+            nint[] messages = new nint[maxMessagePerFramePerChannel];
+            for (int k = 0; k < SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel); k++)
+            {
+                SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
+                byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
+                ReceiveBandwidthTracker += payload.Length;
+                Logging.Log($" MSGRCV | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
+                ProcessMessage(payload, channel,steamMessage.m_identityPeer.GetSteamID64());
+                SteamNetworkingMessage_t.Release(messages[k]);
+            }
         }
     }
 
-    /// <summary>
-    /// Sends the byte array data off to the correct handler as indicated by the type
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="type"></param>
-    /// <param name="fromSteamID"></param>
-    /// <exception cref="NotImplementedException"></exception>
-    private void ProcessData(byte[] data, NetType type, ulong fromSteamID)
+    private void ProcessMessage(byte[] payload, Channel channel, ulong sender)
     {
-        switch (type)
+        switch (channel)
         {
-
-            ///////////////////////////////////  LOBBY   /////////////////////
-            case NetType.LOBBY_BYTES:
-                Global.Lobby.HandleLobbyBytes(data, fromSteamID);
+            case Channel.ERROR:
                 break;
-
-
-            ///////////////////////////////////  SESSION  /////////////////////
-            case NetType.SESSION_BYTES:
-                Global.GameSession?.HandleSessionMessageBytes(data, fromSteamID);
+            case Channel.LobbyMessageBytes:
+                Global.Lobby.HandleLobbyBytes(payload, sender);
                 break;
-
-            ///////////////////////////////////  SPAWN ///////////////////////
-            case NetType.SPAWN_GAMEOBJECT:
-                SpawnRequestor.HandleSpawnGameObjectProto(data, fromSteamID);
+            case Channel.GameObjectState:
+                Global.gameState.ProcessStateUpdatePacketBytes(payload, sender);
                 break;
-
-            /////////////////////////////////// PLAYERS /////////////////////
-            case NetType.PLAYERCONTROLLER:
-                NetworkPCMessageEvent?.Invoke(PlayerControllerMessage.Parser.ParseFrom(data));
+            case Channel.PlayerInput:
+                Global.gameState.ProcessPlayerInputPacketBytes(payload, sender);
                 break;
-
-            ///////////////////////////////////  OTHER  /////////////////////
-            case NetType.DEBUG_UTF8:
-                Logging.Log($"Reencoded (UTF8) Message: {Encoding.UTF8.GetString(data)}", "NetworkDEBUG");
+            case Channel.GameStateOptions:
+                Global.gameState.ProcessGameStateOptionsPacketBytes(payload, sender);
+                break;
+            case Channel.PlayerData:
+                Global.gameState.ProcessPlayerDataPacketBytes(payload, sender);
+                break;
+            case Channel.NetCommands:
+                RPCManager.ProcessNetCommandBytes(payload, sender);
                 break;
             default:
-                throw new NotImplementedException($" BYTES TYPE ERROR | FROM: {fromSteamID} | TYPE: {type} | SIZE: {data.Length}");
+                SteamNetworkingMessageReceivedEvent?.Invoke(channel, payload, sender);
+                break;
         }
     }
 
@@ -339,34 +303,35 @@ public class SteamNetwork
     /// See <see cref="bDoLoopback"/>
     /// <para>IMPORTANT: Does not fully replicate network message process.</para>
     /// </summary>
-    /// <param name="data"></param>
+    /// <param name="payload"></param>
     /// <param name="type"></param>
-    private async void Loopback(byte[] data, NetType type)
+    private async void Loopback(Channel channel, byte[] data)
     {
-        ReceiveBandwidthTracker += data.Length;
-        Logging.Log($" MSGRCV | FROM: LOOPBACK | TYPE: {type.ToString()} | SIZE: {data.Length}", "NetworkWire");
+        if (BandwidthTrackerCountLoopbackSend)
+        {
+            SendBandwidthTracker += data.Length;
+        }
+
+        Logging.Log($" MSGSND | TO: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
+
         if (bLoopbackMemoryAllocation)
         {
-            byte[] senderPayload = NetworkUtils.WrapSteamPayload(data, type);
-            nint senderPayloadPtr = NetworkUtils.BytesToPtr(senderPayload);
-
-            if (bNetworkSimulation)
-            {
-                await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
-            }
-
-            byte[] rcvPayload = NetworkUtils.PtrToBytes(senderPayloadPtr,senderPayload.Length);
-            NetworkUtils.UnwrapSteamPayload(rcvPayload, out byte[] rcvData, out NetType rcvType);
-            ProcessData(rcvData, rcvType, Global.steamid);
+            nint ptr = NetworkUtils.BytesToPtr(data);
+            data = NetworkUtils.PtrToBytes(ptr, data.Length);
         }
-        else
+
+        if (bNetworkSimulation)
         {
-            if (bNetworkSimulation)
-            {
-                await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
-            }
-            ProcessData(data, type, Global.steamid);
+            await Task.Delay(iNetworkSimulationDelayMS + (int)(new Random().NextInt64(iNetworkSimulationDelayVarianceMS)));
         }
+
+        if (BandwidthTrackerCountLoopbackReceive)
+        {
+            ReceiveBandwidthTracker += data.Length;
+        }
+
+        Logging.Log($" MSGRCV | FROM: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
+        ProcessMessage(data, channel, Global.steamid);
     }
 
     public void Tick(double delta)
@@ -376,7 +341,11 @@ public class SteamNetwork
             BandwidthTrackerTimer += delta;
             if (BandwidthTrackerTimer > BandwidthTrackerWindow)
             {
-                Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker}", "BandwidthTracker");
+                if (SendBandwidthTracker>0 || ReceiveBandwidthTracker >0)
+                {
+                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker}", "NetworkBandwidthTracker");
+                }
+
                 SendBandwidthTracker = 0;
                 ReceiveBandwidthTracker = 0;
                 BandwidthTrackerTimer = 0;

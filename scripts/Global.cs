@@ -33,16 +33,14 @@ public partial class Global : Node
     /// </summary>
     public static bool DrawDebugScreens = false;
 
+    public static bool bConsoleOpen = false;
+
     public static Node instance;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Node Derived Singletons (On scene tree, under main)
 
-    /// <summary>
-    /// Holds a reference to the top-level Node3D for the game
-    /// </summary>
-    public static World world;
-
+    public static GameState gameState;
 
     /// <summary>
     /// Holds a reference to the currently active UI system
@@ -59,11 +57,6 @@ public partial class Global : Node
     public static SteamNetwork network;
 
     /// <summary>
-    /// holds  a reference to the static level Name -> level Scene Library/Loader
-    /// </summary>
-    public static SceneLoader SceneLoader;
-
-    /// <summary>
     /// holds a reference to the lobby system that is always running in the background
     /// </summary>
     public static Lobby Lobby;
@@ -78,13 +71,9 @@ public partial class Global : Node
     /// </summary>
     public static Config Config;
 
-    /// <summary>
-    /// holds a reference to the current GameSession if there is one. Might be null.
-    /// </summary>
-    public static GameSession GameSession;
 
 
-    //This is the first of our code that runs when starting the game, right after engine init but before any other nodes (before main)
+    //This is the first of our code that runs when starting the game, right after plugins load but before any of our nodes.
     public override void _Ready()
     {
         instance = this;
@@ -93,6 +82,7 @@ public partial class Global : Node
 
         Logging.Start(); //Also start logging here instead of Main so its ready super early to log stuff
 
+        //This makes sure the file structure in the godot user data folder is setup correctly
         Logging.Log($" mkdir user://saves                    | {DirAccess.MakeDirAbsolute("user://saves").ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://config                  | {DirAccess.MakeDirAbsolute("user://config").ToString()}", "FirstTimeSetup");
         Logging.Log($" mkdir user://logs                      | {DirAccess.MakeDirAbsolute("user://logs").ToString()}", "FirstTimeSetup");
@@ -119,6 +109,9 @@ public partial class Global : Node
         Logging.Log("Initializing Steam API...", "SteamAPI");
         try
         {
+            //SteamAPI call that checks if steam is running in the background. If it is not, it starts steam then starts the game once steam is started.
+            //We close the game so we don't end up with two instances open.
+
             if (SteamAPI.RestartAppIfNecessary((AppId_t)APP_ID)) //ALWAYS RETURNS FALSE IF app_id.txt IS PRESENT IN ROOT FOLDER
             {
                 GD.PushError("Steam is not running. Starting Steam then relaunching game", "SteamAPI");
@@ -127,16 +120,18 @@ public partial class Global : Node
         }
         catch (System.DllNotFoundException e)
         {
+            //nothing works if the steam dll for our OS isn't present. We only support Windows at the moment.
             GD.PushError("steam_api64.dll not found. steam_api64.dll is expected in the game root folder.", "SteamAPI");
             throw;
         }
 
         if (SteamAPI.Init())
         {
-            SteamNetworkingUtils.InitRelayNetworkAccess();
+            //Not technically needed, but gets our steam relay connection started up as soon as possible - there can be up to a three second delay from first networking API call
+            SteamNetworkingUtils.InitRelayNetworkAccess(); 
+
             steamid = SteamUser.GetSteamID().m_SteamID;
             bIsSteamConnected = true;
-
         }
         else
         {

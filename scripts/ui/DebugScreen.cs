@@ -4,6 +4,10 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// Super messy code for the dev launcher UI screen
+/// </summary>
 public partial class DebugScreen : Control
 {
 
@@ -12,6 +16,7 @@ public partial class DebugScreen : Control
     // basic ui elements
     public Button StartGameButton;
     public Button QuitGameButton;
+    public ColorRect hostHide;
 
     //direct load map box
     public CheckBox directLoadMap_loadCheck;
@@ -62,14 +67,11 @@ public partial class DebugScreen : Control
         //basic
         StartGameButton = GetNode<Button>("start");
         QuitGameButton = GetNode<Button>("quit");
+        hostHide = GetNode<ColorRect>("hostHide");
 
         //direct load
-        directLoadMap_loadCheck = GetNode<CheckBox>("directLoadMap/loadCheck");
         directLoadMap_mapList = GetNode<OptionButton>("directLoadMap/mapList");
-        directLoadMap_hidePanel = GetNode<Panel>("directLoadMap/hide");
         directLoadMap_mapImage = GetNode<TextureRect>("directLoadMap/img");
-
-        //session box
 
         //chat box
         chat_chatbar = GetNode<TextEdit>("chat/chatbar");
@@ -80,108 +82,80 @@ public partial class DebugScreen : Control
         playerList_list = GetNode<VBoxContainer>("PlayerListBox/ScrollContainer/Players/PlayersVbox");
 
         //ui events
-        directLoadMap_loadCheck.Toggled += DirectLoadMap_loadCheck_Toggled;
         directLoadMap_mapList.ItemSelected += DirectLoadMap_mapList_ItemSelected;
         chat_send.Pressed += Chat_send_Pressed;
         StartGameButton.Pressed += StartGameButton_Pressed;
+        QuitGameButton.Pressed += QuitGameButton_Pressed;
+        RPCManager.ChatReceivedEvent += RPCManager_ChatReceivedEvent;
 
-        //other events
-        GameSession.GameSessionOptionsChangedEvent += GameSession_OptionsChangedEvent;
-        GameSession.GameSessionNewPlayerEvent += GameSession_NewPlayerEvent;
-
+        Lobby.NewLobbyPeerAddedEvent += Lobby_NewLobbyPeerAddedEvent;
+        Lobby.LobbyPeerRemovedEvent += Lobby_LobbyPeerRemovedEvent;
 
         foreach (string map in directLoadMap_mapNames)
         {
             directLoadMap_mapList.AddItem(map);
         }
 
-        foreach (ulong player in Global.GameSession.playerData.Keys)
+        hostHide.Visible = !Global.Lobby.bIsLobbyHost;
+        StartGameButton.Disabled = !Global.Lobby.bIsLobbyHost;
+        directLoadMap_mapList.Disabled = !Global.Lobby.bIsLobbyHost;
+        DirectLoadMap_mapList_ItemSelected(0);
+        if (Global.Lobby.bInLobby)
         {
-            GameSession_NewPlayerEvent(player);
-        }
+            foreach (ulong peer in Global.Lobby.AllPeers())
+            {
+                Lobby_NewLobbyPeerAddedEvent(peer);
+            }
 
+        }
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
     }
 
-    private void GameSession_NewPlayerEvent(ulong newPlayerSteamID)
+    private void Lobby_LobbyPeerRemovedEvent(ulong removedPlayerSteamID)
+    {
+        playerList_list.GetNode(removedPlayerSteamID.ToString()).QueueFree();
+    }
+
+    private void RPCManager_ChatReceivedEvent(string msg, ulong sender)
+    {
+        chat_text.AddText($"{SteamFriends.GetFriendPersonaName(new CSteamID(sender))}: {msg}");
+    }
+
+    private void QuitGameButton_Pressed()
+    {
+        Global.Lobby.LeaveLobby(true);
+        Global.ui.ToMainMenuUI();
+    }
+
+    private void Lobby_NewLobbyPeerAddedEvent(ulong newPlayerSteamID)
     {
         Logging.Log($"Adding player {newPlayerSteamID} to debug screen.", "DebugScreen");
-        Control playerListItem = ResourceLoader.Load<PackedScene>("res://scenes/ui/playerListItem.tscn").Instantiate<Control>();
+        Control playerListItem = ResourceLoader.Load<PackedScene>("res://scenes/ui/menu/playerListItem.tscn").Instantiate<Control>();
         playerListItem.GetNode<Label>("playername").Text = SteamFriends.GetFriendPersonaName(new CSteamID(newPlayerSteamID));
         playerListItem.GetNode<TextureRect>("icon").Texture = Utils.GetMediumSteamAvatar(newPlayerSteamID);
-        playerListItem.GetNode<Label>("level").Text = Global.GameSession.playerData[newPlayerSteamID].progression.AccountLevel.ToString();
+        //playerListItem.GetNode<Label>("level").Text = Global.GameSession.playerData[newPlayerSteamID].progression.AccountLevel.ToString();
         playerListItem.GetNode<Label>("id").Text = newPlayerSteamID.ToString();
+        playerListItem.Name = newPlayerSteamID.ToString();
         playerList_list.AddChild(playerListItem);
     }
 
     private void StartGameButton_Pressed()
     {
-        if (Global.GameSession.sessionAuthority == Global.steamid)
-        {
-            Logging.Log("Direct starting game...", "DebugScreen");
-            Global.GameSession.BroadcastSessionMessage([0], SessionMessageType.COMMAND_STARTGAME);
-        }
-        else
-        {
-            Logging.Error("Only the host can start the game.", "DebugScreen");
-        }
+        RPCManager.RPC_StartGame(directLoadMap_mapPaths[directLoadMap_mapList.Selected]);
     }
 
-    private void GameSession_OptionsChangedEvent()
-    {
-        if (Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP)
-        {
-            directLoadMap = true;
-            directLoadMap_hidePanel.Visible = false;
-            StartGameButton.Text = "Start Game On Selected Map";
-            directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX]));
-            directLoadMap_mapList.Selected = Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX;
-            chat_text.AddText($"SYSTEM: Enabled map direct load; map:{directLoadMap_mapPaths[Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX]}\n");
-        }
-        else
-        {
-            directLoadMap = false;
-            directLoadMap_hidePanel.Visible = true;
-            StartGameButton.Text = "Start Game";
-            chat_text.AddText($"SYSTEM: Disabled map direct load.\n");
-        }
-    }
 
     private void Chat_send_Pressed()
     {
-        throw new NotImplementedException();
+        RPCManager.RPC_Chat(chat_chatbar.Text);
+        chat_chatbar.Text = "";
     }
 
     private void DirectLoadMap_mapList_ItemSelected(long index)
     {
-        Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX = (int)index;
-
-        Global.GameSession.BroadcastSessionMessage(NetworkUtils.StructToBytes<SessionOptions>(Global.GameSession.sessionOptions), SessionMessageType.RESPONSE_SESSIONOPTIONS);
+        directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[directLoadMap_mapList.Selected]));
     }
 
-    private void DirectLoadMap_loadCheck_Toggled(bool toggledOn)
-    {
-
-        if (toggledOn)
-        {
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP = true;
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX = 0;
-            Global.GameSession.BroadcastSessionMessage(NetworkUtils.StructToBytes<SessionOptions>(Global.GameSession.sessionOptions), SessionMessageType.RESPONSE_SESSIONOPTIONS);
-
-        }
-        else
-        {
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAP = false;
-            Global.GameSession.sessionOptions.DEBUG_DIRECTLOADMAPINDEX = 0;
-            Global.GameSession.BroadcastSessionMessage(NetworkUtils.StructToBytes<SessionOptions>(Global.GameSession.sessionOptions), SessionMessageType.RESPONSE_SESSIONOPTIONS);
-
-        }
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
-    }
 }

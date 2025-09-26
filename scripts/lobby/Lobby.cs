@@ -119,7 +119,7 @@ public class Lobby
     /// Start a new lobby with us as the host. After this we will be joinable, and be able to send invites.
     /// </summary>
     /// <param name="leaveCurrent">If true, leave the current lobby before making a new one. If false, throws an error if trying to host while in a lobby.</param>
-    public void HostNewLobby(bool leaveCurrent = false)
+    public void HostNewLobby(bool leaveCurrent = false, bool inBackground = true)
     {
         if (bInLobby)
         {
@@ -136,7 +136,7 @@ public class Lobby
         Logging.Log($"Hosting a new lobby and enabling steam rich presence.", "Lobby");
         bIsLobbyHost = true;
         LobbyHostSteamID = Global.steamid;
-        LobbyJoinedInternal(LobbyHostSteamID);
+        LobbyJoinedInternal(LobbyHostSteamID, inBackground);
         HostedNewLobbyEvent?.Invoke();
     }
 
@@ -183,7 +183,7 @@ public class Lobby
         data.CopyTo(newData, 1);
         SteamNetworkingIdentity identity = new SteamNetworkingIdentity();
         identity.SetSteamID64(toSteamID);
-        return Global.network.SendData(newData, NetType.LOBBY_BYTES, identity);
+        return Global.network.SendData(newData, Channel.LobbyMessageBytes, toSteamID);
     }
 
     /// <summary>
@@ -421,6 +421,18 @@ public class Lobby
         }
     }
 
+    public List<ulong> AllPeers()
+    {
+        return lobbyPeers.ToList();
+    }
+
+    public List<ulong> AllPeersExceptSelf()
+    {
+        List<ulong> peers = lobbyPeers.ToList();
+        peers.Remove(Global.steamid);
+        return peers;
+    }
+
     /// <summary>
     /// See <see cref="m_GameRichPresenceJoinRequested"/>
     /// </summary>
@@ -445,7 +457,7 @@ public class Lobby
     /// helper to handle joining to new lobby logic
     /// </summary>
     /// <param name="hostSteamID"></param>
-    private void LobbyJoinedInternal(ulong hostSteamID)
+    private void LobbyJoinedInternal(ulong hostSteamID, bool inBackground = true)
     {
         bInLobby = true;
         SteamFriends.SetRichPresence("connect", hostSteamID.ToString());
@@ -456,7 +468,9 @@ public class Lobby
         AddNewPeer(Global.steamid);
 
         JoinedToLobbyEvent?.Invoke(hostSteamID);
-
-        Global.GameSession = new(lobbyPeers.ToList(), hostSteamID);
+        if (!inBackground)
+        {
+            Global.ui.ToLobbyUI();
+        }
     }
 }

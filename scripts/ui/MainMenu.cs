@@ -24,8 +24,11 @@ public partial class MainMenu : Control
 
     private void OnStartPressed()
     {
-        Global.ui.SwitchFullScreenUI("DEBUG_launcher");
-        //Global.GameSession = new(Global.Lobby.lobbyPeers.ToList(), Global.Lobby.LobbyHostSteamID);
+        if (!Global.Lobby.bInLobby)
+        {
+            Global.Lobby.HostNewLobby();
+        }
+        Global.ui.ToLobbyUI();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

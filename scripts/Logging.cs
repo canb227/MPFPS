@@ -14,9 +14,8 @@ public static class Logging
     /// </summary>
     public const bool bSaveLogsToFile = false;
 
-    //Add logging categories to this to silence them - can also use the relevant console commands while the game is running to add or remove values
     /// <summary>
-    /// List of Log Prefixes (categories) to silence
+    /// List of Log Prefixes (categories) to silence. Add logging categories to this to silence them - can also use the relevant console commands while the game is running to add or remove values
     /// </summary>
     public static List<string> SilencedPrefixes = ["FirstTimeSetup", "LoggingMeta", "NetworkRelay", "NetworkSession", "GameSessionWire", "NetworkWire"];
 
@@ -24,8 +23,6 @@ public static class Logging
     /// Is true if Logger is functioning.
     /// </summary>
     public static bool IsStarted = false;
-
-
 
     private static List<string> SilencedPrefixesCurrent = SilencedPrefixes;
     private static FileAccess logFile = null;
@@ -81,7 +78,7 @@ public static class Logging
         {
             if (logFile.StoreLine(customPrefix + ts + message))
             {
-                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a serious performance hit.
+                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a non-trivial performance hit if you are logging a lot.
             }
             else
             {
@@ -114,7 +111,7 @@ public static class Logging
         {
             if (logFile.StoreLine(customPrefix + ts + message))
             {
-                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a serious performance hit.
+                logFile.Flush(); //Flush the buffer to disk per line in case we crash.  This probably incurs a non-trivial performance hit if you are logging a lot.
             }
             else
             {
@@ -147,7 +144,7 @@ public static class Logging
         {
             if (logFile.StoreLine(customPrefix + ts + message))
             {
-                logFile.Flush(); //Flush the buffer to disk per line in case we crash. This probably incurs a serious performance hit.
+                logFile.Flush(); //Flush the buffer to disk per line in case we crash.  This probably incurs a non-trivial performance hit if you are logging a lot.
             }
             else
             {

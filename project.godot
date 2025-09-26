@@ -24,11 +24,10 @@ LimboConsole="*res://addons/limbo_console/limbo_console.gd"
 
 [display]
 
-window/size/viewport_width=3440
-window/size/viewport_height=1440
-window/size/mode=4
-window/size/borderless=true
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [dotnet]
 
@@ -55,11 +54,14 @@ limbo_console_search_history={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":82,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+forward={
+"deadzone": 0.2,
+"events": []
+}
 
 [physics]
 
 3d/run_on_separate_thread=true
-common/physics_ticks_per_second=30
 3d/physics_engine="Jolt Physics"
 common/physics_interpolation=true
 

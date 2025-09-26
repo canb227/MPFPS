@@ -1,4 +1,5 @@
 using Godot;
+using ImGuiNET;
 using Limbo.Console.Sharp;
 using Steamworks;
 using System;
@@ -12,13 +13,14 @@ using System.Threading.Tasks;
 public partial class Main : Node
 {
 
-    public bool bConsoleOpen = false;
+
     public Input.MouseModeEnum stashedMouseMouseMode = Input.MouseModeEnum.Max;
 
 
     //This runs after Global._Ready(), and handles most of our startup. (Logging and Steam are handled earlier in Global)
     public async override void _Ready()
     {
+        
         //First up, start up the config system and register a static reference to it in Global. Despite its name, this system handles both user configuration settings and user savefiles/meta-progression tracking
         //It'll automatically load up the Config file and the Progression files from disk for the logged in user from the user:// Godot file location.
         //If they don't exist it makes them.
@@ -57,10 +59,10 @@ public partial class Main : Node
         Global.network = new SteamNetwork();
 
         //Start the "world", the root Node3D for the game, register a global reference for it, and add it to the scenetree as a child of main so it can render 3D stuff.
-        Logging.Log($"Starting world/level/3DNode manager...", "Main");
-        Global.world = new World();
-        Global.world.Name = "World";
-        AddChild(Global.world);
+        //Logging.Log($"Starting world/level/3DNode manager...", "Main");
+        //Global.world = new GameWorld();
+        //Global.world.Name = "World";
+        //AddChild(Global.world);
 
         //TODO: Trigger preloading and shader stuff here if needed, using the above world node
 
@@ -70,6 +72,11 @@ public partial class Main : Node
         await DoSomeLongShit();
 
         Global.ui.StopLoadingScreen();
+
+        Global.gameState = new GameState();
+        Global.gameState.Name = "GameState";
+        AddChild(Global.gameState);
+
 
         //TODO: Add additonal start up items here.
 
@@ -126,34 +133,23 @@ public partial class Main : Node
     //To help maintain an understanding of exactly what runs every frame, and in what order, main is the only thing that has a _Process()
     //Here we call out to everything else that needs to run once per frame.
     //Experimental approach, we'll see how it goes.
+    //NOTE: Largely abandoning the above due to it doesnt help and it makes physics management in Godot a huge pain in the ass.
     public override void _Process(double delta)
     {
         SteamAPI.RunCallbacks();
         Global.network.PerFrame(delta);
-        Global.world.PerFrame(delta);
-        foreach (Controller controller in Global.world.controllers.Values)
-        {
-            controller.PerFrame(delta);
-        }
 
     }
 
     //_PhysicsProcess gets called 60 times a second (by default). We are using it to establish a tickrate that is disconnected from the framerate.
     //We can adjust the tick rate by changing the engine's physics rate.
     //Uses same approach as described above with _Process()
+    //NOTE: Largely abandoning the above due to it doesnt help and it makes physics management in Godot a huge pain in the ass.
     public override void _PhysicsProcess(double delta)
     {
         Global.network.Tick(delta);
-        Global.world.Tick(delta);
-        foreach (Controller controller in Global.world.controllers.Values)
-        {
-            controller.Tick(delta);
-        }
 
-
-
-
-        if (bConsoleOpen)
+        if (Global.bConsoleOpen)
         {
             ConsolePicker();
         }
@@ -165,34 +161,39 @@ public partial class Main : Node
         if (Input.IsActionJustPressed("FIRE"))
         {
             var mpos = GetViewport().GetMousePosition();
-            PlayerCharacter pc = ((PlayerCharacter)Global.GameSession.playerData[Global.steamid].playerController.possessedCharacter);
+            GOBasePlayerCharacter pc = Global.gameState.GetLocalPlayerCharacter();
             if (pc != null)
             {
-                var from = pc.cam.ProjectRayOrigin(mpos);
-                var to = from + pc.cam.ProjectRayNormal(mpos) * 1000;
-                var space = pc.GetWorld3D().DirectSpaceState;
+                var from = pc.GetCamera().ProjectRayOrigin(mpos);
+                var to = from + pc.GetCamera().ProjectRayNormal(mpos) * 1000;
+                var space = Global.gameState.GetWorld3D().DirectSpaceState;
                 var query = PhysicsRayQueryParameters3D.Create(from, to);
                 query.CollideWithAreas = true;
                 query.CollideWithBodies = true;
-                query.Exclude = [pc.body.GetRid()];
+                query.Exclude = [pc.GetRid()];
                 var result = space.IntersectRay(query);
-
-                Node bob = (Node)result["collider"];
-                if (bob.GetParent() is GameObject go)
+                if (result.TryGetValue("collider", out Variant col))
                 {
-                    Logging.Log($"You just clicked on a gameobject with name {go.Name}, id {go.GetUID()}", "Picker");
-                    TextEdit cmdBar = GetTree().Root.GetNode<TextEdit>("LimboConsole/@PanelContainer@3/@VBoxContainer@4/@TextEdit@12");
-                    cmdBar.Text += go.GetUID();
-                    cmdBar.SetCaretColumn(cmdBar.Text.Length);
+                    Node collision = (Node)col;
+                    if (collision is IGameObject go)
+                    {
+                        Logging.Log($"You just clicked on a gameobject with type {go.type}, id {go.id}. ID saved to clipboard!", "Picker");
+                        DisplayServer.ClipboardSet(go.id.ToString());
+                        Global.gameState.SetDebugTarget(go);
+                    }
+                    else
+                    {
+                        Logging.Log($"You just clicked on non game object {collision} (Name={collision.Name}  at pos {result["position"]} (ID: {result["collider_id"]})", "Picker");
+                    }
                 }
                 else
                 {
-                    Logging.Log($"You just clicked on non game object {result["collider"]}  at pos {result["position"]} (ID: {result["collider_id"]})", "Picker");
+                    Logging.Log($"No pick ray collision detected. From {from}, to {to}", "Picker");
                 }
-                
+
+                }
             }
         }
-    }
 
     /// <summary>
     /// This bypasses any input systems we wrote and just directly looks to see if a specific keycode is pressed.
@@ -208,14 +209,15 @@ public partial class Main : Node
             if (k.Keycode == Key.Bracketright)
             {
                 Global.DrawDebugScreens = !Global.DrawDebugScreens;
+                Logging.Log($"DebugScreens Active: {Global.DrawDebugScreens}", "DebugScreens");
                 GetViewport().SetInputAsHandled();
             }
             //backtick/tilde toggles the console
             else if (k.Keycode == Key.Quoteleft)
             {
-                if (bConsoleOpen)
+                if (Global.bConsoleOpen)
                 {
-                    bConsoleOpen = false;
+                    Global.bConsoleOpen = false;
                     LimboConsole.CloseConsole();
                     if (Input.MouseMode==Input.MouseModeEnum.Visible)
                     {
@@ -225,7 +227,7 @@ public partial class Main : Node
                 }
                 else
                 {
-                    bConsoleOpen = true;
+                    Global.bConsoleOpen = true;
                     stashedMouseMouseMode = Input.MouseMode;
                     LimboConsole.OpenConsole();
                     Input.MouseMode = Input.MouseModeEnum.Visible;
