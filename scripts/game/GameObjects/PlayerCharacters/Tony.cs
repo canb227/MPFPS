@@ -65,16 +65,23 @@ public partial class Tony : GOBasePlayerCharacter
 
 
         //modify the localVelocity based on input - see the Actions Enum in InputMapManager (instance in Global.InputMap)
-        if (input.actions.HasFlag(Actions.Jump))
+
+
+        if (!IsOnFloor())
         {
-            localVelocity.Y = 5;
+            localVelocity.Y -= (float)(9.8 * delta);
+        }
+        else
+        {
+            if (input.actions.HasFlag(Actions.Jump))
+            {
+                localVelocity.Y = 10;
+            }
         }
 
 
-
-
-        //After we're done modifiying the local velocity vector, we have to transform it back to global, thats what Godot expects.
-        Velocity = PCUtils.GlobalizeVector(this, localVelocity);
+            //After we're done modifiying the local velocity vector, we have to transform it back to global, thats what Godot expects.
+            Velocity = PCUtils.GlobalizeVector(this, localVelocity);
 
         //Built-in Godot function, steps the physics one tick for this object by using the Velocity variable.
         MoveAndSlide();

@@ -10,7 +10,7 @@ public static class GameObjectLoader
     {
         {"ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
-        {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/ghost.tscn", typeof(Tony))},
+        {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/tony.tscn", typeof(Tony))},
     };
 
     internal static IGameObject LoadObjectByType(GameObjectType type)

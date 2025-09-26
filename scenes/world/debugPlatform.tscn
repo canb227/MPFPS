@@ -447,25 +447,25 @@ libraries = {
 [node name="playerSpawns" type="Node" parent="meta"]
 
 [node name="1" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 6.1826735, 10, 0)
 
 [node name="2" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1933304, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.1933304, 10, 0)
 
 [node name="3" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6235757, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -2.6235757, 10, 0)
 
 [node name="4" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.495168, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.495168, 10, 0)
 
 [node name="5" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.0489826, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -6.0489826, 10, 0)
 
 [node name="6" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.419996, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -7.419996, 10, 0)
 
 [node name="7" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.759395, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -8.759395, 10, 0)
 
 [node name="8" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3760238, 10, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 1.3760238, 10, 0)

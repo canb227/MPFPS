@@ -507,7 +507,7 @@ public partial class GameState : Node3D
     /// <param name="scenePath"></param>
     public void StartGame(string scenePath)
     {
-        Logging.Log($"Starting Game!", "GameState");
+        Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
         Global.ui.StartLoadingScreen();
         LoadStaticLevel(scenePath);
         SpawnSelf(GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type);
