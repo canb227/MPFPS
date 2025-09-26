@@ -36,13 +36,24 @@ public struct StateUpdatePacket
     [Key(4)]
     public ulong sender;
 
-    public StateUpdatePacket(ulong id, byte[] data, GameObjectType type)
+    [Key(5)]
+    public StateUpdateFlag flag;
+
+    public StateUpdatePacket(ulong id, byte[] data, GameObjectType type, StateUpdateFlag flag)
     {
         this.objectID = id;
         this.data = data;
         this.type = type;
         this.tick = Global.gameState.tick;
         this.sender = Global.steamid;
+        this.flag = flag;
     }
 }
 
+public enum StateUpdateFlag
+{
+    Update = 0,
+    Spawn = 1,
+    SpawnPlayer = 2,
+    Destroy = 3,
+}

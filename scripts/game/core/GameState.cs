@@ -135,7 +135,7 @@ public partial class GameState : Node3D
                 //WARNING: THIS WILL SEND A NETWORK PACKET FOR EVERY SINGLE OBJECT IN THE GAME WE ARE AUTHORITY OF
                 //TODO: Implement object priority queue here the moment there is even a whiff of performance issues
 
-                StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type);
+                StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Update);
                 byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
                 Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
             }
@@ -149,7 +149,7 @@ public partial class GameState : Node3D
         //We're always the authority over our own input state, send that to all of our peers.
         var localInput = PlayerInputs[Global.steamid];
         byte[] data = MessagePackSerializer.Serialize(localInput);
-        Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.lobbyPeers.ToList());
+        Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
     }
 
     /// <summary>
@@ -210,13 +210,18 @@ public partial class GameState : Node3D
         {
             pc.GlobalTransform = SpawnTransform;
             pc.controllingPlayerID = Global.steamid;
-            SpawnObjectAsAuth(pc, pc.type);
+            SpawnNewObject(pc, GenerateNewID(), Global.steamid, pcType);
+            StateUpdatePacket stateUpdate = new StateUpdatePacket(pc.id, pc.GenerateStateUpdate(), pc.type, StateUpdateFlag.SpawnPlayer);
+            byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
+            Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
         }
         else
         {
             Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
         }
     }
+
+  
 
     /// <summary>
     /// Spawn an object with authority over it and tell all your peers about it.
@@ -225,7 +230,7 @@ public partial class GameState : Node3D
     public void SpawnObjectAsAuth(IGameObject gameObject, GameObjectType type)
     {
         SpawnNewObject(gameObject,GenerateNewID(),Global.steamid,type);
-        StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type);
+        StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Spawn);
         byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
         Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
     }
@@ -314,6 +319,7 @@ public partial class GameState : Node3D
         }
         return gameObject;
     }
+
     private void GameStateDebug()
     {
         ImGui.Begin("GameState Debug");
@@ -328,16 +334,16 @@ public partial class GameState : Node3D
 
         ImGui.Begin("Peer Input Debug");
         ImGui.Text($"Number of peer inputs: {PlayerInputs.Count}");
-        foreach (var input in PlayerInputs)
-        {
-            int count = 0;
-            foreach(var action in input.Value.actions)
-            {
-                if (action.Value == true) count++;
+        //foreach (var input in PlayerInputs)
+        //{
+        //    int count = 0;
+        //    foreach(var action in input.Value.actions)
+        //    {
+        //        if (action.Value == true) count++;
 
-            }
-            ImGui.Text($"Peer: {input.Key} is pressing {count} actions");
-        }
+        //    }
+        //    ImGui.Text($"Peer: {input.Key} is pressing {count} actions");
+        //}
         ImGui.End();
 
         if (debugTarget != null)
@@ -382,26 +388,41 @@ public partial class GameState : Node3D
         while (processStateUpdates)
         {
             StateUpdatePacket stateUpdate = StateUpdatePacketBuffer.Dequeue();
-            if (GameObjects.TryGetValue(stateUpdate.objectID, out IGameObject obj))
+            switch (stateUpdate.flag)
             {
-                if (obj.authority != stateUpdate.sender)
-                {
-                    Logging.Error($"Peer: {stateUpdate.sender} is making claims on an object ({obj.id}) they are not authority of!", "GameState");
-                    return;
-                }
-                if (obj.type != obj.type)
-                {
-                    Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {obj.id} (obj type: {obj.type}, packet type: {stateUpdate.type})", "GameState");
-                    return;
-                }
-                obj.ProcessStateUpdate(stateUpdate.data);
-            }
-            else
-            {
-                Logging.Log($"State update for unknown object, spawning it","GameState");
-                IGameObject newObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
-                SpawnNewObject(newObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
-                newObj.ProcessStateUpdate(stateUpdate.data);
+                case StateUpdateFlag.Update:
+                    if (GameObjects.TryGetValue(stateUpdate.objectID, out IGameObject updateObj))
+                    {
+                        if (updateObj.authority != stateUpdate.sender)
+                        {
+                            Logging.Error($"Peer: {stateUpdate.sender} is making claims on an object ({updateObj.id}) they are not authority of!", "GameState");
+                            return;
+                        }
+                        if (updateObj.type != updateObj.type)
+                        {
+                            Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
+                            return;
+                        }
+                        updateObj.ProcessStateUpdate(stateUpdate.data);
+                    }
+                    break;
+                case StateUpdateFlag.Spawn:
+                    Logging.Log($"Auth spawn request from peer.", "GameState");
+                    IGameObject newObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                    SpawnNewObject(newObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
+                    newObj.ProcessStateUpdate(stateUpdate.data);
+                    break;
+                case StateUpdateFlag.SpawnPlayer:
+                    Logging.Log($"Player spawn request from peer.", "GameState");
+                    GOBasePlayerCharacter pcObj = (GOBasePlayerCharacter)GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                    pcObj.controllingPlayerID = stateUpdate.sender;
+                    SpawnNewObject(pcObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
+                    pcObj.ProcessStateUpdate(stateUpdate.data);
+                    break;
+                case StateUpdateFlag.Destroy:
+                    break;
+                default:
+                    break;
             }
             if (StateUpdatePacketBuffer.Count>0)
             {
@@ -461,6 +482,7 @@ public partial class GameState : Node3D
     /// <param name="scenePath"></param>
     public void StartGame(string scenePath)
     {
+        Logging.Log($"Starting Game!", "GameState");
         Global.ui.StartLoadingScreen();
         LoadStaticLevel(scenePath);
         SpawnSelf(GameObjectType.Ghost);

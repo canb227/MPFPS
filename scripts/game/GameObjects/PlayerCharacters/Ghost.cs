@@ -20,11 +20,6 @@ public partial class Ghost : GOBasePlayerCharacter
     public override void _Ready()
     {
         base._Ready();
-        if (input == null)
-        {
-            controllingPlayerID = authority;
-            input = Global.gameState.PlayerInputs[authority];
-        }
     }
 
     public override void ProcessStateUpdate(byte[] _update)
@@ -179,11 +174,6 @@ public partial class Ghost : GOBasePlayerCharacter
     public override void PerFrameLocal(double delta)
     {
 
-    }
-
-    protected override void ConfigureInput()
-    {
-        input = Global.gameState.PlayerInputs[controllingPlayerID];
     }
 
     protected override void CreateAndConfigureCamera()
