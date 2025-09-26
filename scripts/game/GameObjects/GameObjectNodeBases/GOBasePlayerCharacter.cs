@@ -27,10 +27,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         {
             Global.gameState.PlayerInputs.Add(controllingPlayerID, new PlayerInputData());
             Global.gameState.PlayerInputs[controllingPlayerID].playerID = controllingPlayerID;
-            foreach (string action in Global.InputMap.InputActionList.Keys)
-            {
-                Global.gameState.PlayerInputs[controllingPlayerID].actions.Add(action, false);
-            }
         }
         input = Global.gameState.PlayerInputs[controllingPlayerID];
     }

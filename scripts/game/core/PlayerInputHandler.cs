@@ -1,18 +1,28 @@
 using Godot;
-
+using Godot.Collections;
 using ImGuiNET;
 
 public partial class PlayerInputHandler : Node
 {
+
+    public Dictionary<string, Actions> flagMap = new Dictionary<string, Actions>()
+    {
+        { "MOVE_FORWARD",Actions.MoveForward },
+        { "MOVE_BACKWARD",Actions.MoveBackward },
+        { "MOVE_LEFT",Actions.MoveLeft },
+        { "MOVE_RIGHT",Actions.MoveRight },
+        { "CROUCH", Actions.Crouch },
+        { "JUMP", Actions.Jump },
+        { "SPRINT", Actions.Sprint },
+        { "USE", Actions.Use },
+
+    };
+
     public override void _Ready()
     {
         Logging.Log($"Starting local input gathering", "LocalInput");
         Global.gameState.PlayerInputs[Global.steamid] = new PlayerInputData();
         Global.gameState.PlayerInputs[Global.steamid].playerID = Global.steamid;
-        foreach (string action in Global.InputMap.InputActionList.Keys)
-        {
-            Global.gameState.PlayerInputs[Global.steamid].actions.Add(action, false);
-        }
     }
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -24,7 +34,15 @@ public partial class PlayerInputHandler : Node
             {
                 if (@event.IsAction(action))
                 {
-                    Global.gameState.PlayerInputs[Global.steamid].actions[action] = @event.IsPressed();
+                    if(@event.IsPressed())
+                    {
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | flagMap[action];
+                    }
+                    else if (@event.IsReleased())
+                    {
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~flagMap[action];
+                    }
+
                 }
             }
         }

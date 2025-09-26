@@ -83,11 +83,11 @@ public partial class Ghost : GOBasePlayerCharacter
 
         Vector3 globalVelocity = Transform.Basis * localVelocity;
 
-        if (input.actions["JUMP"])
+        if (input.actions.HasFlag(Actions.Jump))
         {
             globalVelocity.Y = 1 * 4;
         }
-        else if (input.actions["CROUCH"])
+        else if (input.actions.HasFlag(Actions.Crouch))
         {
             globalVelocity.Y = -1 * 4;
         }
@@ -106,10 +106,8 @@ public partial class Ghost : GOBasePlayerCharacter
             ImGui.Begin("PC Debug");
             ImGui.Text("InputMvVector: " + input.MovementInputVector.ToString());
             ImGui.Text("InputLookVector: " + input.LookInputVector.ToString());
-            foreach (var actionEntry in input.actions)
-            {
-                ImGui.Text($"{actionEntry.Key}:{actionEntry.Value}");
-            }
+            ImGui.Text($"Actions flag: {input.actions}");
+            
             ImGui.End();
         }
 
@@ -157,11 +155,11 @@ public partial class Ghost : GOBasePlayerCharacter
 
         Vector3 globalVelocity = Transform.Basis * localVelocity;
 
-        if (input.actions["JUMP"])
+        if (input.actions.HasFlag(Actions.Jump))
         {
             globalVelocity.Y = 1 * 4;
         }
-        else if (input.actions["CROUCH"])
+        else if (input.actions.HasFlag(Actions.Crouch))
         {
             globalVelocity.Y = -1 * 4;
         }
