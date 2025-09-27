@@ -1,0 +1,147 @@
+[gd_scene load_steps=11 format=3 uid="uid://d3nmbkrdgglnp"]
+
+[ext_resource type="PackedScene" uid="uid://cq17w6s6sj15i" path="res://assets/models/press.glb" id="1_l43er"]
+[ext_resource type="Script" uid="uid://ck8g46exncmcv" path="res://scripts/game/GameObjects/Triggerable/LabellingPress.cs" id="2_vvntr"]
+
+[sub_resource type="Animation" id="Animation_vvntr"]
+resource_name = "press_down"
+length = 2.0
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PressArm:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0, 0, 0, -0.017052881, 0, 0, 0, 0, -0.099613786, 0, 0.5, 0, 0, -0.050000004, 0, 0, 0),
+"times": PackedFloat32Array(0, 0.10231729, 1.1, 1.9000001)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PressArm:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0, 0, -4.903061, -0.017052881, 0.8171768, 0, 0, -4.903061, -0.099613786, 0, 0.5, 0, 0, -0.050000004, -0.8171769, 0, 0),
+"times": PackedFloat32Array(0, 0.10231729, 1.1, 1.9000001)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PressArm:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 2, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0, 0, 0, -0.017052881, 0, 0, 0, 0, -0.099613786, 0, 0.25, 0, 0, -0.050000004, 0, 0, 0),
+"times": PackedFloat32Array(0, 0.10231729, 1.1, 1.9000001)
+}
+
+[sub_resource type="Animation" id="Animation_lblhg"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PressArm:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PressArm:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PressArm:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dnnl5"]
+_data = {
+&"RESET": SubResource("Animation_lblhg"),
+&"press_down": SubResource("Animation_vvntr")
+}
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vvntr"]
+points = PackedVector3Array(1.34513, 5.0069, 1.7627486, -1.5083866, 5.0069, -1.7153579, -1.6866113, 5.0069, -1.6261584, 1.8752484, 6.2538, -1.443877, -1.8598962, 6.2538, 1.4912677, -1.6821415, 6.2538, -1.6218058, 1.7019635, 5.0069, -1.6261584, 1.8752484, 6.2538, 1.4023035, -1.9543326, 5.0069, 1.3167503, 1.9696848, 5.0069, 1.2275506, -1.3258663, 6.2538, 1.7581608, -1.9491566, 6.2538, -1.3549128, 1.5197393, 6.2538, -1.7107701, -1.3293937, 5.0069, 1.7627486, 1.3416016, 6.2538, 1.7581608, -1.9543326, 5.0069, -1.3585593, 1.9696848, 5.0069, -1.1801599, 1.9645089, 6.2538, -1.176984, 1.5237389, 5.0069, -1.7153579, -1.504387, 6.2538, -1.7107701, -1.9491566, 6.2538, 1.313339, 1.9645089, 6.2538, 1.2243747, 1.6128511, 5.0069, 1.673549, -1.7757237, 5.0069, 1.5843493, 1.6086165, 6.2538, 1.6691965, 1.8801885, 5.0069, -1.4477589, -1.5928812, 6.2538, 1.6691965, 1.8801885, 5.0069, 1.40595, 1.6974938, 6.2538, -1.6218058, -1.5971149, 5.0069, 1.673549, -1.7710189, 6.2538, 1.580232, -1.8648362, 5.0069, 1.4951496)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_lblhg"]
+points = PackedVector3Array(0.38988578, 11.074476, -0.024034012, -0.39731732, 6.2538, -0.12816726, -0.39731732, 6.2538, 0.074200675, 0.4126698, 6.2538, 0.074200675, -0.08787614, 11.074476, 0.35812873, -0.18342853, 11.074476, -0.3107379, 0.108924635, 6.2538, -0.33067393, 0.108924635, 6.2538, 0.37806475, -0.3745333, 11.074476, 0.07135936, 0.10322863, 11.074476, 0.35812873, 0.10322863, 11.074476, -0.3107379, -0.09357215, 6.2538, 0.37806475, -0.19482054, 6.2538, -0.33067393, -0.3745333, 11.074476, -0.119623795, 0.4126698, 6.2538, -0.026879229, 0.38988578, 11.074476, 0.07135936)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_dnnl5"]
+points = PackedVector3Array(-1.0255814, -0.22077818, -0.27217484, -1.0255814, 0.14100416, -0.27217484, 0.97441864, -0.22077818, -0.27217484, -1.0255814, -0.22077818, 1.7278252, -1.0255814, 0.14100416, 1.7278252, 0.97441864, 0.14100416, -0.27217484, 0.97441864, -0.22077818, 1.7278252, 0.97441864, 0.14100416, 1.7278252)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m00fl"]
+size = Vector3(0.20806885, 5.0527344, 0.20196533)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dbhcw"]
+size = Vector3(4.496155, 0.20327759, 3.9471436)
+
+[node name="press" node_paths=PackedStringArray("animationPlayer") instance=ExtResource("1_l43er")]
+script = ExtResource("2_vvntr")
+animationPlayer = NodePath("Press/AnimationPlayer")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Press" index="0"]
+libraries = {
+&"": SubResource("AnimationLibrary_dnnl5")
+}
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="Press/PressArm" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.903061, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Press/PressArm/StaticBody3D2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
+shape = SubResource("ConvexPolygonShape3D_vvntr")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Press/PressArm/StaticBody3D2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
+shape = SubResource("ConvexPolygonShape3D_lblhg")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Press" index="4"]
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Press/StaticBody3D" index="0"]
+shape = SubResource("ConvexPolygonShape3D_dnnl5")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Press/StaticBody3D" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.151792, 2.5234375, -1.8803616)
+shape = SubResource("BoxShape3D_m00fl")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Press/StaticBody3D" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1552448, 2.5234375, -1.8803616)
+shape = SubResource("BoxShape3D_m00fl")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="Press/StaticBody3D" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1552448, 2.5234375, 1.8840299)
+shape = SubResource("BoxShape3D_m00fl")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="Press/StaticBody3D" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.136756, 2.5234375, 1.8840299)
+shape = SubResource("BoxShape3D_m00fl")
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="Press/StaticBody3D" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0010681152, 5.4250355, 0.0067749023)
+shape = SubResource("BoxShape3D_dbhcw")
+
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="Press/StaticBody3D" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0010681152, -0.094035536, 0.0067749023)
+shape = SubResource("BoxShape3D_dbhcw")
