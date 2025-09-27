@@ -1,14 +1,11 @@
 using Godot;
 using System;
 
-public partial class LabellingPress : Triggerable
+public partial class LabellingPress : Crusher
 {
-    [Export] public AnimationPlayer animationPlayer;
-    public override void Triggered()
+    public override void OnTrigger()
     {
-        Logging.Log($"LabellingPress Triggered", "Triggerable");
-        //play animation
-        if (animationPlayer != null)
-            animationPlayer.Play("press_down");
+        base.OnTrigger();
+        Logging.Log($"Labelling Press Triggered","LabellingPress");
     }
 }

@@ -7,8 +7,13 @@ public partial class Crusher : GOBaseStaticBody,ITriggerable
 {
     public ulong lastTriggerTick { get; set; }
     public ulong duration { get; set; }
+
+    [Export]
     public ulong cooldown { get; set; }
+
     public bool isActive { get; set; }
+
+    [Export]
     public AnimationPlayer animationPlayer { get; set; }
 
     private ulong cooldownTimer {get; set;}
@@ -35,7 +40,7 @@ public partial class Crusher : GOBaseStaticBody,ITriggerable
         cooldownTimer = update.cooldownTimer;
     }
 
-    public void OnTrigger()
+    public virtual void OnTrigger()
     {
         if (cooldownTimer == 0)
         {
