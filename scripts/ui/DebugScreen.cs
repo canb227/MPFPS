@@ -45,13 +45,14 @@ public partial class DebugScreen : Control
 
         "res://scenes/world/debugPlatform.tscn",
         "res://scenes/world/debugFlat.tscn",
-
+        "res://scenes/world/warehouse.tscn",
     };
 
     public static List<string> directLoadMap_mapIconPaths = new()
     {
 
         "res://assets/ui/img/debugMapScreenie.png",
+        "res://assets/ui/img/debugMapFlatScreenie.png",
         "res://assets/ui/img/debugMapFlatScreenie.png",
 
     };
@@ -61,7 +62,7 @@ public partial class DebugScreen : Control
 
         "platform",
         "flat",
-
+        "warehouse",
     };
 
     public static List<string> playerCharacters = new()

@@ -49,6 +49,8 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.spawn),"spawn","Spawns a new instance of the given object type in front of the local player.");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.destroy),"destroy","Destroys the object with the given ID");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.impulse), "impulse", "Applies a random physics impulse to the object with the given ID");
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.interact));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.trigger));
     }
 
 
@@ -218,6 +220,28 @@ public partial class Console : Node
             {
                 Vector3 forceVector = new Vector3(Random.Shared.Next(-10, 10), Random.Shared.Next(-10, 10), Random.Shared.Next(-10, 10));
                 phys.ApplyCentralImpulse(forceVector);
+            }
+        }
+    }
+
+    public void interact(ulong id)
+    {
+        if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
+        {
+            if (obj is IInteractable i)
+            {
+                i.OnInteract();
+            }
+        }
+    }
+
+    public void trigger(ulong id)
+    {
+        if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
+        {
+            if (obj is ITriggerable t)
+            {
+                t.OnTrigger();
             }
         }
     }

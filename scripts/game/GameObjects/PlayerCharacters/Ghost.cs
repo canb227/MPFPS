@@ -23,6 +23,11 @@ public partial class Ghost : GOBasePlayerCharacter
     {
         base._Ready();
         priority = 100;
+
+        rayCast = new();
+        rayCast.TargetPosition = new Vector3(0, 0, -50);
+        rayCast.CollideWithBodies = true;
+        AddChild(rayCast);
     }
 
     public override void ProcessStateUpdate(byte[] _update)
@@ -43,6 +48,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public float camXRotMax = 85;
     public float camXRotMin = -85;
+    public float speed = 6;
 
     public override void PerTickAuth(double delta)
     {
@@ -58,6 +64,22 @@ public partial class Ghost : GOBasePlayerCharacter
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
 
+        if (input.actions.HasFlag(Actions.Use))
+        {
+            if (rayCast.IsColliding())
+            {
+                if (rayCast.GetCollider() is IInteractable i)
+                {
+                    i.OnInteract();
+                }
+            }
+        }
+
+        if (input.actions.HasFlag(Actions.Sprint))
+        {
+            speed = 12;
+        }
+
         float moveZ = input.MovementInputVector.X;
         float moveX = input.MovementInputVector.Y;
 
@@ -71,7 +93,7 @@ public partial class Ghost : GOBasePlayerCharacter
         }
         else
         {
-            localVelocity.Z = moveZ * 6;
+            localVelocity.Z = moveZ * speed;
         }
 
         if (moveX == 0)
@@ -80,18 +102,18 @@ public partial class Ghost : GOBasePlayerCharacter
         }
         else
         {
-            localVelocity.X = moveX * 6;
+            localVelocity.X = moveX * speed;
         }
 
         Vector3 globalVelocity = Transform.Basis * localVelocity;
 
         if (input.actions.HasFlag(Actions.Jump))
         {
-            globalVelocity.Y = 1 * 4;
+            globalVelocity.Y = 1 * speed * .66f;
         }
         else if (input.actions.HasFlag(Actions.Crouch))
         {
-            globalVelocity.Y = -1 * 4;
+            globalVelocity.Y = -1 * speed * .66f;
         }
 
 

@@ -149,6 +149,7 @@ public partial class GameState : Node3D
         for (int i = 0; i < numUpdatesPerFrame && i < ordered.Count(); i++)
         {
             var entry = ordered.ElementAt(i);
+            GameObjects[entry.Key].dirty = false;
             StateUpdatePacket stateUpdate = new StateUpdatePacket(GameObjects[entry.Key].id, GameObjects[entry.Key].GenerateStateUpdate(), GameObjects[entry.Key].type, StateUpdateFlag.Update);
             byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
             Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
