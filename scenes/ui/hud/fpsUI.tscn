@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfq0atktc7jfp"]
+
+[ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://ui/bottomleftUI.tscn" id="1_b55sv"]
+[ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://ui/inventoryUI.tscn" id="2_smdr6"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bottomleftUI" parent="." instance=ExtResource("1_b55sv")]
+layout_mode = 1
+
+[node name="inventoryUI" parent="." instance=ExtResource("2_smdr6")]
+layout_mode = 1

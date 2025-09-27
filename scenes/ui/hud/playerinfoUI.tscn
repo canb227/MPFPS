@@ -1,0 +1,189 @@
+[gd_scene load_steps=12 format=3 uid="uid://b0ytiqld1ba0v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b55sv"]
+bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.4862745)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jwf58"]
+bg_color = Color(0.18269473, 0.7201909, 0.092374764, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_smdr6"]
+font_size = 32
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_x8kys"]
+font_size = 32
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ddji3"]
+bg_color = Color(0.17502412, 0.19437483, 0.29346606, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fud4g"]
+bg_color = Color(0.1933488, 0.40634382, 0.7721189, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6fief"]
+bg_color = Color(0.33333334, 0.11372549, 0.105882354, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vl348"]
+bg_color = Color(0.7647059, 0.17254902, 0.16078432, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_rr2c3"]
+font_size = 24
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dntob"]
+bg_color = Color(0.14291832, 0.15555283, 0.14291734, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mgex2"]
+bg_color = Color(0.9999998, 0.7523828, 0.08428494, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -207.0
+offset_right = 455.0
+grow_vertical = 0
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b55sv")
+
+[node name="Label" type="Label" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="RolePanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_jwf58")
+
+[node name="RoleLabel" type="Label" parent="VBoxContainer/HBoxContainer/RolePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Innocent"
+label_settings = SubResource("LabelSettings_smdr6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimeLeftLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180.595, 0)
+layout_mode = 2
+text = "09:99"
+label_settings = SubResource("LabelSettings_x8kys")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer5" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="StunBar" type="ProgressBar" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer5"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_ddji3")
+theme_override_styles/fill = SubResource("StyleBoxFlat_fud4g")
+value = 94.04
+show_percentage = false
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_bottom = 16
+
+[node name="HealthBar" type="ProgressBar" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_6fief")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vl348")
+value = 87.9
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HealthBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 269.0
+offset_right = 377.0
+offset_bottom = 34.0
+text = "100"
+label_settings = SubResource("LabelSettings_rr2c3")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_bottom = 16
+
+[node name="AmmoBar" type="ProgressBar" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_dntob")
+theme_override_styles/fill = SubResource("StyleBoxFlat_mgex2")
+value = 86.0
+show_percentage = false
+
+[node name="AmmoLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer4/AmmoBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 269.0
+offset_right = 377.0
+offset_bottom = 34.0
+text = "30 + 90"
+label_settings = SubResource("LabelSettings_rr2c3")
+horizontal_alignment = 2
+vertical_alignment = 1
