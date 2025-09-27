@@ -2,9 +2,10 @@ using Godot;
 using ImGuiNET;
 using MessagePack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 /// <summary>
 /// Central game management singleton. Handles core game processing loop, player input routing, object spawning, network sync, and other stuff
@@ -15,7 +16,6 @@ public partial class GameState : Node3D
     /// List of all locally tracked game objects. Keyed by object ID for quick lookup. If in object isn't in this dictionary its completely cut off from all of the logic management and networking.
     /// </summary>
     public Dictionary<ulong, IGameObject> GameObjects = new();
-    public Dictionary<ulong, float> UpdateQueue = new();
 
     /// <summary>
     /// List of references to each player's current input data. Keyed by playerID (SteamID). Our local input ends up in this dictionary under our ID.
@@ -121,6 +121,8 @@ public partial class GameState : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
+        Dictionary<ulong, float> topObjects = new();
+ 
         //Work thru our Queue of incoming updates first
         HandleStateUpdateQueue();
         HandleInputQueue();
@@ -135,7 +137,8 @@ public partial class GameState : Node3D
             {
                 //If we're the authority, process the next tick of the object then increment its priority
                 gameObject.PerTickAuth(delta);
-                UpdateQueue[gameObject.id] += gameObject.priority;
+                gameObject.priorityAccumulator += gameObject.priority;
+                topObjects.Add(gameObject.id, gameObject.priorityAccumulator);
             }
             else
             {
@@ -144,16 +147,17 @@ public partial class GameState : Node3D
             }
         }
 
-        //grab the N highest priorirty items and send updates for those
-        var ordered = UpdateQueue.OrderByDescending(x => x.Value);
-        for (int i = 0; i < numUpdatesPerFrame && i < ordered.Count(); i++)
+        var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();
+        bool continueUpdating = true;
+        int numUpdates = 0;
+        while (continueUpdating && numUpdates<numUpdatesPerFrame && numUpdates<topObjects.Count)
         {
-            var entry = ordered.ElementAt(i);
-            GameObjects[entry.Key].dirty = false;
-            StateUpdatePacket stateUpdate = new StateUpdatePacket(GameObjects[entry.Key].id, GameObjects[entry.Key].GenerateStateUpdate(), GameObjects[entry.Key].type, StateUpdateFlag.Update);
-            byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
-            Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
-            UpdateQueue[entry.Key] = 0;
+            ulong objID = sortedDescending.First().Key;
+            sortedDescending.RemoveAt(0);
+            GameObjects[objID].priorityAccumulator = 0;
+            byte[] upd = GameObjects[objID].GenerateStateUpdate();
+            Global.network.BroadcastData(upd, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
+            numUpdates++;
         }
 
         //We're always the authority over our own input state, send that to all of our peers.
@@ -177,6 +181,21 @@ public partial class GameState : Node3D
         nodeStaticLevel = ResourceLoader.Load<PackedScene>(scenePath).Instantiate<Node3D>();
         AddChild(nodeStaticLevel);
         LoadStaticLevelMetas();
+        LoadStaticLevelGameObjects();
+    }
+
+    private void LoadStaticLevelGameObjects()
+    {
+        if (Global.steamid == Global.Lobby.LobbyHostSteamID)
+        {
+            foreach (Node node in nodeStaticLevel.GetNode("GameObjects").GetChildren())
+            {
+                if (node is IGameObject obj)
+                {
+                    RegisterNewObject(obj, GenerateNewID(), Global.steamid, obj.type);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -221,7 +240,6 @@ public partial class GameState : Node3D
             pc.GlobalTransform = SpawnTransform;
             pc.controllingPlayerID = Global.steamid;
             SpawnNewObject(pc, GenerateNewID(), Global.steamid, pcType);
-            UpdateQueue.Add(pc.id, 0);
             StateUpdatePacket stateUpdate = new StateUpdatePacket(pc.id, pc.GenerateStateUpdate(), pc.type, StateUpdateFlag.SpawnPlayer);
             byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
             Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
@@ -241,7 +259,6 @@ public partial class GameState : Node3D
     public void SpawnObjectAsAuth(IGameObject gameObject, GameObjectType type)
     {
         SpawnNewObject(gameObject,GenerateNewID(),Global.steamid,type);
-        UpdateQueue.Add(gameObject.id, 0);
         StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Spawn);
         byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
         Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
@@ -332,6 +349,32 @@ public partial class GameState : Node3D
         return gameObject;
     }
 
+    private IGameObject RegisterNewObject(IGameObject gameObject, ulong id, ulong authority, GameObjectType type)
+    {
+        if (GameObjects.ContainsKey(id))
+        {
+            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, id {gameObject.id} already exists", "GameState");
+            return null;
+        }
+        if (id == 0)
+        {
+            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, invalid ID (0)!", "GameState");
+            return null;
+        }
+        if (authority == 0 || !Global.Lobby.lobbyPeers.Contains(authority))
+        {
+            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, invalid authority provided: {authority}!", "GameState");
+            return null;
+        }
+
+        gameObject.id = id;
+        gameObject.authority = authority;
+        gameObject.type = type;
+
+        GameObjects[gameObject.id] = gameObject;
+        return gameObject;
+    }
+
     private void GameStateDebug()
     {
         ImGui.Begin("GameState Debug");
@@ -342,7 +385,7 @@ public partial class GameState : Node3D
         {
             if (gameObject.authority == Global.steamid)
             {
-                ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:ME | PRIORITY:{UpdateQueue[gameObject.id]}");
+                ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:ME | PRIORITY:{gameObject.priorityAccumulator}");
             }
             else
             {

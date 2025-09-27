@@ -21,7 +21,9 @@ public partial class GameButton : GOBaseStaticBody, IInteractable
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
 
-    private ulong cooldownTimer = 0; 
+    private ulong cooldownTimer = 0;
+
+    public override GameObjectType type { get; set; } = GameObjectType.GameButton;
 
     public override void _Ready()
     {

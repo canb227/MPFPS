@@ -16,7 +16,7 @@ public partial class Crusher : GOBaseStaticBody,ITriggerable
     [Export]
     public AnimationPlayer animationPlayer { get; set; }
 
-   
+    public override GameObjectType type { get; set; } = GameObjectType.Crusher;
 
     private ulong cooldownTimer {get; set;}
     public override string GenerateStateString()
