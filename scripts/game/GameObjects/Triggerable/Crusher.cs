@@ -16,6 +16,8 @@ public partial class Crusher : GOBaseStaticBody,ITriggerable
     [Export]
     public AnimationPlayer animationPlayer { get; set; }
 
+   
+
     private ulong cooldownTimer {get; set;}
     public override string GenerateStateString()
     {
@@ -48,7 +50,7 @@ public partial class Crusher : GOBaseStaticBody,ITriggerable
             cooldownTimer = cooldown;
             if (animationPlayer != null)
             {
-                animationPlayer.Play();
+                animationPlayer.Play("press_down");
             }
         }
 
