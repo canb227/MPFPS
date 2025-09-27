@@ -7,6 +7,6 @@ public partial class Triggerable : Node
 {
     public virtual void Triggered()
     {
-
+        Logging.Error($"Abstract Class Triggerable Called", "Triggerable");
     }
 }

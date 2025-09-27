@@ -1,4 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqy2i2oa6gibn"]
+[gd_scene load_steps=4 format=3 uid="uid://cqy2i2oa6gibn"]
+
+[ext_resource type="PackedScene" uid="uid://dppb6qbs1n3d7" path="res://scenes/GameObjects/interactable/button.tscn" id="1_ny6f2"]
+[ext_resource type="PackedScene" uid="uid://d3nmbkrdgglnp" path="res://scenes/GameObjects/triggerable/press.tscn" id="2_qvxys"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_12jfv"]
 size = Vector2(50, 50)
@@ -7,3 +10,9 @@ size = Vector2(50, 50)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_12jfv")
+
+[node name="button" parent="." instance=ExtResource("1_ny6f2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6828854, 1.0348282, 0.03934419)
+
+[node name="press" parent="." instance=ExtResource("2_qvxys")]
+transform = Transform3D(-0.017836265, 0, -0.9998409, 0, 1, 0, 0.9998409, 0, -0.017836265, -8.322564, 0.012981176, -0.22704458)
