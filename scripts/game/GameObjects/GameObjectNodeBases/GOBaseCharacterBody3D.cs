@@ -7,17 +7,14 @@ public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, IGameObje
     public virtual float priority { get; set; } = 2;
     public virtual ulong authority { get; set; }
     public virtual bool dirty { get; set; } = false;
-    public virtual CollisionShape3D collider { get; set; }
-    public virtual MeshInstance3D mesh { get; set; }
     public virtual GameObjectType type { get; set; }
     public virtual bool predict { get; set; } = true;
     public virtual bool sleeping { get; set; }
     public virtual bool destroyed { get; set; }
+    public virtual float priorityAccumulator { get; set; }
 
     public override void _Ready()
     {
-        collider = GetNode<CollisionShape3D>("collider");
-        mesh = GetNode<MeshInstance3D>("mesh");
         SetPhysicsProcess(predict);
     }
     public abstract byte[] GenerateStateUpdate();

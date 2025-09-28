@@ -1,29 +1,115 @@
 using Godot;
+using Godot.Collections;
+using MessagePack;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public partial class GameButton : Node
+[GlobalClass]
+public partial class GameButton : GOBaseStaticBody, IInteractable
 {
-    [Export] public StaticBody3D staticBody;
-    [Export] public AnimationPlayer animationPlayer;
 
-    //all effects of buttons are handeled by a Triggerable script
-    //for example the labelling press will be a LabellingPress : Triggerable : Node
-    [Export] private Triggerable triggerTarget;
+    [Export] 
+    public AnimationPlayer animationPlayer;
+
+    [Export]
+    public Godot.Collections.Array<Node> triggers { get; set; }
+
+    [Export]
+    public ulong cooldown { get; set; }
+
+    public ulong lastInteractTick { get; set; }
+    public ulong lastInteractPlayer { get; set; }
+
+    private ulong cooldownTimer = 0;
+
+    public override GameObjectType type { get; set; } = GameObjectType.GameButton;
 
     public override void _Ready()
     {
-        if (staticBody == null)
-            GD.PrintErr($"{Name}: StaticBody not assigned!");
+        foreach (var trigger in triggers)
+        {
+            if (trigger is not ITriggerable)
+            {
+                Logging.Error($"This Interactable Node: {Name} has non Triggerable nodes in its triggers list!", "GameButton", true, true);
+            }
+        }
     }
 
-    public void Press()
+    public void OnInteract()
     {
-        //play animation
-        if (animationPlayer != null )
-            animationPlayer.Play("button_press");
+        if (cooldownTimer==0)
+        {
+            dirty = true;
+            cooldownTimer = cooldown;
+            if (animationPlayer != null)
+            {
+                animationPlayer.Play("button_press");
+            }
 
-        //trigger effect on target
-        if (triggerTarget != null)
-            triggerTarget.Triggered();
+            foreach (var trigger in triggers)
+            {
+                if (trigger is ITriggerable t)
+                {
+                    t.OnTrigger();
+                }
+
+            }
+        }
     }
+
+    public override byte[] GenerateStateUpdate()
+    {
+        GameButtonStatePacket update = new();
+        update.cooldownTimer = cooldownTimer;
+        return MessagePackSerializer.Serialize(update);
+    }
+
+    public override void ProcessStateUpdate(byte[] _update)
+    {
+        GameButtonStatePacket update = MessagePackSerializer.Deserialize<GameButtonStatePacket>(_update);
+
+        if(cooldownTimer==0 && update.cooldownTimer!=0)
+        {
+            OnInteract();
+        }
+        cooldownTimer = update.cooldownTimer;
+    }
+
+    public override void PerTickAuth(double delta)
+    {
+        if (cooldownTimer>0)
+        {
+            cooldownTimer--;
+        }
+    }
+
+    public override void PerFrameAuth(double delta)
+    {
+
+    }
+
+    public override void PerTickLocal(double delta)
+    {
+
+    }
+
+    public override void PerFrameLocal(double delta)
+    {
+
+    }
+
+    public override string GenerateStateString()
+    {
+        return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
+    }
+}
+
+[MessagePackObject]
+public struct GameButtonStatePacket
+{
+    [Key(0)]
+    public ulong cooldownTimer;
+
+
 }

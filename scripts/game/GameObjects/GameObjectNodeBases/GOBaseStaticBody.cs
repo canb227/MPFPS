@@ -3,23 +3,19 @@ using Godot;
 using System;
 
 
-public abstract partial class GOBaseRigidBody : RigidBody3D, IGameObject
+public abstract partial class GOBaseStaticBody : StaticBody3D, IGameObject
 {
     public virtual ulong id { get; set; }
     public virtual float priority { get; set; } = 1;
     public virtual ulong authority { get; set; }
     public virtual bool dirty { get; set; } = false;
+
     public virtual GameObjectType type { get; set; }
     public virtual bool predict { get; set; } = true;
     public virtual bool sleeping { get; set; }
     public virtual bool destroyed { get; set; }
     public virtual float priorityAccumulator { get; set; }
 
-    public override void _Ready()
-    {
-
-        SetPhysicsProcess(predict);
-    }
     public abstract byte[] GenerateStateUpdate();
     public abstract void ProcessStateUpdate(byte[] update);
     public abstract void PerTickAuth(double delta);

@@ -60,4 +60,6 @@ public enum GameObjectType
     Ball,
     Ghost,
     Tony,
+    GameButton,
+    Crusher,
 }

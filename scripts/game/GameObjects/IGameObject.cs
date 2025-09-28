@@ -2,6 +2,7 @@ public interface IGameObject
 {
     ulong id { get; set; }
     float priority { get; set; }
+    float priorityAccumulator { get; set; }
     ulong authority { get; set; }
     GameObjectType type { get; set; }
     bool dirty { get; set; }

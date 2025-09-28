@@ -16,7 +16,7 @@ public enum Channel
     LobbyMessageBytes = 1,
     GameObjectState = 2,
     PlayerInput = 3,
-    GameStateOptions =4,
+    GameStateOptions = 4,
     PlayerData = 5,
     NetCommands = 6,
 }

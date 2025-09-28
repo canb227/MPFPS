@@ -42,26 +42,27 @@ public partial class DebugScreen : Control
 
     public static List<string> directLoadMap_mapPaths = new()
     {
-
+        "res://scenes/world/devLevel.tscn",
         "res://scenes/world/debugPlatform.tscn",
         "res://scenes/world/debugFlat.tscn",
-
+        "res://scenes/world/warehouse.tscn",
     };
 
     public static List<string> directLoadMap_mapIconPaths = new()
     {
-
+        "res://assets/ui/img/devMapScreenie.png",
         "res://assets/ui/img/debugMapScreenie.png",
+        "res://assets/ui/img/debugMapFlatScreenie.png",
         "res://assets/ui/img/debugMapFlatScreenie.png",
 
     };
 
     public static List<string> directLoadMap_mapNames = new()
     {
-
+        "dev",
         "platform",
         "flat",
-
+        "warehouse",
     };
 
     public static List<string> playerCharacters = new()
