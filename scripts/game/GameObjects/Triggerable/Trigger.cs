@@ -13,5 +13,8 @@ public partial class Trigger : Resource
 
     [Export]
     public string triggerName;
+
+    [Export]
+    public float cooldown;
 }
 
