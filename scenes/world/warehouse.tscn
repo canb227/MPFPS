@@ -1,97 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://ch6h0fr2wowfv"]
+[gd_scene load_steps=4 format=3 uid="uid://bdil88mghutia"]
 
-[ext_resource type="PackedScene" uid="uid://dofvk3olsn0c8" path="res://assets/models/warehouse/warehouse.glb" id="1_twxsb"]
-[ext_resource type="LightmapGIData" path="res://scenes/world/warehouse.lmbake" id="2_tbycg"]
-[ext_resource type="PackedScene" uid="uid://cq17w6s6sj15i" path="res://assets/models/press.glb" id="3_uuenj"]
+[ext_resource type="PackedScene" uid="uid://ckmkxf6j0gvb2" path="res://scenes/world/warehouse_geometry.tscn" id="1_tbycg"]
+[ext_resource type="PackedScene" uid="uid://cq17w6s6sj15i" path="res://assets/models/map/press.glb" id="3_uuenj"]
 [ext_resource type="PackedScene" uid="uid://b0s5v8yixoo5u" path="res://scenes/GameObjects/interactables/GameButton.tscn" id="4_tbycg"]
 
-[node name="warehouse" instance=ExtResource("1_twxsb")]
+[node name="Node3D" type="Node3D"]
 
-[node name="Point" parent="." index="147"]
-light_energy = 4.0
-omni_range = 1.737
-
-[node name="Point_001" parent="." index="148"]
-light_energy = 4.0
-omni_range = 1.281
-
-[node name="Point_002" parent="." index="149"]
-light_energy = 4.0
-omni_range = 1.367
-
-[node name="LightmapGI" type="LightmapGI" parent="." index="218"]
-bounces = 4
-use_texture_for_bounces = false
-interior = true
-texel_scale = 2.0
-light_data = ExtResource("2_tbycg")
-
-[node name="Spot55" parent="OfficeLight_054" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot56" parent="OfficeLight_055" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot57" parent="OfficeLight_057" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot58" parent="OfficeLight_049" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot59" parent="OfficeLight_050" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot60" parent="OfficeLight_051" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot61" parent="OfficeLight_052" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="Spot62" parent="OfficeLight_053" index="1"]
-light_color = Color(0.9102492, 1, 0.9978445, 1)
-light_energy = 7.0
-light_indirect_energy = 2.0
-shadow_enabled = true
-spot_range = 30.0
-spot_angle = 70.0
-
-[node name="press" parent="." index="248" instance=ExtResource("3_uuenj")]
+[node name="press" parent="." instance=ExtResource("3_uuenj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.534443, 0.034560382, 32.75372)
 
-[node name="GameButton" parent="." index="249" instance=ExtResource("4_tbycg")]
+[node name="GameObjects" type="Node3D" parent="."]
+
+[node name="GameButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.98064, 0.900001, 19.44712)
+
+[node name="meta" type="Node" parent="."]
+
+[node name="playerSpawns" type="Node" parent="meta"]
+
+[node name="Marker3D" type="Marker3D" parent="meta/playerSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2793491, 1.1899157)
+
+[node name="warehouse" parent="." instance=ExtResource("1_tbycg")]
