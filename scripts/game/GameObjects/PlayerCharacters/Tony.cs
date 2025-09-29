@@ -11,7 +11,7 @@ public partial class Tony : GOBasePlayerCharacter
     public override ulong controllingPlayerID { get; set; }
 
     //Currently unused
-    public override int team { get; set; }
+    public override Team team { get; set; }
 
     //auto-generated cached reference to Global.gameState.playerInputs[controllingPlayerID]
     public override PlayerInputData input { get; set; }
@@ -25,6 +25,7 @@ public partial class Tony : GOBasePlayerCharacter
     public override Node3D thirdPersonModel { get; set; }
     public override Node3D firstPersonModel { get; set; }
     public override Node3D cameraLocationNode { get; set; }
+    public override Role role { get; set; }
 
     //Runs as soon as this character is added to the Godot SceneTree
     public override void _Ready()
@@ -138,6 +139,11 @@ public partial class Tony : GOBasePlayerCharacter
     public override string GenerateStateString()
     {
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
+    }
+
+    public override void Assignment(Team team, Role role)
+    {
+        throw new NotImplementedException();
     }
 }
 

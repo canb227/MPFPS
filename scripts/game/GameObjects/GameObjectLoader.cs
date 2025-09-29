@@ -11,6 +11,7 @@ public static class GameObjectLoader
         {"ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
         {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/tony.tscn", typeof(Tony))},
+        {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayer)) }
     };
 
     internal static GameObject LoadObjectByType(GameObjectType type)
@@ -60,6 +61,7 @@ public enum GameObjectType
     Ball,
     Ghost,
     Tony,
+    BasicPlayer,
     GameButton,
     Crusher,
 }

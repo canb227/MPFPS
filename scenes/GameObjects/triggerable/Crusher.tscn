@@ -242,6 +242,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.903061, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/StaticBody3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
 shape = SubResource("ConvexPolygonShape3D_v4yce")
+debug_color = Color(0.9817453, 0.102193944, 0.22886682, 0.41960785)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="PressArm/StaticBody3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
@@ -249,11 +250,16 @@ shape = SubResource("ConvexPolygonShape3D_pytuy")
 
 [node name="Hurtbox" type="Area3D" parent="PressArm"]
 script = ExtResource("5_h6kkh")
+instantKill = true
+hurtsInnocents = true
+hurtsTraitors = true
+hurtsNPCs = true
 metadata/_custom_type_script = "uid://bgor4p6p43uns"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24401093, 0)
 shape = SubResource("ConvexPolygonShape3D_v4yce")
+debug_color = Color(0.9817453, 0.102193944, 0.22886682, 0.41960785)
 
 [node name="PressBase" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_kxmu2")

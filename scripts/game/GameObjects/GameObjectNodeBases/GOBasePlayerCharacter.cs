@@ -21,7 +21,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual Node3D cameraLocationNode { get; set; }
 
     public abstract ulong controllingPlayerID { get; set; }
-    public abstract int team {  get; set; }
+    public abstract Team team {  get; set; }
+    public abstract Role role { get; set; }
     public abstract PlayerInputData input { get; set; }
     public override bool predict { get; set; } = true;
 
@@ -44,7 +45,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         input = Global.gameState.PlayerInputs[controllingPlayerID];
     }
 
-
+    public abstract void Assignment(Team team, Role role);
 
     /// <summary>
     /// PlayerCharacters must implement this function such that the cameraParent object is correctly set to the object that sets the camera's position

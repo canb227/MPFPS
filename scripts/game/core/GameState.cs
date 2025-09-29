@@ -552,7 +552,7 @@ public partial class GameState : Node3D
     }
 
     /// <summary>
-    /// Only for RPC use, Do not call directly. See <see cref="RPCManager.RPC_StartGame(string)"/>
+    /// Only for RPC use, Do not call directly. See <see cref="RPCManager.NetCommand_StartGame(string)"/>
     /// </summary>
     /// <param name="scenePath"></param>
     public void StartGame(string scenePath)
@@ -564,6 +564,17 @@ public partial class GameState : Node3D
         Global.ui.StopLoadingScreen();
         gameStarted = true;
         ProcessMode = ProcessModeEnum.Pausable;
+        GameModeManager gmm = new();
+        gmm.Name = "Game Mode Manager";
+        AddChild(gmm);
+        AIManager aim = new();
+        aim.Name = "AI Manager";
+        AddChild(aim);
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            gmm.GameStartAsHost();
+            aim.GameStartAsHost();
+        }
     }
 }
 

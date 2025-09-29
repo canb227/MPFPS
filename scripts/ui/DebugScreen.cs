@@ -192,13 +192,13 @@ public partial class DebugScreen : Control
 
     private void StartGameButton_Pressed()
     {
-        RPCManager.RPC_StartGame(directLoadMap_mapPaths[directLoadMap_mapList.Selected]);
+        RPCManager.NetCommand_StartGame(directLoadMap_mapPaths[directLoadMap_mapList.Selected]);
     }
 
 
     private void Chat_send_Pressed()
     {
-        RPCManager.RPC_Chat(chat_chatbar.Text);
+        RPCManager.NetCommand_Chat(chat_chatbar.Text);
         chat_chatbar.Text = "";
     }
 

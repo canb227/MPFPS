@@ -3,6 +3,7 @@ using MessagePack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -75,7 +76,7 @@ public static class RPCManager
         }
     }
 
-    public static void RPC_Chat(string msg)
+    public static void NetCommand_Chat(string msg)
     {
         RPCPacket packet = new();
         packet.type = RPCType.Chat;
@@ -86,7 +87,7 @@ public static class RPCManager
         Global.network.BroadcastData(payload, Channel.NetCommands, Global.Lobby.lobbyPeers.ToList());
     }
 
-    public static void RPC_StartGame(string scenePathOfMap)
+    public static void NetCommand_StartGame(string scenePathOfMap)
     {
         RPCPacket packet = new();
         packet.type = RPCType.StartGame;
@@ -96,5 +97,50 @@ public static class RPCManager
         Logging.Log($"RPC SENT: Type=StartGame, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
         Global.network.BroadcastData(payload,Channel.NetCommands,Global.Lobby.lobbyPeers.ToList());
     }
+
+
+    
+    public static void HandleRPCMessageBytes(byte[] message, ulong sender)
+    {
+        RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
+        ProcessRPC(packet.nodePath,packet.methodName,packet.data);
+    }
+
+    public static void ProcessRPC(NodePath path,string methodName, byte[] data)
+    {
+        Node node = Global.instance.GetNode(path);
+        if (node == null) 
+        {
+            Logging.Error($"RPC Targeted invalid node: {path}","RPCManager");
+        }
+        Type nodeType = node.GetType();
+        MethodInfo method = nodeType.GetMethod(methodName);
+        if (method == null)
+        {
+            Logging.Error($"Node at {path} (reflection type:{nodeType.ToString()} does not have method named: {methodName}","RPCManager");
+        }
+        method.Invoke(node, [data]);
+    }
+
+    public static void SendRPC(NodePath path, string methodName, byte[] data)
+    {
+        RPCMessage packet = new();
+        packet.nodePath = path;
+        packet.methodName = methodName;
+        packet.data = data;
+        Global.network.BroadcastData(MessagePackSerializer.Serialize(packet),Channel.GenericRPC,Global.Lobby.lobbyPeers.ToList());
+    }
 }
 
+[MessagePackObject]
+public struct RPCMessage
+{
+    [Key(0)]
+    public string nodePath;
+
+    [Key(1)]
+    public string methodName;
+
+    [Key(2)]
+    public byte[] data;
+}

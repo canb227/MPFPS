@@ -1,4 +1,5 @@
 using Godot;
+using MessagePack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +62,35 @@ public partial class BaseTriggerable : GOBaseStaticBody, IsTriggerable
     {
         if (triggerNames.Contains(triggerName))
         {
-            animationPlayer.Play(triggerName);
+            byte[] data = MessagePackSerializer.Serialize(new TriggerRPCPacket(triggerName,byID));
+            RPCManager.SendRPC(this.GetPath(), "rpc_Trigger", data);
         }
+    }
+
+    public void rpc_Trigger(byte[] data)
+    {
+        TriggerRPCPacket packet = MessagePackSerializer.Deserialize<TriggerRPCPacket>(data);
+        _Trigger(packet.triggerName, packet.byID);
+    }
+
+    private void _Trigger(string triggerName, ulong byID)
+    {
+        animationPlayer.Play(triggerName);
     }
 }
 
+[MessagePackObject]
+public struct TriggerRPCPacket
+{
+    [Key(0)]
+    public ulong byID;
+
+    [Key(1)]
+    public string triggerName;
+
+    public TriggerRPCPacket(string triggerName, ulong byID)
+    { 
+        this.triggerName = triggerName;
+        this.byID = byID;
+    }
+}

@@ -4,6 +4,7 @@ using MessagePack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 [GlobalClass]
 public partial class GameButton : GOBaseStaticBody, IsInteractable
@@ -39,16 +40,30 @@ public partial class GameButton : GOBaseStaticBody, IsInteractable
     {
         if (cooldownTimer==0)
         {
-            dirty = true;
-            cooldownTimer = cooldown;
-            if (animationPlayer != null)
-            {
-                animationPlayer.Play(onPressAnimationName);
-            }
-            foreach (var trigger in triggers)
-            {
-                (GetNode(trigger.triggerableNode) as IsTriggerable).Trigger(trigger.triggerName,byID);
-            }
+            GameButtonRPCPacket packet = new();
+            packet.byID = byID;
+            byte[] data = MessagePackSerializer.Serialize(packet);
+            RPCManager.SendRPC(this.GetPath(), "rpc_OnInteract", data);
+        }
+    }
+
+    public void rpc_OnInteract(byte[] data)
+    {
+        GameButtonRPCPacket packet = MessagePackSerializer.Deserialize<GameButtonRPCPacket>(data);
+        _OnInteract(packet.byID);
+    }
+
+    private void _OnInteract(ulong byID)
+    {
+        dirty = true;
+        cooldownTimer = cooldown;
+        if (animationPlayer != null)
+        {
+            animationPlayer.Play(onPressAnimationName);
+        }
+        foreach (var trigger in triggers)
+        {
+            (GetNode(trigger.triggerableNode) as IsTriggerable).Trigger(trigger.triggerName, byID);
         }
     }
 
@@ -97,6 +112,7 @@ public partial class GameButton : GOBaseStaticBody, IsInteractable
     {
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
+
 }
 
 [MessagePackObject]
@@ -106,4 +122,11 @@ public struct GameButtonStatePacket
     public ulong cooldownTimer;
 
 
+}
+
+[MessagePackObject]
+public struct GameButtonRPCPacket
+{
+    [Key(0)]
+    public ulong byID;
 }

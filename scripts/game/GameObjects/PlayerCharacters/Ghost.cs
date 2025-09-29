@@ -9,7 +9,7 @@ public partial class Ghost : GOBasePlayerCharacter
 {
     public override ulong controllingPlayerID { get; set; }
 
-    public override int team { get; set; }
+    public override Team team { get; set; }
 
     public override PlayerInputData input { get; set; }
 
@@ -21,6 +21,7 @@ public partial class Ghost : GOBasePlayerCharacter
     public override Node3D thirdPersonModel { get; set; }
     public override Node3D firstPersonModel { get; set; }
     public override Node3D cameraLocationNode { get; set; }
+    public override Role role { get; set; }
 
     public override void _Ready()
     {
@@ -219,6 +220,12 @@ public partial class Ghost : GOBasePlayerCharacter
     public override string GenerateStateString()
     {
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
+    }
+
+    public override void Assignment(Team team, Role role)
+    {
+        this.team = team;
+        this.role = role;
     }
 }
 

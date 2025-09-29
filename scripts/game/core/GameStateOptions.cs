@@ -11,5 +11,17 @@ public class GameStateOptions
 
     [Key(1)]
     public bool debugMode = false;
+
+    [Key(2)]
+    public float percentTraitors = 0.2f;
+
+    [Key(3)]
+    public int maxTraitors = 2;
+
+    [Key(4)]
+    public int minTraitors = 1;
+
+    [Key(5)]
+    public float roleAssignmentDelay = 5;
 }
 

@@ -9,8 +9,8 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 {
     public override ulong controllingPlayerID { get; set; }
 
-    public override int team { get; set; }
-
+    public override Team team { get; set; }
+    public override Role role { get; set; }
     public override PlayerInputData input { get; set; }
 
 
@@ -231,6 +231,12 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public void Equip(InventoryGroupCategory category, int index = 0)
     {
         throw new NotImplementedException();
+    }
+
+    public override void Assignment(Team team, Role role)
+    {
+        this.team = team;
+        this.role = role;
     }
 }
 

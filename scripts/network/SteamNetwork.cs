@@ -19,6 +19,7 @@ public enum Channel
     GameStateOptions = 4,
     PlayerData = 5,
     NetCommands = 6,
+    GenericRPC = 7,
 }
 /// <summary>
 /// Handles low level networking functions - implemented using SteamMessages
@@ -291,6 +292,9 @@ public class SteamNetwork
                 break;
             case Channel.NetCommands:
                 RPCManager.ProcessNetCommandBytes(payload, sender);
+                break;
+            case Channel.GenericRPC:
+                RPCManager.HandleRPCMessageBytes(payload, sender);
                 break;
             default:
                 SteamNetworkingMessageReceivedEvent?.Invoke(channel, payload, sender);
