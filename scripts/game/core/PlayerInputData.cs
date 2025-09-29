@@ -18,6 +18,6 @@ public partial class PlayerInputData
     public Vector2 LookInputVector;
 
     [Key(3)]
-    public Actions actions;
+    public ActionFlags actions;
 }
 

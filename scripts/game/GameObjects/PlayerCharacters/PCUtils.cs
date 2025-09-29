@@ -40,5 +40,12 @@ public static class PCUtils
     {
         return pc.Transform.Basis * localVector;
     }
+
+    public static Vector3 InFrontOf(GOBaseCharacterBody3D pc, float distance)
+    {
+        var playerForwardVector = -pc.GlobalTransform.Basis.Z.Normalized();
+        var position = pc.GlobalPosition + (playerForwardVector * distance);
+        return position;
+    }
 }
 

@@ -3,7 +3,7 @@ using Godot;
 using System;
 
 
-public abstract partial class GOBaseRigidBody : RigidBody3D, IGameObject
+public abstract partial class GOBaseRigidBody : RigidBody3D, GameObject
 {
     public virtual ulong id { get; set; }
     public virtual float priority { get; set; } = 1;

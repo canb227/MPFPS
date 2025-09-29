@@ -1,4 +1,4 @@
-public interface IGameObject
+public interface GameObject
 {
     ulong id { get; set; }
     float priority { get; set; }

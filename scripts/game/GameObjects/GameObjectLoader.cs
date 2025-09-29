@@ -13,13 +13,13 @@ public static class GameObjectLoader
         {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/tony.tscn", typeof(Tony))},
     };
 
-    internal static IGameObject LoadObjectByType(GameObjectType type)
+    internal static GameObject LoadObjectByType(GameObjectType type)
     {
         foreach (var entry in GameObjectDictionary)
         {
             if (entry.Value.type == type)
             {
-                IGameObject obj = LoadObjectByTypeName(entry.Key);
+                GameObject obj = LoadObjectByTypeName(entry.Key);
                 obj.type = type;
                 return obj;
             }
@@ -29,12 +29,12 @@ public static class GameObjectLoader
     
     public static T LoadObjectByType<T>(GameObjectType type)
     {
-        IGameObject obj = LoadObjectByType(type);
+        GameObject obj = LoadObjectByType(type);
         obj.type = type;
         return (T)obj;
     }
 
-    public static IGameObject LoadObjectByTypeName(string typeName, out GameObjectType type)
+    public static GameObject LoadObjectByTypeName(string typeName, out GameObjectType type)
     {
         if (GameObjectDictionary.ContainsKey(typeName))
         {
@@ -48,9 +48,9 @@ public static class GameObjectLoader
             return null;
         }
     }
-    public static IGameObject LoadObjectByTypeName(string typeName)
+    public static GameObject LoadObjectByTypeName(string typeName)
     {
-        return ResourceLoader.Load<PackedScene>(GameObjectDictionary[typeName].scenePath).Instantiate<IGameObject>();
+        return ResourceLoader.Load<PackedScene>(GameObjectDictionary[typeName].scenePath).Instantiate<GameObject>();
     }
 }
 

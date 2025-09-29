@@ -200,7 +200,7 @@ public partial class Console : Node
     
     public void spawn(string objectName)
     {
-        IGameObject obj = GameObjectLoader.LoadObjectByTypeName(objectName, out GameObjectType type);
+        GameObject obj = GameObjectLoader.LoadObjectByTypeName(objectName, out GameObjectType type);
         Global.gameState.SpawnObjectAsAuth(obj,type);
         var playerForwardVector = -Global.gameState.GetLocalPlayerCharacter().GlobalTransform.Basis.Z.Normalized();
         var spawnPosition = Global.gameState.GetLocalPlayerCharacter().GlobalPosition + (playerForwardVector * 5);
@@ -228,9 +228,9 @@ public partial class Console : Node
     {
         if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
         {
-            if (obj is IInteractable i)
+            if (obj is IsInteractable i)
             {
-                i.OnInteract();
+                i.OnInteract(id);
             }
         }
     }
@@ -239,9 +239,9 @@ public partial class Console : Node
     {
         if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
         {
-            if (obj is ITriggerable t)
+            if (obj is IsTriggerable t)
             {
-                t.OnTrigger();
+                
             }
         }
     }

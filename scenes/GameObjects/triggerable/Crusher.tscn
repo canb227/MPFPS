@@ -1,10 +1,11 @@
-[gd_scene load_steps=22 format=4 uid="uid://b40cl37f4wy5f"]
+[gd_scene load_steps=23 format=4 uid="uid://b40cl37f4wy5f"]
 
-[ext_resource type="Script" uid="uid://r57w16g3hh8y" path="res://scripts/game/GameObjects/Triggerable/Crusher.cs" id="1_m8b0i"]
+[ext_resource type="Script" uid="uid://c4tgma1qmy76i" path="res://scripts/game/GameObjects/Triggerable/BaseTriggerable.cs" id="1_rmhsx"]
 [ext_resource type="Texture2D" uid="uid://c8hkx4bvryw8k" path="res://assets/models/map/press_metal_diffuse01.jpg" id="2_qer47"]
 [ext_resource type="Texture2D" uid="uid://b0qgjqlepc4u" path="res://assets/models/map/press_metal_metallic.jpg-metal_glossiness.png" id="3_rmhsx"]
 [ext_resource type="Texture2D" uid="uid://clgcw8rlpy1lo" path="res://assets/models/map/press_metal_normal_opengl.jpg" id="4_h6kkh"]
 [ext_resource type="Texture2D" uid="uid://bwak21svc2g80" path="res://assets/models/map/press_antyposlizg.jpg" id="5_8hvrf"]
+[ext_resource type="Script" uid="uid://bgor4p6p43uns" path="res://scripts/game/other/Hurtbox.cs" id="5_h6kkh"]
 
 [sub_resource type="Animation" id="Animation_lblhg"]
 length = 0.001
@@ -220,12 +221,11 @@ size = Vector3(0.20806885, 5.0527344, 0.20196533)
 [sub_resource type="BoxShape3D" id="BoxShape3D_s3lk7"]
 size = Vector3(4.496155, 0.20327759, 3.9471436)
 
-[node name="Crusher" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "collider", "mesh")]
-script = ExtResource("1_m8b0i")
+[node name="Crusher" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
+script = ExtResource("1_rmhsx")
 animationPlayer = NodePath("AnimationPlayer")
-collider = NodePath("CollisionShape3D3")
-mesh = NodePath("PressFrame")
-metadata/_custom_type_script = "uid://r57w16g3hh8y"
+triggerNames = Array[String](["press_down"])
+metadata/_custom_type_script = "uid://c4tgma1qmy76i"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -246,6 +246,14 @@ shape = SubResource("ConvexPolygonShape3D_v4yce")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="PressArm/StaticBody3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
 shape = SubResource("ConvexPolygonShape3D_pytuy")
+
+[node name="Hurtbox" type="Area3D" parent="PressArm"]
+script = ExtResource("5_h6kkh")
+metadata/_custom_type_script = "uid://bgor4p6p43uns"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24401093, 0)
+shape = SubResource("ConvexPolygonShape3D_v4yce")
 
 [node name="PressBase" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_kxmu2")

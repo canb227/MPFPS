@@ -8,11 +8,24 @@ using System.Threading.Tasks;
 
 public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 {
+    [Export]
+    public virtual Node3D firstPersonModel { get; set; }
+
+    [Export]
+    public virtual Node3D thirdPersonModel { get; set; }
+
+    [Export]
+    public virtual Node3D lookRotationNode { get; set; }
+
+    [Export]
+    public virtual Node3D cameraLocationNode { get; set; }
+
     public abstract ulong controllingPlayerID { get; set; }
     public abstract int team {  get; set; }
     public abstract PlayerInputData input { get; set; }
-    public abstract Node3D cameraParent { get; set; }
     public override bool predict { get; set; } = true;
+
+
     public override void _Ready()
     {
 
@@ -39,5 +52,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     protected abstract void CreateAndConfigureCamera();
 
     public abstract Camera3D GetCamera();
+
 }
 

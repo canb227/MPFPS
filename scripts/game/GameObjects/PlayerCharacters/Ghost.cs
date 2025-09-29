@@ -13,11 +13,14 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override PlayerInputData input { get; set; }
 
-    public override Node3D cameraParent { get; set; }
+    public override Node3D lookRotationNode { get; set; }
 
     private PlayerCamera cam { get; set; }
 
     public RayCast3D rayCast { get; set; }
+    public override Node3D thirdPersonModel { get; set; }
+    public override Node3D firstPersonModel { get; set; }
+    public override Node3D cameraLocationNode { get; set; }
 
     public override void _Ready()
     {
@@ -64,18 +67,18 @@ public partial class Ghost : GOBasePlayerCharacter
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
 
-        if (input.actions.HasFlag(Actions.Use))
+        if (input.actions.HasFlag(ActionFlags.Use))
         {
             if (rayCast.IsColliding())
             {
-                if (rayCast.GetCollider() is IInteractable i)
+                if (rayCast.GetCollider() is IsInteractable i)
                 {
-                    i.OnInteract();
+                    i.OnInteract(id);
                 }
             }
         }
 
-        if (input.actions.HasFlag(Actions.Sprint))
+        if (input.actions.HasFlag(ActionFlags.Sprint))
         {
             speed = 12;
         }
@@ -107,11 +110,11 @@ public partial class Ghost : GOBasePlayerCharacter
 
         Vector3 globalVelocity = Transform.Basis * localVelocity;
 
-        if (input.actions.HasFlag(Actions.Jump))
+        if (input.actions.HasFlag(ActionFlags.Jump))
         {
             globalVelocity.Y = 1 * speed * .66f;
         }
-        else if (input.actions.HasFlag(Actions.Crouch))
+        else if (input.actions.HasFlag(ActionFlags.Crouch))
         {
             globalVelocity.Y = -1 * speed * .66f;
         }
@@ -200,9 +203,9 @@ public partial class Ghost : GOBasePlayerCharacter
 
     protected override void CreateAndConfigureCamera()
     {
-        cameraParent = GetNode<Node3D>("cameraParent");
+        lookRotationNode = GetNode<Node3D>("cameraParent");
         PlayerCamera cam = new();
-        cameraParent.AddChild(cam);
+        lookRotationNode.AddChild(cam);
         this.cam = cam;
         Global.ui.SwitchFullScreenUI("BasePlayerHUD");
         Input.MouseMode = Input.MouseModeEnum.Captured;

@@ -15,7 +15,7 @@ public partial class GameState : Node3D
     /// <summary>
     /// List of all locally tracked game objects. Keyed by object ID for quick lookup. If in object isn't in this dictionary its completely cut off from all of the logic management and networking.
     /// </summary>
-    public Dictionary<ulong, IGameObject> GameObjects = new();
+    public Dictionary<ulong, GameObject> GameObjects = new();
 
     /// <summary>
     /// List of references to each player's current input data. Keyed by playerID (SteamID). Our local input ends up in this dictionary under our ID.
@@ -70,7 +70,7 @@ public partial class GameState : Node3D
     private Node3D nodeGameObjects;
     private Node3D nodeStaticLevel;
     private List<Marker3D> PlayerSpawnPoints = new();
-    private IGameObject debugTarget;
+    private GameObject debugTarget;
     private int numUpdatesPerFrame = 10;
 
     //runs after GameState gets added to scenetree during Main.cs init
@@ -100,7 +100,7 @@ public partial class GameState : Node3D
     public override void _Process(double delta)
     {
         // Every frame, execute PerFrame behaviour on all registered GameObjects based on if we're the authority for the object.
-        foreach (IGameObject gameObject in GameObjects.Values)
+        foreach (GameObject gameObject in GameObjects.Values)
         {
             if (gameObject.authority == Global.steamid)
             {
@@ -131,7 +131,7 @@ public partial class GameState : Node3D
         tick++;
 
         //Iterate thru all registered GameObjects based on authority.
-        foreach(IGameObject gameObject in GameObjects.Values)
+        foreach(GameObject gameObject in GameObjects.Values)
         {
             if (gameObject.authority==Global.steamid)
             {
@@ -190,7 +190,7 @@ public partial class GameState : Node3D
         {
             foreach (Node node in nodeStaticLevel.GetNode("GameObjects").GetChildren())
             {
-                if (node is IGameObject obj)
+                if (node is GameObject obj)
                 {
                     RegisterNewObject(obj, GenerateNewID(), Global.steamid, obj.type);
                 }
@@ -256,7 +256,7 @@ public partial class GameState : Node3D
     /// Spawn an object with authority over it and tell all your peers about it.
     /// </summary>
     /// <param name="gameObject"></param>
-    public void SpawnObjectAsAuth(IGameObject gameObject, GameObjectType type)
+    public void SpawnObjectAsAuth(GameObject gameObject, GameObjectType type)
     {
         SpawnNewObject(gameObject,GenerateNewID(),Global.steamid,type);
         StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Spawn);
@@ -271,7 +271,7 @@ public partial class GameState : Node3D
     public void DestroyAsAuth(ulong id)
     {
         Logging.Warn("auth destruction not yet networked", "GameState");
-        if (GameObjects.TryGetValue(id, out IGameObject obj))
+        if (GameObjects.TryGetValue(id, out GameObject obj))
         {
             obj.destroyed = true;
             (obj as Node).ProcessMode = ProcessModeEnum.Disabled;
@@ -282,6 +282,11 @@ public partial class GameState : Node3D
     public GOBasePlayerCharacter GetLocalPlayerCharacter()
     {
         return PlayerCharacters[Global.steamid];
+    }
+
+    public GOBasePlayerCharacter GetPlayerCharacter(ulong id)
+    {
+        return PlayerCharacters[id];
     }
 
     public void PushGameStateOptions()
@@ -318,7 +323,7 @@ public partial class GameState : Node3D
     /// </summary>
     /// <param name="gameObject"></param>
     /// <returns>a reference to the spawned object</returns>
-    private IGameObject SpawnNewObject(IGameObject gameObject, ulong id, ulong authority, GameObjectType type)
+    private GameObject SpawnNewObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
     {
         if (GameObjects.ContainsKey(id))
         {
@@ -349,7 +354,7 @@ public partial class GameState : Node3D
         return gameObject;
     }
 
-    private IGameObject RegisterNewObject(IGameObject gameObject, ulong id, ulong authority, GameObjectType type)
+    private GameObject RegisterNewObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
     {
         if (GameObjects.ContainsKey(id))
         {
@@ -381,7 +386,7 @@ public partial class GameState : Node3D
         ImGui.Text($"# Players: {PlayerData.Count}");
         ImGui.Text($"# GameObjects: {GameObjects.Count}");
         ImGui.Text($"ENTITY LIST --------------------------");
-        foreach (IGameObject gameObject in GameObjects.Values)
+        foreach (GameObject gameObject in GameObjects.Values)
         {
             if (gameObject.authority == Global.steamid)
             {
@@ -453,7 +458,7 @@ public partial class GameState : Node3D
             switch (stateUpdate.flag)
             {
                 case StateUpdateFlag.Update:
-                    if (GameObjects.TryGetValue(stateUpdate.objectID, out IGameObject updateObj))
+                    if (GameObjects.TryGetValue(stateUpdate.objectID, out GameObject updateObj))
                     {
                         if (updateObj.authority != stateUpdate.sender)
                         {
@@ -470,14 +475,14 @@ public partial class GameState : Node3D
                     else
                     {
                         Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
-                        IGameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                        GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                         SpawnNewObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                         fixObj.ProcessStateUpdate(stateUpdate.data);
                     }
                     break;
                 case StateUpdateFlag.Spawn:
                     Logging.Log($"Auth spawn request from peer.", "GameState");
-                    IGameObject newObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                    GameObject newObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                     SpawnNewObject(newObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                     newObj.ProcessStateUpdate(stateUpdate.data);
                     break;
@@ -485,6 +490,7 @@ public partial class GameState : Node3D
                     Logging.Log($"Player spawn request from peer.", "GameState");
                     GOBasePlayerCharacter pcObj = (GOBasePlayerCharacter)GameObjectLoader.LoadObjectByType(stateUpdate.type);
                     pcObj.controllingPlayerID = stateUpdate.sender;
+                    PlayerCharacters[pcObj.id] = pcObj;
                     SpawnNewObject(pcObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                     pcObj.ProcessStateUpdate(stateUpdate.data);
                     break;
@@ -535,7 +541,7 @@ public partial class GameState : Node3D
         PlayerDataReceivedEvent?.Invoke(PlayerData[data.playerID], sender);
     }
 
-    public void SetDebugTarget(IGameObject go)
+    public void SetDebugTarget(GameObject go)
     {
         debugTarget = go;
     }

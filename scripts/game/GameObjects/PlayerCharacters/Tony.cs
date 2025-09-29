@@ -18,10 +18,13 @@ public partial class Tony : GOBasePlayerCharacter
 
     //Node that holds the camera. Is only needed if your camera rotation applies rotation to something seperate than the entire character
     //like a head
-    public override Node3D cameraParent { get; set; }
+    public override Node3D lookRotationNode { get; set; }
 
     //reference to the camera attached to this character
     private PlayerCamera cam { get; set; }
+    public override Node3D thirdPersonModel { get; set; }
+    public override Node3D firstPersonModel { get; set; }
+    public override Node3D cameraLocationNode { get; set; }
 
     //Runs as soon as this character is added to the Godot SceneTree
     public override void _Ready()
@@ -73,7 +76,7 @@ public partial class Tony : GOBasePlayerCharacter
         }
         else
         {
-            if (input.actions.HasFlag(Actions.Jump))
+            if (input.actions.HasFlag(ActionFlags.Jump))
             {
                 localVelocity.Y = 10;
             }
@@ -119,9 +122,9 @@ public partial class Tony : GOBasePlayerCharacter
 
     protected override void CreateAndConfigureCamera()
     {
-        cameraParent = GetNode<Node3D>("cameraParent");
+        lookRotationNode = GetNode<Node3D>("cameraParent");
         PlayerCamera cam = new();
-        cameraParent.AddChild(cam);
+        lookRotationNode.AddChild(cam);
         this.cam = cam;
         Global.ui.SwitchFullScreenUI("BasePlayerHUD");
         Input.MouseMode = Input.MouseModeEnum.Captured;

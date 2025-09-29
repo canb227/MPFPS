@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://1tfhv6c0xvan"]
+
+[ext_resource type="Script" uid="uid://c3mqjyhty6l5p" path="res://scripts/game/GameObjects/PlayerCharacters/BasicPlayer.cs" id="1_dt3qt"]
+[ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="2_y05oo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bcbfx"]
+albedo_texture = ExtResource("2_y05oo")
+
+[sub_resource type="SphereMesh" id="SphereMesh_pu85p"]
+material = SubResource("StandardMaterial3D_bcbfx")
+radius = 0.3
+height = 0.8
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6pekc"]
+points = PackedVector3Array(-0.049479116, -0.13248885, -0.2784381, 0.03491423, 0.09664463, 0.28864658, 0.07108329, 0.12071508, 0.27639142, -0.13433951, 0.35092366, -0.049672928, 0.27543133, 0.10824567, -0.08546792, -0.10972586, -0.3494729, 0.09508386, 0.20381139, -0.2895138, 0.034883015, -0.2915241, -0.0483443, 0.059180945, 0.10691689, 0.3366547, -0.12148614, -0.16813602, 0.13105565, -0.22772233, -0.1461598, -0.2898473, -0.14621097, 0.14282179, -0.09600787, -0.25342083, -0.08528887, 0.31213313, 0.1667569, 0.22632481, 0.17967278, 0.14241715, -0.06156414, -0.13254505, 0.27598104, 0.1895423, -0.1788336, 0.1895034, 0.059202816, -0.3630167, -0.11018095, 0.046710618, 0.20407607, -0.25341114, -0.2160634, 0.14318196, 0.17770882, 0.119182855, 0.34945148, 0.08301815, -0.278192, 0.0963373, -0.0855353, 0.27644956, -0.14488383, -0.037489355, 0.0590728, -0.35020742, 0.13154413, -0.2532136, -0.15596128, -0.10923882, -0.21600863, -0.16699056, 0.16572194, 0.26297414, -0.023933196, 0.14281988, -0.24163792, 0.22830082, 0.046771064, -0.22950666, -0.25228208, 0.034726106, 0.21418901, 0.059775166, -0.20474413, 0.21386854, -0.20309807, -0.1446804, -0.13322969, 0.07194479, 0.2626982, -0.073768474, 0.3140312, -0.17035338)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nhpn6"]
+radius = 0.4
+height = 1.5
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_rj67t"]
+points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.35874707, 0.39737207, -0.050992705, 0.3572143, 0.39569464, -0.02917751, 0.63376546, -0.27813426, -0.38718286, -0.42541224, 0.06063278, 0.37165284, -0.4222909, 0.12695877, 0.37346163, 0.46916172, -0.07340398, -0.36084735, 0.3988189, -0.16144876, -0.07462438, -0.6583488, 0.2430427, -0.20817472, 0.62777597, 0.1953164, -0.20727229, -0.46887186, -0.31903216, 0.28452146, -0.5594007, -0.18549915, 0.26109296, 0.5794857, 0.19417913, 0.082976684, 0.40224263, -0.38641793, -0.05099439, -0.3572251, 0.39570644, -0.3371196, 0.35278973, 0.21420923, -0.07474526, -0.7047889, -0.1657867, 0.21639867, -0.42318547, 0.32784957, -0.16138978, 0.3987958, -0.3608956, 0.3275889, -0.24489245, -0.22896715, 0.19726583, -0.6794211, 0.1065957, -0.2500221, -0.42092595, 0.30387512, 0.30229068, 0.37464142, 0.2581765, 0.10770829, 0.7325902, -0.029519955, 0.2599122, 0.4214232, -0.29470462, -0.23385069, 0.65899193, -0.097480394, -0.33790347, -0.39791954, -0.20524128, -0.27814758, -0.6337584, -0.029135587, -0.38717866, 0.42540765, 0.06063218, 0.106034346, 0.60794544, 0.28620917, 0.39567754, -0.35734478, -0.05102945, 0.39492407, 0.3343126, 0.060445774)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
+height = 2.4057617
+
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "lookRotationNode", "cameraLocationNode")]
+script = ExtResource("1_dt3qt")
+firstPersonModel = NodePath("firstPersonModel")
+thirdPersonModel = NodePath("thirdPersonModel")
+lookRotationNode = NodePath("thirdPersonModel/head")
+cameraLocationNode = NodePath("thirdPersonModel/head/camLocation")
+metadata/_custom_type_script = "uid://c3mqjyhty6l5p"
+
+[node name="thirdPersonModel" type="Node3D" parent="."]
+
+[node name="head" type="StaticBody3D" parent="thirdPersonModel"]
+
+[node name="headMesh" type="MeshInstance3D" parent="thirdPersonModel/head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2471623, 0)
+mesh = SubResource("SphereMesh_pu85p")
+
+[node name="headCollider" type="CollisionShape3D" parent="thirdPersonModel/head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2471623, 0)
+shape = SubResource("ConvexPolygonShape3D_6pekc")
+
+[node name="camLocation" type="Node3D" parent="thirdPersonModel/head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2359042, -0.16221371)
+
+[node name="Node3D" type="StaticBody3D" parent="thirdPersonModel"]
+
+[node name="bodyMesh" type="MeshInstance3D" parent="thirdPersonModel/Node3D"]
+mesh = SubResource("CapsuleMesh_nhpn6")
+skeleton = NodePath("../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="thirdPersonModel/Node3D"]
+shape = SubResource("ConvexPolygonShape3D_rj67t")
+
+[node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45288086, 0)
+shape = SubResource("CapsuleShape3D_oc7gj")
+
+[node name="firstPersonModel" type="Node3D" parent="."]

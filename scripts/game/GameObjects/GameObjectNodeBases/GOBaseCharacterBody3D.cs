@@ -1,7 +1,7 @@
 
 using Godot;
 
-public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, IGameObject
+public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, GameObject
 {
     public virtual ulong id { get; set; }
     public virtual float priority { get; set; } = 2;

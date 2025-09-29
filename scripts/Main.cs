@@ -152,7 +152,7 @@ public partial class Main : Node
                 if (result.TryGetValue("collider", out Variant col))
                 {
                     Node collision = (Node)col;
-                    if (collision is IGameObject go)
+                    if (collision is GameObject go)
                     {
                         Logging.Log($"You just clicked on a gameobject with type {go.type}, id {go.id}. ID saved to clipboard!", "Picker");
                         DisplayServer.ClipboardSet(go.id.ToString());

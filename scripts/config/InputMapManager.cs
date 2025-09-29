@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Tomlyn;
 
 [Flags]
-public enum Actions
+public enum ActionFlags
 {
     None = 0,
 
@@ -23,12 +23,12 @@ public enum Actions
     LookUp = 1<<10,
     LookDown = 1<<11,
     LookLeft = 1<<12,
-    LookRight = 1<<12,
+    LookRight = 1<<13,
     
-    Ability1 = 1<<13,
-    Ability2 = 1<<14,
-    Ability3 = 1<<15,
-    Ability4 = 1<<16,
+    Ability1 = 1<<14,
+    Ability2 = 1<<15,
+    Ability3 = 1<<16,
+    Ability4 = 1<<17,
 }
 /// <summary>
 /// Handles saving/loading input maps from disk, and also handles dynamic key remapping.
@@ -65,16 +65,16 @@ public class InputMapManager
         { "CROUCH_TOGGLE", "Toggle Crouch" },
     };
 
-    public Dictionary<string, Actions> flagMap = new Dictionary<string, Actions>()
+    public Dictionary<string, ActionFlags> flagMap = new Dictionary<string, ActionFlags>()
     {
-        { "MOVE_FORWARD",Actions.MoveForward },
-        { "MOVE_BACKWARD",Actions.MoveBackward },
-        { "MOVE_LEFT",Actions.MoveLeft },
-        { "MOVE_RIGHT",Actions.MoveRight },
-        { "CROUCH", Actions.Crouch },
-        { "JUMP", Actions.Jump },
-        { "SPRINT", Actions.Sprint },
-        { "USE", Actions.Use },
+        { "MOVE_FORWARD",ActionFlags.MoveForward },
+        { "MOVE_BACKWARD",ActionFlags.MoveBackward },
+        { "MOVE_LEFT",ActionFlags.MoveLeft },
+        { "MOVE_RIGHT",ActionFlags.MoveRight },
+        { "CROUCH", ActionFlags.Crouch },
+        { "JUMP", ActionFlags.Jump },
+        { "SPRINT", ActionFlags.Sprint },
+        { "USE", ActionFlags.Use },
 
     };
 

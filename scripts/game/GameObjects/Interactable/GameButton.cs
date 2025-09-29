@@ -6,17 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 
 [GlobalClass]
-public partial class GameButton : GOBaseStaticBody, IInteractable
+public partial class GameButton : GOBaseStaticBody, IsInteractable
 {
 
     [Export] 
     public AnimationPlayer animationPlayer;
 
     [Export]
-    public Godot.Collections.Array<Node> triggers { get; set; }
+    public string onPressAnimationName;
 
     [Export]
     public ulong cooldown { get; set; }
+
+    [Export]
+    public Godot.Collections.Array<Trigger> triggers { get; set; }
 
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
@@ -25,18 +28,14 @@ public partial class GameButton : GOBaseStaticBody, IInteractable
 
     public override GameObjectType type { get; set; } = GameObjectType.GameButton;
 
+
+
     public override void _Ready()
     {
-        foreach (var trigger in triggers)
-        {
-            if (trigger is not ITriggerable)
-            {
-                Logging.Error($"This Interactable Node: {Name} has non Triggerable nodes in its triggers list!", "GameButton", true, true);
-            }
-        }
+
     }
 
-    public void OnInteract()
+    public void OnInteract(ulong byID)
     {
         if (cooldownTimer==0)
         {
@@ -44,16 +43,11 @@ public partial class GameButton : GOBaseStaticBody, IInteractable
             cooldownTimer = cooldown;
             if (animationPlayer != null)
             {
-                animationPlayer.Play("button_press");
+                animationPlayer.Play(onPressAnimationName);
             }
-
             foreach (var trigger in triggers)
             {
-                if (trigger is ITriggerable t)
-                {
-                    t.OnTrigger();
-                }
-
+                (GetNode(trigger.triggerableNode) as IsTriggerable).Trigger(trigger.triggerName,byID);
             }
         }
     }
@@ -71,7 +65,7 @@ public partial class GameButton : GOBaseStaticBody, IInteractable
 
         if(cooldownTimer==0 && update.cooldownTimer!=0)
         {
-            OnInteract();
+            OnInteract(id);
         }
         cooldownTimer = update.cooldownTimer;
     }

@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=4 uid="uid://b0s5v8yixoo5u"]
 
-[ext_resource type="Script" uid="uid://j7xhd6lgowqg" path="res://scripts/game/GameObjects/Interactable/GameButton.cs" id="1_ymyg4"]
+[ext_resource type="Script" uid="uid://bxnbo5243ufaw" path="res://scripts/game/GameObjects/Interactable/GameButton.cs" id="1_ymyg4"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5dr8"]
 resource_name = "yellow.001"
@@ -135,13 +135,12 @@ _data = {
 &"button_press": SubResource("Animation_70jf2")
 }
 
-[node name="GameButton" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "triggers", "collider", "mesh")]
+[node name="GameButton" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
 script = ExtResource("1_ymyg4")
 animationPlayer = NodePath("AnimationPlayer")
+onPressAnimationName = "button_press"
+cooldown = 100
 triggers = []
-collider = NodePath("CollisionShape3D2")
-mesh = NodePath("ButtonTop")
-metadata/_custom_type_script = "uid://j7xhd6lgowqg"
 
 [node name="ButtonBase" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_aorhu")
