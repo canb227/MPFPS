@@ -222,6 +222,11 @@ spot_attenuation = 1.5
 spot_angle = 75.0
 spot_angle_attenuation = 1.0
 
+[node name="SpotLight3D" type="SpotLight3D" parent="PressureLabelling/PressureLabellingCeiling" index="0"]
+transform = Transform3D(0.8551955, -6.4938206e-09, 0.4518232, -0.38075754, -1.6540223e-08, 0.72068495, 3.5376786e-09, -0.99845266, -2.1046148e-08, -27.38844, 1.5998511, -46.76814)
+light_energy = 3.159
+spot_range = 9.980794
+
 [node name="PressureLabellingWall" parent="PressureLabelling" index="7"]
 surface_material_override/1 = SubResource("StandardMaterial3D_wk72t")
 

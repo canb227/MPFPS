@@ -1,18 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://bdil88mghutia"]
 
 [ext_resource type="PackedScene" uid="uid://ckmkxf6j0gvb2" path="res://scenes/world/warehouse_geometry.tscn" id="1_tbycg"]
-[ext_resource type="PackedScene" uid="uid://cq17w6s6sj15i" path="res://assets/models/map/press.glb" id="3_uuenj"]
+[ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_6710t"]
 [ext_resource type="PackedScene" uid="uid://b0s5v8yixoo5u" path="res://scenes/GameObjects/interactables/GameButton.tscn" id="4_tbycg"]
 
 [node name="Node3D" type="Node3D"]
-
-[node name="press" parent="." instance=ExtResource("3_uuenj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.534443, 0.034560382, 32.75372)
 
 [node name="GameObjects" type="Node3D" parent="."]
 
 [node name="GameButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.98064, 0.900001, 19.44712)
+
+[node name="Crusher" parent="GameObjects" instance=ExtResource("2_6710t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.571922, 0.061801434, 32.733566)
 
 [node name="meta" type="Node" parent="."]
 
