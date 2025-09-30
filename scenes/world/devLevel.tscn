@@ -1,11 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=15 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://b0s5v8yixoo5u" path="res://scenes/GameObjects/interactables/GameButton.tscn" id="2_ny6f2"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_qvxys"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="4_kx1m7"]
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="5_25h3n"]
-[ext_resource type="AudioStream" uid="uid://dmwrw0sotsgpv" path="res://assets/audio/environment/heavy_metal_stop1.wav" id="5_o33i4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -24,7 +23,7 @@ sdfgi_enabled = true
 
 [sub_resource type="Resource" id="Resource_kx1m7"]
 script = ExtResource("3_qvxys")
-triggerableNode = null
+triggerableNode = NodePath("../Crusher")
 triggerName = "press_down"
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
@@ -80,6 +79,8 @@ environment = SubResource("Environment_kx1m7")
 transform = Transform3D(0.93545026, 0.26222044, -0.23700918, -0.060745496, 0.77983457, 0.6230315, 0.3481995, -0.5684176, 0.7454251, 0, 9.405283, 0)
 shadow_enabled = true
 
+[node name="SteamAudioConfig" type="SteamAudioConfig" parent="."]
+
 [node name="GameObjects" type="Node3D" parent="."]
 
 [node name="Crusher" parent="GameObjects" instance=ExtResource("2_qvxys")]
@@ -97,6 +98,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.934765, -7.107069, 2.3179
 triggers = [SubResource("Resource_o33i4")]
 
 [node name="FallTrap" parent="GameObjects" instance=ExtResource("5_25h3n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.770958, 0, 0)
 
 [node name="FallTrapButton1" parent="GameObjects" instance=ExtResource("2_ny6f2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.098946, -7.110468, 2.3058498)
@@ -451,9 +453,3 @@ ring_sides = 26
 [node name="CSGBox3D47" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.478506, -7.6093116, 2.3263385)
 size = Vector3(0.265625, 1, 0.30322266)
-
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.991236, -5.9995313, 0)
-stream = ExtResource("5_o33i4")
-autoplay = true
-panning_strength = 0.0
