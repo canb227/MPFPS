@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://ckmkxf6j0gvb2"]
+[gd_scene load_steps=14 format=3 uid="uid://ckmkxf6j0gvb2"]
 
 [ext_resource type="PackedScene" uid="uid://c7la2ryapys2" path="res://assets/models/warehouse/warehouse.glb" id="1_ffada"]
 [ext_resource type="LightmapGIData" uid="uid://fcpbm8eax1hj" path="res://scenes/world/warehouse_geometry.lmbake" id="2_2ycre"]
+[ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="2_421dt"]
 [ext_resource type="Texture2D" uid="uid://b0v82knqowhvs" path="res://assets/sky/darksky.hdr" id="4_adnp4"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wk72t"]
@@ -187,6 +188,9 @@ spot_range = 60.0
 spot_attenuation = 1.5
 spot_angle = 75.0
 spot_angle_attenuation = 1.0
+
+[node name="FallTrap" parent="EastFrontHall" index="10" instance=ExtResource("2_421dt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.946003, -0.19231963, -19.565)
 
 [node name="case12" parent="PressureLabelling/OfficeLight_056" index="0"]
 surface_material_override/1 = SubResource("StandardMaterial3D_2ycre")
