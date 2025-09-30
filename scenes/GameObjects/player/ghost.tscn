@@ -23,4 +23,4 @@ shape = SubResource("SphereShape3D_5mfnq")
 
 [node name="cameraParent" type="Node3D" parent="."]
 
-[node name="steamAudio" type="SteamAudioListener" parent="."]
+[node name="SteamAudioListener" type="SteamAudioListener" parent="."]
