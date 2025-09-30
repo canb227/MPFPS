@@ -22,3 +22,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_veat2")
 shape = SubResource("SphereShape3D_5mfnq")
 
 [node name="cameraParent" type="Node3D" parent="."]
+
+[node name="steamAudio" type="SteamAudioListener" parent="."]
