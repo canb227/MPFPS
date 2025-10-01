@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=17 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
+[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="4_kx1m7"]
 [ext_resource type="PackedScene" uid="uid://cie5kntaawigq" path="res://scenes/GameObjects/interactables/BasicButton.tscn" id="4_o33i4"]
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="5_25h3n"]
@@ -20,6 +21,12 @@ ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
+
+[sub_resource type="Resource" id="Resource_k4evv"]
+script = ExtResource("3_25h3n")
+triggerName = "firetrap"
+cooldownSeconds = 5.0
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_vegv4"]
 script = ExtResource("5_k4evv")
@@ -88,6 +95,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.997833, -7.418973, -0.057
 
 [node name="FireTrap" parent="GameObjects" instance=ExtResource("4_kx1m7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.44376, -6.985556, -0.27607918)
+triggerables = Array[Object]([SubResource("Resource_k4evv")])
 
 [node name="FallTrap" parent="GameObjects" instance=ExtResource("5_25h3n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.732265, 0, 1.8324251)
@@ -104,6 +112,13 @@ triggers = Array[Object]([SubResource("Resource_viqb8")])
 [node name="button_falltrap" parent="GameObjects" instance=ExtResource("4_o33i4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.089394, -7.4918466, 2.122771)
 triggers = Array[Object]([SubResource("Resource_o2jhf")])
+
+[node name="StaticBody3D" type="StaticBody3D" parent="GameObjects"]
+transform = Transform3D(0.99645627, 0, 0.08411264, 0, 1, 0, -0.08411264, 0, 0.99645627, 0, 0, 1.5252526)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="GameObjects/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0544434, 0)
+size = Vector3(1, 3.1088867, 1)
 
 [node name="statics" type="Node3D" parent="."]
 

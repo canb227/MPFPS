@@ -10,17 +10,9 @@ public interface IsInteractable
     [Export]
     public ulong interactCooldownSeconds { get; set; }
 
-    [Export]
-    public InteractableCooldownSetting InteractableCooldownSetting { get; set; }
     public bool CanInteract(ulong byID);
     public void OnInteract(ulong byID);
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
 
-}
-public enum InteractableCooldownSetting
-{
-    DisableOnlyIfSelfOnCooldown,
-    DisableIfSelfOrAnyTriggersOnCooldown,
-    DisableIfSelfOrAllTriggersOnCooldown,
 }

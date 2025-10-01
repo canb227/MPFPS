@@ -15,20 +15,6 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
     public virtual Array<Trigger> triggerables { get; set; }
     public abstract void ActivateTriggerEffects(string triggerName, ulong byID);
 
-    public override void PerTickAuth(double delta)
-    {
-        foreach (Trigger t in triggerables)
-        {
-            if (t.cooldownSecondsRemaining>0)
-            {
-                t.cooldownSecondsRemaining -= (float)delta;
-            }
-            if (t.cooldownSecondsRemaining<=0)
-            {
-                t.cooldownSecondsRemaining = 0;
-            }
-        }
-    }
 
     public virtual void rpc_Trigger(byte[] data)
     {
@@ -38,8 +24,8 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
 
     public virtual void Trigger(string triggerName, ulong byID)
     {
-        TriggerRPCPacket packet = new(triggerName,byID);
-        byte[] data = MessagePackSerializer.Serialize(packet);
+       TriggerRPCPacket packet = new(triggerName,byID);
+       byte[] data = MessagePackSerializer.Serialize(packet);
        RPCManager.SendRPC(this,"rpc_Trigger",data);
     }
 
@@ -50,6 +36,8 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
         {
             if (t.cooldownSecondsRemaining == 0)
             {
+                Logging.Log($"Trigger {t.triggerName} triggered!", "GOTriggerable");
+                t.cooldownSecondsRemaining = t.cooldownSeconds;
                 ActivateTriggerEffects(triggerName,byID);
             }
         }

@@ -16,6 +16,7 @@ public partial class GOTrap : GOTriggerable
 
     public override void ActivateTriggerEffects(string triggerName, ulong byID)
     {
+        Logging.Log($"Trigger {triggerName} is now on a {GetTriggerCooldown(triggerName,byID)} cooldown!", "GOTriggerable");
         if (!animationPlayer.HasAnimation(triggerName))
         {
             return;
@@ -31,12 +32,17 @@ public partial class GOTrap : GOTriggerable
     {
         foreach (Trigger t in triggerables)
         {
+            if (t.cooldownSecondsRemaining==0)
+            {
+                return;
+            }
             if (t.cooldownSecondsRemaining > 0)
             {
                 t.cooldownSecondsRemaining -= (float)delta;
             }
             if (t.cooldownSecondsRemaining <= 0)
             {
+                Logging.Log($"Trigger {t.triggerName} is off cooldown!", "GOTriggerable");
                 t.cooldownSecondsRemaining = 0;
             }
         }

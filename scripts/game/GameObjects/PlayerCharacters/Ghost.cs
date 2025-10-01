@@ -12,6 +12,7 @@ public partial class Ghost : GOBasePlayerCharacter
     public override Team team { get; set; }
 
     public override PlayerInputData input { get; set; }
+    public ActionFlags lastTickActions { get; set; }
 
     public override Node3D lookRotationNode { get; set; }
 
@@ -68,7 +69,7 @@ public partial class Ghost : GOBasePlayerCharacter
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
 
-        if (input.actions.HasFlag(ActionFlags.Use))
+        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
         {
             if (rayCast.IsColliding())
             {
@@ -123,6 +124,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
         Velocity = globalVelocity;
         MoveAndSlide();
+        lastTickActions = input.actions;
     }
 
 

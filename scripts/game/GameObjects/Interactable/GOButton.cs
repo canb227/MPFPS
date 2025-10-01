@@ -16,7 +16,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     public Godot.Collections.Array<Triggers> triggers { get; set; }
 
     [Export]
-    public InteractableCooldownSetting InteractableCooldownSetting { get; set; }
+    public ButtonCooldownSetting ButtonCooldownSetting { get; set; }
 
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
@@ -43,7 +43,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
 
     private void _OnInteract(ulong byID)
     {
-        if (InteractableCooldownSetting == InteractableCooldownSetting.DisableOnlyIfSelfOnCooldown)
+        if (ButtonCooldownSetting == ButtonCooldownSetting.DisableOnlyIfSelfOnCooldown)
         {
             if (!ready)
             {
@@ -56,7 +56,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
                 return;
             }
         }
-        else if (InteractableCooldownSetting == InteractableCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
+        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
         {
             if (!ready)
             {
@@ -83,7 +83,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
                 return;
             }
         }
-        else if (InteractableCooldownSetting == InteractableCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
+        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
         {
             if (!ready)
             {
@@ -171,7 +171,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     }
     public bool CanInteract(ulong byID)
     {
-        if (InteractableCooldownSetting == InteractableCooldownSetting.DisableOnlyIfSelfOnCooldown)
+        if (ButtonCooldownSetting == ButtonCooldownSetting.DisableOnlyIfSelfOnCooldown)
         {
             if (!ready)
             {
@@ -182,7 +182,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
                 return true;
             }
         }
-        else if (InteractableCooldownSetting == InteractableCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
+        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
         {
             if (!ready)
             {
@@ -206,7 +206,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
                 return false;
             }
         }
-        else if (InteractableCooldownSetting == InteractableCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
+        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
         {
             if (!ready)
             {
