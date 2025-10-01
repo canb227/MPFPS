@@ -228,7 +228,7 @@ public partial class Console : Node
     {
         if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
         {
-            if (obj is IsInteractable i)
+            if (obj is IsButton i)
             {
                 i.OnInteract(id);
             }
@@ -239,7 +239,7 @@ public partial class Console : Node
     {
         if (Global.gameState.GameObjects.TryGetValue(id, out var obj))
         {
-            if (obj is IsTriggerable t)
+            if (obj is HasTriggerables t)
             {
                 
             }

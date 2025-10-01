@@ -3,9 +3,21 @@
 using Godot;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 
 public static class Utils
 {
+
+    public static List<Node> GetChildrenRecursive(Node node, List<Node>returnValue)
+    {
+        foreach (Node child in node.GetChildren())
+        {
+            returnValue.Add(child);
+            GetChildrenRecursive(child, returnValue);
+        }
+        return returnValue;
+    }
+
     internal static ulong GetTime()
     {
         return (ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();

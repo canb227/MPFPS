@@ -9,8 +9,7 @@ public interface IsDamagable
 {
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
-    public void OnDamage(float damage,ulong byID);
-    public void OnZeroHealth(float damage, ulong byID);
+    public void TakeDamage(float damage,ulong byID);
 
 }
 

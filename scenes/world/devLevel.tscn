@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://ttmcv3vlqbj2"]
 
-[ext_resource type="PackedScene" uid="uid://b0s5v8yixoo5u" path="res://scenes/GameObjects/interactables/GameButton.tscn" id="2_ny6f2"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
-[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_qvxys"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="4_kx1m7"]
+[ext_resource type="PackedScene" uid="uid://cie5kntaawigq" path="res://scenes/GameObjects/interactables/BasicButton.tscn" id="4_o33i4"]
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="5_25h3n"]
+[ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -21,23 +21,23 @@ ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
 
-[sub_resource type="Resource" id="Resource_kx1m7"]
-script = ExtResource("3_qvxys")
+[sub_resource type="Resource" id="Resource_vegv4"]
+script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../Crusher")
 triggerName = "press_down"
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+metadata/_custom_type_script = "uid://ceok257oa0301"
 
-[sub_resource type="Resource" id="Resource_o33i4"]
-script = ExtResource("3_qvxys")
+[sub_resource type="Resource" id="Resource_viqb8"]
+script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../FireTrap")
 triggerName = "firetrap"
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+metadata/_custom_type_script = "uid://ceok257oa0301"
 
-[sub_resource type="Resource" id="Resource_25h3n"]
-script = ExtResource("3_qvxys")
+[sub_resource type="Resource" id="Resource_o2jhf"]
+script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../FallTrap")
 triggerName = "fall"
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ny6f2"]
 noise_type = 0
@@ -84,25 +84,26 @@ shadow_enabled = true
 [node name="GameObjects" type="Node3D" parent="."]
 
 [node name="Crusher" parent="GameObjects" instance=ExtResource("2_qvxys")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -27.954315, -7.463561, -0.41186845)
-
-[node name="CrusherButton1" parent="GameObjects" instance=ExtResource("2_ny6f2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.477158, -7.107069, 2.3179736)
-triggers = [SubResource("Resource_kx1m7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.997833, -7.418973, -0.057882786)
 
 [node name="FireTrap" parent="GameObjects" instance=ExtResource("4_kx1m7")]
-transform = Transform3D(0.9999999, 0, 0, 0, 1, 0, 0, 0, 0.9999999, -34.023483, -6.9855566, -0.12818015)
-
-[node name="FireTrapButton1" parent="GameObjects" instance=ExtResource("2_ny6f2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.934765, -7.107069, 2.3179736)
-triggers = [SubResource("Resource_o33i4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.44376, -6.985556, -0.27607918)
 
 [node name="FallTrap" parent="GameObjects" instance=ExtResource("5_25h3n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.770958, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.732265, 0, 1.8324251)
 
-[node name="FallTrapButton1" parent="GameObjects" instance=ExtResource("2_ny6f2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.098946, -7.110468, 2.3058498)
-triggers = [SubResource("Resource_25h3n")]
+[node name="button_crusher" parent="GameObjects" instance=ExtResource("4_o33i4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.436708, -7.109446, 2.285008)
+interactCooldownSeconds = 5
+triggers = Array[Object]([SubResource("Resource_vegv4")])
+
+[node name="button_firetrap" parent="GameObjects" instance=ExtResource("4_o33i4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.78199, -7.4918466, 2.1202555)
+triggers = Array[Object]([SubResource("Resource_viqb8")])
+
+[node name="button_falltrap" parent="GameObjects" instance=ExtResource("4_o33i4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.089394, -7.4918466, 2.122771)
+triggers = Array[Object]([SubResource("Resource_o2jhf")])
 
 [node name="statics" type="Node3D" parent="."]
 

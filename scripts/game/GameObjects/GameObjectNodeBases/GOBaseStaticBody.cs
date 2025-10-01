@@ -15,13 +15,12 @@ public abstract partial class GOBaseStaticBody : StaticBody3D, GameObject
     public virtual bool sleeping { get; set; }
     public virtual bool destroyed { get; set; }
     public virtual float priorityAccumulator { get; set; }
-
-    public abstract byte[] GenerateStateUpdate();
-    public abstract void ProcessStateUpdate(byte[] update);
-    public abstract void PerTickAuth(double delta);
-    public abstract void PerFrameAuth(double delta);
-    public abstract void PerTickLocal(double delta);
-    public abstract void PerFrameLocal(double delta);
     public abstract string GenerateStateString();
+    public abstract byte[] GenerateStateUpdate();
+    public abstract void PerFrameAuth(double delta);
+    public abstract void PerFrameLocal(double delta);
+    public abstract void PerTickAuth(double delta);
+    public abstract void PerTickLocal(double delta);
+    public abstract void ProcessStateUpdate(byte[] update);
 }
 

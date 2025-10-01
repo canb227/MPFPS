@@ -16,6 +16,7 @@ public static class GameObjectLoader
 
     internal static GameObject LoadObjectByType(GameObjectType type)
     {
+       
         foreach (var entry in GameObjectDictionary)
         {
             if (entry.Value.type == type)
@@ -52,6 +53,7 @@ public static class GameObjectLoader
     public static GameObject LoadObjectByTypeName(string typeName)
     {
         return ResourceLoader.Load<PackedScene>(GameObjectDictionary[typeName].scenePath).Instantiate<GameObject>();
+
     }
 }
 
