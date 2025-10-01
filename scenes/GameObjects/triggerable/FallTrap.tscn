@@ -82,6 +82,18 @@ tracks/2/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SteamAudioPlayer2:volume_db")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-40.0]
+}
 
 [sub_resource type="Animation" id="Animation_6tput"]
 resource_name = "fall"
@@ -93,7 +105,7 @@ tracks/0/path = NodePath(".:position:y")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 2, 5),
+"times": PackedFloat32Array(0, 0.2, 2.4, 5),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, -6.0, -6.0, 0.0]
@@ -105,14 +117,14 @@ tracks/1/path = NodePath("SteamAudioPlayer:playing")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 2),
+"times": PackedFloat32Array(0, 5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true, false]
+"values": [true, true]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
-tracks/2/enabled = false
+tracks/2/enabled = true
 tracks/2/path = NodePath("SteamAudioPlayer2:playing")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
@@ -121,6 +133,18 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SteamAudioPlayer2:volume_db")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(2.3666666, 2.6666667, 3.3, 4.3, 5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-18.0, -12.0, 0.0, 0.0, -6.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pgnvn"]
@@ -150,9 +174,12 @@ libraries = {
 }
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09517568, 0)
 stream = ExtResource("2_pgnvn")
 panning_strength = 0.0
 
 [node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09517568, 0)
 stream = ExtResource("3_d4mm2")
+volume_db = -40.0
 panning_strength = 0.0
