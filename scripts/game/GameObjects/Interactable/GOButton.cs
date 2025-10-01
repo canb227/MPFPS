@@ -287,6 +287,11 @@ public partial class GOButton : GOBaseStaticBody, IsButton
         }
     }
 
+    public virtual void OnDisable()
+    {
+        Logging.Log($"Interactable {id} is now disabled!", "GOInteractable");
+    }
+
     public override void PerFrameAuth(double delta)
     {
 

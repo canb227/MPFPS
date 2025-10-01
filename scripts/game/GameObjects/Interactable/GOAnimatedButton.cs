@@ -38,17 +38,7 @@ public partial class GOAnimatedButton : GOButton
         {
             animationPlayer.Play(FailedPressAnimation);
         }
-        if (interactCooldownSeconds > 0)
-        {
-            if (DisableAnimation == null || DisableAnimation == "")
-            {
-                return;
-            }
-            else
-            {
-                animationPlayer.Play(DisableAnimation);
-            }
-        }
+
     }
 
     public override void PressedWhileOnCooldown(ulong byID)
@@ -75,19 +65,8 @@ public partial class GOAnimatedButton : GOButton
         {
             animationPlayer.Play(SuccessfulPressAnimation);
         }
-        if (interactCooldownSeconds>0)
-        {
-            if (DisableAnimation == null || DisableAnimation == "")
-            {
-                return;
-            }
-            else
-            {
-                animationPlayer.Play(DisableAnimation);
-            }
-        }
-
     }
+
     public override void OnEnable()
     {
         base.OnEnable();
