@@ -1,65 +1,67 @@
-[gd_scene load_steps=13 format=3 uid="uid://bdil88mghutia"]
+[gd_scene load_steps=14 format=3 uid="uid://bdil88mghutia"]
 
 [ext_resource type="PackedScene" uid="uid://ckmkxf6j0gvb2" path="res://scenes/world/warehouse_geometry.tscn" id="1_tbycg"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_6710t"]
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="3_tbycg"]
-[ext_resource type="PackedScene" uid="uid://b0s5v8yixoo5u" path="res://scenes/GameObjects/interactables/GameButton.tscn" id="4_tbycg"]
+[ext_resource type="PackedScene" path="res://scenes/GameObjects/interactables/GameButton.tscn" id="4_tbycg"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="4_vynrv"]
+[ext_resource type="Script" path="res://scripts/game/GameObjects/Triggerable/BaseTriggerable.cs" id="4_xiwo7"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="5_ft8av"]
 
 [sub_resource type="Resource" id="Resource_6h6a0"]
 script = ExtResource("4_vynrv")
-triggerableNode = NodePath("../Crusher")
 triggerName = "press_down"
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_ft8av"]
 script = ExtResource("4_vynrv")
-triggerableNode = NodePath("../FallTrap")
 triggerName = "fall"
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_vynrv"]
 script = ExtResource("4_vynrv")
-triggerableNode = NodePath("../FallTrap")
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_xiwo7"]
 script = ExtResource("4_vynrv")
-triggerableNode = NodePath("../FireTrap1")
 triggerName = "firetrap"
-cooldown = 30.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_sk24o"]
 script = ExtResource("4_vynrv")
-triggerableNode = NodePath("../FireTrap2")
 triggerName = "firetrap"
-cooldown = 30.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_cklae"]
 script = ExtResource("4_vynrv")
-triggerableNode = NodePath("../FireTrap3")
 triggerName = "firetrap"
-cooldown = 30.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [node name="Node3D" type="Node3D"]
 
 [node name="GameObjects" type="Node3D" parent="."]
 
-[node name="CrusherButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
+[node name="Crusher2" type="Node3D" parent="GameObjects"]
+
+[node name="CrusherButton" parent="GameObjects/Crusher2" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.98064, 0.900001, 19.44712)
 triggers = [SubResource("Resource_6h6a0")]
 
-[node name="Crusher" parent="GameObjects" instance=ExtResource("2_6710t")]
+[node name="Crusher" parent="GameObjects/Crusher2" instance=ExtResource("2_6710t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.571922, 0.061801434, 32.733566)
+script = ExtResource("4_xiwo7")
+triggerNames = Array[String](["press_down"])
+cooldown = 0
+metadata/_custom_type_script = "uid://c4tgma1qmy76i"
 
 [node name="FallTrap" type="Node3D" parent="GameObjects"]
 
 [node name="FallTrap" parent="GameObjects/FallTrap" instance=ExtResource("3_tbycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -73.59987, 0, 7.9815526)
+script = ExtResource("4_xiwo7")
+triggerNames = Array[String](["fall"])
+cooldown = 0
+metadata/_custom_type_script = "uid://c4tgma1qmy76i"
 
 [node name="FallTrapButton1" parent="GameObjects/FallTrap" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72.7211, 0.900001, 12.121478)
@@ -73,12 +75,24 @@ triggers = [SubResource("Resource_vynrv")]
 
 [node name="FireTrap1" parent="GameObjects/FireTrap" instance=ExtResource("5_ft8av")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.093788, 0.83895016, 20.355762)
+script = ExtResource("4_xiwo7")
+triggerNames = Array[String](["firetrap"])
+cooldown = 0
+metadata/_custom_type_script = "uid://c4tgma1qmy76i"
 
 [node name="FireTrap2" parent="GameObjects/FireTrap" instance=ExtResource("5_ft8av")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -25.425312, 0.83895016, 21.55095)
+script = ExtResource("4_xiwo7")
+triggerNames = Array[String](["firetrap"])
+cooldown = 0
+metadata/_custom_type_script = "uid://c4tgma1qmy76i"
 
 [node name="FireTrap3" parent="GameObjects/FireTrap" instance=ExtResource("5_ft8av")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.093788, 0.83895016, 22.720842)
+script = ExtResource("4_xiwo7")
+triggerNames = Array[String](["firetrap"])
+cooldown = 0
+metadata/_custom_type_script = "uid://c4tgma1qmy76i"
 
 [node name="FireTrapButton1" parent="GameObjects/FireTrap" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.458748, 0.900001, 19.463636)

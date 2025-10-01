@@ -1,6 +1,8 @@
-[gd_scene load_steps=13 format=4 uid="uid://cie5kntaawigq"]
+[gd_scene load_steps=19 format=4 uid="uid://c4uip0iv8bur5"]
 
 [ext_resource type="Script" uid="uid://b7si2ee0w4q2s" path="res://scripts/game/GameObjects/Interactable/GOAnimatedButton.cs" id="1_nbi0k"]
+[ext_resource type="AudioStream" uid="uid://b8wf8oo0ijljh" path="res://assets/audio/environment/button.wav" id="2_i5ukd"]
+[ext_resource type="AudioStream" uid="uid://bwpecgou3qnw5" path="res://assets/audio/environment/button_fail.wav" id="3_hj125"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5dr8"]
 resource_name = "yellow.001"
@@ -121,27 +123,183 @@ data = PackedVector3Array(-0.0448, 0.1051, 0.0186, -0.037299998, 0.1081, 0.0075,
 
 [sub_resource type="Animation" id="Animation_70jf2"]
 resource_name = "button_press"
-length = 0.8333333
-tracks/0/type = "position_3d"
-tracks/0/imported = true
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("ButtonTop")
+tracks/0/path = NodePath("SteamAudioPlayer:playing")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.033333335, 1, 0, -0.0007082083, 0, 0.06666667, 1, 0, -0.0023269698, 0, 0.1, 1, 0, -0.0047045257, 0, 0.13333334, 1, 0, -0.0076891175, 0, 0.16666667, 1, 0, -0.011128985, 0, 0.23333333, 1, 0, -0.018615758, 0, 0.26666668, 1, 0, -0.022207385, 0, 0.3, 1, 0, -0.025495494, 0, 0.33333334, 1, 0, -0.028328326, 0, 0.36666667, 1, 0, -0.030250605, 0, 0.4, 1, 0, -0.031262334, 0, 0.43333334, 1, 0, -0.031262334, 0, 0.46666667, 1, 0, -0.030250609, 0, 0.5, 1, 0, -0.028328327, 0, 0.53333336, 1, 0, -0.025495494, 0, 0.56666666, 1, 0, -0.022207385, 0, 0.6, 1, 0, -0.018615752, 0, 0.6666667, 1, 0, -0.011128984, 0, 0.7, 1, 0, -0.0076891156, 0, 0.73333335, 1, 0, -0.004704523, 0, 0.76666665, 1, 0, -0.0023269732, 0, 0.8, 1, 0, -0.0007082134, 0, 0.8333333, 1, 0, 0, 0)
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape3D2:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.031, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ButtonTop:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.031262334, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_nbi0k"]
+resource_name = "button_disabled"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ButtonTop:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.028905012, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape3D2:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.029, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_40td1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ButtonTop:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape3D2:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -0.029, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SteamAudioPlayer2:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SteamAudioPlayer:playing")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_i5ukd"]
+resource_name = "button_enabled"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ButtonTop:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, -0.028905012, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape3D2:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, -0.029, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_8pwwp"]
+resource_name = "button_press_fail"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SteamAudioPlayer2:playing")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4x3e6"]
 _data = {
-&"button_press": SubResource("Animation_70jf2")
+&"RESET": SubResource("Animation_40td1"),
+&"button_disabled": SubResource("Animation_nbi0k"),
+&"button_enabled": SubResource("Animation_i5ukd"),
+&"button_press": SubResource("Animation_70jf2"),
+&"button_press_fail": SubResource("Animation_8pwwp")
 }
 
 [node name="BasicButton" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
 script = ExtResource("1_nbi0k")
 animationPlayer = NodePath("AnimationPlayer")
 SuccessfulPressAnimation = "button_press"
-FailedPressAnimation = "button_press"
+FailedPressAnimation = "button_press_fail"
+DisableAnimation = "button_disabled"
+EnableAnimation = "button_enabled"
 interactCooldownSeconds = 1
-triggers = Array[Object]([])
 metadata/_custom_type_script = "uid://b7si2ee0w4q2s"
 
 [node name="ButtonBase" type="MeshInstance3D" parent="."]
@@ -156,9 +314,18 @@ mesh = SubResource("ArrayMesh_i5ukd")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.029, 0)
 shape = SubResource("ConcavePolygonShape3D_hj125")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_4x3e6")
 }
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+stream = ExtResource("2_i5ukd")
+panning_strength = 0.0
+
+[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
+stream = ExtResource("3_hj125")
+panning_strength = 0.0

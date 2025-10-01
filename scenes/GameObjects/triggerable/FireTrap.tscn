@@ -10,7 +10,7 @@
 [sub_resource type="Resource" id="Resource_jv2gt"]
 script = ExtResource("2_vrwjb")
 triggerName = "firetrap"
-cooldownSeconds = 1.0
+cooldownSeconds = 4.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a214j"]
@@ -176,7 +176,6 @@ script = ExtResource("1_ohh4p")
 animationPlayer = NodePath("AnimationPlayer")
 hurtboxList = [NodePath("Hurtbox")]
 triggerables = Array[Object]([SubResource("Resource_jv2gt")])
-metadata/_custom_type_script = "uid://cno377a7j6wr4"
 
 [node name="FireTrapNozzle" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.6174866, 0, 9.323789e-08, 0, 0.6174866, 0, -9.323789e-08, 0, -0.6174866, 0, 0, 0)
@@ -204,7 +203,6 @@ draw_pass_1 = SubResource("QuadMesh_yn8cl")
 [node name="Hurtbox" type="Area3D" parent="."]
 script = ExtResource("5_fpl05")
 damagePerTick = 1.0
-metadata/_custom_type_script = "uid://chlcmntip4s3"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4694743, 0.04663086, 0.03012085)
