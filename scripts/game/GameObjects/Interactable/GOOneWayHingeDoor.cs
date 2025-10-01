@@ -64,12 +64,12 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
 
     public override string GenerateStateString()
     {
-        throw new NotImplementedException();
+        return "";
     }
 
     public override byte[] GenerateStateUpdate()
     {
-        throw new NotImplementedException();
+        return new byte[1];
     }
 
     public void OnInteract(ulong byID)
@@ -117,20 +117,16 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
 
     public override void PerFrameLocal(double delta)
     {
-        throw new NotImplementedException();
+
     }
 
     public override void PerTickAuth(double delta)
     {
-        throw new NotImplementedException();
+
     }
 
     public override void PerTickLocal(double delta)
     {
-        if (!ready)
-        {
-
-        }
         if (opening)
         {
             float rot = RotationDegrees.Y;
@@ -140,8 +136,20 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
                 rot = doorOpen_MaxDegrees;
                 opening = false;
                 closing = false;
-
             }
+            RotationDegrees = new Vector3(RotationDegrees.X, rot, RotationDegrees.Z);
+        }
+        else if (closing)
+        {
+            float rot = RotationDegrees.Y;
+            rot -= degreesPerSecond;
+            if (rot <= doorClosed_MinDegrees)
+            {
+                rot = doorClosed_MinDegrees;
+                opening = false;
+                closing = false;
+            }
+            RotationDegrees = new Vector3(RotationDegrees.X, rot, RotationDegrees.Z);
         }
     }
 

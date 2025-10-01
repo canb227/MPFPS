@@ -22,7 +22,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     public ulong lastInteractPlayer { get; set; }
 
     private float cooldownTimer = 0;
-
+    private bool waitingForCooldowns;
     private bool ready = true;
     public override GameObjectType type { get; set; }
     public void OnInteract(ulong byID)
@@ -166,7 +166,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     }
     public virtual void OnEnable()
     {
-        Logging.Log($"Interactable {id} has finished its cooldown.", "GOInteractable");
+        Logging.Log($"Interactable is now Enabled!", "GOInteractable");
 
     }
     public bool CanInteract(ulong byID)
@@ -244,9 +244,49 @@ public partial class GOButton : GOBaseStaticBody, IsButton
         {
             ready = true;
             cooldownTimer = 0;
-            OnEnable();
+            waitingForCooldowns = true;
+            Logging.Log($"Interactable {id} has finished its cooldown.", "GOInteractable");
+        }
+        if (waitingForCooldowns)
+        {
+            if (ButtonCooldownSetting == ButtonCooldownSetting.DisableOnlyIfSelfOnCooldown)
+            {
+                OnEnable();
+                waitingForCooldowns = false;
+            }
+            else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
+            {
+                foreach (Triggers t in triggers)
+                {
+                    HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
+                    if (triggerableNode.GetTriggerCooldown(t.triggerName, 0) == 0)
+                    {
+                        OnEnable();
+                        waitingForCooldowns = false;
+                        break;
+                    }
+                }
+            }
+            else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
+            {
+                bool allReady = true;
+                foreach (Triggers t in triggers)
+                {
+                    HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
+                    if (triggerableNode.GetTriggerCooldown(t.triggerName, 0) != 0)
+                    {
+                        allReady = false;
+                    }
+                }
+                if (allReady)
+                {
+                    OnEnable();
+                    waitingForCooldowns = false;
+                }
+            }
         }
     }
+
     public override void PerFrameAuth(double delta)
     {
 
