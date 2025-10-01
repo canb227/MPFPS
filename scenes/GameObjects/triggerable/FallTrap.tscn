@@ -1,8 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://bxbuyv8mx3qil"]
+[gd_scene load_steps=13 format=3 uid="uid://bxbuyv8mx3qil"]
 
-[ext_resource type="Script" uid="uid://c4tgma1qmy76i" path="res://scripts/game/GameObjects/Triggerable/BaseTriggerable.cs" id="1_6tput"]
+[ext_resource type="Script" uid="uid://cno377a7j6wr4" path="res://scripts/game/GameObjects/Triggerable/GOTrap.cs" id="1_d4mm2"]
+[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_ijmoh"]
 [ext_resource type="AudioStream" uid="uid://df1tkgwl3botl" path="res://assets/audio/environment/hall_elev_stop.wav" id="2_pgnvn"]
 [ext_resource type="AudioStream" uid="uid://cf0w6tu7k7xc0" path="res://assets/audio/environment/hall_elev_move.wav" id="3_d4mm2"]
+
+[sub_resource type="Resource" id="Resource_5g06f"]
+script = ExtResource("2_ijmoh")
+triggerName = "fall"
+cooldownSeconds = 1.0
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xeku8"]
 resource_name = "Metal Caution Stripes"
@@ -129,11 +136,12 @@ _data = {
 &"fall": SubResource("Animation_6tput")
 }
 
-[node name="FallTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
-script = ExtResource("1_6tput")
+[node name="FallTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "hurtboxList")]
+script = ExtResource("1_d4mm2")
 animationPlayer = NodePath("AnimationPlayer")
-triggerNames = Array[String](["fall"])
-metadata/_custom_type_script = "uid://c4tgma1qmy76i"
+hurtboxList = []
+triggerables = Array[Object]([SubResource("Resource_5g06f")])
+metadata/_custom_type_script = "uid://cno377a7j6wr4"
 
 [node name="FallTrap2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1.2268664, 0, 0, 0, 1, 0, -0.01849027, 0)

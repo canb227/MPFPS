@@ -122,10 +122,10 @@ public static class RPCManager
         method.Invoke(node, [data]);
     }
 
-    public static void SendRPC(NodePath path, string methodName, byte[] data)
+    public static void SendRPC(Node context, string methodName, byte[] data)
     {
         RPCMessage packet = new();
-        packet.nodePath = path;
+        packet.nodePath = Global.instance.GetPathTo(context);
         packet.methodName = methodName;
         packet.data = data;
         Global.network.BroadcastData(MessagePackSerializer.Serialize(packet),Channel.GenericRPC,Global.Lobby.lobbyPeers.ToList());

@@ -1,13 +1,20 @@
-[gd_scene load_steps=25 format=4 uid="uid://b40cl37f4wy5f"]
+[gd_scene load_steps=27 format=4 uid="uid://b40cl37f4wy5f"]
 
-[ext_resource type="Script" uid="uid://c4tgma1qmy76i" path="res://scripts/game/GameObjects/Triggerable/BaseTriggerable.cs" id="1_rmhsx"]
+[ext_resource type="Script" uid="uid://cno377a7j6wr4" path="res://scripts/game/GameObjects/Triggerable/GOTrap.cs" id="1_w3e0y"]
 [ext_resource type="AudioStream" uid="uid://dmwrw0sotsgpv" path="res://assets/audio/environment/heavy_metal_stop1.wav" id="2_8hvrf"]
 [ext_resource type="Texture2D" uid="uid://c8hkx4bvryw8k" path="res://assets/models/map/press_metal_diffuse01.jpg" id="2_qer47"]
+[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_v4yce"]
 [ext_resource type="Texture2D" uid="uid://b0qgjqlepc4u" path="res://assets/models/map/press_metal_metallic.jpg-metal_glossiness.png" id="3_rmhsx"]
 [ext_resource type="AudioStream" uid="uid://c25bhrgo08jk1" path="res://assets/audio/environment/heavy_metal_move1.wav" id="3_w3e0y"]
 [ext_resource type="Texture2D" uid="uid://clgcw8rlpy1lo" path="res://assets/models/map/press_metal_normal_opengl.jpg" id="4_h6kkh"]
 [ext_resource type="Texture2D" uid="uid://bwak21svc2g80" path="res://assets/models/map/press_antyposlizg.jpg" id="5_8hvrf"]
-[ext_resource type="Script" uid="uid://bgor4p6p43uns" path="res://scripts/game/other/Hurtbox.cs" id="5_h6kkh"]
+[ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/GOHurtbox.cs" id="7_pytuy"]
+
+[sub_resource type="Resource" id="Resource_kxmu2"]
+script = ExtResource("2_v4yce")
+triggerName = "press_down"
+cooldownSeconds = 1.0
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Animation" id="Animation_lblhg"]
 length = 0.001
@@ -271,11 +278,12 @@ size = Vector3(0.20806885, 5.0527344, 0.20196533)
 [sub_resource type="BoxShape3D" id="BoxShape3D_s3lk7"]
 size = Vector3(4.496155, 0.20327759, 3.9471436)
 
-[node name="Crusher" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
-script = ExtResource("1_rmhsx")
+[node name="Crusher" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "hurtboxList")]
+script = ExtResource("1_w3e0y")
 animationPlayer = NodePath("AnimationPlayer")
-triggerNames = Array[String](["press_down"])
-metadata/_custom_type_script = "uid://c4tgma1qmy76i"
+hurtboxList = [NodePath("PressArm/Hurtbox")]
+triggerables = Array[Object]([SubResource("Resource_kxmu2")])
+metadata/_custom_type_script = "uid://cno377a7j6wr4"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -308,12 +316,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
 shape = SubResource("ConvexPolygonShape3D_pytuy")
 
 [node name="Hurtbox" type="Area3D" parent="PressArm"]
-script = ExtResource("5_h6kkh")
+script = ExtResource("7_pytuy")
+damagePerTick = 1.0
 instantKill = true
-hurtsInnocents = true
-hurtsTraitors = true
-hurtsNPCs = true
-metadata/_custom_type_script = "uid://bgor4p6p43uns"
+metadata/_custom_type_script = "uid://chlcmntip4s3"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24401093, 0)

@@ -8,13 +8,24 @@ using System.Threading.Tasks;
 [GlobalClass]
 public partial class Trigger : Resource
 {
-    [Export]
-    public NodePath triggerableNode;
 
     [Export]
     public string triggerName;
 
     [Export]
-    public float cooldown;
+    public float cooldownSeconds;
+
+    public float cooldownSecondsRemaining;
+    public ulong lastTriggeredOnTick { get; set; }
+    public ulong lastTriggeredByID { get; set; }
+    public bool isActive;
+
+    public Trigger() { }
+
+    public Trigger(string triggerName,float cooldownSeconds)
+    {
+        this.triggerName = triggerName;
+        this.cooldownSeconds = cooldownSeconds;
+    }
 }
 

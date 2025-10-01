@@ -44,7 +44,7 @@ public partial class GameModeManager : Node
             pa.team = Team.Traitor;
             pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.SendRPC(this.GetPath(), "rpc_AssignRole", data);
+            RPCManager.SendRPC(this, "rpc_AssignRole", data);
         }
 
         foreach (ulong id in players)
@@ -54,7 +54,7 @@ public partial class GameModeManager : Node
             pa.team = Team.Innocent;
             pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.SendRPC(this.GetPath(), "rpc_AssignRole", data);
+            RPCManager.SendRPC(this, "rpc_AssignRole", data);
         }
     }
 

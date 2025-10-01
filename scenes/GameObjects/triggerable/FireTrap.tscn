@@ -1,10 +1,17 @@
-[gd_scene load_steps=17 format=4 uid="uid://8cg4bql5g6ts"]
+[gd_scene load_steps=19 format=4 uid="uid://8cg4bql5g6ts"]
 
-[ext_resource type="Script" uid="uid://c4tgma1qmy76i" path="res://scripts/game/GameObjects/Triggerable/BaseTriggerable.cs" id="1_dd2wd"]
+[ext_resource type="Script" uid="uid://cno377a7j6wr4" path="res://scripts/game/GameObjects/Triggerable/GOTrap.cs" id="1_ohh4p"]
 [ext_resource type="Texture2D" uid="uid://c1y1a8ulh10ok" path="res://assets/models/map/firenozzle_metal_hr_2.png" id="2_l12yw"]
+[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_vrwjb"]
 [ext_resource type="Texture2D" uid="uid://c0oua18gepjum" path="res://assets/models/map/fire.jpg" id="3_ohh4p"]
-[ext_resource type="Script" uid="uid://bgor4p6p43uns" path="res://scripts/game/other/Hurtbox.cs" id="4_vrwjb"]
+[ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/GOHurtbox.cs" id="5_fpl05"]
 [ext_resource type="AudioStream" uid="uid://qvbi4764y5uc" path="res://assets/audio/environment/fire_big_loop1.wav" id="5_l12yw"]
+
+[sub_resource type="Resource" id="Resource_jv2gt"]
+script = ExtResource("2_vrwjb")
+triggerName = "firetrap"
+cooldownSeconds = 1.0
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a214j"]
 resource_name = "metal_hr_2.008"
@@ -140,11 +147,12 @@ size = Vector2(0.5, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_dd2wd"]
 size = Vector3(3.3312683, 1, 1)
 
-[node name="FireTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
-script = ExtResource("1_dd2wd")
+[node name="FireTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "hurtboxList")]
+script = ExtResource("1_ohh4p")
 animationPlayer = NodePath("AnimationPlayer")
-triggerNames = Array[String](["firetrap"])
-metadata/_custom_type_script = "uid://c4tgma1qmy76i"
+hurtboxList = [NodePath("Hurtbox")]
+triggerables = Array[Object]([SubResource("Resource_jv2gt")])
+metadata/_custom_type_script = "uid://cno377a7j6wr4"
 
 [node name="FireTrapNozzle" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.6174866, 0, 9.323789e-08, 0, 0.6174866, 0, -9.323789e-08, 0, -0.6174866, 0, 0, 0)
@@ -170,12 +178,9 @@ process_material = SubResource("ParticleProcessMaterial_2ml74")
 draw_pass_1 = SubResource("QuadMesh_yn8cl")
 
 [node name="Hurtbox" type="Area3D" parent="."]
-script = ExtResource("4_vrwjb")
-damagePerTick = 20.0
-hurtsInnocents = true
-hurtsTraitors = true
-hurtsNPCs = true
-metadata/_custom_type_script = "uid://bgor4p6p43uns"
+script = ExtResource("5_fpl05")
+damagePerTick = 1.0
+metadata/_custom_type_script = "uid://chlcmntip4s3"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4694743, 0.04663086, 0.03012085)

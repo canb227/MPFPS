@@ -127,7 +127,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         {
             if (rayCast.IsColliding())
             {
-                if (rayCast.GetCollider() is IsInteractable i)
+                if (rayCast.GetCollider() is IsButton i)
                 {
                     if (rayCast.GetCollider() is IsInventoryItem s)
                     {
@@ -203,7 +203,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
 
-    public void OnDamage(float damage, ulong byID)
+    public void TakeDamage(float damage, ulong byID)
     {
         currentHealth -= damage;
     }

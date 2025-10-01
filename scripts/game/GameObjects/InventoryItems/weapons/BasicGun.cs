@@ -28,9 +28,10 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
     private CollisionShape3D collider {  get; set; }
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
-    public Array<Node> triggers { get; set; }
-    public ulong cooldown { get; set; }
-    Array<Trigger> IsInteractable.triggers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public ulong interactCooldownSeconds { get; set; }
+    public Array<Triggers> triggers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool useSelfCooldown { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public InteractableCooldownSetting InteractableCooldownSetting { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void HandleInput(ActionFlags actionFlags)
     {
@@ -129,6 +130,11 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
     {
         equippedBy = byID;
 
+    }
+
+    public bool CanInteract(ulong byID)
+    {
+        throw new NotImplementedException();
     }
 }
 
