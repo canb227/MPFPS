@@ -36,7 +36,7 @@ public partial class GOAnimatedButton : GOButton
         }
         else
         {
-            animationPlayer.Play(FailedPressAnimation);
+            animationPlayer.Queue(FailedPressAnimation);
         }
 
     }
@@ -50,7 +50,7 @@ public partial class GOAnimatedButton : GOButton
         }
         else
         {
-            animationPlayer.Play(PressedWhileOnCooldownAnimation);
+            animationPlayer.Queue(PressedWhileOnCooldownAnimation);
         }
     }
 
@@ -63,7 +63,7 @@ public partial class GOAnimatedButton : GOButton
         }
         else
         {
-            animationPlayer.Play(SuccessfulPressAnimation);
+            animationPlayer.Queue(SuccessfulPressAnimation);
         }
     }
 
@@ -76,7 +76,7 @@ public partial class GOAnimatedButton : GOButton
         }
         else
         {
-            animationPlayer.Play(EnableAnimation);
+            animationPlayer.Queue(EnableAnimation);
         }
     }
 }

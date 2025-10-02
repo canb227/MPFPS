@@ -10,7 +10,7 @@ public partial class GOButton : GOBaseStaticBody, IsButton
 {
 
     [Export]
-    public ulong interactCooldownSeconds { get; set; }
+    public float interactCooldownSeconds { get; set; }
 
     [Export]
     public Godot.Collections.Array<Triggers> triggers { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 public interface IsInteractable
 {
     [Export]
-    public ulong interactCooldownSeconds { get; set; }
+    public float interactCooldownSeconds { get; set; }
 
     public bool CanInteract(ulong byID);
     public void OnInteract(ulong byID);
