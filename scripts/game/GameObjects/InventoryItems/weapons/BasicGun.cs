@@ -28,7 +28,7 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
     private CollisionShape3D collider {  get; set; }
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
-    public ulong interactCooldownSeconds { get; set; }
+    public float interactCooldownSeconds { get; set; }
     public Array<Triggers> triggers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public bool useSelfCooldown { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public ButtonCooldownSetting ButtonCooldownSetting { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

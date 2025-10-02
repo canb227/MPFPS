@@ -13,7 +13,7 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
 {
 
     [Export]
-    public ulong interactCooldownSeconds { get; set; }
+    public float interactCooldownSeconds { get; set; }
 
     [Export]
     public bool interruptable { get; set; }
