@@ -145,6 +145,16 @@ public partial class Tony : GOBasePlayerCharacter
     {
         throw new NotImplementedException();
     }
+
+    public override void PerTickShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void PerFrameShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 [MessagePackObject]

@@ -54,6 +54,16 @@ public partial class SimpleShape : GOBaseRigidBody
     {
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
+
+    public override void PerTickShared(double delta)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void PerFrameShared(double delta)
+    {
+        throw new System.NotImplementedException();
+    }
 }
 
 [MessagePackObject]

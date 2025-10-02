@@ -11,8 +11,9 @@ public interface HasTriggerables
     [Export]
     public Godot.Collections.Array<Trigger> triggerables { get; set; }
 
-    public bool CanTrigger(string triggerName, ulong byID);
+    public bool UserCanTrigger(string triggerName, ulong byID);
     public float GetTriggerCooldown(string triggerName, ulong byID);
+    public bool IsTriggerReady(string triggerName);
     public void Trigger(string triggerName, ulong byID);
 
     public Trigger GetTrigger(string triggerName);

@@ -16,280 +16,185 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     public Godot.Collections.Array<Triggers> triggers { get; set; }
 
     [Export]
-    public ButtonCooldownSetting ButtonCooldownSetting { get; set; }
+    public ButtonDisableCondition ButtonDisableCondition { get; set; } = ButtonDisableCondition.DisableIfAnyTriggersOnCooldown;
 
     public ulong lastInteractTick { get; set; }
     public ulong lastInteractPlayer { get; set; }
 
-    private float cooldownTimer = 0;
+    private float internalCooldownTimer = 0;
+    private bool internalCooldownReady = true;
+
     private bool waitingForCooldowns;
-    private bool ready = true;
+    private bool enabled = true;
     public override GameObjectType type { get; set; }
     public void OnInteract(ulong byID)
     {
-        Logging.Log($"Sending Interaction request over network", "GOInteractable");
-        GOButtonRPC packet = new();
-        packet.byID = byID;
-        byte[] data = MessagePackSerializer.Serialize(packet);
-        RPCManager.SendRPC(this, "rpc_OnInteract", data);
+        if (!internalCooldownReady)
+        {
+            Logging.Log($"Button press ignored as it is on internal cooldown! ({internalCooldownTimer} seconds remaining)", "GOButton");
+            return;
+        }
+        else
+        {
+            internalCooldownTimer = interactCooldownSeconds;
+            internalCooldownReady = false;
+            Logging.Log($"Button {id} pressed locally. Sending press over network", "GOButton");
+            GOButtonInteractRPC packet = new();
+            packet.byID = byID;
+            byte[] data = MessagePackSerializer.Serialize(packet);
+            RPCManager.SendRPC(this, "rpc_OnInteract", data);
+        }
     }
 
     public void rpc_OnInteract(byte[] data)
     {
-        GOButtonRPC packet = MessagePackSerializer.Deserialize<GOButtonRPC>(data);
-        Logging.Log($"Interaction request received from network: Object {id} interacted with by {packet.byID}", "GOInteractable");
+        GOButtonInteractRPC packet = MessagePackSerializer.Deserialize<GOButtonInteractRPC>(data);
+        Logging.Log($"Button press received on network. Button {id} interacted with by {packet.byID}", "GOButton");
+        lastInteractPlayer = packet.byID;
+        lastInteractTick = Global.gameState.tick;
+        if (interactCooldownSeconds > 0)
+        {
+            internalCooldownTimer = interactCooldownSeconds;
+        }
         _OnInteract(packet.byID);
     }
 
     private void _OnInteract(ulong byID)
     {
-        if (ButtonCooldownSetting == ButtonCooldownSetting.DisableOnlyIfSelfOnCooldown)
+        if (!enabled)
         {
-            if (!ready)
-            {
-                PressedWhileOnCooldown(byID);
-                return;
-            }
-            else
-            {
-                PressedSuccessfully(byID);
-                return;
-            }
+            PressedWhileDisabled(byID);
+            return;
         }
-        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
+        else if (!CanInteract(byID))
         {
-            if (!ready)
-            {
-                PressedWhileOnCooldown(byID);
-                return;
-            }
-            bool allReady = true;
-            foreach (Triggers t in triggers)
-            {
-                HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-                if (!triggerableNode.CanTrigger(t.triggerName, byID))
-                {
-                    allReady = false;
-                }
-            }
-            if (allReady)
-            {
-                PressedSuccessfully(byID);
-                return;
-            }
-            else
-            {
-                PressedFailed(byID);
-                return;
-            }
+            PressedFailed(byID);
+            return;
         }
-        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
+        else
         {
-            if (!ready)
-            {
-                PressedWhileOnCooldown(byID);
-                return;
-            }
-            bool atLeastOneReady = false;
-            foreach (Triggers t in triggers)
-            {
-                HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-                if (triggerableNode.CanTrigger(t.triggerName, byID))
-                {
-                    atLeastOneReady = true;
-                    break;
-                }
-            }
-            if (atLeastOneReady)
-            {
-                PressedSuccessfully(byID);
-                return;
-            }
-            else
-            {
-                PressedFailed(byID);
-                return;
-            }
+            PressedSuccessfully(byID);
         }
     }
 
-    public virtual void PressedWhileOnCooldown(ulong byID)
+    public virtual void PressedWhileDisabled(ulong byID)
     {
-        lastInteractPlayer = byID;
-        lastInteractTick = Global.gameState.tick;
+  
     }
 
     public virtual void PressedFailed(ulong byID)
     {
-        lastInteractPlayer = byID;
-        lastInteractTick = Global.gameState.tick;
-        if (interactCooldownSeconds > 0)
-        {
-            cooldownTimer = interactCooldownSeconds;
-            ready = false;
-        }
+
     }
+
     public virtual void PressedSuccessfully(ulong byID)
     {
         foreach (Triggers t in triggers)
         {
-            if (GetNode<HasTriggerables>(t.triggerableNode).CanTrigger(t.triggerName, byID))
-            {
-                GetNode<HasTriggerables>(t.triggerableNode).Trigger(t.triggerName, byID);
-            }
+            GetNode<HasTriggerables>(t.triggerableNode).Trigger(t.triggerName, byID);
         }
-        lastInteractPlayer = byID;
-        lastInteractTick = Global.gameState.tick;
-        if (interactCooldownSeconds>0)
+    }
+
+    public void rpc_SetEnabled(bool enabled)
+    {
+        GOButtonEnabledRPC packet = new();
+        packet.enabled = enabled;
+        byte[] data = MessagePackSerializer.Serialize(packet);
+        RPCManager.SendRPC(this, "_SetEnabled", data);
+    }
+
+    public void _SetEnabled(byte[] data)
+    {
+        GOButtonEnabledRPC packet = MessagePackSerializer.Deserialize<GOButtonEnabledRPC>(data);
+        if (enabled && !packet.enabled)
         {
-            cooldownTimer = interactCooldownSeconds;
-            ready = false;
+            enabled = false;
+            OnDisable();
         }
+        else if (!enabled && packet.enabled)
+        {
+            enabled = true;
+            OnEnable();
+        }
+    }
+
+
+    public virtual void OnEnable()
+    {
+        Logging.Log($"Button {id} is now Enabled!", "GOButton");
+    }
+    public virtual void OnDisable()
+    {
+        Logging.Log($"Button {id} is now Disabled!", "GOButton");
     }
 
     public override byte[] GenerateStateUpdate()
     {
-        GOButtonState update = new();
-        update.cooldownTimer = cooldownTimer;
-        return MessagePackSerializer.Serialize(update);
+        return new byte[0];
+
     }
 
     public override void ProcessStateUpdate(byte[] _update)
     {
-        GOButtonState update = MessagePackSerializer.Deserialize<GOButtonState>(_update);
-
-        if(cooldownTimer==0 && update.cooldownTimer!=0)
-        {
-            Logging.Error($"Sync error, interactable cooldown", "GOInteractable");
-        }
-        //cooldownTimer = update.cooldownTimer;
-    }
-    public virtual void OnEnable()
-    {
-        Logging.Log($"Interactable is now Enabled!", "GOInteractable");
 
     }
+
+
     public bool CanInteract(ulong byID)
     {
-        if (ButtonCooldownSetting == ButtonCooldownSetting.DisableOnlyIfSelfOnCooldown)
+        if (!enabled)
         {
-            if (!ready)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return false;
         }
-        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
+        foreach (Triggers t in triggers)
         {
-            if (!ready)
-            {
-                return false;
-            }
-            bool allReady = true;
-            foreach (Triggers t in triggers)
-            {
-                HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-                if (!triggerableNode.CanTrigger(t.triggerName, byID))
-                {
-                    allReady = false;
-                }
-            }
-            if (allReady)
-            {
-                return true;
-            }
-            else
+            if (!GetNode<HasTriggerables>(t.triggerableNode).UserCanTrigger(t.triggerName, byID))
             {
                 return false;
             }
         }
-        else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
-        {
-            if (!ready)
-            {
-                return false;
-            }
-            bool atLeastOneReady = false;
-            foreach (Triggers t in triggers)
-            {
-                HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-                if (triggerableNode.CanTrigger(t.triggerName, byID))
-                {
-                    atLeastOneReady = true;
-                    break;
-                }
-            }
-            if (atLeastOneReady)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        return false;
-        
-    }
-    public override void PerTickAuth(double delta)
-    {
-        if (cooldownTimer > 0)
-        {
-            cooldownTimer -= (float)delta;
-        }
-        if (!ready && cooldownTimer <= 0)
-        {
-            ready = true;
-            cooldownTimer = 0;
-            waitingForCooldowns = true;
-            Logging.Log($"Interactable {id} has finished its cooldown.", "GOInteractable");
-        }
-        if (waitingForCooldowns)
-        {
-            if (ButtonCooldownSetting == ButtonCooldownSetting.DisableOnlyIfSelfOnCooldown)
-            {
-                OnEnable();
-                waitingForCooldowns = false;
-            }
-            else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAllTriggersOnCooldown)
-            {
-                foreach (Triggers t in triggers)
-                {
-                    HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-                    if (triggerableNode.GetTriggerCooldown(t.triggerName, 0) == 0)
-                    {
-                        OnEnable();
-                        waitingForCooldowns = false;
-                        break;
-                    }
-                }
-            }
-            else if (ButtonCooldownSetting == ButtonCooldownSetting.DisableIfSelfOrAnyTriggersOnCooldown)
-            {
-                bool allReady = true;
-                foreach (Triggers t in triggers)
-                {
-                    HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-                    if (triggerableNode.GetTriggerCooldown(t.triggerName, 0) != 0)
-                    {
-                        allReady = false;
-                    }
-                }
-                if (allReady)
-                {
-                    OnEnable();
-                    waitingForCooldowns = false;
-                }
-            }
-        }
+        return true;
     }
 
-    public virtual void OnDisable()
+    public override void PerTickAuth(double delta)
     {
-        Logging.Log($"Interactable {id} is now disabled!", "GOInteractable");
+        bool allReady = true;
+        bool anyReady = false;
+        foreach (Triggers t in triggers)
+        {
+            HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
+            if (!triggerableNode.IsTriggerReady(t.triggerName))
+            {
+                allReady = false;
+            }
+            else
+            {
+                anyReady = true;
+            }
+        }
+        if (ButtonDisableCondition == ButtonDisableCondition.DisableIfAnyTriggersOnCooldown)
+        {
+            if (allReady && !enabled)
+            {
+                rpc_SetEnabled(true);
+            }
+            else if (!allReady && enabled)
+            {
+                rpc_SetEnabled(false);
+            }
+
+        }
+        else if (ButtonDisableCondition == ButtonDisableCondition.DisableIfAllTriggersOnCooldown)
+        {
+            if (anyReady && !enabled)
+            {
+                rpc_SetEnabled(true);
+            }
+            else if (!anyReady && enabled)
+            {
+                rpc_SetEnabled(false);
+            }
+        }
     }
 
     public override void PerFrameAuth(double delta)
@@ -306,26 +211,49 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     {
 
     }
+    public override void PerFrameShared(double delta)
+    {
+
+    }
+
+    public override void PerTickShared(double delta)
+    {
+        if (internalCooldownTimer > 0)
+        {
+            internalCooldownTimer -= (float)delta;
+        }
+        if (!internalCooldownReady && internalCooldownTimer <= 0)
+        {
+            internalCooldownTimer = 0;
+            internalCooldownReady = true;
+            Logging.Log($"Button {id} has finished its internal cooldown.", "GOButton");
+        }
+    }
 
     public override string GenerateStateString()
     {
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
-
 }
+
 
 [MessagePackObject]
 public struct GOButtonState
 {
     [Key(0)]
     public float cooldownTimer;
-
-
 }
 
 [MessagePackObject]
-public struct GOButtonRPC
+public struct GOButtonInteractRPC
 {
     [Key(0)]
     public ulong byID;
+}
+
+[MessagePackObject]
+public struct GOButtonEnabledRPC
+{
+    [Key(0)]
+    public bool enabled;
 }

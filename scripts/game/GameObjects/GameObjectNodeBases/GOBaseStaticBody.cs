@@ -19,8 +19,10 @@ public abstract partial class GOBaseStaticBody : StaticBody3D, GameObject
     public abstract byte[] GenerateStateUpdate();
     public abstract void PerFrameAuth(double delta);
     public abstract void PerFrameLocal(double delta);
+    public abstract void PerFrameShared(double delta);
     public abstract void PerTickAuth(double delta);
     public abstract void PerTickLocal(double delta);
+    public abstract void PerTickShared(double delta);
     public abstract void ProcessStateUpdate(byte[] update);
 }
 

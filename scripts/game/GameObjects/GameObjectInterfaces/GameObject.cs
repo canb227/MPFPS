@@ -13,6 +13,8 @@ public interface GameObject
     void PerFrameAuth(double delta);
     void PerTickLocal(double delta);
     void PerFrameLocal(double delta);
+    void PerTickShared(double delta);
+    void PerFrameShared(double delta);
     void ProcessStateUpdate(byte[] update);
     byte[] GenerateStateUpdate();
     string GenerateStateString();

@@ -27,5 +27,7 @@ public abstract partial class GOBaseRigidBody : RigidBody3D, GameObject
     public abstract void PerTickLocal(double delta);
     public abstract void PerFrameLocal(double delta);
     public abstract string GenerateStateString();
+    public abstract void PerTickShared(double delta);
+    public abstract void PerFrameShared(double delta);
 }
 

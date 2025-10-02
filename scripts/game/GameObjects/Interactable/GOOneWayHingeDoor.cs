@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 
 
 [GlobalClass]
-public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
+public partial class GOOneWayHingeDoor : GODoor
 {
 
-    [Export]
-    public float interactCooldownSeconds { get; set; }
+
 
     [Export]
     public bool interruptable { get; set; }
@@ -30,8 +29,7 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
     public bool opening { get; set; }
     public bool closing { get; set; }
     public bool ready { get; set; }
-    public ulong lastInteractTick { get; set; }
-    public ulong lastInteractPlayer { get; set; }
+
     private float cooldownTimer { get; set; }
 
     public bool IsOpen()
@@ -46,7 +44,7 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
         return false;
     }
 
-    public bool CanInteract(ulong byID)
+    public override bool CanInteract(ulong byID)
     {
         if (interruptable && ready)
         {
@@ -72,7 +70,7 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
         return new byte[1];
     }
 
-    public void OnInteract(ulong byID)
+    public override void OnInteract(ulong byID)
     {
         GODoorRPC packet = new();
         packet.byID = byID;
@@ -82,7 +80,7 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
 
     public void rpc_OnInteract(byte[] data)
     {
-        GOButtonRPC packet = MessagePackSerializer.Deserialize<GOButtonRPC>(data);
+        GOButtonInteractRPC packet = MessagePackSerializer.Deserialize<GOButtonInteractRPC>(data);
         Logging.Log($"Interaction request received from network: Object {id} interacted with by {packet.byID}", "GOInteractable");
         _OnInteract(packet.byID);
     }
@@ -155,7 +153,17 @@ public partial class GOOneWayHingeDoor : GOBaseStaticBody, IsInteractable
 
     public override void ProcessStateUpdate(byte[] update)
     {
-        throw new NotImplementedException();
+
+    }
+
+    public override void PerFrameShared(double delta)
+    {
+
+    }
+
+    public override void PerTickShared(double delta)
+    {
+
     }
 }
 

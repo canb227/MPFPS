@@ -31,7 +31,7 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
     public float interactCooldownSeconds { get; set; }
     public Array<Triggers> triggers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public bool useSelfCooldown { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public ButtonCooldownSetting ButtonCooldownSetting { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public ButtonDisableCondition ButtonCooldownSetting { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void HandleInput(ActionFlags actionFlags)
     {
@@ -133,6 +133,16 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
     }
 
     public bool CanInteract(ulong byID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void PerTickShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void PerFrameShared(double delta)
     {
         throw new NotImplementedException();
     }

@@ -7,6 +7,10 @@ using System.Collections.Generic;
 
 public static class Utils
 {
+    public static string IDToName(ulong steamID)
+    {
+        return SteamFriends.GetFriendPersonaName(new CSteamID(steamID));
+    }
 
     public static List<Node> GetChildrenRecursive(Node node, List<Node>returnValue)
     {

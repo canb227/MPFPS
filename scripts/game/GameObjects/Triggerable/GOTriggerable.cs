@@ -34,12 +34,9 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
         Trigger t = GetTrigger(triggerName);
         if (t!=null)
         {
-            if (t.cooldownSecondsRemaining == 0)
-            {
-                Logging.Log($"Trigger {t.triggerName} triggered!", "GOTriggerable");
-                t.cooldownSecondsRemaining = t.cooldownSeconds;
-                ActivateTriggerEffects(triggerName,byID);
-            }
+            Logging.Log($"Trigger {t.triggerName} triggered!", "GOTriggerable");
+            t.cooldownSecondsRemaining = t.cooldownSeconds;
+            ActivateTriggerEffects(triggerName,byID);
         }
     }
 
@@ -60,14 +57,9 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
 
-    public virtual bool CanTrigger(string triggerName, ulong byID)
+    public virtual bool UserCanTrigger(string triggerName, ulong byID)
     {
-        Trigger t = GetTrigger(triggerName);
-        if (t.cooldownSecondsRemaining == 0)
-        {
-            return true;
-        }
-        return false;
+        return IsTriggerReady(triggerName);
     }
 
     public virtual float GetTriggerCooldown(string triggerName, ulong byID)
@@ -78,6 +70,16 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
             return t.cooldownSecondsRemaining;
         }
         return 0;
+    }
+
+    public virtual bool IsTriggerReady(string triggerName)
+    {
+        Trigger t = GetTrigger(triggerName);
+        if (t.cooldownSecondsRemaining == 0)
+        {
+            return true;
+        }
+        return false;
     }
 }
 

@@ -10,74 +10,62 @@ public partial class GOAnimatedButton : GOButton
 {
 
     [Export]
-    public AnimationPlayer animationPlayer { get; set; }
+    public AnimationTree animationTree { get; set; }
 
     [Export]
-    public string SuccessfulPressAnimation { get; set; }
+    public string SuccessfulPressAnimationStateName { get; set; } = "success";
 
     [Export]
-    public string FailedPressAnimation { get; set; }
+    public string FailedPressAnimationStateName { get; set; } = "failed";
 
     [Export]
-    public string PressedWhileOnCooldownAnimation { get; set; }
+    public string PressedWhileDisabledAnimationStateName { get; set; } = "disabled";
 
     [Export]
-    public string DisableAnimation { get; set; }
+    public string DisableAnimationStateName { get; set; } = "disable";
 
     [Export]
-    public string EnableAnimation { get; set; }
+    public string EnableAnimationStateName { get; set; } = "enable";
+
+    private AnimationNodeStateMachinePlayback stateMachine {  get; set; }
+
+    public override void _Ready()
+    {
+        base._Ready();
+        stateMachine = animationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+    }
 
     public override void PressedFailed(ulong byID)
     {
         base.PressedFailed(byID);
-        if (FailedPressAnimation == null || FailedPressAnimation == "")
-        {
-            return;
-        }
-        else
-        {
-            animationPlayer.Queue(FailedPressAnimation);
-        }
-
-    }
-
-    public override void PressedWhileOnCooldown(ulong byID)
-    {
-        base.PressedWhileOnCooldown(byID);
-        if (PressedWhileOnCooldownAnimation==null || PressedWhileOnCooldownAnimation == "")
-        {
-            return;
-        }
-        else
-        {
-            animationPlayer.Queue(PressedWhileOnCooldownAnimation);
-        }
+        stateMachine.Travel(FailedPressAnimationStateName);
     }
 
     public override void PressedSuccessfully(ulong byID)
     {
         base.PressedSuccessfully(byID);
-        if (SuccessfulPressAnimation == null || SuccessfulPressAnimation == "")
-        {
-            return;
-        }
-        else
-        {
-            animationPlayer.Queue(SuccessfulPressAnimation);
-        }
+        stateMachine.Travel(SuccessfulPressAnimationStateName);
+    }
+
+    public override void PressedWhileDisabled(ulong byID)
+    {
+        base.PressedWhileDisabled(byID);
+        stateMachine.Travel(PressedWhileDisabledAnimationStateName);
     }
 
     public override void OnEnable()
     {
         base.OnEnable();
-        if (EnableAnimation == null || EnableAnimation == "")
-        {
-            return;
-        }
-        else
-        {
-            animationPlayer.Queue(EnableAnimation);
-        }
+        stateMachine.Travel(EnableAnimationStateName);
     }
+
+    public override void OnDisable()
+    {
+        base.OnDisable();
+        stateMachine.Travel(DisableAnimationStateName);
+    }
+
+
+
 }
 

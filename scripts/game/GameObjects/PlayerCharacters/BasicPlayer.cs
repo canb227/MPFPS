@@ -238,6 +238,16 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         this.team = team;
         this.role = role;
     }
+
+    public override void PerTickShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void PerFrameShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 [MessagePackObject]

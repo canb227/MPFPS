@@ -19,10 +19,12 @@ public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, GameObjec
     }
     public abstract byte[] GenerateStateUpdate();
     public abstract void ProcessStateUpdate(byte[] update);
+    public abstract string GenerateStateString();
     public abstract void PerTickAuth(double delta);
     public abstract void PerFrameAuth(double delta);
     public abstract void PerTickLocal(double delta);
     public abstract void PerFrameLocal(double delta);
-    public abstract string GenerateStateString();
+    public abstract void PerTickShared(double delta);
+    public abstract void PerFrameShared(double delta);
 }
 

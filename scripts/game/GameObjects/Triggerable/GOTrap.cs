@@ -76,4 +76,14 @@ public partial class GOTrap : GOTriggerable
     {
            return new byte[1];
     }
+
+    public override void PerFrameShared(double delta)
+    {
+
+    }
+
+    public override void PerTickShared(double delta)
+    {
+
+    }
 }

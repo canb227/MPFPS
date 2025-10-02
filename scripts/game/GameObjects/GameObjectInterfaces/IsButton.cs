@@ -13,12 +13,11 @@ public interface IsButton : IsInteractable
     public Godot.Collections.Array<Triggers> triggers { get; set; }
 
     [Export]
-    public ButtonCooldownSetting ButtonCooldownSetting { get; set; }
+    public ButtonDisableCondition ButtonDisableCondition { get; set; }
 }
 
-public enum ButtonCooldownSetting
+public enum ButtonDisableCondition
 {
-    DisableOnlyIfSelfOnCooldown,
-    DisableIfSelfOrAnyTriggersOnCooldown,
-    DisableIfSelfOrAllTriggersOnCooldown,
+    DisableIfAnyTriggersOnCooldown,
+    DisableIfAllTriggersOnCooldown,
 }

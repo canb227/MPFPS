@@ -110,6 +110,7 @@ public partial class GameState : Node3D
             {
                 gameObject.PerFrameLocal(delta);
             }
+            gameObject.PerFrameShared(delta);
         }
 
         // Draw ImGUI debug screens if they are on
@@ -145,6 +146,7 @@ public partial class GameState : Node3D
                 //if we're not the authority just run the local prediction and remediation code for the object
                 gameObject.PerTickLocal(delta);
             }
+            gameObject.PerTickShared(delta);
         }
 
         var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();

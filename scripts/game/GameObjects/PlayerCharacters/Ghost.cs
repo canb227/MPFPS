@@ -229,6 +229,16 @@ public partial class Ghost : GOBasePlayerCharacter
         this.team = team;
         this.role = role;
     }
+
+    public override void PerTickShared(double delta)
+    {
+
+    }
+
+    public override void PerFrameShared(double delta)
+    {
+
+    }
 }
 
 [MessagePackObject]
