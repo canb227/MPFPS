@@ -9,7 +9,7 @@ public interface IsInteractable
 {
     [Export]
     public float interactCooldownSeconds { get; set; }
-
+    public bool interactCooldownReady { get; set; }
     public bool CanInteract(ulong byID);
     public void OnInteract(ulong byID);
     public ulong lastInteractTick { get; set; }

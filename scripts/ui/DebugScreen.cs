@@ -69,6 +69,7 @@ public partial class DebugScreen : Control
     {
         "ghost",
         "tony",
+        "basicPlayer",
     };
 
 

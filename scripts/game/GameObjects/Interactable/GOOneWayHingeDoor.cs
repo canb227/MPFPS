@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 public partial class GOOneWayHingeDoor : GODoor
 {
 
-
-
     [Export]
     public bool interruptable { get; set; }
 
@@ -64,26 +62,10 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public override byte[] GenerateStateUpdate()
     {
-        return new byte[1];
+        return new byte[0];
     }
 
-    public override void OnInteract(ulong byID)
-    {
-        Logging.Log($"Door {id} interacted with locally, sending network interact.", "GODoor");
-        GODoorRPC packet = new();
-        packet.byID = byID;
-        byte[] data = MessagePackSerializer.Serialize(packet);
-        RPCManager.SendRPC(this, "rpc_OnInteract", data);
-    }
-
-    public void rpc_OnInteract(byte[] data)
-    {
-        GOButtonInteractRPC packet = MessagePackSerializer.Deserialize<GOButtonInteractRPC>(data);
-        Logging.Log($"Door interaction (doorID:{id} request received from network (userID:{packet.byID}", "GODoor");
-        _OnInteract(packet.byID);
-    }
-
-    private void _OnInteract(ulong byID)
+    public override void ActivateDoor(ulong byID)
     {
         if (CanInteract(byID))
         {
@@ -103,7 +85,6 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public override void PerFrameAuth(double delta)
     {
-        PerTickLocal(delta);
 
     }
 
@@ -134,6 +115,7 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public override void PerTickShared(double delta)
     {
+        base.PerTickShared(delta);
         if (opening)
         {
             float rot = RotationDegrees.Y;

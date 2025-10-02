@@ -11,45 +11,16 @@ public partial class GOTrap : GOTriggerable
     [Export]
     public AnimationPlayer animationPlayer { get; set; }
 
-    [Export]
-    public Godot.Collections.Array<GOHurtbox> hurtboxList { get; set; }
-
     public override void ActivateTriggerEffects(string triggerName, ulong byID)
     {
-        Logging.Log($"Trigger {triggerName} is now on a {GetTriggerCooldown(triggerName,byID)} cooldown!", "GOTriggerable");
         if (!animationPlayer.HasAnimation(triggerName))
         {
+            Logging.Error($"The AnimationPlayer of {Name} ({id}) is missing an animation that matches the triggerName: {triggerName}!", "GOTrap");
             return;
         }
         else
         {
             animationPlayer.Play(triggerName);
-        }
-    }
-
-
-    public override void PerTickAuth(double delta)
-    {
-        foreach (Trigger t in triggerables)
-        {
-            if (t.cooldownSecondsRemaining==0)
-            {
-                return;
-            }
-            if (t.cooldownSecondsRemaining > 0)
-            {
-                t.cooldownSecondsRemaining -= (float)delta;
-            }
-            if (t.cooldownSecondsRemaining <= 0)
-            {
-                Logging.Log($"Trigger {t.triggerName} is off cooldown!", "GOTriggerable");
-                t.cooldownSecondsRemaining = 0;
-            }
-        }
-
-        foreach (GOHurtbox t in hurtboxList)
-        {
-            t.DoDamage();
         }
     }
 
@@ -74,7 +45,7 @@ public partial class GOTrap : GOTriggerable
     }
     public override byte[] GenerateStateUpdate()
     {
-           return new byte[1];
+           return new byte[0];
     }
 
     public override void PerFrameShared(double delta)
@@ -82,7 +53,7 @@ public partial class GOTrap : GOTriggerable
 
     }
 
-    public override void PerTickShared(double delta)
+    public override void PerTickAuth(double delta)
     {
 
     }

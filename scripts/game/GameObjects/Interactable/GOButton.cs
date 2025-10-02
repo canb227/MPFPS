@@ -22,110 +22,108 @@ public partial class GOButton : GOBaseStaticBody, IsButton
     public ulong lastInteractPlayer { get; set; }
 
     private float internalCooldownTimer = 0;
-    private bool internalCooldownReady = true;
+    public bool interactCooldownReady { get; set; } = true;
 
     private bool waitingForCooldowns;
     private bool enabled = true;
     public override GameObjectType type { get; set; }
+
+
     public void OnInteract(ulong byID)
     {
-        if (!internalCooldownReady)
+        if (!interactCooldownReady)
         {
-            Logging.Log($"Button press ignored as it is on internal cooldown! ({internalCooldownTimer} seconds remaining)", "GOButton");
+            Logging.Log($"Button {Name} ({id}) press ignored as it is on internal cooldown! ({internalCooldownTimer} seconds remaining)", "GOButton");
             return;
         }
         else
         {
-            internalCooldownTimer = interactCooldownSeconds;
-            internalCooldownReady = false;
-            Logging.Log($"Button {id} pressed locally. Sending press over network", "GOButton");
-            GOButtonInteractRPC packet = new();
-            packet.byID = byID;
-            byte[] data = MessagePackSerializer.Serialize(packet);
-            RPCManager.SendRPC(this, "rpc_OnInteract", data);
+            if (interactCooldownSeconds > 0)
+            {
+                internalCooldownTimer = interactCooldownSeconds;
+                interactCooldownReady = false;
+            }
+            Logging.Log($"Button {Name} ({id}) pressed locally. Sending press over network", "GOButton");
+            RPCManager.RPC(this, MethodName.rpc_OnInteract, [byID]);
         }
     }
 
-    public void rpc_OnInteract(byte[] data)
+    [RPCMethod(mode = RPCMode.OnlySendToAuth)]
+    public void rpc_OnInteract(ulong byID)
     {
-        GOButtonInteractRPC packet = MessagePackSerializer.Deserialize<GOButtonInteractRPC>(data);
-        Logging.Log($"Button press received on network. Button {id} interacted with by {packet.byID}", "GOButton");
-        lastInteractPlayer = packet.byID;
+        Logging.Log($"Button press received on network. Button {Name} ({id}) interacted with by {byID}", "GOButton");
+        lastInteractPlayer = byID;
         lastInteractTick = Global.gameState.tick;
-        if (interactCooldownSeconds > 0)
-        {
-            internalCooldownTimer = interactCooldownSeconds;
-        }
-        _OnInteract(packet.byID);
-    }
-
-    private void _OnInteract(ulong byID)
-    {
         if (!enabled)
         {
-            PressedWhileDisabled(byID);
+            RPCManager.RPC(this, MethodName.PressedWhileDisabled, [byID]);
             return;
         }
         else if (!CanInteract(byID))
         {
-            PressedFailed(byID);
+            RPCManager.RPC(this, MethodName.PressedFailed, [byID]);
             return;
         }
         else
         {
-            PressedSuccessfully(byID);
+            RPCManager.RPC(this, MethodName.PressedSuccessfully, [byID]);
+            foreach (Triggers t in triggers)
+            {
+                if (GetNode<HasTriggerables>(t.triggerableNode).IsTriggerReady(t.triggerName))
+                {
+                    RPCManager.RPC((GameObject)GetNode<HasTriggerables>(t.triggerableNode), "Trigger", [t.triggerName, byID]);
+                }
+            }
+            return;
         }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public virtual void PressedWhileDisabled(ulong byID)
     {
   
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public virtual void PressedFailed(ulong byID)
     {
 
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public virtual void PressedSuccessfully(ulong byID)
     {
-        foreach (Triggers t in triggers)
-        {
-            GetNode<HasTriggerables>(t.triggerableNode).Trigger(t.triggerName, byID);
-        }
+
     }
 
-    public void rpc_SetEnabled(bool enabled)
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void SetEnabled(bool _enabled)
     {
-        GOButtonEnabledRPC packet = new();
-        packet.enabled = enabled;
-        byte[] data = MessagePackSerializer.Serialize(packet);
-        RPCManager.SendRPC(this, "_SetEnabled", data);
-    }
-
-    public void _SetEnabled(byte[] data)
-    {
-        GOButtonEnabledRPC packet = MessagePackSerializer.Deserialize<GOButtonEnabledRPC>(data);
-        if (enabled && !packet.enabled)
+        Logging.Log($"Button enable/disable received on network. Button {Name} ({id}) -> SetEnabled({_enabled})", "GOButton");
+        if (enabled && !_enabled)
         {
             enabled = false;
             OnDisable();
         }
-        else if (!enabled && packet.enabled)
+        else if (!enabled && _enabled)
         {
             enabled = true;
             OnEnable();
+        }
+        else
+        {
+            Logging.Warn($"Recoverable Desync! Button enable state mismatch.", "GOButton");
         }
     }
 
 
     public virtual void OnEnable()
     {
-        Logging.Log($"Button {id} is now Enabled!", "GOButton");
+        Logging.Log($"Button {Name} ({id}) is now Enabled!", "GOButton");
     }
     public virtual void OnDisable()
     {
-        Logging.Log($"Button {id} is now Disabled!", "GOButton");
+        Logging.Log($"Button {Name} ({id}) is now Disabled!", "GOButton");
     }
 
     public override byte[] GenerateStateUpdate()
@@ -176,11 +174,11 @@ public partial class GOButton : GOBaseStaticBody, IsButton
         {
             if (allReady && !enabled)
             {
-                rpc_SetEnabled(true);
+                RPCManager.RPC(this, MethodName.SetEnabled, [true]);
             }
             else if (!allReady && enabled)
             {
-                rpc_SetEnabled(false);
+                RPCManager.RPC(this, MethodName.SetEnabled, [false]);
             }
 
         }
@@ -188,11 +186,11 @@ public partial class GOButton : GOBaseStaticBody, IsButton
         {
             if (anyReady && !enabled)
             {
-                rpc_SetEnabled(true);
+                RPCManager.RPC(this, MethodName.SetEnabled, [true]);
             }
             else if (!anyReady && enabled)
             {
-                rpc_SetEnabled(false);
+                RPCManager.RPC(this, MethodName.SetEnabled, [false]);
             }
         }
     }
@@ -222,17 +220,17 @@ public partial class GOButton : GOBaseStaticBody, IsButton
         {
             internalCooldownTimer -= (float)delta;
         }
-        if (!internalCooldownReady && internalCooldownTimer <= 0)
+        if (!interactCooldownReady && internalCooldownTimer <= 0)
         {
             internalCooldownTimer = 0;
-            internalCooldownReady = true;
+            interactCooldownReady = true;
             Logging.Log($"Button {id} has finished its internal cooldown.", "GOButton");
         }
     }
 
     public override string GenerateStateString()
     {
-        return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
+        return $"Enabled:{enabled}|internalCooldownTimer:{internalCooldownTimer}|numTriggers{triggers.Count}";
     }
 }
 

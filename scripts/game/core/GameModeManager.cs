@@ -3,17 +3,26 @@ using MessagePack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-public partial class GameModeManager : Node
+public partial class GameModeManager : Node, GameObject
 {
     
     GameStateOptions options;
 
-
+    public ulong id { get; set; }
+    public float priority { get; set; }
+    public float priorityAccumulator { get; set; }
+    public ulong authority { get; set; }
+    public GameObjectType type { get; set; }
+    public bool dirty { get; set; }
+    public bool sleeping { get; set; }
+    public bool destroyed { get; set; }
+    public bool predict { get; set; }
 
     public override void _Ready()
     {
         Logging.Log($"Starting Game Mode manager", "GameModeManager");
         options = Global.gameState.options;
+        authority = Global.Lobby.LobbyHostSteamID;
     }
     public async void GameStartAsHost()
     {
@@ -44,7 +53,7 @@ public partial class GameModeManager : Node
             pa.team = Team.Traitor;
             pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.SendRPC(this, "rpc_AssignRole", data);
+            RPCManager.RPC(this, "AssignRole", [id, Team.Traitor, Role.Normal]);
         }
 
         foreach (ulong id in players)
@@ -54,19 +63,60 @@ public partial class GameModeManager : Node
             pa.team = Team.Innocent;
             pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.SendRPC(this, "rpc_AssignRole", data);
+            RPCManager.RPC(this, "AssignRole", [id,Team.Innocent,Role.Normal]);
         }
     }
 
-    public void rpc_AssignRole(byte[] data)
-    {
-        PlayerAssignment pa = MessagePackSerializer.Deserialize<PlayerAssignment>(data);
-        _AssignRole(pa.id, pa.team,pa.role);
-    }
-    private void _AssignRole(ulong id, Team team, Role role)
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void AssignRole(ulong id, Team team, Role role)
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
         Global.gameState.PlayerCharacters[id].Assignment(team, role);
+    }
+
+    public void PerTickAuth(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PerFrameAuth(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PerTickLocal(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PerFrameLocal(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PerTickShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PerFrameShared(double delta)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ProcessStateUpdate(byte[] update)
+    {
+        throw new NotImplementedException();
+    }
+
+    public byte[] GenerateStateUpdate()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateStateString()
+    {
+        throw new NotImplementedException();
     }
 }
 

@@ -71,7 +71,9 @@ public partial class GameState : Node3D
     private Node3D nodeStaticLevel;
     private List<Marker3D> PlayerSpawnPoints = new();
     private GameObject debugTarget;
-    private int numUpdatesPerFrame = 10;
+    private int numUpdatesPerFrame = 20;
+
+    public ulong StateFreshnessThreshold { get; private set; } = 60;
 
     //runs after GameState gets added to scenetree during Main.cs init
     public override void _Ready()
@@ -158,7 +160,7 @@ public partial class GameState : Node3D
             sortedDescending.RemoveAt(0);
             GameObjects[objID].priorityAccumulator = 0;
             byte[] upd = GameObjects[objID].GenerateStateUpdate();
-            Global.network.BroadcastData(upd, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
+            Global.network.BroadcastData(upd, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
             numUpdates++;
         }
 
@@ -522,7 +524,14 @@ public partial class GameState : Node3D
     public void ProcessStateUpdatePacketBytes(byte[] stateUpdatePacketBytes, ulong sender)
     {
         StateUpdatePacket stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes);
-        StateUpdatePacketBuffer.Enqueue(stateUpdate);
+        if (tick-stateUpdate.tick>StateFreshnessThreshold)
+        {
+            StateUpdatePacketBuffer.Enqueue(stateUpdate);
+        }
+        else
+        {
+            Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! Discarding...", "GameState");
+        }
     }
 
     public void ProcessPlayerInputPacketBytes(byte[] playerInputBytes, ulong sender)

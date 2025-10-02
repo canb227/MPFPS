@@ -438,3 +438,13 @@ ring_sides = 26
 [node name="CSGBox3D47" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.478506, -7.6093116, 2.3263385)
 size = Vector3(0.265625, 1, 0.30322266)
+
+[node name="Label3D2" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.65378, -6.146237, 1.8267577)
+text = "UnanimatedBasicButton
+&
+Crusher"
+
+[node name="Label3D" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.629435, -5.616703, 0)
+text = "Basic Hinge Door"

@@ -22,21 +22,44 @@ public partial class GOOneWayAnimTreeDoor : GODoor
 
     public override void _Ready()
     {
+        if (animationTree == null)
+        {
+            Logging.Error($"Door {Name} ({id}) could not load its Animation Tree! Check object properties.", "GODoor");
+        }
+
         stateMachine = animationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+        if (stateMachine == null)
+        {
+            Logging.Error($"Door {Name} ({id}) could not load its Animation State machine! Check animation tree configuration.", "GODoor");
+        }
     }
 
-    public override void OnInteract(ulong byID)
+    public override void ActivateDoor(ulong byID)
     {
-        base.OnInteract(byID);
         if (openingOrOpen)
         {
-            stateMachine.Travel(closeAnimationStateName);
-            openingOrOpen = false;
+            if (animationTree.HasNode(closeAnimationStateName))
+            {
+                stateMachine.Travel(closeAnimationStateName);
+                openingOrOpen = false;
+            }
+            else
+            {
+                Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the requested state: {closeAnimationStateName}!", "GODoor");
+            }
+
         }
         else
         {
-            stateMachine.Travel(openAnimationStateName);
-            openingOrOpen = true;
+            if (animationTree.HasNode(openAnimationStateName))
+            {
+                stateMachine.Travel(openAnimationStateName);
+                openingOrOpen = true;
+            }
+            else
+            {
+                Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the requested state: {closeAnimationStateName}!", "GODoor");
+            }
         }
     }
 

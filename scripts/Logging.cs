@@ -148,6 +148,7 @@ public static class Logging
         string finalMessage = customPrefix + ts + message + trace;
 
         LimboConsole.Warn(finalMessage);
+        GD.Print(finalMessage);
         GD.PushWarning(finalMessage);
         if (writeToFile)
         {
@@ -191,6 +192,7 @@ public static class Logging
 
         string finalMessage = customPrefix + ts + message + trace;
 
+        GD.Print(finalMessage);
         LimboConsole.Error(finalMessage);
         GD.PushError(finalMessage);
         if (writeToFile)

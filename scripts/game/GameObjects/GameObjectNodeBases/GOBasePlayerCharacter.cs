@@ -20,12 +20,12 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     [Export]
     public virtual Node3D cameraLocationNode { get; set; }
 
-    public abstract ulong controllingPlayerID { get; set; }
-    public abstract Team team {  get; set; }
-    public abstract Role role { get; set; }
-    public abstract PlayerInputData input { get; set; }
-    public override bool predict { get; set; } = true;
 
+    public virtual ulong controllingPlayerID { get; set; }
+    public virtual Team team {  get; set; }
+    public virtual Role role { get; set; }
+    public virtual PlayerInputData input { get; set; }
+    public override bool predict { get; set; } = true;
 
     public override void _Ready()
     {
@@ -35,7 +35,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         if (controllingPlayerID == Global.steamid)
         {
             Logging.Log($"A GOBasePlayerCharacter that I am controlling just spawned! Creating camera and hooking up inputs!", "PlayerCharacter");
-            CreateAndConfigureCamera();
+            SetupLocalPlayerCharacter();
         }
         else
         {
@@ -50,7 +50,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     /// <summary>
     /// PlayerCharacters must implement this function such that the cameraParent object is correctly set to the object that sets the camera's position
     /// </summary>
-    protected abstract void CreateAndConfigureCamera();
+    protected abstract void SetupLocalPlayerCharacter();
 
     public abstract Camera3D GetCamera();
 

@@ -15,28 +15,19 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
     public virtual Array<Trigger> triggerables { get; set; }
     public abstract void ActivateTriggerEffects(string triggerName, ulong byID);
 
-
-    public virtual void rpc_Trigger(byte[] data)
-    {
-        TriggerRPCPacket packet = MessagePackSerializer.Deserialize<TriggerRPCPacket>(data);
-        _Trigger(packet.triggerName, packet.byID);
-    }
-
-    public virtual void Trigger(string triggerName, ulong byID)
-    {
-       TriggerRPCPacket packet = new(triggerName,byID);
-       byte[] data = MessagePackSerializer.Serialize(packet);
-       RPCManager.SendRPC(this,"rpc_Trigger",data);
-    }
-
-    protected virtual void _Trigger(string triggerName, ulong byID)
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public virtual void Trigger(string triggerName,ulong byID)
     {
         Trigger t = GetTrigger(triggerName);
-        if (t!=null)
+        if (t != null)
         {
+            if (t.cooldownSecondsRemaining != 0)
+            {
+                Logging.Warn($"Recoverable Desync! Disagreement on trigger cooldown - triggering anyway.", "GOTriggerable");
+            }
             Logging.Log($"Trigger {t.triggerName} triggered!", "GOTriggerable");
             t.cooldownSecondsRemaining = t.cooldownSeconds;
-            ActivateTriggerEffects(triggerName,byID);
+            ActivateTriggerEffects(triggerName, byID);
         }
     }
 
@@ -50,6 +41,26 @@ public abstract partial class GOTriggerable : GOBaseStaticBody, HasTriggerables
             }
         }
         return null;
+    }
+
+    public override void PerTickShared(double delta)
+    {
+        foreach (Trigger t in triggerables)
+        {
+            if (t.cooldownSecondsRemaining == 0)
+            {
+                continue;
+            }
+            if (t.cooldownSecondsRemaining > 0)
+            {
+                t.cooldownSecondsRemaining -= (float)delta;
+            }
+            if (t.cooldownSecondsRemaining <= 0)
+            {
+                Logging.Log($"Trigger {t.triggerName} is off cooldown!", "GOTriggerable");
+                t.cooldownSecondsRemaining = 0;
+            }
+        }
     }
 
     public override string GenerateStateString()

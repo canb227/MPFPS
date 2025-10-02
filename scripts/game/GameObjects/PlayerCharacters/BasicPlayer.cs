@@ -183,7 +183,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     }
 
-    protected override void CreateAndConfigureCamera()
+    protected override void SetupLocalPlayerCharacter()
     {
         lookRotationNode = GetNode<Node3D>("cameraParent");
         PlayerCamera cam = new();

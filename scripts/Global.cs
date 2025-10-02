@@ -108,7 +108,7 @@ public partial class Global : Node
         Logging.Log("Connection to Steam successful.", "SteamAPI");
         Logging.Log($"Steam ID: {steamid}", "SteamAPI");
 
-
+        RPCManager.DiscoverRPCMethods();
         //OverrideGodotMultiplayerInterface();
         //From here next code ran is in Main.cs's _Ready()
     }

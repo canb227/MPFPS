@@ -7,22 +7,11 @@ using System;
 [GlobalClass]
 public partial class Ghost : GOBasePlayerCharacter
 {
-    public override ulong controllingPlayerID { get; set; }
-
-    public override Team team { get; set; }
-
-    public override PlayerInputData input { get; set; }
     public ActionFlags lastTickActions { get; set; }
-
-    public override Node3D lookRotationNode { get; set; }
 
     private PlayerCamera cam { get; set; }
 
     public RayCast3D rayCast { get; set; }
-    public override Node3D thirdPersonModel { get; set; }
-    public override Node3D firstPersonModel { get; set; }
-    public override Node3D cameraLocationNode { get; set; }
-    public override Role role { get; set; }
 
     public override void _Ready()
     {
@@ -204,7 +193,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     }
 
-    protected override void CreateAndConfigureCamera()
+    protected override void SetupLocalPlayerCharacter()
     {
         lookRotationNode = GetNode<Node3D>("cameraParent");
         PlayerCamera cam = new();

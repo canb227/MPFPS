@@ -121,7 +121,7 @@ public partial class Tony : GOBasePlayerCharacter
     {
     }
 
-    protected override void CreateAndConfigureCamera()
+    protected override void SetupLocalPlayerCharacter()
     {
         lookRotationNode = GetNode<Node3D>("cameraParent");
         PlayerCamera cam = new();

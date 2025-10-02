@@ -38,31 +38,66 @@ public partial class GOAnimatedButton : GOButton
     public override void PressedFailed(ulong byID)
     {
         base.PressedFailed(byID);
-        stateMachine.Travel(FailedPressAnimationStateName);
+        if (animationTree.HasNode(FailedPressAnimationStateName))
+        {
+            stateMachine.Travel(FailedPressAnimationStateName);
+        }
+        else
+        {
+            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {FailedPressAnimationStateName}!", "GOButton");
+        }
     }
 
     public override void PressedSuccessfully(ulong byID)
     {
         base.PressedSuccessfully(byID);
-        stateMachine.Travel(SuccessfulPressAnimationStateName);
+        if (animationTree.HasNode(SuccessfulPressAnimationStateName))
+        {
+            stateMachine.Travel(SuccessfulPressAnimationStateName);
+        }
+        else
+        {
+            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {SuccessfulPressAnimationStateName}!", "GOButton");
+        }
     }
 
     public override void PressedWhileDisabled(ulong byID)
     {
         base.PressedWhileDisabled(byID);
-        stateMachine.Travel(PressedWhileDisabledAnimationStateName);
+        if (animationTree.HasNode(PressedWhileDisabledAnimationStateName))
+        {
+            stateMachine.Travel(PressedWhileDisabledAnimationStateName);
+        }
+        else
+        {
+            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {PressedWhileDisabledAnimationStateName}!", "GOButton");
+        }
     }
 
     public override void OnEnable()
     {
         base.OnEnable();
-        stateMachine.Travel(EnableAnimationStateName);
+        if (animationTree.HasNode(EnableAnimationStateName))
+        {
+            stateMachine.Travel(EnableAnimationStateName);
+        }
+        else
+        {
+            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {EnableAnimationStateName}!", "GOButton");
+        }
     }
 
     public override void OnDisable()
     {
         base.OnDisable();
-        stateMachine.Travel(DisableAnimationStateName);
+        if (animationTree.HasNode(DisableAnimationStateName))
+        {
+            stateMachine.Travel(DisableAnimationStateName);
+        }
+        else
+        {
+            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {DisableAnimationStateName}!", "GOButton");
+        }
     }
 
 

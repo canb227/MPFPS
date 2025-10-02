@@ -32,6 +32,7 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
     public Array<Triggers> triggers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public bool useSelfCooldown { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public ButtonDisableCondition ButtonCooldownSetting { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool interactCooldownReady { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public void HandleInput(ActionFlags actionFlags)
     {

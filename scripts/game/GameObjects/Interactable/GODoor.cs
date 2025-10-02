@@ -13,6 +13,7 @@ public abstract partial class GODoor : GOBaseStaticBody, IsInteractable
     public virtual float interactCooldownSeconds { get; set; }
     public virtual ulong lastInteractTick { get; set; }
     public virtual ulong lastInteractPlayer { get; set; }
+    public bool interactCooldownReady { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     protected bool internalCooldownReady = true;
     protected float internalCooldownTimer;
@@ -23,16 +24,37 @@ public abstract partial class GODoor : GOBaseStaticBody, IsInteractable
     {
         if (!internalCooldownReady)
         {
-            Logging.Log($"Door interact ignored as it is on internal cooldown! ({internalCooldownTimer} seconds remaining)", "GODoor");
+            Logging.Log($"Door {Name} ({id}) press ignored as it is on internal cooldown! ({internalCooldownTimer} seconds remaining)", "GODoor");
             return;
         }
         else
         {
-            internalCooldownTimer = interactCooldownSeconds;
-            internalCooldownReady = false;
+            if (interactCooldownSeconds > 0)
+            {
+                internalCooldownTimer = interactCooldownSeconds;
+                internalCooldownReady = false;
+            }
+            Logging.Log($"Door {Name} ({id}) pressed locally. Sending press over network", "GODoor");
+            RPCManager.RPC(this, "rpc_OnInteract", [byID]);
         }
     }
 
+    [RPCMethod(mode = RPCMode.OnlySendToAuth)]
+    public virtual void rpc_OnInteract(ulong byID)
+    {
+        Logging.Log($"Door press received on network. Door {Name} ({id}) interacted with by {byID}", "GODoor");
+        lastInteractPlayer = byID;
+        lastInteractTick = Global.gameState.tick;
+        if (interactCooldownSeconds > 0)
+        {
+            internalCooldownTimer = interactCooldownSeconds;
+            internalCooldownReady = false;
+        }
+        RPCManager.RPC(this,MethodName.ActivateDoor, [byID]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public abstract void ActivateDoor(ulong byID);
 
     public override string GenerateStateString()
     {
@@ -80,3 +102,9 @@ public abstract partial class GODoor : GOBaseStaticBody, IsInteractable
 
 }
 
+[MessagePackObject]
+public struct GODoorInteractRPC
+{
+    [Key(0)]
+    public ulong byID;
+}
