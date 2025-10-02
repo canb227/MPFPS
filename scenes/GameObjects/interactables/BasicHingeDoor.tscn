@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dgvdoj8ynxphu"]
+
+[ext_resource type="Script" uid="uid://3t4quwmusu3x" path="res://scripts/game/GameObjects/Interactable/GOOneWayHingeDoor.cs" id="1_gjw82"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4g62h"]
+size = Vector3(2, 3, 0.3)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gjw82"]
+points = PackedVector3Array(0.96530604, 1.4364533, 0.14999999, -1.0238096, -1.5235113, -0.1738095, -0.96530604, -1.4364533, 0.14999999, -1.0238096, 1.5235113, -0.1738095, 1.0238096, -1.5235113, -0.1738095, 1.0238096, 1.5235113, -0.1738095, -0.96530604, 1.4364533, 0.14999999, 0.96530604, -1.4364533, 0.14999999)
+
+[node name="GOOneWayHingeDoor" type="StaticBody3D"]
+script = ExtResource("1_gjw82")
+interruptable = true
+degreesPerSecond = 10.0
+doorOpen_MaxDegrees = 90.0
+metadata/_custom_type_script = "uid://3t4quwmusu3x"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0074753, 0, 0)
+mesh = SubResource("BoxMesh_4g62h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0074753, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_gjw82")

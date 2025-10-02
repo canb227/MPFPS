@@ -17,7 +17,7 @@ public partial class GOOneWayAnimTreeDoor : GODoor
     [Export]
     public string closeAnimationStateName { get; set; } = "closed";
 
-    private bool open = false;
+    private bool openingOrOpen = false;
     private AnimationNodeStateMachinePlayback stateMachine { get; set; }
 
     public override void _Ready()
@@ -27,15 +27,16 @@ public partial class GOOneWayAnimTreeDoor : GODoor
 
     public override void OnInteract(ulong byID)
     {
-        if (open)
+        base.OnInteract(byID);
+        if (openingOrOpen)
         {
             stateMachine.Travel(closeAnimationStateName);
-            open = false;
+            openingOrOpen = false;
         }
         else
         {
             stateMachine.Travel(openAnimationStateName);
-            open = true;
+            openingOrOpen = true;
         }
     }
 

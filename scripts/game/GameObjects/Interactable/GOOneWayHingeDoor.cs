@@ -28,9 +28,6 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public bool opening { get; set; }
     public bool closing { get; set; }
-    public bool ready { get; set; }
-
-    private float cooldownTimer { get; set; }
 
     public bool IsOpen()
     {
@@ -46,11 +43,11 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public override bool CanInteract(ulong byID)
     {
-        if (interruptable && ready)
+        if (interruptable && internalCooldownReady)
         {
             return true;
         }
-        else if (!interruptable && ready && !opening && !closing)
+        else if (!interruptable && internalCooldownReady && !opening && !closing)
         {
             return true;
         }
@@ -62,7 +59,7 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public override string GenerateStateString()
     {
-        return "";
+        return $"opening:{opening}|closing:{closing}|ready:{internalCooldownReady}|cooldown:{internalCooldownTimer}";
     }
 
     public override byte[] GenerateStateUpdate()
@@ -72,6 +69,7 @@ public partial class GOOneWayHingeDoor : GODoor
 
     public override void OnInteract(ulong byID)
     {
+        Logging.Log($"Door {id} interacted with locally, sending network interact.", "GODoor");
         GODoorRPC packet = new();
         packet.byID = byID;
         byte[] data = MessagePackSerializer.Serialize(packet);
@@ -81,7 +79,7 @@ public partial class GOOneWayHingeDoor : GODoor
     public void rpc_OnInteract(byte[] data)
     {
         GOButtonInteractRPC packet = MessagePackSerializer.Deserialize<GOButtonInteractRPC>(data);
-        Logging.Log($"Interaction request received from network: Object {id} interacted with by {packet.byID}", "GOInteractable");
+        Logging.Log($"Door interaction (doorID:{id} request received from network (userID:{packet.byID}", "GODoor");
         _OnInteract(packet.byID);
     }
 
@@ -93,15 +91,11 @@ public partial class GOOneWayHingeDoor : GODoor
             {
                 closing = true;
                 opening = false;
-                ready = false;
-                cooldownTimer = interactCooldownSeconds;
             }
             else if (IsClosed() || closing)
             {
                 closing = false;
                 opening = true;
-                ready = false;
-                cooldownTimer = interactCooldownSeconds;
             }
         }
     }
@@ -124,6 +118,21 @@ public partial class GOOneWayHingeDoor : GODoor
     }
 
     public override void PerTickLocal(double delta)
+    {
+
+    }
+
+    public override void ProcessStateUpdate(byte[] update)
+    {
+
+    }
+
+    public override void PerFrameShared(double delta)
+    {
+
+    }
+
+    public override void PerTickShared(double delta)
     {
         if (opening)
         {
@@ -149,21 +158,6 @@ public partial class GOOneWayHingeDoor : GODoor
             }
             RotationDegrees = new Vector3(RotationDegrees.X, rot, RotationDegrees.Z);
         }
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-
-    }
-
-    public override void PerTickShared(double delta)
-    {
-
     }
 }
 

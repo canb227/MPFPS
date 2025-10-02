@@ -73,7 +73,7 @@ public partial class Ghost : GOBasePlayerCharacter
         {
             if (rayCast.IsColliding())
             {
-                if (rayCast.GetCollider() is IsButton i)
+                if (rayCast.GetCollider() is IsInteractable i)
                 {
                     i.OnInteract(id);
                 }
