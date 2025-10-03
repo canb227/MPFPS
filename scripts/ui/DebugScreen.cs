@@ -54,7 +54,6 @@ public partial class DebugScreen : Control
         "res://assets/ui/img/debugMapScreenie.png",
         "res://assets/ui/img/debugMapFlatScreenie.png",
         "res://assets/ui/img/debugMapFlatScreenie.png",
-
     };
 
     public static List<string> directLoadMap_mapNames = new()
