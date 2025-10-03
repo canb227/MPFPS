@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=16 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://cxp7xf02f0cqw" path="res://scenes/GameObjects/interactables/BasicUnanimatedTestButton.tscn" id="2_kx1m7"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
+[ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="3_k4evv"]
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
 [ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
 
@@ -26,6 +27,12 @@ script = ExtResource("3_25h3n")
 triggerName = "press_down"
 cooldownSeconds = 5.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+
+[sub_resource type="Resource" id="Resource_vegv4"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../trap_crusher1")
+triggerName = "press_down"
+metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_o33i4"]
 script = ExtResource("5_k4evv")
@@ -80,6 +87,11 @@ shadow_enabled = true
 [node name="trap_crusher1" parent="GameObjects" instance=ExtResource("2_qvxys")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)
 triggerables = Array[Object]([SubResource("Resource_kx1m7")])
+
+[node name="button_crusher2_animated" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.064123, -7.0766, 2.3524747)
+interactCooldownSeconds = 0.8
+triggers = Array[Object]([SubResource("Resource_vegv4")])
 
 [node name="button_crusher1" parent="GameObjects" instance=ExtResource("2_kx1m7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.511404, -7.0843544, 2.3632946)

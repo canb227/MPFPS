@@ -38,20 +38,22 @@ public partial class GOAnimatedButton : GOButton
     public override void PressedFailed(ulong byID)
     {
         base.PressedFailed(byID);
-        if (animationTree.HasNode(FailedPressAnimationStateName))
+        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+        if (stateMachineNode.HasNode(FailedPressAnimationStateName))
         {
             stateMachine.Travel(FailedPressAnimationStateName);
         }
         else
         {
-            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {FailedPressAnimationStateName}!", "GOButton");
+            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {FailedPressAnimationStateName}", "GOButton");
         }
     }
 
     public override void PressedSuccessfully(ulong byID)
     {
         base.PressedSuccessfully(byID);
-        if (animationTree.HasNode(SuccessfulPressAnimationStateName))
+        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+        if (stateMachineNode.HasNode(SuccessfulPressAnimationStateName))
         {
             stateMachine.Travel(SuccessfulPressAnimationStateName);
         }
@@ -64,7 +66,8 @@ public partial class GOAnimatedButton : GOButton
     public override void PressedWhileDisabled(ulong byID)
     {
         base.PressedWhileDisabled(byID);
-        if (animationTree.HasNode(PressedWhileDisabledAnimationStateName))
+        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+        if (stateMachineNode.HasNode(PressedWhileDisabledAnimationStateName))
         {
             stateMachine.Travel(PressedWhileDisabledAnimationStateName);
         }
@@ -77,7 +80,8 @@ public partial class GOAnimatedButton : GOButton
     public override void OnEnable()
     {
         base.OnEnable();
-        if (animationTree.HasNode(EnableAnimationStateName))
+        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+        if (stateMachineNode.HasNode(EnableAnimationStateName))
         {
             stateMachine.Travel(EnableAnimationStateName);
         }
@@ -90,7 +94,8 @@ public partial class GOAnimatedButton : GOButton
     public override void OnDisable()
     {
         base.OnDisable();
-        if (animationTree.HasNode(DisableAnimationStateName))
+        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+        if (stateMachineNode.HasNode(DisableAnimationStateName))
         {
             stateMachine.Travel(DisableAnimationStateName);
         }

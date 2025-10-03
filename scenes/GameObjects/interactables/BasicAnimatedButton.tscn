@@ -151,7 +151,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_nbi0k"]
 resource_name = "button_disabled"
-length = 0.4
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -159,10 +159,10 @@ tracks/0/path = NodePath("ButtonTop:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, -0.028905012, 0)]
+"values": [Vector3(0, -0.028905012, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -171,10 +171,10 @@ tracks/1/path = NodePath("CollisionShape3D2:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, -0.029, 0)]
+"values": [Vector3(0, -0.029, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_i5ukd"]
@@ -319,9 +319,6 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4576n"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v2eq8"]
-switch_mode = 2
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_le5jq"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bcckd"]
@@ -335,23 +332,27 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u4uqc"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ple8t"]
+switch_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_obso4"]
+allow_transition_to_self = true
 states/End/position = Vector2(874, 323)
 states/RESET/node = SubResource("AnimationNodeAnimation_js3mx")
 states/RESET/position = Vector2(529, 100)
-states/Start/position = Vector2(764, -59)
+states/Start/position = Vector2(161, 306)
 states/disable/node = SubResource("AnimationNodeAnimation_2lved")
 states/disable/position = Vector2(529, 229)
 states/disabled/node = SubResource("AnimationNodeAnimation_ple8t")
-states/disabled/position = Vector2(326, 162)
+states/disabled/position = Vector2(318, 129)
 states/enable/node = SubResource("AnimationNodeAnimation_ou8h7")
-states/enable/position = Vector2(529, -18)
+states/enable/position = Vector2(706, -10)
 states/failed/node = SubResource("AnimationNodeAnimation_41l1i")
-states/failed/position = Vector2(326, 35)
+states/failed/position = Vector2(336, 12)
 states/success/node = SubResource("AnimationNodeAnimation_v0nuy")
-states/success/position = Vector2(720, 100)
-transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_w45cq"), "RESET", "disable", SubResource("AnimationNodeStateMachineTransition_8j744"), "disable", "RESET", SubResource("AnimationNodeStateMachineTransition_rtync"), "RESET", "success", SubResource("AnimationNodeStateMachineTransition_4576n"), "success", "RESET", SubResource("AnimationNodeStateMachineTransition_v2eq8"), "RESET", "enable", SubResource("AnimationNodeStateMachineTransition_le5jq"), "enable", "RESET", SubResource("AnimationNodeStateMachineTransition_bcckd"), "RESET", "failed", SubResource("AnimationNodeStateMachineTransition_i3tdt"), "failed", "RESET", SubResource("AnimationNodeStateMachineTransition_lkcun"), "disabled", "RESET", SubResource("AnimationNodeStateMachineTransition_4g8la"), "RESET", "disabled", SubResource("AnimationNodeStateMachineTransition_u4uqc")]
-graph_offset = Vector2(-263, -115)
+states/success/position = Vector2(742, 100)
+transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_w45cq"), "RESET", "disable", SubResource("AnimationNodeStateMachineTransition_8j744"), "disable", "RESET", SubResource("AnimationNodeStateMachineTransition_rtync"), "RESET", "success", SubResource("AnimationNodeStateMachineTransition_4576n"), "RESET", "enable", SubResource("AnimationNodeStateMachineTransition_le5jq"), "enable", "RESET", SubResource("AnimationNodeStateMachineTransition_bcckd"), "RESET", "failed", SubResource("AnimationNodeStateMachineTransition_i3tdt"), "failed", "RESET", SubResource("AnimationNodeStateMachineTransition_lkcun"), "disabled", "RESET", SubResource("AnimationNodeStateMachineTransition_4g8la"), "RESET", "disabled", SubResource("AnimationNodeStateMachineTransition_u4uqc"), "success", "RESET", SubResource("AnimationNodeStateMachineTransition_ple8t")]
+graph_offset = Vector2(-279, -109)
 
 [node name="BasicAnimatedButton" type="StaticBody3D" node_paths=PackedStringArray("animationTree")]
 script = ExtResource("1_mcndx")
