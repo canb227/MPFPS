@@ -178,14 +178,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8789253, -3.030101, -0.1954
 size = Vector3(7.976288, 6.476616, 3.3648682)
 material = SubResource("FogMaterial_wk72t")
 
-[node name="Point" parent="Generator" index="32"]
+[node name="WestJunctionCeiling" parent="WestJunction" index="2"]
+visible = false
+
+[node name="GeneratorCeiling" parent="Generator" index="15"]
+visible = false
+
+[node name="Point" parent="Generator" index="33"]
 omni_range = 6.241
 
-[node name="Point_001" parent="Generator" index="33"]
+[node name="Point_001" parent="Generator" index="34"]
 omni_range = 6.241
 
-[node name="Point_002" parent="Generator" index="34"]
+[node name="Point_002" parent="Generator" index="35"]
 omni_range = 6.241
+
+[node name="LabelingOfficeCeiling" parent="LabellingOffice" index="13"]
+visible = false
 
 [node name="LightmapGI" type="LightmapGI" parent="." index="17"]
 use_texture_for_bounces = false
