@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4 uid="uid://deq0mm8jgluwn"]
+[gd_scene load_steps=38 format=4 uid="uid://deq0mm8jgluwn"]
 
 [ext_resource type="Script" uid="uid://b7si2ee0w4q2s" path="res://scripts/game/GameObjects/Interactable/GOAnimatedButton.cs" id="1_mcndx"]
 [ext_resource type="AudioStream" uid="uid://b76yxas6tlsr8" path="res://assets/audio/environment/blip1.wav" id="2_ple8t"]
@@ -297,14 +297,17 @@ animation = &"RESET"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2lved"]
 animation = &"button_disabled"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ple8t"]
+animation = &"button_press_fail"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ou8h7"]
 animation = &"button_enabled"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0nuy"]
-animation = &"button_press"
-
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_41l1i"]
 animation = &"button_press_fail"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0nuy"]
+animation = &"button_press"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w45cq"]
 advance_mode = 2
@@ -328,24 +331,32 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lkcun"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4g8la"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u4uqc"]
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_obso4"]
 states/End/position = Vector2(874, 323)
 states/RESET/node = SubResource("AnimationNodeAnimation_js3mx")
 states/RESET/position = Vector2(529, 100)
-states/Start/position = Vector2(171, 315)
-states/button_disabled/node = SubResource("AnimationNodeAnimation_2lved")
-states/button_disabled/position = Vector2(529, 229)
-states/button_enabled/node = SubResource("AnimationNodeAnimation_ou8h7")
-states/button_enabled/position = Vector2(529, -18)
-states/button_press/node = SubResource("AnimationNodeAnimation_v0nuy")
-states/button_press/position = Vector2(720, 100)
-states/button_press_fail/node = SubResource("AnimationNodeAnimation_41l1i")
-states/button_press_fail/position = Vector2(316, 100)
-transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_w45cq"), "RESET", "button_disabled", SubResource("AnimationNodeStateMachineTransition_8j744"), "button_disabled", "RESET", SubResource("AnimationNodeStateMachineTransition_rtync"), "RESET", "button_press", SubResource("AnimationNodeStateMachineTransition_4576n"), "button_press", "RESET", SubResource("AnimationNodeStateMachineTransition_v2eq8"), "RESET", "button_enabled", SubResource("AnimationNodeStateMachineTransition_le5jq"), "button_enabled", "RESET", SubResource("AnimationNodeStateMachineTransition_bcckd"), "RESET", "button_press_fail", SubResource("AnimationNodeStateMachineTransition_i3tdt"), "button_press_fail", "RESET", SubResource("AnimationNodeStateMachineTransition_lkcun")]
+states/Start/position = Vector2(764, -59)
+states/disable/node = SubResource("AnimationNodeAnimation_2lved")
+states/disable/position = Vector2(529, 229)
+states/disabled/node = SubResource("AnimationNodeAnimation_ple8t")
+states/disabled/position = Vector2(326, 162)
+states/enable/node = SubResource("AnimationNodeAnimation_ou8h7")
+states/enable/position = Vector2(529, -18)
+states/failed/node = SubResource("AnimationNodeAnimation_41l1i")
+states/failed/position = Vector2(326, 35)
+states/success/node = SubResource("AnimationNodeAnimation_v0nuy")
+states/success/position = Vector2(720, 100)
+transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_w45cq"), "RESET", "disable", SubResource("AnimationNodeStateMachineTransition_8j744"), "disable", "RESET", SubResource("AnimationNodeStateMachineTransition_rtync"), "RESET", "success", SubResource("AnimationNodeStateMachineTransition_4576n"), "success", "RESET", SubResource("AnimationNodeStateMachineTransition_v2eq8"), "RESET", "enable", SubResource("AnimationNodeStateMachineTransition_le5jq"), "enable", "RESET", SubResource("AnimationNodeStateMachineTransition_bcckd"), "RESET", "failed", SubResource("AnimationNodeStateMachineTransition_i3tdt"), "failed", "RESET", SubResource("AnimationNodeStateMachineTransition_lkcun"), "disabled", "RESET", SubResource("AnimationNodeStateMachineTransition_4g8la"), "RESET", "disabled", SubResource("AnimationNodeStateMachineTransition_u4uqc")]
 graph_offset = Vector2(-263, -115)
 
-[node name="BasicAnimatedButton" type="StaticBody3D"]
+[node name="BasicAnimatedButton" type="StaticBody3D" node_paths=PackedStringArray("animationTree")]
 script = ExtResource("1_mcndx")
+animationTree = NodePath("AnimationTree")
+interactCooldownSeconds = 0.1
 metadata/_custom_type_script = "uid://b7si2ee0w4q2s"
 
 [node name="ButtonBase" type="MeshInstance3D" parent="."]
