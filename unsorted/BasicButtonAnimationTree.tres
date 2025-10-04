@@ -1,0 +1,69 @@
+[gd_resource type="AnimationNodeStateMachine" load_steps=21 format=3 uid="uid://m8gs4resy8tg"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2lved"]
+animation = &"button_disable"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_64ov8"]
+animation = &"button_disabled"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ou8h7"]
+animation = &"button_enable"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iw7qq"]
+animation = &"button_fail"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_js3mx"]
+animation = &"rest"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0nuy"]
+animation = &"button_press"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8j744"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rtync"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4576n"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v2eq8"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_le5jq"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bcckd"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gaacm"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8ejkm"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ltoov"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tvghe"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2u85w"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u48kl"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xmamf"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fg8w7"]
+
+[resource]
+states/End/position = Vector2(874, 323)
+states/Start/position = Vector2(723, 329)
+states/disable/node = SubResource("AnimationNodeAnimation_2lved")
+states/disable/position = Vector2(529, 231)
+states/disabled/node = SubResource("AnimationNodeAnimation_64ov8")
+states/disabled/position = Vector2(374, 143)
+states/enable/node = SubResource("AnimationNodeAnimation_ou8h7")
+states/enable/position = Vector2(529, -14)
+states/failed/node = SubResource("AnimationNodeAnimation_iw7qq")
+states/failed/position = Vector2(374, 45)
+states/rest/node = SubResource("AnimationNodeAnimation_js3mx")
+states/rest/position = Vector2(529, 100)
+states/success/node = SubResource("AnimationNodeAnimation_v0nuy")
+states/success/position = Vector2(723, 100)
+transitions = ["rest", "disable", SubResource("AnimationNodeStateMachineTransition_8j744"), "disable", "rest", SubResource("AnimationNodeStateMachineTransition_rtync"), "rest", "success", SubResource("AnimationNodeStateMachineTransition_4576n"), "success", "rest", SubResource("AnimationNodeStateMachineTransition_v2eq8"), "rest", "enable", SubResource("AnimationNodeStateMachineTransition_le5jq"), "enable", "rest", SubResource("AnimationNodeStateMachineTransition_bcckd"), "enable", "success", SubResource("AnimationNodeStateMachineTransition_gaacm"), "Start", "rest", SubResource("AnimationNodeStateMachineTransition_8ejkm"), "rest", "disabled", SubResource("AnimationNodeStateMachineTransition_ltoov"), "disabled", "rest", SubResource("AnimationNodeStateMachineTransition_tvghe"), "rest", "failed", SubResource("AnimationNodeStateMachineTransition_2u85w"), "failed", "rest", SubResource("AnimationNodeStateMachineTransition_u48kl"), "enable", "failed", SubResource("AnimationNodeStateMachineTransition_xmamf"), "disable", "disabled", SubResource("AnimationNodeStateMachineTransition_fg8w7")]
+graph_offset = Vector2(-292, -105)

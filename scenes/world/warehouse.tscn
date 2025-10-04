@@ -86,20 +86,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.003582, 1.6181264, 19.532
 addressTextOptions = Array[String](["Street", "Court", "Drive", "Lane"])
 triggerables = Array[Object]([SubResource("Resource_7fd8x")])
 
-[node name="LabellingMonitorButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
+[node name="GOLabellingMonitorButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -36.977665, 1.5019618, 19.211939)
 triggers = Array[Object]([SubResource("Resource_nxn20")])
 
-[node name="LabellingMonitorButton2" parent="GameObjects" instance=ExtResource("4_tbycg")]
+[node name="GOLabellingMonitorButton2" parent="GameObjects" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -38.98687, 1.5019618, 19.211939)
 triggers = Array[Object]([SubResource("Resource_s2rxf")])
 
-[node name="LabellingMonitorButton3" parent="GameObjects" instance=ExtResource("4_tbycg")]
+[node name="GOLabellingMonitorButton3" parent="GameObjects" instance=ExtResource("4_tbycg")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -40.98074, 1.5019618, 19.211939)
 triggers = Array[Object]([SubResource("Resource_hd0xh")])
 
 [node name="GOLabelPrinter" parent="GameObjects" instance=ExtResource("5_sk24o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -43.610016, 0.029013816, 19.109041)
+
+[node name="GOPrintButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
+transform = Transform3D(2.7910938, 0, 0, 0, -1.2200259e-07, 2.7910938, 0, -2.7910938, -1.2200259e-07, -42.317486, 1.5019618, 19.211939)
+triggers = Array[Object]([SubResource("Resource_hd0xh")])
 
 [node name="meta" type="Node" parent="."]
 
