@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 
 [GlobalClass]
-public partial class GOOneWayHingeDoor : GODoor
+public partial class GOOneWayHingeDoor : GOBaseStaticInteractable
 {
 
     [Export]
@@ -27,6 +27,36 @@ public partial class GOOneWayHingeDoor : GODoor
     public bool opening { get; set; }
     public bool closing { get; set; }
 
+    [RPCMethod(RPCMode.OnlySendToAuth)]
+    public override void Auth_HandleInteractionRequest(ulong byID, ulong onTick)
+    {
+        if (interruptable || (!opening && !closing))
+        {
+            if (IsOpen() || opening)
+            {
+                RPCManager.RPC(this, MethodName.Close, [byID, onTick]);
+            }
+            else if (IsClosed() || closing)
+            {
+                RPCManager.RPC(this, MethodName.Open, [byID, onTick]);
+            }
+        }
+    }
+
+    [RPCMethod(RPCMode.SendToAllPeers)]
+    public void Open(ulong byID, ulong onTick)
+    {
+        closing = false;
+        opening = true;
+    }
+
+    [RPCMethod(RPCMode.SendToAllPeers)]
+    public void Close(ulong byID, ulong onTick)
+    {
+        closing = true;
+        opening = false;
+    }
+
     public bool IsOpen()
     {
         if (RotationDegrees.Y == doorOpen_MaxDegrees) return true;
@@ -39,78 +69,14 @@ public partial class GOOneWayHingeDoor : GODoor
         return false;
     }
 
-    public override bool CanInteract(ulong byID)
-    {
-        if (interruptable && internalCooldownReady)
-        {
-            return true;
-        }
-        else if (!interruptable && internalCooldownReady && !opening && !closing)
-        {
-            return true;
-        }
-        else
-        {
-            return false; 
-        }
-    }
-
     public override string GenerateStateString()
     {
-        return $"opening:{opening}|closing:{closing}|ready:{internalCooldownReady}|cooldown:{internalCooldownTimer}";
+        return $"opening:{opening}|closing:{closing}|isopen:{IsOpen()}|isCLosed:{IsClosed()}|ready:{interactCooldownReady}|cooldown:{interactCooldownTimer}|speed:{degreesPerSecond}";
     }
 
     public override byte[] GenerateStateUpdate()
     {
         return new byte[0];
-    }
-
-    public override void ActivateDoor(ulong byID)
-    {
-        if (CanInteract(byID))
-        {
-            if (IsOpen() || opening)
-            {
-                closing = true;
-                opening = false;
-            }
-            else if (IsClosed() || closing)
-            {
-                closing = false;
-                opening = true;
-            }
-        }
-    }
-
-
-    public override void PerFrameAuth(double delta)
-    {
-
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-
-    }
-
-    public override void PerTickAuth(double delta)
-    {
-
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-
     }
 
     public override void PerTickShared(double delta)
@@ -141,11 +107,6 @@ public partial class GOOneWayHingeDoor : GODoor
             RotationDegrees = new Vector3(RotationDegrees.X, rot, RotationDegrees.Z);
         }
     }
-}
 
-[MessagePackObject]
-public struct GODoorRPC
-{
-    [Key(0)]
-    public ulong byID;
+
 }

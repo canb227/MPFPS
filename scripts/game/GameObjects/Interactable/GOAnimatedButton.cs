@@ -8,104 +8,109 @@ using System.Threading.Tasks;
 [GlobalClass]
 public partial class GOAnimatedButton : GOButton
 {
-
     [Export]
     public AnimationTree animationTree { get; set; }
-
+    [ExportCategory("Animations")]
     [Export]
     public string SuccessfulPressAnimationStateName { get; set; } = "success";
-
     [Export]
     public string FailedPressAnimationStateName { get; set; } = "failed";
-
     [Export]
-    public string PressedWhileDisabledAnimationStateName { get; set; } = "disabled";
-
+    public string DisabledPressAnimationStateName { get; set; } = "disabled";
     [Export]
     public string DisableAnimationStateName { get; set; } = "disable";
-
     [Export]
     public string EnableAnimationStateName { get; set; } = "enable";
+
 
     private AnimationNodeStateMachinePlayback stateMachine {  get; set; }
 
     public override void _Ready()
     {
         base._Ready();
+        if (animationTree == null)
+        {
+            Logging.Error($"Button {Name} ({id}) could not load its Animation Tree! Check object properties.", "GOButton");
+        }
         stateMachine = animationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+        if (stateMachine == null)
+        {
+            Logging.Error($"Button {Name} ({id}) could not load its Animation State machine! Check animation tree configuration.", "GOButton");
+        }
     }
 
-    public override void PressedFailed(ulong byID)
+    public override void PressedFailed(ulong byID, ulong onTick)
     {
-        base.PressedFailed(byID);
-        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
-        if (stateMachineNode.HasNode(FailedPressAnimationStateName))
+        base.PressedFailed(byID, onTick);
+        if (animationTree != null)
         {
-            stateMachine.Travel(FailedPressAnimationStateName);
+            AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+            if (stateMachineNode.HasNode(FailedPressAnimationStateName))
+            {
+                stateMachine.Travel(FailedPressAnimationStateName);
+            }
         }
-        else
-        {
-            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {FailedPressAnimationStateName}", "GOButton");
-        }
+
     }
 
-    public override void PressedSuccessfully(ulong byID)
+    public override void PressedSuccessfully(ulong byID, ulong onTick)
     {
-        base.PressedSuccessfully(byID);
-        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
-        if (stateMachineNode.HasNode(SuccessfulPressAnimationStateName))
+        base.PressedSuccessfully(byID, onTick);
+        if (animationTree != null)
         {
-            stateMachine.Travel(SuccessfulPressAnimationStateName);
+            AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+            if (stateMachineNode.HasNode(SuccessfulPressAnimationStateName))
+            {
+                stateMachine.Travel(SuccessfulPressAnimationStateName);
+            }
         }
-        else
-        {
-            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {SuccessfulPressAnimationStateName}!", "GOButton");
-        }
+
     }
 
-    public override void PressedWhileDisabled(ulong byID)
+    public override void PressedWhileDisabled(ulong byID, ulong onTick)
     {
-        base.PressedWhileDisabled(byID);
-        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
-        if (stateMachineNode.HasNode(PressedWhileDisabledAnimationStateName))
+        base.PressedWhileDisabled(byID, onTick);
+        if (animationTree != null)
         {
-            stateMachine.Travel(PressedWhileDisabledAnimationStateName);
+            AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+            if (stateMachineNode.HasNode(DisabledPressAnimationStateName))
+            {
+                stateMachine.Travel(DisabledPressAnimationStateName);
+            }
         }
-        else
-        {
-            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {PressedWhileDisabledAnimationStateName}!", "GOButton");
-        }
+
     }
 
-    public override void OnEnable()
+    public override void OnEnable(ulong onTick)
     {
-        base.OnEnable();
-        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
-        if (stateMachineNode.HasNode(EnableAnimationStateName))
+        base.OnEnable(onTick);
+        if (animationTree != null)
         {
-            stateMachine.Travel(EnableAnimationStateName);
-        }
-        else
-        {
-            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {EnableAnimationStateName}!", "GOButton");
+            AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+            if (stateMachineNode.HasNode(EnableAnimationStateName))
+            {
+                stateMachine.Travel(EnableAnimationStateName);
+            }
         }
     }
 
-    public override void OnDisable()
+    public override void OnDisable(ulong onTick)
     {
-        base.OnDisable();
-        AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
-        if (stateMachineNode.HasNode(DisableAnimationStateName))
+        base.OnDisable(onTick);
+        if (animationTree != null)
         {
-            stateMachine.Travel(DisableAnimationStateName);
-        }
-        else
-        {
-            Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the request state: {DisableAnimationStateName}!", "GOButton");
+            AnimationNodeStateMachine stateMachineNode = (AnimationNodeStateMachine)animationTree.TreeRoot;
+            if (stateMachineNode.HasNode(DisableAnimationStateName))
+            {
+                stateMachine.Travel(DisableAnimationStateName);
+            }
         }
     }
 
-
+    public override string GenerateStateString()
+    {
+        return base.GenerateStateString() + $"|currentAnimation:{stateMachine.GetCurrentNode()}";
+    }
 
 }
 

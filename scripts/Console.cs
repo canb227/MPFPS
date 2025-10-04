@@ -230,7 +230,7 @@ public partial class Console : Node
         {
             if (obj is IsButton i)
             {
-                i.OnInteract(id);
+                i.Local_OnInteract(id);
             }
         }
     }

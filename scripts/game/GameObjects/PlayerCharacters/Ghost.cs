@@ -64,7 +64,7 @@ public partial class Ghost : GOBasePlayerCharacter
             {
                 if (rayCast.GetCollider() is IsInteractable i)
                 {
-                    i.OnInteract(id);
+                    i.Local_OnInteract(id);
                 }
             }
         }

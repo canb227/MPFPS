@@ -1,13 +1,11 @@
-[gd_scene load_steps=24 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=16 format=3 uid="uid://ttmcv3vlqbj2"]
 
-[ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://cxp7xf02f0cqw" path="res://scenes/GameObjects/interactables/BasicUnanimatedTestButton.tscn" id="2_kx1m7"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
 [ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="3_k4evv"]
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
 [ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
-[ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_vegv4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -23,42 +21,6 @@ ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
-
-[sub_resource type="Resource" id="Resource_6h6a0"]
-script = ExtResource("3_25h3n")
-triggerName = "next"
-cooldownSeconds = 0.8
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
-
-[sub_resource type="Resource" id="Resource_l6pk1"]
-script = ExtResource("3_25h3n")
-triggerName = "next"
-cooldownSeconds = 0.8
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
-
-[sub_resource type="Resource" id="Resource_7fd8x"]
-script = ExtResource("3_25h3n")
-triggerName = "next"
-cooldownSeconds = 0.8
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
-
-[sub_resource type="Resource" id="Resource_nxn20"]
-script = ExtResource("5_k4evv")
-triggerableNode = NodePath("../GOLabelMonitor")
-triggerName = "next"
-metadata/_custom_type_script = "uid://ceok257oa0301"
-
-[sub_resource type="Resource" id="Resource_s2rxf"]
-script = ExtResource("5_k4evv")
-triggerableNode = NodePath("../GOLabelMonitor2")
-triggerName = "next"
-metadata/_custom_type_script = "uid://ceok257oa0301"
-
-[sub_resource type="Resource" id="Resource_hd0xh"]
-script = ExtResource("5_k4evv")
-triggerableNode = NodePath("../GOLabelMonitor3")
-triggerName = "next"
-metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_kx1m7"]
 script = ExtResource("3_25h3n")
@@ -122,48 +84,18 @@ shadow_enabled = true
 
 [node name="GameObjects" type="Node3D" parent="."]
 
-[node name="GOLabelMonitor" parent="GameObjects" instance=ExtResource("1_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -34.615112, -6.213058, -4.169341)
-addressTextOptions = Array[String](["1234", "5678", "9123"])
-triggerables = Array[Object]([SubResource("Resource_6h6a0")])
-
-[node name="GOLabelMonitor2" parent="GameObjects" instance=ExtResource("1_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -36.616276, -6.213058, -4.169341)
-addressTextOptions = Array[String](["THATHOLDER", "THISHOLDER", "THEHOLDERING"])
-triggerables = Array[Object]([SubResource("Resource_l6pk1")])
-
-[node name="GOLabelMonitor3" parent="GameObjects" instance=ExtResource("1_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -38.606194, -6.213058, -4.169341)
-addressTextOptions = Array[String](["Street", "Court", "Drive", "Lane"])
-triggerables = Array[Object]([SubResource("Resource_7fd8x")])
-
-[node name="LabellingMonitorButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -34.580276, -6.3292227, -3.787441)
-triggers = Array[Object]([SubResource("Resource_nxn20")])
-
-[node name="LabellingMonitorButton2" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -36.58948, -6.3292227, -3.787441)
-triggers = Array[Object]([SubResource("Resource_s2rxf")])
-
-[node name="LabellingMonitorButton3" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -38.58335, -6.3292227, -3.787441)
-triggers = Array[Object]([SubResource("Resource_hd0xh")])
-
-[node name="GOLabelPrinter" parent="GameObjects" instance=ExtResource("8_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -41.212627, -7.8021708, -4.5928316)
-
 [node name="trap_crusher1" parent="GameObjects" instance=ExtResource("2_qvxys")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)
 triggerables = Array[Object]([SubResource("Resource_kx1m7")])
 
 [node name="button_crusher2_animated" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.064123, -7.0766, 2.3524747)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.363422, -7.0766, 2.3524747)
 triggers = Array[Object]([SubResource("Resource_vegv4")])
 
 [node name="button_crusher1" parent="GameObjects" instance=ExtResource("2_kx1m7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.511404, -7.0843544, 2.3632946)
-interactCooldownSeconds = 1.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.133322, -7.0843544, 2.3632946)
 triggers = Array[Object]([SubResource("Resource_o33i4")])
+interactCooldownSeconds = 1.0
 
 [node name="basicDoor" parent="GameObjects" instance=ExtResource("5_o33i4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, -5.992201, -1.6779103)
@@ -515,15 +447,30 @@ sides = 28
 ring_sides = 26
 
 [node name="CSGBox3D47" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.478506, -7.6093116, 2.3263385)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.225683, -7.6093116, 2.3263385)
 size = Vector3(0.265625, 1, 0.30322266)
 
 [node name="Label3D2" type="Label3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.65378, -6.146237, 1.8267577)
-text = "UnanimatedBasicButton
-&
-Crusher"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.260841, -6.816258, 2.1008534)
+text = "BasicAnimatedButton"
 
 [node name="Label3D" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.629435, -5.616703, 0)
 text = "Basic Hinge Door"
+
+[node name="CSGBox3D48" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.342667, -7.6093116, 2.3263385)
+size = Vector3(0.265625, 1, 0.30322266)
+
+[node name="Label3D3" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.101599, -6.8416233, 2.1124222)
+text = "BasicUnanimatedButton
+"
+
+[node name="Label3D4" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.160055, -6.816258, 1.1572104)
+text = "Crusher"
+
+[node name="Label3D5" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.079622, -5.212761, 2.1124222)
+text = "Both Trigger Crusher"

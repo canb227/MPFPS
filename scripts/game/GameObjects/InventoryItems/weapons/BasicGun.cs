@@ -109,7 +109,7 @@ public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
         inInventoryOf = byID;
     }
 
-    public void OnInteract(ulong byID)
+    public void Local_OnInteract(ulong byID)
     {
         
         OnPickup(byID);

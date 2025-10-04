@@ -27,5 +27,10 @@ public partial class Trigger : Resource
         this.triggerName = triggerName;
         this.cooldownSeconds = cooldownSeconds;
     }
+
+    public override string ToString()
+    {
+        return $"Trigger Name: {triggerName} | cooldown: {cooldownSecondsRemaining}s / {cooldownSeconds}s ";
+    }
 }
 

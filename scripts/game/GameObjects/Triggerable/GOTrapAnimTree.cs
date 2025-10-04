@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 [GlobalClass]
-public partial class GOTrapAnimTree : GOTriggerable
+public partial class GOTrapAnimTree : GOBaseStaticTriggerable
 {
     [Export]
     public AnimationTree animationTree { get; set; }
@@ -39,46 +39,5 @@ public partial class GOTrapAnimTree : GOTriggerable
         {
             Logging.Error($"The AnimationTree State machine of {Name} ({id}) is missing a node that matches the triggerName: {triggerName}!", "GOTrap");
         }
-    }
-
-
-    public override void PerTickAuth(double delta)
-    {
-
-
-    }
-
-    public override void PerFrameAuth(double delta)
-    {
-
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-    public override byte[] GenerateStateUpdate()
-    {
-           return new byte[0];
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-
-    }
-
-    public override void PerTickShared(double delta)
-    {
-
     }
 }

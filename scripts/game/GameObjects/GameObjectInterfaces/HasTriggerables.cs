@@ -14,7 +14,7 @@ public interface HasTriggerables
     public bool UserCanTrigger(string triggerName, ulong byID);
     public float GetTriggerCooldown(string triggerName, ulong byID);
     public bool IsTriggerReady(string triggerName);
-    public void Trigger(string triggerName, ulong byID);
+    public void Trigger(string triggerName, ulong byID, ulong onTick);
 
     public Trigger GetTrigger(string triggerName);
 

@@ -136,7 +136,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
                     }
                     else
                     {
-                        i.OnInteract(id);
+                        i.Local_OnInteract(id);
                     }
                 }
             }

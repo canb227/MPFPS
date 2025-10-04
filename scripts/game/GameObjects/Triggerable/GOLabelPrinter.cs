@@ -4,7 +4,7 @@ using Godot.Collections;
 using MessagePack;
 
 [GlobalClass]
-public partial class GOLabelPrinter : GOTriggerable
+public partial class GOLabelPrinter : GOBaseStaticTriggerable
 {
     [Export]
     public AnimationPlayer animationPlayer { get; set; }
@@ -36,40 +36,6 @@ public partial class GOLabelPrinter : GOTriggerable
         {
             animationPlayer.Play(triggerName);
         }
-    }
-
-    public override void PerFrameAuth(double delta)
-    {
-
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-    public override byte[] GenerateStateUpdate()
-    {
-        return new byte[0];
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-
-    }
-
-    public override void PerTickAuth(double delta)
-    {
-
     }
 
     //NETWORKINGTODO is this okay? its called from a trigger animation

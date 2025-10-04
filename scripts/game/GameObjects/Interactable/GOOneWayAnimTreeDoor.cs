@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public partial class GOOneWayAnimTreeDoor : GODoor
+public partial class GOOneWayAnimTreeDoor : GOBaseStaticInteractable
 {
     [Export]
     public AnimationTree animationTree {  get; set; }
@@ -34,14 +34,14 @@ public partial class GOOneWayAnimTreeDoor : GODoor
         }
     }
 
-    public override void ActivateDoor(ulong byID)
+    [RPCMethod(RPCMode.SendToAllPeers)]
+    public void Toggle(bool toOpen,ulong byID, ulong onTick)
     {
-        if (openingOrOpen)
+        if (!toOpen)
         {
             if (animationTree.HasNode(closeAnimationStateName))
             {
                 stateMachine.Travel(closeAnimationStateName);
-                openingOrOpen = false;
             }
             else
             {
@@ -54,7 +54,6 @@ public partial class GOOneWayAnimTreeDoor : GODoor
             if (animationTree.HasNode(openAnimationStateName))
             {
                 stateMachine.Travel(openAnimationStateName);
-                openingOrOpen = true;
             }
             else
             {
@@ -63,21 +62,24 @@ public partial class GOOneWayAnimTreeDoor : GODoor
         }
     }
 
-    public override bool CanInteract(ulong byID)
+    [RPCMethod(RPCMode.OnlySendToAuth)]
+    public override void Auth_HandleInteractionRequest(ulong byID, ulong onTick)
     {
-        return true;
+        if (openingOrOpen)
+        {
+            openingOrOpen = false;
+            RPCManager.RPC(this, MethodName.Toggle, [false, byID, onTick]);
+        }
+        else
+        {
+            openingOrOpen = true;
+            RPCManager.RPC(this, MethodName.Toggle, [true, byID, onTick]);
+        }
     }
 
-    public override byte[] GenerateStateUpdate()
+    public override string GenerateStateString()
     {
-        return new byte[0];
+        return $"OpenOrOpening?:{openingOrOpen}|currentAnimation:{stateMachine.GetCurrentNode()}";
     }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-
-
 }
 

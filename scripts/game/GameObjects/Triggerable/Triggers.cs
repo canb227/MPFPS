@@ -23,49 +23,10 @@ public partial class Triggers : Resource
     [Export]
     public string triggerName;
 
-    //public void Trigger(ulong byID)
-    //{
-    //    if (triggerableNode is HasTriggerables t)
-    //    {
-    //        if (CanTrigger(byID))
-    //        {
-    //            t.Trigger(triggerName, byID);
-    //        }
-    //        else
-    //        {
-    //            Logging.Log($"Trigger {triggerName} is still on cooldown.", "Triggers");
-    //        }
-    //    }
-    //    else
-    //    {
-    //        Logging.Error($"Nodepath points to invalid (non-IsTriggerable) node!", "Triggers");
-    //    }
-    //}
-    //public float GetTriggerCooldown()
-    //{
-    //    if (Global.instance.GetNode(triggerableNode) is HasTriggerables t)
-    //    {
-    //        return t.GetTriggerCooldown(triggerName);
-    //    }
-    //    else
-    //    {
-    //        Logging.Error($"Nodepath points to invalid (non-IsTriggerable) node!", "Triggers");
-    //        return 0;
-    //    }
-    //}
-
-    //public bool CanTrigger(ulong byID)
-    //{
-    //    if (Global.instance.GetNode(triggerableNode) is HasTriggerables t)
-    //    {
-    //        return t.CanTrigger(triggerName);
-    //    }
-    //    else
-    //    {
-    //        Logging.Error($"Nodepath points to invalid (non-IsTriggerable) node!", "Triggers");
-    //        return false;
-    //    }
-    //}
+    public override string ToString()
+    {
+        return $"Target Triggerable Node:{_triggerableNode} | Trigger Name: {triggerName}";
+    }
 
 }
 

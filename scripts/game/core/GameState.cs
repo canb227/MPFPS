@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using static Lobby;
 
 
 /// <summary>
@@ -57,6 +58,8 @@ public partial class GameState : Node3D
     /// </summary>
     public bool gameStarted = false;
 
+    public ulong defaultAuth = 0;
+
     //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
     public delegate void GameStateOptionsReceived(GameStateOptions options, ulong sender);
     public static event GameStateOptionsReceived GameStateOptionsReceivedEvent;
@@ -72,6 +75,7 @@ public partial class GameState : Node3D
     private List<Marker3D> PlayerSpawnPoints = new();
     private GameObject debugTarget;
     private int numUpdatesPerFrame = 20;
+    private ulong staticIDCounter = 1;
 
     public ulong StateFreshnessThreshold { get; private set; } = 60;
 
@@ -92,10 +96,42 @@ public partial class GameState : Node3D
         PIH.Name = "LocalInput";
         AddChild(PIH);
 
-        PlayerData[Global.steamid] = new PlayerData();
-        PlayerData[Global.steamid].playerID = Global.steamid;
+
+
         //Start the game paused.
         ProcessMode = ProcessModeEnum.Disabled;
+
+        Lobby.JoinedToLobbyEvent += OnJoinedToLobby;
+        Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
+
+        
+    }
+
+
+    private void OnNewLobbyPeerAdded(ulong newPlayerSteamID)
+    {
+        if (!NetworkUtils.IsMe(newPlayerSteamID))
+        {
+            if (Global.Lobby.bIsLobbyHost)
+            {
+                PushGameStateOptions();
+            }
+            if(newPlayerSteamID!=Global.Lobby.LobbyHostSteamID)
+            {
+                PushLocalPlayerData();
+            }
+        }
+    }
+
+    private void OnJoinedToLobby(ulong hostSteamID)
+    {
+        defaultAuth = hostSteamID;
+        PlayerData localPlayerData = new PlayerData();
+
+        localPlayerData.playerID = Global.steamid;
+        //TODO: Configure starting playerData values based on stored settings or smth
+        PlayerData[Global.steamid] = localPlayerData;
+        PushLocalPlayerData();
     }
 
     //runs once per frame
@@ -176,6 +212,7 @@ public partial class GameState : Node3D
     /// <param name="scenePath"></param>
     public void LoadStaticLevel(string scenePath)
     {
+        Global.ui.SetLoadingScreenDescription("Loading map...");
         Logging.Log($"Loading static level from scene at path: {scenePath}", "GameStateLevel");
         if (nodeStaticLevel != null)
         {
@@ -190,16 +227,16 @@ public partial class GameState : Node3D
 
     private void LoadStaticLevelGameObjects()
     {
-        if (Global.steamid == Global.Lobby.LobbyHostSteamID)
+        Global.ui.SetLoadingScreenDescription("Loading map gameObjects...");
+        foreach (Node node in Utils.GetChildrenRecursive(nodeStaticLevel, new()))
         {
-            foreach (Node node in nodeStaticLevel.GetNode("GameObjects").GetChildren())
+            if (node is GameObject obj)
             {
-                if (node is GameObject obj)
-                {
-                    RegisterNewObject(obj, GenerateNewID(), Global.steamid, obj.type);
-                }
+                RegisterNewObject(obj, staticIDCounter++, defaultAuth, obj.type);
             }
         }
+        
+
     }
 
     /// <summary>
@@ -574,7 +611,7 @@ public partial class GameState : Node3D
         SpawnSelf(GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type);
         Global.ui.StopLoadingScreen();
         gameStarted = true;
-        ProcessMode = ProcessModeEnum.Pausable;
+
         GameModeManager gmm = new();
         gmm.Name = "Game Mode Manager";
         AddChild(gmm);
@@ -586,6 +623,7 @@ public partial class GameState : Node3D
             gmm.GameStartAsHost();
             aim.GameStartAsHost();
         }
+        ProcessMode = ProcessModeEnum.Pausable;
     }
 }
 

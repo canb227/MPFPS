@@ -147,6 +147,10 @@ public static class RPCManager
             Logging.Error($"RPC on target type: {context.GetType().ToString()} targets invalid method:{methodName}","RPCManager");
         }
         RPCMethodAttribute attribute = method.GetCustomAttribute<RPCMethodAttribute>();
+        if (attribute == null)
+        {
+            Logging.Error($"RPC on target type: {context.GetType().ToString()} targets method missing RPC annotation!!!:{methodName}", "RPCManager");
+        }
         if (attribute.mode == RPCMode.OnlySendToAuth)
         {
             RPCMessage packet = new();
@@ -180,7 +184,14 @@ public static class RPCManager
             {
                 Logging.Error($"Node at {path} (reflection type:{nodeType.ToString()} does not have method named: {methodName}", "RPCManager");
             }
-            method.Invoke(node, parameters.ToArray());
+            try
+            {
+                method.Invoke(node, parameters.ToArray());
+            }
+            catch (Exception e)
+            {
+                Logging.Error($"Error processing RPC: NodePath: {path} | MethodName: {methodName} | Parameters: {string.Join(",",parameters)} \nMessage: {e.Message}\nStack Trace: \n{e.StackTrace}","RPCManager");
+            }
         }
         else
         {

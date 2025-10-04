@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 [GlobalClass]
-public partial class GOTrap : GOTriggerable
+public partial class GOTrap : GOBaseStaticTriggerable
 {
     [Export]
     public AnimationPlayer animationPlayer { get; set; }
@@ -24,37 +24,4 @@ public partial class GOTrap : GOTriggerable
         }
     }
 
-    public override void PerFrameAuth(double delta)
-    {
-
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-    public override byte[] GenerateStateUpdate()
-    {
-           return new byte[0];
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-
-    }
-
-    public override void PerTickAuth(double delta)
-    {
-
-    }
 }
