@@ -128,7 +128,7 @@ public partial class GOButton : GOBaseStaticInteractable, IsButton
 
     public override string GenerateStateString()
     {
-        return base.GenerateStateString() + $" | Enabled:{enabled} | Triggers:{string.Join(",",triggers)}";
+        return base.GenerateStateString() + $" | Enabled:{enabled} \nTrigger List:{string.Join("\n",triggers)}";
     }
 
 }

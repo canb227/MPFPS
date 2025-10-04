@@ -25,7 +25,7 @@ public partial class Triggers : Resource
 
     public override string ToString()
     {
-        return $"Target Triggerable Node:{_triggerableNode} | Trigger Name: {triggerName}";
+        return $"Target Triggerable Node:{triggerableNode} | Trigger Name: {triggerName}";
     }
 
 }

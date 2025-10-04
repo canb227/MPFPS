@@ -94,7 +94,7 @@ public abstract partial class GOBaseStaticInteractable : GOBaseStaticBody, IsInt
     }
     public override string GenerateStateString()
     {
-        return $"interactCooldown: {interactCooldownTimer}s / {interactCooldownSeconds}s | ready?{interactCooldownReady}";
+        return $"interactCooldown: {interactCooldownTimer.ToString("0.00")}s / {interactCooldownSeconds.ToString("0.00")}s | ready?{interactCooldownReady}";
     }
 }
 

@@ -65,7 +65,7 @@ public abstract partial class GOBaseStaticTriggerable : GOBaseStaticBody, HasTri
 
     public override string GenerateStateString()
     {
-        return $"Triggerables: {string.Join(",", triggerables)}";
+        return $"Triggerables List: {string.Join("\n", triggerables)}";
     }
 
     public virtual bool UserCanTrigger(string triggerName, ulong byID)
