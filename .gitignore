@@ -5,5 +5,3 @@ build/
 .vs/
 addons/imgui-godot/bin/~libimgui-godot-native.windows.debug.x86_64.dll
 scripts/network/NetworkUtils.cs.uid
-assets/models/warehouse
-assets/models/test

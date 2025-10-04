@@ -1,11 +1,11 @@
 [gd_scene load_steps=17 format=4 uid="uid://72k7rfi0kvts"]
 
 [ext_resource type="Script" uid="uid://wshjks802r6a" path="res://scripts/game/GameObjects/Triggerable/GOLabelMonitor.cs" id="1_7w8ct"]
-[ext_resource type="Texture2D" uid="uid://ctjo5us4g25y4" path="res://assets/models/test/Monitor3a_Diffuse.jpg" id="2_3lxmq"]
-[ext_resource type="Texture2D" uid="uid://brrhiia2um303" path="res://assets/models/test/Monitor3_Emission.png" id="3_5ts4f"]
-[ext_resource type="Texture2D" uid="uid://cjagcqetkfv73" path="res://assets/models/test/Monitor3_Roughness.png" id="4_ni7p5"]
-[ext_resource type="Texture2D" uid="uid://bea5hwefqx1vl" path="res://assets/models/test/happinessisefficiency.png" id="5_6flwn"]
-[ext_resource type="Texture2D" uid="uid://bgadlyfjm1nab" path="res://assets/models/test/hanging_picture_frame_01_artwork_roughness_8k.png" id="6_yma4g"]
+[ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_3lxmq"]
+[ext_resource type="Texture2D" uid="uid://dw4kwuk1gsp20" path="res://assets/models/warehouse/Monitor3_Emission.png" id="3_5ts4f"]
+[ext_resource type="Texture2D" uid="uid://cq3v5vihmoiux" path="res://assets/models/warehouse/Monitor3_Roughness.png" id="4_ni7p5"]
+[ext_resource type="Texture2D" uid="uid://dledak8w4n2nv" path="res://assets/models/warehouse/happinessisefficiency.png" id="5_6flwn"]
+[ext_resource type="Texture2D" uid="uid://dw84rikvuk5mw" path="res://assets/models/warehouse/hanging_picture_frame_01_artwork_roughness_8k.png" id="6_yma4g"]
 [ext_resource type="PackedScene" uid="uid://cwfuhttyy326e" path="res://scenes/ui/ingame/labelmonitor.tscn" id="7_sec04"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovy27"]

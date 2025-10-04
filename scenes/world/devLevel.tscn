@@ -1,10 +1,12 @@
 [gd_scene load_steps=22 format=3 uid="uid://ttmcv3vlqbj2"]
 
+[ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
 [ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="3_k4evv"]
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
 [ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
+[ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_vegv4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -20,6 +22,42 @@ ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
+
+[sub_resource type="Resource" id="Resource_6h6a0"]
+script = ExtResource("3_25h3n")
+triggerName = "next"
+cooldownSeconds = 0.8
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+
+[sub_resource type="Resource" id="Resource_l6pk1"]
+script = ExtResource("3_25h3n")
+triggerName = "next"
+cooldownSeconds = 0.8
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+
+[sub_resource type="Resource" id="Resource_7fd8x"]
+script = ExtResource("3_25h3n")
+triggerName = "next"
+cooldownSeconds = 0.8
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+
+[sub_resource type="Resource" id="Resource_nxn20"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../GOLabelMonitor")
+triggerName = "next"
+metadata/_custom_type_script = "uid://ceok257oa0301"
+
+[sub_resource type="Resource" id="Resource_s2rxf"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../GOLabelMonitor2")
+triggerName = "next"
+metadata/_custom_type_script = "uid://ceok257oa0301"
+
+[sub_resource type="Resource" id="Resource_hd0xh"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../GOLabelMonitor3")
+triggerName = "next"
+metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_kx1m7"]
 script = ExtResource("3_25h3n")
@@ -76,6 +114,40 @@ shadow_enabled = true
 [node name="SteamAudioConfig" type="SteamAudioConfig" parent="."]
 
 [node name="GameObjects" type="Node3D" parent="."]
+
+[node name="GOLabelMonitor" parent="GameObjects" instance=ExtResource("1_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -41.059956, -5.9048495, -1.8515514)
+addressTextOptions = Array[String](["1234", "5678", "9123"])
+triggerables = Array[Object]([SubResource("Resource_6h6a0")])
+
+[node name="GOLabelMonitor2" parent="GameObjects" instance=ExtResource("1_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -39.059193, -5.9048495, -1.8916099)
+addressTextOptions = Array[String](["THATHOLDER", "THISHOLDER", "THEHOLDERING"])
+triggerables = Array[Object]([SubResource("Resource_l6pk1")])
+
+[node name="GOLabelMonitor3" parent="GameObjects" instance=ExtResource("1_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -37.06967, -5.9048495, -1.9314433)
+addressTextOptions = Array[String](["Street", "Court", "Drive", "Lane"])
+triggerables = Array[Object]([SubResource("Resource_7fd8x")])
+
+[node name="GOLabellingMonitorButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -41.088364, -6.021014, -1.5303254)
+triggers = Array[Object]([SubResource("Resource_nxn20")])
+
+[node name="GOLabellingMonitorButton2" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -39.079563, -6.021014, -1.570545)
+triggers = Array[Object]([SubResource("Resource_s2rxf")])
+
+[node name="GOLabellingMonitorButton3" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -37.086094, -6.021014, -1.6104575)
+triggers = Array[Object]([SubResource("Resource_hd0xh")])
+
+[node name="GOLabelPrinter" parent="GameObjects" instance=ExtResource("8_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -34.29431, -7.4939623, -1.5634353)
+
+[node name="GOPrintButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-2.7910933, 2.4400512e-07, 1.0665804e-14, 0, -1.2200256e-07, 2.7910936, 2.4400512e-07, 2.7910933, 1.2200258e-07, -35.749615, -6.021014, -1.637216)
+triggers = Array[Object]([SubResource("Resource_hd0xh")])
 
 [node name="trap_crusher1" parent="GameObjects" instance=ExtResource("2_qvxys")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)

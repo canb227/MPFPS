@@ -8,7 +8,8 @@ public static class GameObjectLoader
 
     public static Dictionary<string, (GameObjectType type, string scenePath, Type cls)> GameObjectDictionary = new()
     {
-        {"ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
+        // { "paperlabel", (GameObjectType.LabelPaper, "res://scenes/GameObjects/props/Ball.tscn", typeof()) }
+        { "ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
         {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/tony.tscn", typeof(Tony))},
         {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayer)) }
@@ -66,4 +67,5 @@ public enum GameObjectType
     BasicPlayer,
     GameButton,
     Crusher,
+    LabelPaper,
 }
