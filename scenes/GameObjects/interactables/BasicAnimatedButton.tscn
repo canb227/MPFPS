@@ -1,8 +1,7 @@
 [gd_scene load_steps=38 format=4 uid="uid://deq0mm8jgluwn"]
 
 [ext_resource type="Script" uid="uid://b7si2ee0w4q2s" path="res://scripts/game/GameObjects/Interactable/GOAnimatedButton.cs" id="1_mcndx"]
-[ext_resource type="AudioStream" uid="uid://b76yxas6tlsr8" path="res://assets/audio/environment/blip1.wav" id="2_ple8t"]
-[ext_resource type="AudioStream" uid="uid://b8wf8oo0ijljh" path="res://assets/audio/environment/button.wav" id="3_4g8la"]
+[ext_resource type="AudioStream" uid="uid://ber4bgm6r53dk" path="res://assets/audio/environment/shortbutton.wav" id="2_gaacm"]
 [ext_resource type="AudioStream" uid="uid://bwpecgou3qnw5" path="res://assets/audio/environment/button_fail.wav" id="4_u4uqc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5dr8"]
@@ -162,7 +161,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, -0.028905012, 0)]
+"values": [Vector3(0, -0.031, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -174,7 +173,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, -0.029, 0)]
+"values": [Vector3(0, -0.031, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_i5ukd"]
@@ -187,7 +186,7 @@ tracks/0/path = NodePath("ButtonTop:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, -0.028905012, 0), Vector3(0, 0, 0)]
@@ -199,30 +198,15 @@ tracks/1/path = NodePath("CollisionShape3D2:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, -0.029, 0), Vector3(0, 0, 0)]
 }
-tracks/2/type = "audio"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SteamAudioPlayer")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("2_ple8t")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/2/use_blend = true
 
 [sub_resource type="Animation" id="Animation_70jf2"]
 resource_name = "button_press"
-length = 0.4
+length = 0.25
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -230,7 +214,7 @@ tracks/0/path = NodePath("CollisionShape3D2:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, -0.031, 0)]
@@ -242,7 +226,7 @@ tracks/1/path = NodePath("ButtonTop:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, -0.031262334, 0)]
@@ -257,7 +241,7 @@ tracks/2/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
-"stream": ExtResource("3_4g8la")
+"stream": ExtResource("2_gaacm")
 }],
 "times": PackedFloat32Array(0)
 }
@@ -319,6 +303,9 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4576n"]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v2eq8"]
+switch_mode = 2
+
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_le5jq"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bcckd"]
@@ -332,32 +319,30 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u4uqc"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ple8t"]
-switch_mode = 2
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1pvd1"]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_obso4"]
-allow_transition_to_self = true
 states/End/position = Vector2(874, 323)
 states/RESET/node = SubResource("AnimationNodeAnimation_js3mx")
 states/RESET/position = Vector2(529, 100)
-states/Start/position = Vector2(161, 306)
+states/Start/position = Vector2(723, 329)
 states/disable/node = SubResource("AnimationNodeAnimation_2lved")
 states/disable/position = Vector2(529, 229)
 states/disabled/node = SubResource("AnimationNodeAnimation_ple8t")
-states/disabled/position = Vector2(318, 129)
+states/disabled/position = Vector2(326, 162)
 states/enable/node = SubResource("AnimationNodeAnimation_ou8h7")
-states/enable/position = Vector2(706, -10)
+states/enable/position = Vector2(529, -14)
 states/failed/node = SubResource("AnimationNodeAnimation_41l1i")
-states/failed/position = Vector2(336, 12)
+states/failed/position = Vector2(326, 35)
 states/success/node = SubResource("AnimationNodeAnimation_v0nuy")
-states/success/position = Vector2(742, 100)
-transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_w45cq"), "RESET", "disable", SubResource("AnimationNodeStateMachineTransition_8j744"), "disable", "RESET", SubResource("AnimationNodeStateMachineTransition_rtync"), "RESET", "success", SubResource("AnimationNodeStateMachineTransition_4576n"), "RESET", "enable", SubResource("AnimationNodeStateMachineTransition_le5jq"), "enable", "RESET", SubResource("AnimationNodeStateMachineTransition_bcckd"), "RESET", "failed", SubResource("AnimationNodeStateMachineTransition_i3tdt"), "failed", "RESET", SubResource("AnimationNodeStateMachineTransition_lkcun"), "disabled", "RESET", SubResource("AnimationNodeStateMachineTransition_4g8la"), "RESET", "disabled", SubResource("AnimationNodeStateMachineTransition_u4uqc"), "success", "RESET", SubResource("AnimationNodeStateMachineTransition_ple8t")]
-graph_offset = Vector2(-279, -109)
+states/success/position = Vector2(723, 100)
+transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_w45cq"), "RESET", "disable", SubResource("AnimationNodeStateMachineTransition_8j744"), "disable", "RESET", SubResource("AnimationNodeStateMachineTransition_rtync"), "RESET", "success", SubResource("AnimationNodeStateMachineTransition_4576n"), "success", "RESET", SubResource("AnimationNodeStateMachineTransition_v2eq8"), "RESET", "enable", SubResource("AnimationNodeStateMachineTransition_le5jq"), "enable", "RESET", SubResource("AnimationNodeStateMachineTransition_bcckd"), "RESET", "failed", SubResource("AnimationNodeStateMachineTransition_i3tdt"), "failed", "RESET", SubResource("AnimationNodeStateMachineTransition_lkcun"), "disabled", "RESET", SubResource("AnimationNodeStateMachineTransition_4g8la"), "RESET", "disabled", SubResource("AnimationNodeStateMachineTransition_u4uqc"), "enable", "success", SubResource("AnimationNodeStateMachineTransition_1pvd1")]
+graph_offset = Vector2(-244, -138)
 
-[node name="BasicAnimatedButton" type="StaticBody3D" node_paths=PackedStringArray("animationTree")]
+[node name="LabellingMonitorButton" type="StaticBody3D" node_paths=PackedStringArray("animationTree")]
 script = ExtResource("1_mcndx")
 animationTree = NodePath("AnimationTree")
-interactCooldownSeconds = 0.1
+interactCooldownSeconds = 0.8
 metadata/_custom_type_script = "uid://b7si2ee0w4q2s"
 
 [node name="ButtonBase" type="MeshInstance3D" parent="."]

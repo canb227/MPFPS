@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://1ka68hkbpecx"]
+
+[ext_resource type="Texture2D" uid="uid://dkulxo2rcch2t" path="res://assets/models/test/crt_screen_mp_1.png" id="1_hskjx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_c6i82"]
+font_size = 64
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="SubViewport" type="SubViewport"]
+size = Vector2i(900, 240)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_hskjx")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Ready To Print"
+label_settings = SubResource("LabelSettings_c6i82")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

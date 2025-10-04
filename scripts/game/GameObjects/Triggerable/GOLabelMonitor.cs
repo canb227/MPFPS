@@ -22,6 +22,7 @@ public partial class GOLabelMonitor : GOTriggerable
     {
         base._Ready();
         viewportLabel = viewport.GetNode<Label>("Label");
+        viewportLabel.Text = addressTextOptions[textOptionsIndex];
     }
 
 
@@ -72,10 +73,11 @@ public partial class GOLabelMonitor : GOTriggerable
 
     }
 
+    //NETWORKINGTODO is this okay? its called from a trigger animation
     public void NextDisplay()
     {
-        viewportLabel.Text = addressTextOptions[textOptionsIndex];
         textOptionsIndex = (textOptionsIndex + 1) % addressTextOptions.Count;
+        viewportLabel.Text = addressTextOptions[textOptionsIndex];
     }
     
 }

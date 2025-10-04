@@ -1,10 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://bdil88mghutia"]
+[gd_scene load_steps=18 format=3 uid="uid://bdil88mghutia"]
 
 [ext_resource type="PackedScene" uid="uid://hl0mfp28e5tv" path="res://scenes/world/warehouse_collisiontest.tscn" id="1_6710t"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vynrv"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_xiwo7"]
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="3_ft8av"]
-[ext_resource type="PackedScene" uid="uid://d32b54dk00mor" path="res://scenes/GameObjects/interactables/LabellingMonitorButton.tscn" id="4_tbycg"]
+[ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="4_tbycg"]
+[ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="5_sk24o"]
 [ext_resource type="LightmapGIData" uid="uid://fcpbm8eax1hj" path="res://scenes/world/warehouse_geometry.lmbake" id="6_sk24o"]
 [ext_resource type="Texture2D" uid="uid://b0v82knqowhvs" path="res://assets/sky/darksky.hdr" id="7_cklae"]
 
@@ -26,19 +27,19 @@ triggerName = "next"
 cooldownSeconds = 0.8
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
-[sub_resource type="Resource" id="Resource_xiwo7"]
+[sub_resource type="Resource" id="Resource_nxn20"]
 script = ExtResource("3_ft8av")
 triggerableNode = NodePath("../GOLabelMonitor")
 triggerName = "next"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
-[sub_resource type="Resource" id="Resource_sk24o"]
+[sub_resource type="Resource" id="Resource_s2rxf"]
 script = ExtResource("3_ft8av")
 triggerableNode = NodePath("../GOLabelMonitor2")
 triggerName = "next"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
-[sub_resource type="Resource" id="Resource_cklae"]
+[sub_resource type="Resource" id="Resource_hd0xh"]
 script = ExtResource("3_ft8av")
 triggerableNode = NodePath("../GOLabelMonitor3")
 triggerName = "next"
@@ -85,17 +86,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.003582, 1.6181264, 19.532
 addressTextOptions = Array[String](["Street", "Court", "Drive", "Lane"])
 triggerables = Array[Object]([SubResource("Resource_7fd8x")])
 
-[node name="LabellingMonitorButton1" parent="GameObjects" instance=ExtResource("4_tbycg")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -37.014244, 1.0371313, 19.646858)
-triggers = Array[Object]([SubResource("Resource_xiwo7")])
+[node name="LabellingMonitorButton" parent="GameObjects" instance=ExtResource("4_tbycg")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -36.977665, 1.5019618, 19.211939)
+triggers = Array[Object]([SubResource("Resource_nxn20")])
 
 [node name="LabellingMonitorButton2" parent="GameObjects" instance=ExtResource("4_tbycg")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -39.00973, 1.0371313, 19.646858)
-triggers = Array[Object]([SubResource("Resource_sk24o")])
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -38.98687, 1.5019618, 19.211939)
+triggers = Array[Object]([SubResource("Resource_s2rxf")])
 
 [node name="LabellingMonitorButton3" parent="GameObjects" instance=ExtResource("4_tbycg")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -40.93461, 1.0371313, 19.646858)
-triggers = Array[Object]([SubResource("Resource_cklae")])
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -40.98074, 1.5019618, 19.211939)
+triggers = Array[Object]([SubResource("Resource_hd0xh")])
+
+[node name="GOLabelPrinter" parent="GameObjects" instance=ExtResource("5_sk24o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -43.610016, 0.029013816, 19.109041)
 
 [node name="meta" type="Node" parent="."]
 
@@ -122,4 +126,5 @@ environment = SubResource("Environment_l6pk1")
 transform = Transform3D(0.41250795, 0.6148957, 0.67211646, 0.6017737, -0.73784745, 0.3056953, 0.68389016, 0.27836022, -0.674396, 0, 9.405283, 0)
 light_color = Color(0.6, 0.6509804, 0.8039216, 1)
 light_energy = 4.892
+light_bake_mode = 1
 shadow_blur = 2.0
