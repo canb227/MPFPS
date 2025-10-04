@@ -7,13 +7,6 @@ using System;
 [GlobalClass]
 public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
-    public override ulong controllingPlayerID { get; set; }
-
-    public override Team team { get; set; }
-    public override Role role { get; set; }
-    public override PlayerInputData input { get; set; }
-
-
 
     private PlayerCamera cam { get; set; }
 
@@ -22,6 +15,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public float currentHealth { get; set; }
     public Inventory inventory { get; set; }
     public IsInventoryItem equipped { get; set; }
+    public ActionFlags lastTickActions { get; set; }
 
     public override void _Ready()
     {
@@ -29,9 +23,9 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         priority = 100;
 
         rayCast = new();
-        rayCast.TargetPosition = new Vector3(0, 0, -50);
+        rayCast.TargetPosition = new Vector3(0, 0, -10);
         rayCast.CollideWithBodies = true;
-        AddChild(rayCast);
+        cameraLocationNode.AddChild(rayCast);
     }
 
     public override void ProcessStateUpdate(byte[] _update)
@@ -52,8 +46,9 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     public float camXRotMax = 85;
     public float camXRotMin = -85;
-    public float speed = 6;
-    private Vector3 jumpVelocity;
+    public float baseSpeed = 6;
+    public float finalSpeed;
+    private Vector3 jumpVelocity = new Vector3(0,5,0);
 
     public override void PerTickAuth(double delta)
     {
@@ -61,17 +56,19 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         HandleNonMovementInput(delta);
         HandleEquippedPassthruInput(delta);
         HandleMovementInputAndPhysics(delta);
+        lastTickActions = input.actions;
     }
 
     private void HandleMovementInputAndPhysics(double delta)
     {
-        Velocity = HandleYAxis(Velocity);
+        Velocity = HandleYAxis(Velocity,delta);
 
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
+        finalSpeed = baseSpeed;
         if (input.actions.HasFlag(ActionFlags.Sprint))
         {
-            speed *= 2;
+            finalSpeed = baseSpeed * 2;
         }
 
         float moveZ = input.MovementInputVector.X;
@@ -83,7 +80,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         }
         else
         {
-            localVelocity.Z = moveZ * speed;
+            localVelocity.Z = moveZ * finalSpeed;
         }
 
         if (moveX == 0)
@@ -92,18 +89,18 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         }
         else
         {
-            localVelocity.X = moveX * speed;
+            localVelocity.X = moveX * finalSpeed;
         }
 
         Velocity = PCUtils.GlobalizeVector(this,localVelocity);
         MoveAndSlide();
     }
 
-    private Vector3 HandleYAxis(Vector3 globalVelocity)
+    private Vector3 HandleYAxis(Vector3 globalVelocity,double delta)
     {
         if (!IsOnFloor())
         {
-            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta;
         }
 
         if (input.actions.HasFlag(ActionFlags.Jump))
@@ -118,27 +115,29 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     private void HandleEquippedPassthruInput(double delta)
     {
-        equipped.HandleInput(input.actions);
+        if (equipped != null)
+        {
+            equipped.HandleInput(input.actions);
+        }
+
     }
 
     private void HandleNonMovementInput(double delta)
     {
-        if (input.actions.HasFlag(ActionFlags.Use))
+        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
         {
             if (rayCast.IsColliding())
             {
-                if (rayCast.GetCollider() is IsButton i)
+                if (rayCast.GetCollider() is IsInventoryItem s)
                 {
-                    if (rayCast.GetCollider() is IsInventoryItem s)
-                    {
-                        s.OnPickup(id);
-                        inventory.StoreItem(s);
-                    }
-                    else
-                    {
-                        i.Local_OnInteract(id);
-                    }
+                    s.OnPickup(id);
+                    inventory.StoreItem(s);
                 }
+                else if (rayCast.GetCollider() is IsInteractable i)
+                {
+                    i.Local_OnInteract(id);
+                }
+
             }
         }
     }
@@ -147,13 +146,18 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     {
         if (Input.MouseMode == Input.MouseModeEnum.Captured)
         {
+            float mouseX = input.LookInputVector.X * 5 * ((float)delta);
             float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
-            float newXRot = RotationDegrees.X - mouseY;
+
+            float newXRot = cameraLocationNode.RotationDegrees.X - mouseY;
+            float newYRot = RotationDegrees.Y - mouseX;
 
             if (newXRot > camXRotMax) { newXRot = camXRotMax; }
             if (newXRot < camXRotMin) { newXRot = camXRotMin; }
 
-            RotationDegrees = new Vector3(newXRot, (float)(RotationDegrees.Y - input.LookInputVector.X * 5 * delta), RotationDegrees.Z);
+            cameraLocationNode.RotationDegrees = new Vector3(newXRot, cameraLocationNode.RotationDegrees.Y, cameraLocationNode.RotationDegrees.Z);
+            lookRotationNode.RotationDegrees = cameraLocationNode.RotationDegrees;
+            RotationDegrees = new Vector3(RotationDegrees.X,newYRot, RotationDegrees.Z);
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
     }
@@ -173,22 +177,11 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     }
 
-    public override void PerTickLocal(double delta)
-    {
-
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-
-    }
-
     protected override void SetupLocalPlayerCharacter()
     {
-        lookRotationNode = GetNode<Node3D>("cameraParent");
-        PlayerCamera cam = new();
-        lookRotationNode.AddChild(cam);
-        this.cam = cam;
+        cam = new();
+        cameraLocationNode.AddChild(cam);
+
         Global.ui.SwitchFullScreenUI("BasePlayerHUD");
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
@@ -206,31 +199,30 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public void TakeDamage(float damage, ulong byID)
     {
         currentHealth -= damage;
-    }
+        if (currentHealth < 0)
+        {
 
-    public void OnZeroHealth(float damage, ulong byID)
-    {
-        destroyed = true;
+        }
     }
 
     public void EquipNext()
     {
-        throw new NotImplementedException();
+
     }
 
     public void EquipPrevious()
     {
-        throw new NotImplementedException();
+
     }
 
     public void DropEquipped()
     {
-        throw new NotImplementedException();
+
     }
 
     public void Equip(InventoryGroupCategory category, int index = 0)
     {
-        throw new NotImplementedException();
+
     }
 
     public override void Assignment(Team team, Role role)
@@ -239,15 +231,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         this.role = role;
     }
 
-    public override void PerTickShared(double delta)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-        throw new NotImplementedException();
-    }
 }
 
 [MessagePackObject]

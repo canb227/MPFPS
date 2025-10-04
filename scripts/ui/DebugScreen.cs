@@ -163,8 +163,11 @@ public partial class DebugScreen : Control
             {
                 playerListItem.GetNode<OptionButton>("charSelect").AddItem(character);
             }
+
             playerListItem.GetNode<OptionButton>("charSelect").ItemSelected += (index) => OnCharSelect(playerCharacters[(int)index]);
             playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
+            playerListItem.GetNode<OptionButton>("charSelect").Select(2);
+            OnCharSelect("basicPlayer");
         }
         else
         {

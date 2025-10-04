@@ -53,6 +53,36 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     protected abstract void SetupLocalPlayerCharacter();
 
     public abstract Camera3D GetCamera();
+    public override void PerTickAuth(double delta)
+    { 
+    
+    }
+
+    public override void PerFrameAuth(double delta)
+    { 
+    
+    }
+
+    public override void PerTickLocal(double delta)
+    { 
+    
+    }
+
+    public override void PerFrameLocal(double delta)
+    { 
+    
+    }
+
+    public override void PerTickShared(double delta)
+    { 
+    
+    }
+
+    public override void PerFrameShared(double delta)
+    { 
+    
+    }
+
 
 }
 

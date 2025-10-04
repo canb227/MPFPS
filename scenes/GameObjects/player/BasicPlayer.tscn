@@ -25,35 +25,37 @@ points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.
 height = 2.4057617
 
 [node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "lookRotationNode", "cameraLocationNode")]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_dt3qt")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("thirdPersonModel")
 lookRotationNode = NodePath("thirdPersonModel/head")
-cameraLocationNode = NodePath("thirdPersonModel/head/camLocation")
+cameraLocationNode = NodePath("firstPersonModel/camLocation")
 metadata/_custom_type_script = "uid://c3mqjyhty6l5p"
 
 [node name="thirdPersonModel" type="Node3D" parent="."]
 
 [node name="head" type="StaticBody3D" parent="thirdPersonModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2237831, 0)
+collision_layer = 4
+collision_mask = 4
 
 [node name="headMesh" type="MeshInstance3D" parent="thirdPersonModel/head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2471623, 0)
 mesh = SubResource("SphereMesh_pu85p")
 
 [node name="headCollider" type="CollisionShape3D" parent="thirdPersonModel/head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2471623, 0)
 shape = SubResource("ConvexPolygonShape3D_6pekc")
 
-[node name="camLocation" type="Node3D" parent="thirdPersonModel/head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2359042, -0.16221371)
+[node name="body" type="StaticBody3D" parent="thirdPersonModel"]
+collision_layer = 4
+collision_mask = 4
 
-[node name="Node3D" type="StaticBody3D" parent="thirdPersonModel"]
-
-[node name="bodyMesh" type="MeshInstance3D" parent="thirdPersonModel/Node3D"]
+[node name="bodyMesh" type="MeshInstance3D" parent="thirdPersonModel/body"]
 mesh = SubResource("CapsuleMesh_nhpn6")
 skeleton = NodePath("../../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="thirdPersonModel/Node3D"]
+[node name="bodyCollider" type="CollisionShape3D" parent="thirdPersonModel/body"]
 shape = SubResource("ConvexPolygonShape3D_rj67t")
 
 [node name="collider" type="CollisionShape3D" parent="."]
@@ -61,3 +63,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45288086, 0)
 shape = SubResource("CapsuleShape3D_oc7gj")
 
 [node name="firstPersonModel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0055122, -0.15601164)
+
+[node name="camLocation" type="Node3D" parent="firstPersonModel"]
