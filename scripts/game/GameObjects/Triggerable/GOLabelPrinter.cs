@@ -8,10 +8,19 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 {
     [Export]
     public AnimationPlayer animationPlayer { get; set; }
+
     [Export]
     public SubViewport viewport { get; set; }
+
+    [Export]
+    public Node3D paperPrintLocation { get; set; }
+
+    [Export]
+    public PackedScene PaperLabelScene { get; set; }
+    
     private Label viewportLabel { get; set; }
-    public int paperLoadedCount { get; set; }
+    public int paperLoadedCount { get; set; } = 4;
+    public bool waitingForPaper { get; set; } = false;
 
 
     public override void _Ready()
@@ -42,6 +51,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     public void OutOfPaper()
     {
         viewportLabel.Text = "Need Paper, Insert In Tray Below";
+        waitingForPaper = true;
         if (!animationPlayer.HasAnimation("need_paper"))
         {
             Logging.Error($"The AnimationPlayer of {Name} ({id}) is missing an animation that matches the triggerName: need_paper!", "GOLabelPrinter");
@@ -56,6 +66,8 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     public void PaperRefilled()
     {
         viewportLabel.Text = "Ready To Print";
+        waitingForPaper = false;
+        paperLoadedCount = 4;
         if (!animationPlayer.HasAnimation("paper_filled"))
         {
             Logging.Error($"The AnimationPlayer of {Name} ({id}) is missing an animation that matches the triggerName: paper_filled!", "GOLabelPrinter");
@@ -69,10 +81,15 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public void PrintLabel()
     {
-        if (paperLoadedCount <= 0)
+        if (paperLoadedCount <= 0 && !waitingForPaper)
         {
             OutOfPaper();
-        } 
+        }
+        else
+        {
+            Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
+            paperLabel.Position = paperPrintLocation.Position;
+        }
     }
     
 }

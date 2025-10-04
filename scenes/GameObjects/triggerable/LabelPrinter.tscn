@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=4 uid="uid://lkjoa1d5xng3"]
+[gd_scene load_steps=44 format=4 uid="uid://lkjoa1d5xng3"]
 
 [ext_resource type="Script" uid="uid://dxf613enqntqj" path="res://scripts/game/GameObjects/Triggerable/GOLabelPrinter.cs" id="1_gg7eq"]
 [ext_resource type="Texture2D" uid="uid://dnd88kbrir15t" path="res://assets/models/test/MetalScratched007_REFL_3K.png" id="1_xx0ak"]
@@ -250,7 +250,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_lh8ov")
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_3p0lp"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_wpuq5"]
 _surfaces = [{
 "aabb": AABB(-0.29360852, -0.13353619, -0.5118886, 0.5872172, 0.2545396, 0.51843214),
 "format": 34896613377,
@@ -306,7 +306,10 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AADOANz5/79mAM4AAAD//wAAzgAiBirJmP/OAAAA//+Y/84A/v/+v2YAMP8AAP//AADOANz5VNUAADD/3PlU1Zj/zgD+//+/F9FTdNz5VNWY/zD/////vxfRq4vc+XHWMKJTdNz5cdYAADD/3PnIzAAAzgDc+RnfMKKri9z5VNWY/84AAAD//5j/MP///wCAmP8w/wAA//+Y/84A/v8AgJj/MP8AAP//ZgAw/wAA//+Y/84AAAD//2YAzgAAAP//mP8w/wAA//8AADD/3Pn//2YAMP8AAP//mP8w/////r8X0auL3Pn//5aiq4vRtf+/MKKri9z5h8Cx0KuL0bX9vzCiq4vc+f+/lqJTdNC1AIAwolN03Pn/v5aiq4vRtQCAMKJTdNz5/7+x0FN00bX/vxfRU3Tc+Wb5lqJTdNC1AMAX0VN03Pn/v7HQq4vRtQCAF9Gri9z5/7+x0FN00bUAgGYAzgD+//+/ZgAAANz5VNVmADD//v//v2YA///c+VTVyqG2cv7/A8B+0bZy/v//v8qhSI3+//+/ftFIjf7/A8BmAAAAIgax12YAAADc+VTVmP8AACIGVNVmAM4A/v//v/7/zgDc+f////+FcyIG/7+Y////3Pn8xf7/zgDc+f+/ZgD//yIGVNVmAP//3PlU1Zj////c+VTVZgAw//7//7/KoUiN/v8brX7RtnL+/+PS/v/OACIGuPSY/wAA3PlU1QAAMP8iBlTVmP8AANz5/MWY/4Vz/v8AgP7/eYzc+f+/mP95jP7/AID+/84AIgb/v/7/MP/c+f+/mP+FcwAA/////3mMIgb/v///MP8iBv+/F9Ew//7//7+Y/4Vz/v//v7HQhXPc+VTVlqKFc9z5f9WWonmM3PlU1bHQeYzc+YDVmP95jP7//7///zD/IgaMwZj///8iBlTV/v8w/9z5/78X0TD/AAD//zCiMP8AAP//AAAw/yIGuPQX0f//3PlU1TCi///c+VTVF9Ew//7//7+WonmM3PlU1ZaieYzzu1TVMKKri/O7AMCx0HmM3PlU1bHQeYzzu1TVF9Gri/O7uPSx0IVz3PlU1bHQhXPzu1TVF9FTdPO7//+WooVz3PlU1ZaihXPzu1TVMKJTdPO7jMEwoquL87v/v5aieYzzu/zFMKJTdPO7/78X0VN087v/v7HQhXPzu/zFF9Gri/O7/7+Y/4VzAAD//zCiMP8AAP//F9Ew/wAA//8X0XmMAAD//zCihXMAAP//F9GFcwAA//8wos4AAAD//xfRzgAAAP//ZgCFcwAA//+Y/3mMAAD//zCieYwAAP//ZgB5jAAA//8X0c4AAAD//xfRAAAiBlPVMKLOAAAA//8wogAAIgZV1RfRAADc+VTVF9EAACIGVNUwogAA3PlU1TCiAAAiBlTVZgCFcwAA//8AAIVzIgZU1WYAeYwAAP//AACFc9z5VNUAAHmMIgZU1QAAeYzc+VTVMKLOAP7//78wogAA3PlV1RfRzgD+//+/F9EAANz5VdX+/4Vz3Pn/v5j/eYwAAP//AACFc9z5VNVmAIVz/v//vwAAeYzc+VTVZgB5jP7//78wojD//v//vzCizgD+//+/ZgCFc/7//78X0c4A/v//vxfR//8iBlPVMKL//yIGU9UX0f//IgZU1TCi//8iBlTVF9H//9z5VdUwojD//v//vzCi///c+VXVlqJ5jNz5btGWonmM87tV1bHQeYzzu1TVsdB5jNz5VdWx0IVz3Pl12bHQhXPzu1PVlqKFc/O7VdUwoquL87sAwDCiU3Tzu/+/F9FTdPO7AMAX0auL87v/vwWA+/9URFTE4l7Fvf+/AED//////7//P1VVqqpUVaqq/3//f1RVqar/f/9/rFRXqVKrp1ZkW8i2BlANoKqqVVX/f////3////9/////f/9//z//v/8//7//v/8//7//P/8//7//P/9//z//v/////////+/AYABgPiL8hcBgP1//38AAPKd/v//fwAA//+fzv1/AwABAP3/CPl6w/3//f//f/7//38PHf9//v8AAL+0/3//f1RVVFX/f/9/qaqqqv9//3//f/9//3//f/9//38MLBnYqipU1aoqVNX//////7//f/9/AAD/4gFG/38AAFTVqipU1aoqVNWqKv//////f/9//////zW6a3SqKlTVVFWpqv45AGMvkP7//38AADKQ/v//fwAA/38AAP9//v//fwAA/38AAP9//3//f/9/qqqpqnaqw6pTVVZViFU6Vf9//382km0kVNWqKv9/AAD/P/+//7//P8lFk4tU1aoqVNWqKv////9UVVRVVFVUVf9/AABUVVRVVFVUVcpFlItU1aoqVNWqKv///r9U1aoqVNWqKpFbOBL/fwAA/TkBY/9/AAD/f/7/AMb9nP9//v//v/8//z//v/8//7//P/+//7//P/+//z//v/8//7//P/+//z//v/8//7//P/8//7//v/8/qipU1f+//z+qKlbVqipU1aoqVNWqKlTVqipU1f6//z9VVaqq/7//P1RVqapUVamqVFWpqv////+qKlTV/////6oqVNX/fwAA/3/+/1VVqqoBgP1/VFWqqv9//3//f/9//3//f/9//3//f/9/VNWqKlTVqipU1aoqVNWqKlTVqir/////VNWqKk9Q2FdUVVVVVFVUVVRVVFX10uwlU9WqKlTVqir9fwAA+38DAP9//v8CgPv/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_3p0lp")
+shadow_mesh = SubResource("ArrayMesh_wpuq5")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rco13"]
+size = Vector3(1.5590897, 0.40119934, 0.75146484)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_32xui"]
 resource_name = "TFSPlastic_V2_Black"
@@ -538,21 +541,74 @@ shadow_mesh = SubResource("ArrayMesh_7s48q")
 [sub_resource type="BoxShape3D" id="BoxShape3D_gg7eq"]
 size = Vector3(1.5731354, 1.4423676, 1)
 
-[sub_resource type="Animation" id="Animation_35xkw"]
-resource_name = "print"
-tracks/0/type = "method"
+[sub_resource type="Animation" id="Animation_2556b"]
+length = 0.001
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".")
+tracks/0/path = NodePath("CollisionPaperDrawer:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.033333335),
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"PrintLabel"
-}]
+"update": 0,
+"values": [Vector3(-0.019, 0.245, -0.067)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Printer Drawer 3_5:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.01877889, 0.24464165, -0.40486383)]
+}
+
+[sub_resource type="Animation" id="Animation_2q2f7"]
+resource_name = "need_paper"
+length = 0.5
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SteamAudioPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 1.331,
+"stream": ExtResource("7_nphrl")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionPaperDrawer:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-0.019, 0.245, -0.062), Vector3(-0.019, 0.245, -0.758)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Printer Drawer 3_5:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-0.01877889, 0.24464165, -0.40486383), Vector3(-0.01877889, 0.24464165, -1.1031108)]
 }
 
 [sub_resource type="Animation" id="Animation_jop51"]
@@ -576,60 +632,43 @@ tracks/0/use_blend = true
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Printer Drawer 3_5:position")
+tracks/1/path = NodePath("CollisionPaperDrawer:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
+"values": [Vector3(-0.019, 0.245, -0.759), Vector3(-0.019, 0.245, -0.057)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Printer Drawer 3_5:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
 "values": [Vector3(-0.019, 0.245, -1.103), Vector3(-0.019, 0.245, -0.403)]
 }
 
-[sub_resource type="Animation" id="Animation_2q2f7"]
-resource_name = "need_paper"
-length = 0.5
-tracks/0/type = "audio"
+[sub_resource type="Animation" id="Animation_35xkw"]
+resource_name = "print"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SteamAudioPlayer")
+tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("7_nphrl")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/0/use_blend = true
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Printer Drawer 3_5:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(-0.01877889, 0.24464165, -0.40486383), Vector3(-0.01877889, 0.24464165, -1.1031108)]
-}
-
-[sub_resource type="Animation" id="Animation_2556b"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Printer Drawer 3_5:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-0.01877889, 0.24464165, -0.40486383)]
+"values": [{
+"args": [],
+"method": &"PrintLabel"
+}]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_aqq6t"]
@@ -640,10 +679,11 @@ _data = {
 &"print": SubResource("Animation_35xkw")
 }
 
-[node name="GOLabelPrinter" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "viewport")]
+[node name="GOLabelPrinter" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "viewport", "paperPrintLocation")]
 script = ExtResource("1_gg7eq")
 animationPlayer = NodePath("AnimationPlayer")
 viewport = NodePath("SubViewport")
+paperPrintLocation = NodePath("PrintLocation")
 triggerables = Array[Object]([SubResource("Resource_bihfw")])
 metadata/_custom_type_script = "uid://dxf613enqntqj"
 
@@ -746,6 +786,10 @@ metadata/ant_landscape = "{  }"
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/blenderkit = "{  }"
 
+[node name="CollisionPaperDrawer" type="CollisionShape3D" parent="."]
+transform = Transform3D(-1, 1.509958e-07, 0, -1.509958e-07, -1, 0, 0, 0, 1, -0.019, 0.245, -0.067)
+shape = SubResource("BoxShape3D_rco13")
+
 [node name="Printer_Details 2" type="MeshInstance3D" parent="."]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, 7.0377717, 0.048622586, 0.017200073)
 mesh = SubResource("ArrayMesh_awrdi")
@@ -830,6 +874,9 @@ metadata/extras = {
 }
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/ant_landscape = "{  }"
+
+[node name="PrintLocation" type="Node3D" parent="."]
+transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -1.1850812, 1.0994056, 0.017201021)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.017784119, 0.7289047, 0)
