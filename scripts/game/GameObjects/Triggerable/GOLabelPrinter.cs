@@ -62,10 +62,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             }
             if (t.cooldownSecondsRemaining > 0)
             {
-                if (t.triggerName == "print" && !waitingForPaper)
-                {
-                    t.cooldownSecondsRemaining -= (float)delta;
-                }
+                t.cooldownSecondsRemaining -= (float)delta;
             }
             if (t.cooldownSecondsRemaining <= 0)
             {
@@ -97,7 +94,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public void PaperRefilled()
     {
-        viewportLabel.Text = "Cooling Down...";
+        viewportLabel.Text = "Preparing...";
         waitingForPaper = false;
         paperLoadedCount = 4;
         if (!animationPlayer.HasAnimation("paper_filled"))
@@ -131,6 +128,19 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         {
             OutOfPaper();
         }
+        else if (waitingForPaper)
+        {
+            foreach (Node3D node in paperTrayArea.GetOverlappingBodies())
+            {
+                if (node is GOPaperBox paperBox)
+                {
+                    //node.Dispose();
+                    node.GlobalPosition = new Vector3(0, 0, 0);
+                    PaperRefilled();
+                    break;
+                }
+            }
+        }
         else
         {
             paperLoadedCount--;
@@ -140,7 +150,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             }
             else
             {
-                viewportLabel.Text = "Cooling Down...";
+                viewportLabel.Text = "Preparing...";
             }
             GameState.GameObjectConstructorData data = new(GameObjectType.LabelPaper);
             data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;

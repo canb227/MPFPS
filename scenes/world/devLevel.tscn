@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=23 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
@@ -57,12 +57,6 @@ metadata/_custom_type_script = "uid://ceok257oa0301"
 script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../GOLabelMonitor3")
 triggerName = "next"
-metadata/_custom_type_script = "uid://ceok257oa0301"
-
-[sub_resource type="Resource" id="Resource_oevvy"]
-script = ExtResource("5_k4evv")
-triggerableNode = NodePath("../GOLabelPrinter")
-triggerName = "loadpaper"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_k4evv"]
@@ -160,14 +154,10 @@ monitor1 = NodePath("../GOLabelMonitor")
 monitor2 = NodePath("../GOLabelMonitor2")
 monitor3 = NodePath("../GOLabelMonitor3")
 
-[node name="GOReloadPaper" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-2.7910936, 2.4400515e-07, 1.0665804e-14, 0, -1.2200258e-07, 2.7910936, 2.4400515e-07, 2.7910936, 1.2200258e-07, -32.445293, -6.3201046, -1.4099422)
-triggers = Array[Object]([SubResource("Resource_oevvy")])
-interactCooldownSeconds = 1.0
-
 [node name="GOPrintButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-2.7910933, 2.4400512e-07, 1.0665804e-14, 0, -1.2200256e-07, 2.7910936, 2.4400512e-07, 2.7910933, 1.2200258e-07, -35.858475, -6.257095, -1.4282864)
+transform = Transform3D(-0.857522, 7.496694e-08, -1.3822983e-15, 5.6702564e-08, 0.6486017, 0.56094545, 4.90394e-08, 0.56094533, -0.6486017, -34.16857, -6.352106, -1.1366997)
 triggers = Array[Object]([SubResource("Resource_k4evv")])
+ButtonDisableCondition = 1
 
 [node name="trap_crusher1" parent="GameObjects" instance=ExtResource("2_qvxys")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)
