@@ -87,9 +87,14 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         }
         else
         {
-            GameObject obj = GameObjectLoader.LoadObjectByTypeName("", out GameObjectType type);
+            paperLoadedCount--;
+            if (paperLoadedCount <= 0)
+            {
+                OutOfPaper();
+            }
+            GameObject obj = GameObjectLoader.LoadObjectByTypeName("LabelPaper", out GameObjectType type);
             Global.gameState.SpawnObjectAsAuth(obj,type);
-            (obj as Node3D).GlobalPosition = paperPrintLocation.Position;
+            (obj as Node3D).GlobalPosition = paperPrintLocation.GlobalPosition;
             // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
             // paperLabel.Position = paperPrintLocation.Position;
         }

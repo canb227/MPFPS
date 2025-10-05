@@ -1,0 +1,133 @@
+[gd_scene load_steps=12 format=4 uid="uid://bud4pkwj7yr2n"]
+
+[ext_resource type="Script" uid="uid://w4vkt6pc48p6" path="res://scripts/game/GameObjects/RigidBodies/GOLabelPaper.cs" id="1_7rtpr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5kuwd"]
+size = Vector3(0.29797673, 0.020492554, 0.20912552)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1wtb7"]
+resource_name = "Material.001"
+cull_mode = 2
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iw5u5"]
+resource_name = "Material.002"
+cull_mode = 2
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_q6r0p"]
+_surfaces = [{
+"aabb": AABB(-0.14869326, -0.009998606, -0.104971275, 0.29738653, 0.019997211, 0.20994255),
+"format": 34896613377,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgABAAQABQADAAAAAgAFAAAABQAGAAMAAgAEAAcAAgAHAAUABwAEAAYABwAGAAUA"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAP////8AAAAAAAD//wAAAAD//wAAAAD///////8AAP//AAAAAAAA/////wAAAAD//wAA//8AAA==")
+}, {
+"aabb": AABB(-0.14869326, 0.009998606, -0.104971275, 0.29738653, 1e-05, 0.20994255),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"name": "Material.002",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAP//AAAAAAAAAAAAAP//AAA=")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_31isd"]
+resource_name = "paper_Cube_001"
+_surfaces = [{
+"aabb": AABB(-0.14869326, -0.009998606, -0.104971275, 0.29738653, 0.019997211, 0.20994255),
+"attribute_data": PackedByteArray("/1////+f/7//X/+//5////9f/7//n/9//1//f/+f/7//X/9//5//P/9f/z//n/9//1//P/+fAAD/XwAA/5//P/8f/3//X/8//x//P/9f/38="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_1wtb7"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("AAAAAAAAqioAAP////+qKgAAAAD//6oqAAD//wAAqioAAAAA////P/////////8///8AAP///z8AAP//////P///AAD//6oq/////wAAqir//wAAAACqKv///////6oq//8AAAAAAAAAAP//AAAAAAAAAAAAAAAA/////wAAAAAAAAAA////P///AAAAAP8/AAAAAAAA/z///wAA////P1TVVNVU1VTVVNVU1VTVVNX/////////////////////qiqqKqoqqiqqKqoqqiqqKv+//7//v/+//7//v/+//78AAP9/AAD/fwAA/38AAP9/")
+}, {
+"aabb": AABB(-0.14869326, 0.009998606, -0.104971275, 0.29738653, 1e-05, 0.20994255),
+"attribute_data": PackedByteArray("an9QgP////9qf/7///9QgA=="),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"material": SubResource("StandardMaterial3D_iw5u5"),
+"name": "Material.002",
+"primitive": 3,
+"uv_scale": Vector4(2.0021129, 1.9950587, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD/////AAAAAP//AAAAAP//////f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_q6r0p")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7rtpr"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1yp6g"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_7rtpr")
+
+[sub_resource type="Gradient" id="Gradient_mb1nt"]
+colors = PackedColorArray(0.8618082, 0.82858497, 0.7999769, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7rtpr"]
+gradient = SubResource("Gradient_mb1nt")
+
+[sub_resource type="LabelSettings" id="LabelSettings_07dl2"]
+font_size = 32
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="GOLabelPaper" type="RigidBody3D" node_paths=PackedStringArray("viewport")]
+script = ExtResource("1_7rtpr")
+viewport = NodePath("SubViewport")
+metadata/_custom_type_script = "uid://w4vkt6pc48p6"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2850456e-05, 0.00032806396, 0.0005931854)
+shape = SubResource("BoxShape3D_5kuwd")
+
+[node name="Cube2" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_31isd")
+skeleton = NodePath("")
+surface_material_override/1 = SubResource("StandardMaterial3D_1yp6g")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(512, 256)
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_7rtpr")
+
+[node name="Label" type="Label" parent="SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -135.0
+offset_right = 0.5
+offset_bottom = 135.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "123 ThisIsaAddress Ct"
+label_settings = SubResource("LabelSettings_07dl2")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
