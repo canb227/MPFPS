@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cwfuhttyy326e"]
 
-[ext_resource type="Texture2D" uid="uid://dkulxo2rcch2t" path="res://assets/models/test/crt_screen_mp_1.png" id="1_vlyj6"]
+[ext_resource type="Texture2D" uid="uid://dbdl8oquvln6u" path="res://assets/models/warehouse/crt_screen_mp_1.png" id="1_vlyj6"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_c6i82"]
 font_size = 64

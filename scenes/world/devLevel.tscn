@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=23 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
@@ -57,6 +57,12 @@ metadata/_custom_type_script = "uid://ceok257oa0301"
 script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../GOLabelMonitor3")
 triggerName = "next"
+metadata/_custom_type_script = "uid://ceok257oa0301"
+
+[sub_resource type="Resource" id="Resource_k4evv"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../GOLabelPrinter")
+triggerName = "print"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_kx1m7"]
@@ -146,8 +152,8 @@ triggers = Array[Object]([SubResource("Resource_hd0xh")])
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -34.29431, -7.4939623, -1.5634353)
 
 [node name="GOPrintButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-2.7910933, 2.4400512e-07, 1.0665804e-14, 0, -1.2200256e-07, 2.7910936, 2.4400512e-07, 2.7910933, 1.2200258e-07, -35.749615, -6.021014, -1.637216)
-triggers = Array[Object]([SubResource("Resource_hd0xh")])
+transform = Transform3D(-2.7910933, 2.4400512e-07, 1.0665804e-14, 0, -1.2200256e-07, 2.7910936, 2.4400512e-07, 2.7910933, 1.2200258e-07, -35.858475, -6.257095, -1.4282864)
+triggers = Array[Object]([SubResource("Resource_k4evv")])
 
 [node name="trap_crusher1" parent="GameObjects" instance=ExtResource("2_qvxys")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)
@@ -283,9 +289,9 @@ operation = 2
 size = Vector3(5.1610107, 2.8139648, 1.3669434)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.715797, -7.992201, 22.678238)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.715797, -16.308119, 22.678238)
 use_collision = true
-size = Vector3(151.96947, 1, 101.451126)
+size = Vector3(151.96947, 17.631836, 101.451126)
 material = SubResource("StandardMaterial3D_kx1m7")
 
 [node name="CSGCylinder3D7" type="CSGCylinder3D" parent="statics"]
