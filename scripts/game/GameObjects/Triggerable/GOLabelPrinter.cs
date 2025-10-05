@@ -16,6 +16,12 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     public Node3D paperPrintLocation { get; set; }
     [Export]
     public Area3D paperTrayArea { get; set; }
+    [Export]
+    public GOLabelMonitor monitor1 { get; set; }
+    [Export]
+    public GOLabelMonitor monitor2 { get; set; }
+    [Export]
+    public GOLabelMonitor monitor3 { get; set; }
 
     private Label viewportLabel { get; set; }
     public int paperLoadedCount { get; set; } = 1;
@@ -48,7 +54,6 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public override void PerTickShared(double delta)
     {
-        base.PerTickShared(delta);
         foreach (Trigger t in triggerables)
         {
             if (t.cooldownSecondsRemaining == 0)
@@ -57,13 +62,20 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             }
             if (t.cooldownSecondsRemaining > 0)
             {
-                t.cooldownSecondsRemaining -= (float)delta;
+                if (t.triggerName == "print" && !waitingForPaper)
+                {
+                    GD.Print("cooldown");
+                    t.cooldownSecondsRemaining -= (float)delta;
+                }
             }
             if (t.cooldownSecondsRemaining <= 0)
             {
                 Logging.Log($"Trigger {t.triggerName} is off cooldown!", "GOLabelPrinter");
                 t.cooldownSecondsRemaining = 0;
-                viewportLabel.Text = "Ready To Print!";
+                if (!waitingForPaper)
+                {
+                    viewportLabel.Text = "Ready To Print!";
+                }
             }
         }
     }
@@ -86,7 +98,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public void PaperRefilled()
     {
-        viewportLabel.Text = "Ready To Print!";
+        viewportLabel.Text = "Cooling Down...";
         waitingForPaper = false;
         paperLoadedCount = 4;
         if (!animationPlayer.HasAnimation("paper_filled"))
@@ -133,7 +145,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             }
             GameState.GameObjectConstructorData data = new(GameObjectType.LabelPaper);
             data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
-            data.paramList.Add("guh");
+            data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
             Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
 
             // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();

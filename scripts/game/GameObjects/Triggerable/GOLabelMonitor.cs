@@ -14,7 +14,7 @@ public partial class GOLabelMonitor : GOBaseStaticTriggerable
     //export is temporary for testing, should be filled elsewhere
     [Export]
     public Array<string> addressTextOptions { get; set; }
-    private int textOptionsIndex { get; set; } = 0;
+    public int textOptionsIndex { get; set; } = 0;
 
 
     public override void _Ready()

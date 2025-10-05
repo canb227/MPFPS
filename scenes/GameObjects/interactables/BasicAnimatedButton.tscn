@@ -1,7 +1,8 @@
-[gd_scene load_steps=22 format=4 uid="uid://deq0mm8jgluwn"]
+[gd_scene load_steps=23 format=4 uid="uid://deq0mm8jgluwn"]
 
 [ext_resource type="Script" uid="uid://b7si2ee0w4q2s" path="res://scripts/game/GameObjects/Interactable/GOAnimatedButton.cs" id="1_mcndx"]
 [ext_resource type="AudioStream" uid="uid://ber4bgm6r53dk" path="res://assets/audio/environment/shortbutton.wav" id="2_gaacm"]
+[ext_resource type="AudioStream" uid="uid://b76yxas6tlsr8" path="res://assets/audio/environment/blip1.wav" id="3_4g8la"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://m8gs4resy8tg" path="res://unsorted/BasicButtonAnimationTree.tres" id="4_ple8t"]
 [ext_resource type="AudioStream" uid="uid://bwpecgou3qnw5" path="res://assets/audio/environment/button_fail.wav" id="4_u4uqc"]
 
@@ -198,7 +199,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_i5ukd"]
 resource_name = "button_enable"
-length = 0.4
+length = 0.25
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -223,6 +224,21 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector3(0, -0.029, 0), Vector3(0, 0, 0)]
 }
+tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SteamAudioPlayer")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("3_4g8la")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/2/use_blend = true
 
 [sub_resource type="Animation" id="Animation_gaacm"]
 resource_name = "button_fail"

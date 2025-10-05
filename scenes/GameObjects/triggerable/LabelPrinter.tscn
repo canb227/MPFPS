@@ -11,7 +11,7 @@
 [sub_resource type="Resource" id="Resource_bihfw"]
 script = ExtResource("2_tsbdh")
 triggerName = "print"
-cooldownSeconds = 10.0
+cooldownSeconds = 5.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_nphrl"]
@@ -704,7 +704,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_35xkw"]
 resource_name = "print"
-length = 0.1
+length = 0.17
 tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
