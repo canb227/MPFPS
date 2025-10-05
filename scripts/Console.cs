@@ -5,6 +5,7 @@ using Limbo.Console.Sharp;
 using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -200,11 +201,17 @@ public partial class Console : Node
     
     public void spawn(string objectName)
     {
-        GameObject obj = GameObjectLoader.LoadObjectByTypeName(objectName, out GameObjectType type);
-        Global.gameState.SpawnObjectAsAuth(obj,type);
-        var playerForwardVector = -Global.gameState.GetLocalPlayerCharacter().GlobalTransform.Basis.Z.Normalized();
-        var spawnPosition = Global.gameState.GetLocalPlayerCharacter().GlobalPosition + (playerForwardVector * 5);
-        (obj as Node3D).GlobalPosition = spawnPosition;
+        if (GameObjectLoader.GameObjectDictionary.TryGetValue(objectName, out var entry))
+        {
+            GameState.GameObjectConstructorData data = new(entry.type);
+
+            var playerForwardVector = -Global.gameState.GetLocalPlayerCharacter().GlobalTransform.Basis.Z.Normalized();
+            Vector3 spawnPosition = Global.gameState.GetLocalPlayerCharacter().GlobalPosition + (playerForwardVector * 5);
+            data.spawnTransform = new();
+            data.spawnTransform.Origin = spawnPosition;
+
+            Global.gameState.Auth_SpawnObject(entry.type, data);
+        }
     }
 
     public void destroy(ulong id)

@@ -9,7 +9,7 @@ public static class GameObjectLoader
     public static Dictionary<string, (GameObjectType type, string scenePath, Type cls)> GameObjectDictionary = new()
     {
         // { "paperlabel", (GameObjectType.LabelPaper, "res://scenes/GameObjects/props/Ball.tscn", typeof()) }
-        { "ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
+        {"ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
         {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/tony.tscn", typeof(Tony))},
         {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayer)) }
@@ -56,6 +56,19 @@ public static class GameObjectLoader
         return ResourceLoader.Load<PackedScene>(GameObjectDictionary[typeName].scenePath).Instantiate<GameObject>();
 
     }
+
+    public static string GetGameObjectTypeName(GameObjectType type)
+    {
+        foreach (var entry in GameObjectDictionary)
+        {
+            if (entry.Value.type == type)
+            {
+                return entry.Key;
+            }
+        }
+        return null;
+    }
+
 }
 
 public enum GameObjectType

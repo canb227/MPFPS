@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using static GameState;
+
 public interface GameObject
 {
     ulong id { get; set; }
@@ -18,5 +22,7 @@ public interface GameObject
     void ProcessStateUpdate(byte[] update);
     byte[] GenerateStateUpdate();
     string GenerateStateString();
+    bool InitFromData(GameObjectConstructorData data); 
+
 }
 

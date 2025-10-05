@@ -1,6 +1,8 @@
 
 using Godot;
 using System;
+using System.Collections.Generic;
+using static GameState;
 
 
 public abstract partial class GOBaseStaticBody : StaticBody3D, GameObject
@@ -17,6 +19,20 @@ public abstract partial class GOBaseStaticBody : StaticBody3D, GameObject
     public virtual float priorityAccumulator { get; set; }
     public abstract string GenerateStateString();
     public abstract byte[] GenerateStateUpdate();
+
+    public virtual bool InitFromData(GameObjectConstructorData data)
+    {
+        try
+        {
+            GlobalTransform = data.spawnTransform;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
     public abstract void PerFrameAuth(double delta);
     public abstract void PerFrameLocal(double delta);
     public abstract void PerFrameShared(double delta);

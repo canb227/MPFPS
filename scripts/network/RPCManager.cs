@@ -135,12 +135,14 @@ public static class RPCManager
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
+        Logging.Log($"RPC DEBUG3: methodname:{packet.methodName}, parameters: {string.Join(",", packet.parameters)}", "RPCManager");
         ProcessRPC(packet.nodePath,packet.methodName, packet.parameters);
     }
 
-    public static void RPC(GameObject context, string methodName, List<Object> parameters)
+    public static void RPC(Node context, string methodName, List<Object> parameters)
     {
-        bool isAuthority = Global.steamid == context.authority;
+        Logging.Log($"RPC DEBUG1: methodname:{methodName}, parameters: {string.Join(",",parameters)}","RPCManager");
+        //bool isAuthority = Global.steamid == context.authority;
         MethodInfo method = context.GetType().GetMethod(methodName);
         if (method == null)
         {
@@ -153,55 +155,64 @@ public static class RPCManager
         }
         if (attribute.mode == RPCMode.OnlySendToAuth)
         {
+            ulong authority = 0;
+            if (context is GameObject go)
+            {
+                authority = go.authority;
+            }
+            else
+            {
+                authority = Global.gameState.defaultAuth;
+            }
             RPCMessage packet = new();
-            packet.nodePath = Global.instance.GetPathTo(context as Node);
+            packet.nodePath = Global.instance.GetPathTo(context);
             packet.methodName = methodName;
             packet.parameters = parameters;
-            Global.network.SendData(MessagePackSerializer.Serialize(packet), Channel.RPC, context.authority);
+            Logging.Log($"RPC DEBUG2: methodname:{packet.methodName}, parameters: {string.Join(",", packet.parameters)}", "RPCManager");
+            Global.network.SendData(MessagePackSerializer.Serialize(packet), Channel.RPC, authority);
         }
-        else
+        else if(attribute.mode == RPCMode.SendToAllPeers)
         {
             RPCMessage packet = new();
-            packet.nodePath = Global.instance.GetPathTo(context as Node);
+            packet.nodePath = Global.instance.GetPathTo(context);
             packet.methodName = methodName;
             packet.parameters = parameters;
+            Logging.Log($"RPC DEBUG2: methodname:{packet.methodName}, parameters: {string.Join(",", packet.parameters)}", "RPCManager");
             Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.RPC, Global.Lobby.AllPeers());
         }
     }
+
     public static void ProcessRPC(NodePath path, string methodName, List<Object> parameters)
     {
+        Logging.Log($"RPC DEBUG4: methodname:{methodName}, parameters: {string.Join(",", parameters)}", "RPCManager");
         Node node = Global.instance.GetNode(path);
         if (node == null)
         {
             Logging.Error($"RPC Targeted invalid node: {path}", "RPCManager");
             return;
         }
-        if (node is GameObject context)
+
+        Type nodeType = node.GetType();
+        MethodInfo method = nodeType.GetMethod(methodName);
+        if (method == null)
         {
-            Type nodeType = context.GetType();
-            MethodInfo method = nodeType.GetMethod(methodName);
-            if (method == null)
-            {
-                Logging.Error($"Node at {path} (reflection type:{nodeType.ToString()} does not have method named: {methodName}", "RPCManager");
-            }
-            try
-            {
-                method.Invoke(node, parameters.ToArray());
-            }
-            catch (Exception e)
-            {
-                Logging.Error($"Error processing RPC: NodePath: {path} | MethodName: {methodName} | Parameters: {string.Join(",",parameters)} \nMessage: {e.Message}\nStack Trace: \n{e.StackTrace}","RPCManager");
-            }
+            Logging.Error($"Node at {path} (reflection type:{nodeType.ToString()} does not have method named: {methodName}", "RPCManager");
         }
-        else
+        try
         {
-            Logging.Error($"RPC Targeted non-gameObject!: {path}", "RPCManager");
-            return;
+            method.Invoke(node, parameters.ToArray());
         }
+        catch (Exception e)
+        {
+            Logging.Error($"Error processing RPC: NodePath: {path} | MethodName: {methodName} | Parameters: {string.Join(",",parameters)} \nMessage: {e.Message}","RPCManager");
+            if (e is TargetInvocationException ti)
+            {
+                Logging.Error($"Inner Exception: {ti.InnerException.Message} \nTrace: {ti.InnerException.StackTrace}", "RPCManager");
+            }
 
-
-
+        }
     }
+
 }
 
 [MessagePackObject]

@@ -1,5 +1,8 @@
 
 using Godot;
+using System;
+using System.Collections.Generic;
+using static GameState;
 
 public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, GameObject
 {
@@ -26,5 +29,19 @@ public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, GameObjec
     public abstract void PerFrameLocal(double delta);
     public abstract void PerTickShared(double delta);
     public abstract void PerFrameShared(double delta);
+
+    public virtual bool InitFromData(GameObjectConstructorData data)
+    {
+        try
+        {
+            GlobalTransform = data.spawnTransform;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
 }
 

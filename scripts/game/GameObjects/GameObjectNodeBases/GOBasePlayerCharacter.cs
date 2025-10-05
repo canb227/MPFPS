@@ -45,6 +45,14 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         input = Global.gameState.PlayerInputs[controllingPlayerID];
     }
 
+    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    {
+        GlobalTransform = data.spawnTransform;
+        controllingPlayerID = data.authority;
+        Global.gameState.PlayerCharacters[controllingPlayerID] = this;
+        return true;
+    }
+
     public abstract void Assignment(Team team, Role role);
 
     /// <summary>
@@ -82,7 +90,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     { 
     
     }
-
 
 }
 

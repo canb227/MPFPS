@@ -57,12 +57,12 @@ public partial class SimpleShape : GOBaseRigidBody
 
     public override void PerTickShared(double delta)
     {
-        throw new System.NotImplementedException();
+
     }
 
     public override void PerFrameShared(double delta)
     {
-        throw new System.NotImplementedException();
+
     }
 }
 
