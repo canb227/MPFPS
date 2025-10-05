@@ -46,23 +46,30 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     public float camXRotMax = 85;
     public float camXRotMin = -85;
-    public float baseSpeed = 6;
+    public float baseSpeed = 3;
+    public float acceleration = 1;
+    public float deceleration = 1;
     public float finalSpeed;
-    private Vector3 jumpVelocity = new Vector3(0,5,0);
+    private Vector3 jumpVelocity = new Vector3(0, 5, 0);
+    private bool airbrake = false;
 
     public override void PerTickAuth(double delta)
     {
-        HandleMouseLook(delta);
         HandleNonMovementInput(delta);
         HandleEquippedPassthruInput(delta);
         HandleMovementInputAndPhysics(delta);
         lastTickActions = input.actions;
     }
 
+    public override void PerFrameShared(double delta)
+    {
+        HandleMouseLook(delta);
+    }
+
     private void HandleMovementInputAndPhysics(double delta)
     {
-        Velocity = HandleYAxis(Velocity,delta);
-        
+        Velocity = HandleYAxis(Velocity, delta);
+
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
@@ -71,32 +78,65 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
             finalSpeed = baseSpeed * 2;
         }
 
-        float moveZ = input.MovementInputVector.X;
-        float moveX = input.MovementInputVector.Y;
+        //get input vectors
+        Vector2 normalizedInput = input.MovementInputVector.Normalized();
+        float moveZ = normalizedInput.X;
+        float moveX = normalizedInput.Y;
 
-        if (moveZ == 0)
+        // whether user z value is in opposite direction of current velocity
+        bool antiInput = (localVelocity.Z > 1 && moveZ < 0) || (localVelocity.Z < -1 && moveZ > 0);
+
+        //airbrake prevents further air movement once youve cancelled your Z movement
+        if (!IsOnFloor() && (antiInput || airbrake))
         {
-            localVelocity.Z = 0f;
+            airbrake = true;
+            localVelocity.X = 0;
+            localVelocity.Z = 0;
         }
         else
         {
-            localVelocity.Z = moveZ * finalSpeed;
+            //reset airbrake when on ground
+            airbrake = false;
+
+            //accelerate directions
+            if (moveZ != 0)
+            {
+                localVelocity.Z = GetClampedVelocity(localVelocity.Z, moveZ, acceleration, finalSpeed);
+            }
+            if (moveX != 0)
+            {
+                localVelocity.X = GetClampedVelocity(localVelocity.X, moveX, acceleration, finalSpeed);
+            }
         }
 
-        if (moveX == 0)
+        //apply deceleration
+        if (IsOnFloor())
         {
-            localVelocity.X = 0f;
-        }
-        else
-        {
-            localVelocity.X = moveX * finalSpeed;
+            if (moveZ == 0)
+            {
+                localVelocity.Z = GetDeceleratedVelocity(localVelocity.Z, deceleration);
+            }
+            if (moveX == 0)
+            {
+                localVelocity.X = GetDeceleratedVelocity(localVelocity.X, deceleration);
+            }
         }
 
-        Velocity = PCUtils.GlobalizeVector(this,localVelocity);
+        Velocity = PCUtils.GlobalizeVector(this, localVelocity);
         MoveAndSlide();
     }
 
-    private Vector3 HandleYAxis(Vector3 globalVelocity,double delta)
+    private float GetDeceleratedVelocity(float vel, float decel)
+    {
+        return vel > 0 ? Math.Max(vel - decel, 0) : Math.Min(vel + decel, 0);
+    }
+
+    private float GetClampedVelocity(float vel, float move, float accel, float max)
+    {
+        return Math.Clamp(vel + (move > 0 ? accel : -accel), -max, max);
+    }
+
+    private Vector3 HandleYAxis(Vector3 globalVelocity, double delta)
     {
         if (!IsOnFloor())
         {
