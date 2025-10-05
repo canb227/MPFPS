@@ -131,9 +131,13 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             {
                 viewportLabel.Text = "Cooling Down...";
             }
-            GameObject obj = GameObjectLoader.LoadObjectByTypeName("LabelPaper", out GameObjectType type);
-            Global.gameState.SpawnObjectAsAuth(obj, type);
-            (obj as Node3D).GlobalPosition = paperPrintLocation.GlobalPosition;
+            GameState.GameObjectConstructorData data = new(GameObjectType.LabelPaper);
+            data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
+            data.paramList.Add("guh");
+            Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
+
+            // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
+            // paperLabel.Position = paperPrintLocation.Position;
         }
     }
 

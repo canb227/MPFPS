@@ -57,6 +57,19 @@ public static class GameObjectLoader
         return ResourceLoader.Load<PackedScene>(GameObjectDictionary[typeName].scenePath).Instantiate<GameObject>();
 
     }
+
+    public static string GetGameObjectTypeName(GameObjectType type)
+    {
+        foreach (var entry in GameObjectDictionary)
+        {
+            if (entry.Value.type == type)
+            {
+                return entry.Key;
+            }
+        }
+        return null;
+    }
+
 }
 
 public enum GameObjectType

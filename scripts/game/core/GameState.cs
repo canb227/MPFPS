@@ -96,8 +96,6 @@ public partial class GameState : Node3D
         PIH.Name = "LocalInput";
         AddChild(PIH);
 
-
-
         //Start the game paused.
         ProcessMode = ProcessModeEnum.Disabled;
 
@@ -232,11 +230,9 @@ public partial class GameState : Node3D
         {
             if (node is GameObject obj)
             {
-                RegisterNewObject(obj, staticIDCounter++, defaultAuth, obj.type);
+                Local_RegisterExistingObject(obj, staticIDCounter++, defaultAuth, obj.type);
             }
         }
-        
-
     }
 
     /// <summary>
@@ -275,15 +271,18 @@ public partial class GameState : Node3D
     /// <param name="pcType"></param>
     public void SpawnSelf(GameObjectType pcType)
     {
-        Transform3D SpawnTransform = GetPlayerSpawnTransform();
+
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
         {
-            pc.GlobalTransform = SpawnTransform;
-            pc.controllingPlayerID = Global.steamid;
-            SpawnNewObject(pc, GenerateNewID(), Global.steamid, pcType);
-            StateUpdatePacket stateUpdate = new StateUpdatePacket(pc.id, pc.GenerateStateUpdate(), pc.type, StateUpdateFlag.SpawnPlayer);
-            byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
-            Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
+            Transform3D SpawnTransform = GetPlayerSpawnTransform();
+            GameObjectConstructorData data = new GameObjectConstructorData();
+            data.spawnTransform = SpawnTransform;
+            data.id = GenerateNewID();
+            data.authority = Global.steamid;
+            data.type = pcType;
+            List<Object> paramList = new List<Object>();
+            data.paramList = paramList;
+            Auth_SpawnObject(pcType, data);
         }
         else
         {
@@ -291,18 +290,90 @@ public partial class GameState : Node3D
         }
     }
 
-  
+    [MessagePackObject]
+    public struct GameObjectConstructorData
+    {
+        [Key(0)]
+        public ulong id;
+        [Key(1)]
+        public ulong authority;
+        [Key(2)]
+        public GameObjectType type;
+        [Key(3)]
+        public Transform3D spawnTransform;
+        [Key(4)]
+        public List<object> paramList;
+
+        public GameObjectConstructorData(ulong id, ulong authority, GameObjectType type)
+        {
+            this.id = id;
+            this.authority = authority;
+            this.type = type;
+            this.paramList = new();
+            this.spawnTransform = Transform3D.Identity;
+        }
+
+        public GameObjectConstructorData (GameObjectType type)
+        {
+            this.type = type;
+            this.id = Global.gameState.GenerateNewID();
+            this.authority = Global.steamid;
+            this.paramList = new();
+            this.spawnTransform = Transform3D.Identity;
+        }
+    }
+
 
     /// <summary>
-    /// Spawn an object with authority over it and tell all your peers about it.
+    /// Commands all clients to construct a GameObject from the given information 
     /// </summary>
-    /// <param name="gameObject"></param>
-    public void SpawnObjectAsAuth(GameObject gameObject, GameObjectType type)
+    /// <param name="id"></param>
+    /// <param name="authority"></param>
+    /// <param name="gameObjectType"></param>
+    /// <param name="constructorParameters"></param>
+    public void Auth_SpawnObject(GameObjectType gameObjectType, GameObjectConstructorData data)
     {
-        SpawnNewObject(gameObject,GenerateNewID(),Global.steamid,type);
-        StateUpdatePacket stateUpdate = new StateUpdatePacket(gameObject.id, gameObject.GenerateStateUpdate(), gameObject.type, StateUpdateFlag.Spawn);
-        byte[] stateData = MessagePackSerializer.Serialize(stateUpdate);
-        Global.network.BroadcastData(stateData, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf());
+        if (GameObjects.ContainsKey(data.id))
+        {
+            Logging.Error($"Error, cannot spawn object with type {data.type}, id {data.id} already exists", "GameState");
+            return;
+        }
+        if (data.id == 0)
+        {
+            Logging.Error($"Error, cannot spawn object with type {data.type}, invalid ID (0)!", "GameState");
+            return;
+        }
+        if (data.authority == 0 || !Global.Lobby.lobbyPeers.Contains(data.authority))
+        {
+            Logging.Error($"Error, cannot spawn object with type {data.type}, invalid authority provided: {data.authority}!", "GameState");
+            return;
+        }
+        RPCManager.RPC(this, "Local_SpawnObject", [gameObjectType, MessagePackSerializer.Serialize(data)]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void Local_SpawnObject(GameObjectType type, byte[] _data)
+    {
+        GameObjectConstructorData data = MessagePackSerializer.Deserialize<GameObjectConstructorData>(_data);
+        GameObject newObj = GameObjectLoader.LoadObjectByType(type);
+        if (newObj != null)
+        {
+            newObj.id = data.id;
+            newObj.authority = data.authority;
+            newObj.type = data.type;
+            if (newObj.InitFromData(data))
+            {
+                if (newObj is Node n)
+                {
+                    GameObjects[newObj.id] = newObj;
+                    nodeGameObjects.AddChild(n, true);
+                }
+            }
+            else
+            {
+                Logging.Error($"Failed to init object from data: Type:{newObj.type} Params:{string.Join(",",data.paramList)}", "GameState");
+            }
+        }
     }
 
     /// <summary>
@@ -311,6 +382,7 @@ public partial class GameState : Node3D
     /// <param name="id"></param>
     public void DestroyAsAuth(ulong id)
     {
+        throw new NotImplementedException();
         Logging.Warn("auth destruction not yet networked", "GameState");
         if (GameObjects.TryGetValue(id, out GameObject obj))
         {
@@ -320,15 +392,49 @@ public partial class GameState : Node3D
         }
     }
 
-    public GOBasePlayerCharacter GetLocalPlayerCharacter()
+
+    //Private and internal API functions below
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private GameObject Local_RegisterExistingObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
     {
-        return PlayerCharacters[Global.steamid];
+        if (GameObjects.ContainsKey(id))
+        {
+            Logging.Error($"Error, cannot register object with type {gameObject.type}, id {gameObject.id} already exists", "GameState");
+            return null;
+        }
+        if (id == 0)
+        {
+            Logging.Error($"Error, cannot register object with type {gameObject.type}, invalid ID (0)!", "GameState");
+            return null;
+        }
+        if (authority == 0 || !Global.Lobby.lobbyPeers.Contains(authority))
+        {
+            Logging.Error($"Error, cannot register object with type {gameObject.type}, invalid authority provided: {authority}!", "GameState");
+            return null;
+        }
+        if (gameObject is Node n)
+        {
+            if (!n.IsInsideTree())
+            {
+                Logging.Error($"Error, cannot register object that is not inside the scene tree", "GameState");
+                return null;
+            }
+        }
+        else
+        {
+            Logging.Error($"Error, cannot register object that is not Node", "GameState");
+            return null;
+        }
+
+        gameObject.id = id;
+        gameObject.authority = authority;
+        gameObject.type = type;
+        GameObjects[gameObject.id] = gameObject;
+        return gameObject;
     }
 
-    public GOBasePlayerCharacter GetPlayerCharacter(ulong id)
-    {
-        return PlayerCharacters[id];
-    }
+    // stuf ==========================================================================
 
     public void PushGameStateOptions()
     {
@@ -342,83 +448,32 @@ public partial class GameState : Node3D
         Global.network.BroadcastData(payload, Channel.PlayerData, Global.Lobby.lobbyPeers.ToList());
     }
 
-    /// <summary>
-    /// elite collision-proof id generation scheme - patent pending
-    /// </summary>
-    /// <returns></returns>
-    public ulong GenerateNewID()
-    {
-        ulong id = (ulong)Random.Shared.NextInt64();
-        while (GameObjects.ContainsKey(id))
-        {
-            id = (ulong)Random.Shared.NextInt64();
-        }
-        return id;
-    }
-
-    //Private and internal API functions below
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// <summary>
-    /// Spawns an object without interacting with the networking sync. Use with caution!
+    /// Only for RPC use, Do not call directly. See <see cref="RPCManager.NetCommand_StartGame(string)"/>
     /// </summary>
-    /// <param name="gameObject"></param>
-    /// <returns>a reference to the spawned object</returns>
-    private GameObject SpawnNewObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
+    /// <param name="scenePath"></param>
+    public void StartGame(string scenePath)
     {
-        if (GameObjects.ContainsKey(id))
-        {
-            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, id {gameObject.id} already exists", "GameState");
-            return null;
-        }
-        if (id==0)
-        {
-            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, invalid ID (0)!", "GameState");
-            return null;
-        }
-        if (authority == 0 || !Global.Lobby.lobbyPeers.Contains(authority))
-        {
-            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, invalid authority provided: {authority}!", "GameState");
-            return null;
-        }
+        Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
+        Global.ui.StartLoadingScreen();
+        LoadStaticLevel(scenePath);
+        SpawnSelf(GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type);
+        Global.ui.StopLoadingScreen();
+        gameStarted = true;
 
-        gameObject.id = id;
-        gameObject.authority = authority;
-        gameObject.type = type;
-
-        GameObjects[gameObject.id] = gameObject;
-        nodeGameObjects.AddChild(gameObject as Node, true);
-        if (gameObject is GOBasePlayerCharacter pc)
+        GameModeManager gmm = new();
+        gmm.Name = "Game Mode Manager";
+        AddChild(gmm);
+        AIManager aim = new();
+        aim.Name = "AI Manager";
+        AddChild(aim);
+        if (Global.Lobby.bIsLobbyHost)
         {
-            PlayerCharacters[pc.controllingPlayerID] = pc;
+            gmm.GameStartAsHost();
+            aim.GameStartAsHost();
         }
-        return gameObject;
-    }
-
-    private GameObject RegisterNewObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
-    {
-        if (GameObjects.ContainsKey(id))
-        {
-            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, id {gameObject.id} already exists", "GameState");
-            return null;
-        }
-        if (id == 0)
-        {
-            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, invalid ID (0)!", "GameState");
-            return null;
-        }
-        if (authority == 0 || !Global.Lobby.lobbyPeers.Contains(authority))
-        {
-            Logging.Error($"Error, cannot spawn object with type {gameObject.type}, invalid authority provided: {authority}!", "GameState");
-            return null;
-        }
-
-        gameObject.id = id;
-        gameObject.authority = authority;
-        gameObject.type = type;
-
-        GameObjects[gameObject.id] = gameObject;
-        return gameObject;
+        ProcessMode = ProcessModeEnum.Pausable;
     }
 
     private void GameStateDebug()
@@ -516,26 +571,10 @@ public partial class GameState : Node3D
                     else
                     {
                         Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
-                        GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
-                        SpawnNewObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
-                        fixObj.ProcessStateUpdate(stateUpdate.data);
+                        //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                        //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
+                        //fixObj.ProcessStateUpdate(stateUpdate.data);
                     }
-                    break;
-                case StateUpdateFlag.Spawn:
-                    Logging.Log($"Auth spawn request from peer.", "GameState");
-                    GameObject newObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
-                    SpawnNewObject(newObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
-                    newObj.ProcessStateUpdate(stateUpdate.data);
-                    break;
-                case StateUpdateFlag.SpawnPlayer:
-                    Logging.Log($"Player spawn request from peer.", "GameState");
-                    GOBasePlayerCharacter pcObj = (GOBasePlayerCharacter)GameObjectLoader.LoadObjectByType(stateUpdate.type);
-                    pcObj.controllingPlayerID = stateUpdate.sender;
-                    PlayerCharacters[pcObj.id] = pcObj;
-                    SpawnNewObject(pcObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
-                    pcObj.ProcessStateUpdate(stateUpdate.data);
-                    break;
-                case StateUpdateFlag.Destroy:
                     break;
                 default:
                     break;
@@ -551,6 +590,8 @@ public partial class GameState : Node3D
         }
     }
 
+
+    //Incoming Network Message Processors ----------------------------------------------------------------------------------
     public void ProcessGameStateOptionsPacketBytes(byte[] payload, ulong sender)
     {
         GameStateOptions opts = MessagePackSerializer.Deserialize<GameStateOptions>(payload);
@@ -589,6 +630,8 @@ public partial class GameState : Node3D
         PlayerDataReceivedEvent?.Invoke(PlayerData[data.playerID], sender);
     }
 
+
+    //Helper Functions -----------------------------------------------------------------------
     public void SetDebugTarget(GameObject go)
     {
         debugTarget = go;
@@ -599,31 +642,28 @@ public partial class GameState : Node3D
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }
 
-    /// <summary>
-    /// Only for RPC use, Do not call directly. See <see cref="RPCManager.NetCommand_StartGame(string)"/>
-    /// </summary>
-    /// <param name="scenePath"></param>
-    public void StartGame(string scenePath)
+    public GOBasePlayerCharacter GetLocalPlayerCharacter()
     {
-        Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
-        Global.ui.StartLoadingScreen();
-        LoadStaticLevel(scenePath);
-        SpawnSelf(GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type);
-        Global.ui.StopLoadingScreen();
-        gameStarted = true;
+        return PlayerCharacters[Global.steamid];
+    }
 
-        GameModeManager gmm = new();
-        gmm.Name = "Game Mode Manager";
-        AddChild(gmm);
-        AIManager aim = new();
-        aim.Name = "AI Manager";
-        AddChild(aim);
-        if (Global.Lobby.bIsLobbyHost)
+    public GOBasePlayerCharacter GetPlayerCharacter(ulong id)
+    {
+        return PlayerCharacters[id];
+    }
+
+    /// <summary>
+    /// elite collision-proof id generation scheme - patent pending
+    /// </summary>
+    /// <returns></returns>
+    public ulong GenerateNewID()
+    {
+        ulong id = (ulong)Random.Shared.NextInt64();
+        while (GameObjects.ContainsKey(id))
         {
-            gmm.GameStartAsHost();
-            aim.GameStartAsHost();
+            id = (ulong)Random.Shared.NextInt64();
         }
-        ProcessMode = ProcessModeEnum.Pausable;
+        return id;
     }
 }
 

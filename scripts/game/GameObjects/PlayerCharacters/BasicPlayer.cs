@@ -62,7 +62,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     private void HandleMovementInputAndPhysics(double delta)
     {
         Velocity = HandleYAxis(Velocity,delta);
-
+        
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
@@ -179,6 +179,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     protected override void SetupLocalPlayerCharacter()
     {
+
         cam = new();
         cameraLocationNode.AddChild(cam);
 

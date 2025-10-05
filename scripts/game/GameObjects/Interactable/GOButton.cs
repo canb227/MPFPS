@@ -38,7 +38,7 @@ public partial class GOButton : GOBaseStaticInteractable, IsButton
             {
                 if (GetNode<HasTriggerables>(t.triggerableNode).IsTriggerReady(t.triggerName))
                 {
-                    RPCManager.RPC((GameObject)GetNode<HasTriggerables>(t.triggerableNode), "Trigger", [t.triggerName, byID, onTick]);
+                    RPCManager.RPC(GetNode(t.triggerableNode), "Trigger", [t.triggerName, byID, onTick]);
                 }
             }
             return;
