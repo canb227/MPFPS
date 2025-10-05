@@ -14,12 +14,11 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     [Export]
     public Node3D paperPrintLocation { get; set; }
-
     [Export]
-    public PackedScene PaperLabelScene { get; set; }
-    
+    public Area3D paperTrayArea { get; set; }
+
     private Label viewportLabel { get; set; }
-    public int paperLoadedCount { get; set; } = 4;
+    public int paperLoadedCount { get; set; } = 1;
     public bool waitingForPaper { get; set; } = false;
 
 
@@ -47,6 +46,28 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         }
     }
 
+    public override void PerTickShared(double delta)
+    {
+        base.PerTickShared(delta);
+        foreach (Trigger t in triggerables)
+        {
+            if (t.cooldownSecondsRemaining == 0)
+            {
+                continue;
+            }
+            if (t.cooldownSecondsRemaining > 0)
+            {
+                t.cooldownSecondsRemaining -= (float)delta;
+            }
+            if (t.cooldownSecondsRemaining <= 0)
+            {
+                Logging.Log($"Trigger {t.triggerName} is off cooldown!", "GOLabelPrinter");
+                t.cooldownSecondsRemaining = 0;
+                viewportLabel.Text = "Ready To Print!";
+            }
+        }
+    }
+
     //NETWORKINGTODO is this okay? its called from a trigger animation
     public void OutOfPaper()
     {
@@ -65,7 +86,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public void PaperRefilled()
     {
-        viewportLabel.Text = "Ready To Print";
+        viewportLabel.Text = "Ready To Print!";
         waitingForPaper = false;
         paperLoadedCount = 4;
         if (!animationPlayer.HasAnimation("paper_filled"))
@@ -76,6 +97,20 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         else
         {
             animationPlayer.Play("paper_filled");
+        }
+    }
+
+    public void CheckForPaperTray()
+    {
+        foreach (Node3D node in paperTrayArea.GetOverlappingBodies())
+        {
+            if (node is GOPaperBox paperBox)
+            {
+                //node.Dispose();
+                node.GlobalPosition = new Vector3(0, 0, 0);
+                PaperRefilled();
+                break;
+            }
         }
     }
 
@@ -92,12 +127,19 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             {
                 OutOfPaper();
             }
+            else
+            {
+                viewportLabel.Text = "Cooling Down...";
+            }
             GameObject obj = GameObjectLoader.LoadObjectByTypeName("LabelPaper", out GameObjectType type);
-            Global.gameState.SpawnObjectAsAuth(obj,type);
+            Global.gameState.SpawnObjectAsAuth(obj, type);
             (obj as Node3D).GlobalPosition = paperPrintLocation.GlobalPosition;
-            // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
-            // paperLabel.Position = paperPrintLocation.Position;
         }
+    }
+
+    public void ReadyToPrint()
+    {
+
     }
     
 }
