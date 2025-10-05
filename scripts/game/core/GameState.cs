@@ -310,7 +310,7 @@ public partial class GameState : Node3D
             this.authority = authority;
             this.type = type;
             this.paramList = new();
-            this.spawnTransform = new();
+            this.spawnTransform = Transform3D.Identity;
         }
 
         public GameObjectConstructorData (GameObjectType type)
@@ -319,7 +319,7 @@ public partial class GameState : Node3D
             this.id = Global.gameState.GenerateNewID();
             this.authority = Global.steamid;
             this.paramList = new();
-            this.spawnTransform = new();
+            this.spawnTransform = Transform3D.Identity;
         }
     }
 
@@ -382,6 +382,7 @@ public partial class GameState : Node3D
     /// <param name="id"></param>
     public void DestroyAsAuth(ulong id)
     {
+        throw new NotImplementedException();
         Logging.Warn("auth destruction not yet networked", "GameState");
         if (GameObjects.TryGetValue(id, out GameObject obj))
         {
@@ -426,7 +427,7 @@ public partial class GameState : Node3D
             return null;
         }
 
-            gameObject.id = id;
+        gameObject.id = id;
         gameObject.authority = authority;
         gameObject.type = type;
         GameObjects[gameObject.id] = gameObject;

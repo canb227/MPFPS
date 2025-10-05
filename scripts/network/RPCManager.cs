@@ -135,13 +135,13 @@ public static class RPCManager
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
-        Logging.Log($"RPC DEBUG3: methodname:{packet.methodName}, parameters: {string.Join(",", packet.parameters)}", "RPCManager");
+
         ProcessRPC(packet.nodePath,packet.methodName, packet.parameters);
     }
 
     public static void RPC(Node context, string methodName, List<Object> parameters)
     {
-        Logging.Log($"RPC DEBUG1: methodname:{methodName}, parameters: {string.Join(",",parameters)}","RPCManager");
+
         //bool isAuthority = Global.steamid == context.authority;
         MethodInfo method = context.GetType().GetMethod(methodName);
         if (method == null)
@@ -168,7 +168,7 @@ public static class RPCManager
             packet.nodePath = Global.instance.GetPathTo(context);
             packet.methodName = methodName;
             packet.parameters = parameters;
-            Logging.Log($"RPC DEBUG2: methodname:{packet.methodName}, parameters: {string.Join(",", packet.parameters)}", "RPCManager");
+
             Global.network.SendData(MessagePackSerializer.Serialize(packet), Channel.RPC, authority);
         }
         else if(attribute.mode == RPCMode.SendToAllPeers)
@@ -177,14 +177,14 @@ public static class RPCManager
             packet.nodePath = Global.instance.GetPathTo(context);
             packet.methodName = methodName;
             packet.parameters = parameters;
-            Logging.Log($"RPC DEBUG2: methodname:{packet.methodName}, parameters: {string.Join(",", packet.parameters)}", "RPCManager");
+
             Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.RPC, Global.Lobby.AllPeers());
         }
     }
 
     public static void ProcessRPC(NodePath path, string methodName, List<Object> parameters)
     {
-        Logging.Log($"RPC DEBUG4: methodname:{methodName}, parameters: {string.Join(",", parameters)}", "RPCManager");
+
         Node node = Global.instance.GetNode(path);
         if (node == null)
         {
