@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Godot;
 using MessagePack;
 
@@ -7,6 +8,8 @@ public partial class GOLabelPaper : SimpleShape
     [Export]
     public SubViewport viewport { get; set; }
     private Label viewportLabel { get; set; }
+    
+    public int addressID = 0;
 
     private string text = "123 NeedAddress FromConstructor";
 
@@ -22,6 +25,7 @@ public partial class GOLabelPaper : SimpleShape
         if (base.InitFromData(data))
         {
             text = (string)data.paramList[0];
+            addressID = (int)data.paramList[1];
             return true;
         }
         return false;
