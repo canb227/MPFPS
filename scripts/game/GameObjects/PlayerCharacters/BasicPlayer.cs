@@ -190,22 +190,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
             }
         }
-        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
-        {
-            if (rayCast.IsColliding())
-            {
-                if (rayCast.GetCollider() is IsInventoryItem s)
-                {
-                    s.OnPickup(id);
-                    inventory.StoreItem(s);
-                }
-                else if (rayCast.GetCollider() is IsInteractable i)
-                {
-                    i.Local_OnInteract(id);
-                }
-
-            }
-        }
     }
 
     private void HandleMouseLook(double delta)
