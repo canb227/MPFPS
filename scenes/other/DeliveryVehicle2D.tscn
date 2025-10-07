@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cphulp1kqxj6n"]
+
+[ext_resource type="Script" uid="uid://d0mgvdrwiponf" path="res://scripts/game/other/DeliveryVehicle2D.cs" id="1_yahs5"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_niev0"]
+radial_segments = 4
+rings = 3
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a4tbi"]
+
+[node name="2DDeliveryVehicle" type="CharacterBody2D"]
+script = ExtResource("1_yahs5")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+position = Vector2(1.7881393e-07, 1.9073486e-06)
+scale = Vector2(19.999998, 15.000001)
+mesh = SubResource("CapsuleMesh_niev0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_a4tbi")

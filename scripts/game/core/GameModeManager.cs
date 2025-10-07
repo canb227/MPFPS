@@ -25,15 +25,29 @@ public partial class GameModeManager : Node
     {
         List<ulong> players = Global.Lobby.lobbyPeers.ToList();
         List<ulong> traitors = new();
+        List<ulong> managers = new();
 
         int numPlayers = players.Count;
         int numTraitors = Math.Max(Mathf.FloorToInt(numPlayers * options.percentTraitors), 1);
+        int numManagers = 0;
+        if (numTraitors > 1)
+        {
+            numManagers = 1;
+        }
         Logging.Log($"Out of {numPlayers} players, {numTraitors} will be picked as traitors","GameModeManager");
         for (int i = 0; i < numTraitors; i++)
         {
             ulong selectedID = players[Random.Shared.Next(numPlayers)];
             players.Remove(selectedID);
             traitors.Add(selectedID);
+        }
+
+        Logging.Log($"Out of {numPlayers} players, {numManagers} will be picked as managers","GameModeManager");
+        for (int i = 0; i < numManagers; i++)
+        {
+            ulong selectedID = players[Random.Shared.Next(numPlayers)];
+            players.Remove(selectedID);
+            managers.Add(selectedID);
         }
 
         foreach (ulong id in traitors)
@@ -45,6 +59,16 @@ public partial class GameModeManager : Node
             byte[] data = MessagePackSerializer.Serialize(pa);
             RPCManager.RPC(this, "AssignRole", [id, Team.Traitor, Role.Normal]);
         }
+        
+        foreach (ulong id in managers)
+        {
+            PlayerAssignment pa = new();
+            pa.id = id;
+            pa.team = Team.Manager;
+            pa.role = Role.Normal;
+            byte[] data = MessagePackSerializer.Serialize(pa);
+            RPCManager.RPC(this, "AssignRole", [id, Team.Manager, Role.Normal]);
+        }
 
         foreach (ulong id in players)
         {
@@ -53,7 +77,7 @@ public partial class GameModeManager : Node
             pa.team = Team.Innocent;
             pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id,Team.Innocent,Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, Team.Innocent, Role.Normal]);
         }
     }
 
@@ -69,7 +93,8 @@ public enum Team
 {
     None,
     Innocent,
-    Traitor
+    Traitor,
+    Manager
 }
 
 public enum Role

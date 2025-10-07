@@ -323,6 +323,39 @@ public partial class GameState : Node3D
         }
     }
 
+    [MessagePackObject]
+    public struct GameObject2DConstructorData
+    {
+        [Key(0)]
+        public ulong id;
+        [Key(1)]
+        public ulong authority;
+        [Key(2)]
+        public GameObjectType type;
+        [Key(3)]
+        public Transform2D spawnTransform;
+        [Key(4)]
+        public List<object> paramList;
+
+        public GameObject2DConstructorData(ulong id, ulong authority, GameObjectType type)
+        {
+            this.id = id;
+            this.authority = authority;
+            this.type = type;
+            this.paramList = new();
+            this.spawnTransform = Transform2D.Identity;
+        }
+
+        public GameObject2DConstructorData (GameObjectType type)
+        {
+            this.type = type;
+            this.id = Global.gameState.GenerateNewID();
+            this.authority = Global.steamid;
+            this.paramList = new();
+            this.spawnTransform = Transform2D.Identity;
+        }
+    }
+
 
     /// <summary>
     /// Commands all clients to construct a GameObject from the given information 

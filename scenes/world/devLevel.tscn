@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=24 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
 [ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
 [ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_vegv4"]
+[ext_resource type="PackedScene" uid="uid://cergi4lpkn7h0" path="res://scenes/GameObjects/interactables/DeliveryMachine.tscn" id="8_viqb8"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -121,41 +122,44 @@ shadow_enabled = true
 
 [node name="GameObjects" type="Node3D" parent="."]
 
-[node name="GOLabelMonitor" parent="GameObjects" instance=ExtResource("1_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -41.059956, -5.9048495, -1.8515514)
+[node name="LabelingGame" type="Node3D" parent="GameObjects"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.09649, -7.4796414, -1.9709693)
+
+[node name="GOLabelMonitor" parent="GameObjects/LabelingGame" instance=ExtResource("1_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9941063, 1.5747919, 0.119417906)
 addressTextOptions = Array[String](["1234", "5678", "9123"])
 triggerables = Array[Object]([SubResource("Resource_6h6a0")])
 
-[node name="GOLabelMonitor2" parent="GameObjects" instance=ExtResource("1_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -39.059193, -5.9048495, -1.8916099)
+[node name="GOLabelMonitor2" parent="GameObjects/LabelingGame" instance=ExtResource("1_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.9933434, 1.5747919, 0.07935941)
 addressTextOptions = Array[String](["THATHOLDER", "THISHOLDER", "THEHOLDERING"])
 triggerables = Array[Object]([SubResource("Resource_l6pk1")])
 
-[node name="GOLabelMonitor3" parent="GameObjects" instance=ExtResource("1_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -37.06967, -5.9048495, -1.9314433)
+[node name="GOLabelMonitor3" parent="GameObjects/LabelingGame" instance=ExtResource("1_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0038223267, 1.5747919, 0.039525986)
 addressTextOptions = Array[String](["Street", "Court", "Drive", "Lane"])
 triggerables = Array[Object]([SubResource("Resource_7fd8x")])
 
-[node name="GOLabellingMonitorButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -41.088364, -6.021014, -1.5303254)
+[node name="GOLabellingMonitorButton" parent="GameObjects/LabelingGame" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -4.0225143, 1.4586272, 0.4406439)
 triggers = Array[Object]([SubResource("Resource_nxn20")])
 
-[node name="GOLabellingMonitorButton2" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -39.079563, -6.021014, -1.570545)
+[node name="GOLabellingMonitorButton2" parent="GameObjects/LabelingGame" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -2.0137138, 1.4586272, 0.40042436)
 triggers = Array[Object]([SubResource("Resource_s2rxf")])
 
-[node name="GOLabellingMonitorButton3" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -37.086094, -6.021014, -1.6104575)
+[node name="GOLabellingMonitorButton3" parent="GameObjects/LabelingGame" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -0.020244598, 1.4586272, 0.36051178)
 triggers = Array[Object]([SubResource("Resource_hd0xh")])
 
-[node name="GOLabelPrinter" parent="GameObjects" node_paths=PackedStringArray("monitor1", "monitor2", "monitor3") instance=ExtResource("8_vegv4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -34.29431, -7.4939623, -1.5634353)
+[node name="GOLabelPrinter" parent="GameObjects/LabelingGame" node_paths=PackedStringArray("monitor1", "monitor2", "monitor3") instance=ExtResource("8_vegv4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.7715378, -0.01432085, 0.407534)
 monitor1 = NodePath("../GOLabelMonitor")
 monitor2 = NodePath("../GOLabelMonitor2")
 monitor3 = NodePath("../GOLabelMonitor3")
 
-[node name="GOPrintButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-0.857522, 7.496694e-08, -1.3822983e-15, 5.6702564e-08, 0.6486017, 0.56094545, 4.90394e-08, 0.56094533, -0.6486017, -34.16857, -6.352106, -1.1366997)
+[node name="GOPrintButton" parent="GameObjects/LabelingGame" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-0.857522, 7.496694e-08, -1.3822983e-15, 5.6702564e-08, 0.6486017, 0.56094545, 4.90394e-08, 0.56094533, -0.6486017, 2.8972778, 1.1275353, 0.83426964)
 triggers = Array[Object]([SubResource("Resource_k4evv")])
 ButtonDisableCondition = 1
 
@@ -173,6 +177,9 @@ triggers = Array[Object]([SubResource("Resource_vegv4")])
 
 [node name="basicDoor" parent="GameObjects" instance=ExtResource("5_o33i4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, -5.992201, -1.6779103)
+
+[node name="GODeliveryMachine" parent="GameObjects" instance=ExtResource("8_viqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.761868, -7.510642, -1.7161186)
 
 [node name="statics" type="Node3D" parent="."]
 
@@ -548,3 +555,11 @@ text = "Crusher"
 [node name="Label3D5" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.079622, -5.212761, 2.1124222)
 text = "Both Trigger Crusher"
+
+[node name="CSGBox3D49" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.74031, -6.2875896, -1.2582991)
+size = Vector3(1, 2.4663086, 4.807556)
+
+[node name="CSGBox3D50" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.419, -6.2875896, -1.2582991)
+size = Vector3(1, 2.4663086, 4.807556)
