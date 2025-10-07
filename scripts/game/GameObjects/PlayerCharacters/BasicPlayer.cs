@@ -17,6 +17,8 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public IsInventoryItem equipped { get; set; }
     public ActionFlags lastTickActions { get; set; }
 
+    public PlayerInfoUI playerInfoUI { get; set; }
+
     public override void _Ready()
     {
         base._Ready();
@@ -225,6 +227,12 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
         Global.ui.SwitchFullScreenUI("BasePlayerHUD");
         Input.MouseMode = Input.MouseModeEnum.Captured;
+
+        //setup UI
+        playerInfoUI = (PlayerInfoUI)GD.Load<PackedScene>("res://scenes/ui/hud/playerinfoUI.tscn").Instantiate();
+        playerInfoUI.UpdateRoleUI(team);
+        playerInfoUI.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
+        cam.AddChild(playerInfoUI);
     }
 
     public override Camera3D GetCamera()
@@ -270,6 +278,10 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     {
         this.team = team;
         this.role = role;
+        if (playerInfoUI != null)
+        {
+            playerInfoUI.UpdateRoleUI(team);
+        }
     }
 
 }
