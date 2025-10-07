@@ -28,6 +28,14 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         rayCast.TargetPosition = new Vector3(0, 0, -10);
         rayCast.CollideWithBodies = true;
         cameraLocationNode.AddChild(rayCast);
+
+
+        SetupInventory();
+    }
+
+    private void SetupInventory()
+    {
+        //throw new NotImplementedException();
     }
 
     public override void ProcessStateUpdate(byte[] _update)
@@ -166,6 +174,22 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     private void HandleNonMovementInput(double delta)
     {
+        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
+        {
+            if (rayCast.IsColliding())
+            {
+                if (rayCast.GetCollider() is IsInventoryItem s)
+                {
+                    s.OnPickup(id);
+                    inventory.StoreItem(s);
+                }
+                else if (rayCast.GetCollider() is IsInteractable i)
+                {
+                    i.Local_OnInteract(id);
+                }
+
+            }
+        }
         if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
         {
             if (rayCast.IsColliding())

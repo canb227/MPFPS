@@ -4,101 +4,95 @@ using System.Collections.Generic;
 using Tomlyn;
 
 [Flags]
-public enum ActionFlags
+public enum ActionFlags : UInt64
 {
     None = 0,
 
-    MoveForward = 1<<0,
-    MoveBackward = 1<<1,
-    MoveLeft = 1<<2,
-    MoveRight = 1<<3,
+    MoveForward = 1L<<0,
+    MoveBackward = 1L<<1,
+    MoveLeft = 1L<<2,
+    MoveRight = 1L<<3,
 
-    Jump = 1<<4,
-    Crouch = 1<<5,
-    Sprint = 1<<6,
-    Use = 1<<7,
-    Fire = 1<<8,
-    Aim = 1<<9,
+    Jump = 1L<<4,
+    Crouch = 1L<<5,
+    CrouchToggle = 1L<<6,
+    Sprint = 1L<<7,
+    SprintToggle = 1L<<8,
+    Prone = 1 << 9,
+    ProneToggle = 1 << 10,
 
-    LookUp = 1<<10,
-    LookDown = 1<<11,
-    LookLeft = 1<<12,
-    LookRight = 1<<13,
-    
-    Ability1 = 1<<14,
-    Ability2 = 1<<15,
-    Ability3 = 1<<16,
-    Ability4 = 1<<17,
+    Use = 1L<<11,
+    Reload = 1 << 12,
+
+    Fire = 1L<<13,
+    Aim = 1L<<14,
+    AimToggle = 1L<<15,
+
+    LeanLeft = 1L<<16,
+    LeanLeftToggle = 1L<<17,
+    LeanRight = 1L<<18,
+    LeanRightToggle = 1L<<19,
+
+    LookUp = 1L<<20,
+    LookDown = 1L<<21,
+    LookLeft = 1L<<22,
+    LookRight = 1L<<23,
+
+    Ability1 = 1L<<24,
+    Ability2 = 1L<<25,
+    Ability3 = 1L<<26,
+    Ability4 = 1L<<27,
+
+    InventorySlot1 = 1L<<28,
+    InventorySlot2 = 1L<<29,
+    InventorySlot3 = 1L<<30,
+    InventorySlot4 = 1L<<31,
+    InventorySlot5 = 1L<<32,
+    NextSlot = 1L<<33,
+    PrevSlot = 1L<<34,
+    LastSlot = 1L<<35,
+
+
+    Escape = 1L<<62,
+    //Error = 1L<<63 //tbh I dunno if the last slot is 1<<63 or 1<<64
+
+
 }
 /// <summary>
 /// Handles saving/loading input maps from disk, and also handles dynamic key remapping.
 /// </summary>
-public class InputMapManager
+public static class InputMapManager
 {
     /// <summary>
     /// An in-memory cached version of the player's inputmap file that is saved to disk. Any changes made to this version will (try) to be automatically saved to disk.
     /// </summary>
-    public PlayerInputMap loadedPlayerInputMap;
+    public static PlayerInputMap loadedPlayerInputMap;
 
-    /// <summary>
-    /// List of possible input actions that we can bind keys to. Also holds display names for each input for use in remap screens or other places.
-    /// You can safely change display names at any time, as they are not tied to any functionality.
-    /// </summary>
-    public readonly Dictionary<string, string> InputActionList = new() {
-
-        { "MOVE_FORWARD", "Forward" },
-        { "MOVE_BACKWARD", "Backward" },
-        { "MOVE_LEFT", "Strafe Left" },
-        { "MOVE_RIGHT", "Strafe Right" },
-        { "LOOK_UP", "Look Up" },
-        { "LOOK_DOWN", "Look Down" },
-        { "LOOK_LEFT", "Look Left" },
-        { "LOOK_RIGHT", "Look Right" },
-        { "JUMP", "Jump/Mount" },
-        { "FIRE", "Fire Primary Weapon" },
-        { "AIM", "Aim Down Sights (ADS)" },
-        { "AIM_TOGGLE", "Toggle Aim Down Sights (ADS)" },
-        { "USE", "Interact" },
-        { "SPRINT", "Sprint" },
-        { "SPRINT_TOGGLE", "Toggle Sprint" },
-        { "CROUCH", "Toggle Crouch" },
-        { "CROUCH_TOGGLE", "Toggle Crouch" },
-    };
-
-    public Dictionary<string, ActionFlags> flagMap = new Dictionary<string, ActionFlags>()
-    {
-        { "MOVE_FORWARD",ActionFlags.MoveForward },
-        { "MOVE_BACKWARD",ActionFlags.MoveBackward },
-        { "MOVE_LEFT",ActionFlags.MoveLeft },
-        { "MOVE_RIGHT",ActionFlags.MoveRight },
-        { "CROUCH", ActionFlags.Crouch },
-        { "JUMP", ActionFlags.Jump },
-        { "SPRINT", ActionFlags.Sprint },
-        { "USE", ActionFlags.Use },
-
-    };
+    public static Dictionary<string, ActionFlags> actionNameToActionFlagMap = new();
 
     /// <summary>
     /// Loads the player's input map file from disk and registers all of the keybinds with the engine. If no changes are made to keybinds in game, this is the only thing the InputMapManager will do.
     /// </summary>
-    public void InitInputMap()
+    public static void InitInputMap()
     {
         Logging.Log($"Starting InputMapManager...", "InputMapping");
         LoadPlayerInputMap();
 
         //First we load the names of all our actions and register them with the engine. This is a programmatic version of adding them in Godot Editor->Project->Project Settings->Input Map.
-        foreach (string inputActionName in InputActionList.Keys)
+        string[] actionNames = Enum.GetNames(typeof(ActionFlags));
+        foreach (string actionName in actionNames)
         {
-            InputMap.AddAction(inputActionName);
+            actionNameToActionFlagMap[actionName] = Enum.Parse<ActionFlags>(actionName);
+            InputMap.AddAction(actionName);
         }
-        Logging.Log($"Successfully loaded {InputActionList.Count} total possible actions", "InputMapping");
+        Logging.Log($"Successfully loaded {actionNames.Length} total possible actions", "InputMapping");
 
         //Next we load all of our keyboard keybinds and assign them to the indicated action. This is a programmatic version of adding a specific keybind to an action in Godot Editor->Project->Project Settings->Input Map.
         foreach (Key key in loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Keys)
         {
             InputEventKey keyEvent = new();
             keyEvent.PhysicalKeycode = key;
-            InputMap.ActionAddEvent(loadedPlayerInputMap.KeyboardKeyCodeToActionMap[(int)key], keyEvent);
+            InputMap.ActionAddEvent(Enum.GetName<ActionFlags>(loadedPlayerInputMap.KeyboardKeyCodeToActionMap[key]), keyEvent);
         }
         Logging.Log($"Successfully loaded {loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Count} Keyboard binds.", "InputMapping");
 
@@ -107,7 +101,7 @@ public class InputMapManager
         {
             InputEventMouseButton mbEvent = new();
             mbEvent.ButtonIndex = mb;
-            InputMap.ActionAddEvent(loadedPlayerInputMap.MouseButtonToActionMap[(int)mb], mbEvent);
+            InputMap.ActionAddEvent(Enum.GetName<ActionFlags>(loadedPlayerInputMap.MouseButtonToActionMap[mb]), mbEvent);
         }
         Logging.Log($"Successfully loaded {loadedPlayerInputMap.MouseButtonToActionMap.Count} Mouse Button binds", "InputMapping");
 
@@ -116,7 +110,7 @@ public class InputMapManager
         {
             InputEventJoypadButton jbEvent = new();
             jbEvent.ButtonIndex = jb;
-            InputMap.ActionAddEvent(loadedPlayerInputMap.JoypadButtonToActionMap[(int)jb], jbEvent);
+            InputMap.ActionAddEvent(Enum.GetName<ActionFlags>(loadedPlayerInputMap.JoypadButtonToActionMap[jb]), jbEvent);
         }
         Logging.Log($"Successfully loaded {loadedPlayerInputMap.JoypadButtonToActionMap.Count} Gamepad Button binds", "InputMapping");
 
@@ -128,15 +122,15 @@ public class InputMapManager
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
-    public string UnbindKey(Key key)
+    public static string UnbindKeyboardKey(Key key)
     {
-        if (loadedPlayerInputMap.KeyboardKeyCodeToActionMap.ContainsKey((int)key))
+        if (loadedPlayerInputMap.KeyboardKeyCodeToActionMap.ContainsKey(key))
         {
-            string boundActionName = loadedPlayerInputMap.KeyboardKeyCodeToActionMap[(int)key];
+            string boundActionName = Enum.GetName(loadedPlayerInputMap.KeyboardKeyCodeToActionMap[key]);
             InputEventKey keyEvent = new();
             keyEvent.PhysicalKeycode = key;
             InputMap.ActionEraseEvent(boundActionName, keyEvent);
-            loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Remove((int)key);
+            loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Remove(key);
             Logging.Log($"InputMapManager Unbinding Success! Key:{key.ToString()}", "InputMapping");
             SavePlayerInputMap();
             return boundActionName;
@@ -148,30 +142,23 @@ public class InputMapManager
         }
     }
 
-    /// <summary>
-    /// Binds a key to an action using the key's name/label. This is kinda shit, I recommend using <see cref="BindKey(Key, string, bool)"/> instead/
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="action"></param>
-    /// <param name="overwrite"></param>
-    public void BindKeyString(string key, string action, bool overwrite = false)
+    public static string UnbindMouseButton(MouseButton mb)
     {
-        Key keyCode = Key.None;
-        try
+        if (loadedPlayerInputMap.MouseButtonToActionMap.ContainsKey(mb))
         {
-            keyCode = (Key)Enum.Parse(typeof(Key), key);
-        }
-        catch (Exception e)
-        {
-            Logging.Error($"Key parse failed: {e.ToString()}", "InputMapping");
-        }
-        if (keyCode != Key.None)
-        {
-            BindKey(keyCode, action, overwrite);
+            string boundActionName = Enum.GetName(loadedPlayerInputMap.MouseButtonToActionMap[mb]);
+            InputEventMouseButton mouseEvent = new();
+            mouseEvent.ButtonIndex = mb;
+            InputMap.ActionEraseEvent(boundActionName, mouseEvent);
+            loadedPlayerInputMap.MouseButtonToActionMap.Remove(mb);
+            Logging.Log($"InputMapManager Unbinding Success! MouseButton:{mb.ToString()}", "InputMapping");
+            SavePlayerInputMap();
+            return boundActionName;
         }
         else
         {
-            Logging.Log($"Bind Failed. Specified keystring '{key}' did not map to any known keycodes", "InputMapping");
+            Logging.Warn($"InputMapManager Unbinding Failed! Mouse Button is not bound. MouseButton:{mb.ToString()}", "InputMapping");
+            return null;
         }
     }
 
@@ -181,20 +168,17 @@ public class InputMapManager
     /// <param name="key"></param>
     /// <param name="action"></param>
     /// <param name="overwrite"></param>
-    public void BindKey(Key key, string action, bool overwrite = false)
+    public static void BindKeyboardKey(Key key, ActionFlags action, bool overwrite = false)
     {
         InputEventKey inputEventKey = new();
         inputEventKey.PhysicalKeycode = key;
-
-        if (loadedPlayerInputMap.KeyboardKeyCodeToActionMap.ContainsKey((int)key))
+        if (loadedPlayerInputMap.KeyboardKeyCodeToActionMap.ContainsKey(key))
         {
             if (overwrite)
             {
-                string oldAction = UnbindKey(key);
-                InputEventKey keyEvent = new();
-                keyEvent.PhysicalKeycode = key;
-                loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Add((int)key, action);
-                InputMap.ActionAddEvent(action, inputEventKey);
+                string oldAction = UnbindKeyboardKey(key);
+                loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Add(key, action);
+                InputMap.ActionAddEvent(Enum.GetName(loadedPlayerInputMap.KeyboardKeyCodeToActionMap[key]), inputEventKey);
                 Logging.Log($"InputMapManager Binding (with overwrite) Success! Key:{key.ToString()} Action:{action} OldAction:{oldAction}", "InputMapping");
             }
             else
@@ -204,10 +188,45 @@ public class InputMapManager
 
         }
         else
-
         {
-            loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Add((int)key, action);
-            InputMap.ActionAddEvent(action, inputEventKey);
+            loadedPlayerInputMap.KeyboardKeyCodeToActionMap.Add(key, action);
+            InputMap.ActionAddEvent(Enum.GetName(loadedPlayerInputMap.KeyboardKeyCodeToActionMap[key]), inputEventKey);
+            Logging.Log($"InputMapManager Binding Success! Key:{key.ToString()} Action:{action}", "InputMapping");
+        }
+        SavePlayerInputMap();
+    }
+
+    /// <summary>
+    /// Binds a key to an action.
+    /// </summary>
+    /// <param name="mb"></param>
+    /// <param name="action"></param>
+    /// <param name="overwrite"></param>
+    public static void BindMouseButton(MouseButton mb, ActionFlags action, bool overwrite = false)
+    {
+        InputEventMouseButton inputEventMB = new();
+        inputEventMB.ButtonIndex = mb;
+
+        if (loadedPlayerInputMap.MouseButtonToActionMap.ContainsKey(mb))
+        {
+            if (overwrite)
+            {
+                string oldAction = UnbindMouseButton(mb);
+                loadedPlayerInputMap.MouseButtonToActionMap.Add(mb, action);
+                InputMap.ActionAddEvent(Enum.GetName(loadedPlayerInputMap.MouseButtonToActionMap[mb]), inputEventMB);
+                Logging.Log($"InputMapManager Binding (with overwrite) Success! MouseButton:{mb.ToString()} Action:{action} OldAction:{oldAction}", "InputMapping");
+            }
+            else
+            {
+                Logging.Warn($"InputMapManager Binding Failed! MouseButton is already bound (use overwrite param to bypass) MouseButton:{mb.ToString()} Action:{action}", "InputMapping");
+            }
+
+        }
+        else
+        {
+            loadedPlayerInputMap.MouseButtonToActionMap.Add(mb, action);
+            InputMap.ActionAddEvent(Enum.GetName(loadedPlayerInputMap.MouseButtonToActionMap[mb]), inputEventMB);
+            Logging.Log($"InputMapManager Binding Success! MouseButton:{mb.ToString()} Action:{action}", "InputMapping");
         }
         SavePlayerInputMap();
     }
@@ -218,7 +237,7 @@ public class InputMapManager
     /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
     /// See <see cref="NetworkUtils.BytesToStruct{T}(byte[])"/> for details on the transformation.
     /// </summary>
-    public void LoadPlayerInputMap()
+    public static void LoadPlayerInputMap()
     {
 
         string filePath = $"user://config/{Global.steamid}/input.toml";
@@ -261,7 +280,7 @@ public class InputMapManager
     /// The filepath points to a Steam user specific folder inside "user://", which is resolved by Godot to an OS specific path.
     /// See <see cref="NetworkUtils.StructToBytes{T}(T)"/> for details on the transformation.
     /// </summary>
-    public void SavePlayerInputMap()
+    public static void SavePlayerInputMap()
     {
         string filePath = $"user://config/{Global.steamid}/input.toml";
         Logging.Log($"Attempting to save player input map at {filePath}", "InputMapping");

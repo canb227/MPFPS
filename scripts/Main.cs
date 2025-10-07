@@ -53,8 +53,7 @@ public partial class Main : Node
         //Boot up the InputMapManager, register a reference with Global, and tell it to load our input settings from disk, or make a new file if there isnt one.
         //This is basically a "in-code" version of the Godot input mapper, which lets us do dynamic keybinding and saving remapped keys.
         Logging.Log($"Starting InputMapManager Handler and loading input map file...", "Main");
-        Global.InputMap = new();
-        Global.InputMap.InitInputMap();
+        InputMapManager.InitInputMap();
 
         //TODO: Add additonal start up items here.
         await DoSomeLongShit();
@@ -135,7 +134,7 @@ public partial class Main : Node
 
     private void ConsolePicker()
     {
-        if (Global.bConsoleOpen && Global.gameState.gameStarted && Input.IsActionJustPressed("FIRE"))
+        if (Global.bConsoleOpen && Global.gameState.gameStarted && Input.IsActionJustPressed("Fire"))
         {
             var mpos = GetViewport().GetMousePosition();
             GOBasePlayerCharacter pc = Global.gameState.GetLocalPlayerCharacter();
@@ -234,7 +233,7 @@ public partial class Main : Node
     {
         Global.Config.SavePlayerProgression();
         Global.Config.SavePlayerConfig();
-        Global.InputMap.SavePlayerInputMap();
+        InputMapManager.SavePlayerInputMap();
         Global.instance.GetTree().Quit();
     }
 }

@@ -1,40 +1,55 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
 /// Stores input mapping information for a given user. This gets saved/loaded to disk for persistence between sessions.
 /// Changing the dictionaries DOES NOT actually rebind a key until the game is restarted. Use the functions in InputMapManager for dynamic rebinding instead.
-/// This one is a class instead of a struct because I wanted to use dictionaries and those are hard to turn into bytes, so this using TOML instead.
-/// I'm not super happy with that but it works and I can change it later.
+
 /// </summary>
 public class PlayerInputMap
 {
 
-    public Dictionary<int, string> KeyboardKeyCodeToActionMap { get; set; } = new()
+    public Dictionary<Key, ActionFlags> KeyboardKeyCodeToActionMap { get; set; } = new()
         {
+            { Key.W, ActionFlags.MoveForward },
+            { Key.A, ActionFlags.MoveLeft },
+            { Key.S, ActionFlags.MoveBackward },
+            { Key.D, ActionFlags.MoveRight },
 
-            { (int)Key.W, "MOVE_FORWARD" },
-            { (int)Key.A, "MOVE_LEFT" },
-            { (int)Key.S, "MOVE_BACKWARD" },
-            { (int)Key.D, "MOVE_RIGHT" },
+            { Key.F, ActionFlags.Use },
+            { Key.R, ActionFlags.Reload },
 
-            { (int)Key.F, "USE" },
+            { Key.Space, ActionFlags.Jump },
+            { Key.Shift, ActionFlags.Sprint},
+            { Key.C, ActionFlags.CrouchToggle },
+            { Key.Z, ActionFlags.ProneToggle },
 
-            { (int)Key.Space, "JUMP" },
-            { (int)Key.Shift, "SPRINT" },
-            { (int)Key.C, "CROUCH" },
+            { Key.Key1, ActionFlags.InventorySlot1 },
+            { Key.Key2, ActionFlags.InventorySlot2  },
+            { Key.Key3, ActionFlags.InventorySlot3  },
+            { Key.Key4, ActionFlags.InventorySlot4  },
+            { Key.Key5, ActionFlags.InventorySlot5  },
 
+            { Key.Q, ActionFlags.LeanLeft },
+            { Key.E, ActionFlags.LeanRight },
+
+            { Key.Escape, ActionFlags.Escape },
         };
 
-    public Dictionary<int, string> MouseButtonToActionMap { get; set; } = new()
+    public Dictionary<MouseButton, ActionFlags> MouseButtonToActionMap { get; set; } = new()
         {
-            { (int)MouseButton.Left, "FIRE" },
-            { (int)MouseButton.Right, "AIM" },
+            { MouseButton.Left, ActionFlags.Fire },
+            { MouseButton.Right, ActionFlags.Aim },
+            { MouseButton.WheelUp, ActionFlags.NextSlot},
+            { MouseButton.WheelDown, ActionFlags.PrevSlot},
         };
 
-    public Dictionary<int, string> JoypadButtonToActionMap { get; set; } = new()
+
+    //doesnt work yet
+    public Dictionary<JoyButton, ActionFlags> JoypadButtonToActionMap { get; set; } = new()
         {
-            { (int)JoyButton.A, "JUMP" },
+            { JoyButton.A, ActionFlags.Jump },
         };
 
 }

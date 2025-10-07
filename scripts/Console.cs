@@ -194,7 +194,7 @@ public partial class Console : Node
     {
         Key key = (Key)Enum.Parse(typeof(Key), keyString);
         LimboConsole.Info($"Attempting to bind Key: {key.ToString()} to action: {actionName}");
-        Global.InputMap.BindKeyString(keyString, actionName);
+        throw new NotImplementedException();
     }
 
     ////////////////////////////////////// IN GAME ///////////////////////////////////////////////

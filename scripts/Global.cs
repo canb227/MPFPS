@@ -70,11 +70,6 @@ public partial class Global : Node
     public static Lobby Lobby;
 
     /// <summary>
-    /// Holds a reference to the InputMapManager, useful for rebinding keys
-    /// </summary>
-    public static InputMapManager InputMap;
-
-    /// <summary>
     /// Handles saving and loading to/from disk player settings and meta-progression
     /// </summary>
     public static Config Config;

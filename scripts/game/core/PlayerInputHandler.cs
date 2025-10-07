@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using ImGuiNET;
+using System;
 
 public partial class PlayerInputHandler : Node
 {
@@ -15,21 +16,20 @@ public partial class PlayerInputHandler : Node
     }
     public override void _UnhandledInput(InputEvent @event)
     {
-
         if (@event.IsActionType())
         {
-            Global.gameState.PlayerInputs[Global.steamid].MovementInputVector = Input.GetVector("MOVE_FORWARD", "MOVE_BACKWARD", "MOVE_LEFT", "MOVE_RIGHT");
-            foreach (string action in Global.InputMap.InputActionList.Keys)
+            Global.gameState.PlayerInputs[Global.steamid].MovementInputVector = Input.GetVector("MoveForward", "MoveBackward", "MoveLeft", "MoveRight");
+            foreach (string action in Enum.GetNames(typeof(ActionFlags)))
             {
                 if (@event.IsAction(action))
                 {
                     if(@event.IsPressed())
                     {
-                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | Global.InputMap.flagMap[action];
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | InputMapManager.actionNameToActionFlagMap[action];
                     }
                     else if (@event.IsReleased())
                     {
-                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~Global.InputMap.flagMap[action];
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~InputMapManager.actionNameToActionFlagMap[action];
                     }
                 }
             }
