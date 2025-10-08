@@ -31,6 +31,8 @@ public partial class PlayerUIManager : Control
         PlayerInfoUI.UpdateTimeLeftUI(timerString);
         ScoreBoardUI.UpdateTimeLeftUI(timerString);
     }
+
+    //player info functions
     public void UpdateRoleUI(Team newTeam)
     {
         PlayerInfoUI.UpdateRoleUI(newTeam);
@@ -48,6 +50,7 @@ public partial class PlayerUIManager : Control
         PlayerInfoUI.UpdateHealthUI(newHealth, newHealthMax);
     }
 
+    //scoreboard functions
     public void UpdatePlayerIcon(TextureRect newPlayerIcon, ulong playerID)
     {
         ScoreBoardUI.UpdatePlayerIcon(newPlayerIcon, playerID);

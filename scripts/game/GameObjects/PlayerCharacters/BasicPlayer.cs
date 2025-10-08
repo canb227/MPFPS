@@ -18,7 +18,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public IsInventoryItem equipped { get; set; }
     public ActionFlags lastTickActions { get; set; }
 
-    public PlayerInfoUI playerInfoUI { get; set; }
+    public PlayerUIManager playerUIManager { get; set; }
 
 
 
@@ -304,10 +304,10 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
         //setup UI
-        playerInfoUI = (PlayerInfoUI)GD.Load<PackedScene>("res://scenes/ui/hud/playerinfoUI.tscn").Instantiate();
-        playerInfoUI.UpdateRoleUI(team);
-        playerInfoUI.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
-        cam.AddChild(playerInfoUI);
+        playerUIManager = (PlayerUIManager)GD.Load<PackedScene>("res://scenes/ui/hud/playerUI.tscn").Instantiate();
+        playerUIManager.UpdateRoleUI(team);
+        playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
+        cam.AddChild(playerUIManager);
     }
 
     public override Camera3D GetCamera()
@@ -323,8 +323,12 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public void TakeDamage(float damage, ulong byID)
     {
         currentHealth -= damage;
+        //ui update
+        playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
         if (currentHealth < 0)
         {
+            //ui update
+            playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
 
         }
     }
@@ -334,9 +338,9 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     {
         this.team = team;
         this.role = role;
-        if (playerInfoUI != null)
+        if (playerUIManager != null)
         {
-            playerInfoUI.UpdateRoleUI(team);
+            playerUIManager.UpdateRoleUI(team);
         }
     }
 
