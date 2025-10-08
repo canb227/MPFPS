@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://bjet6jkjoc1mv"]
+
+[ext_resource type="Script" uid="uid://q2t60gt2kvx1" path="res://scripts/ui/InGameUI.cs" id="1_0v7in"]
+[ext_resource type="PackedScene" uid="uid://dp035d7xehaf3" path="res://scenes/ui/hud/playerUI.tscn" id="1_wcfvi"]
+[ext_resource type="PackedScene" uid="uid://y7cd32qk1btg" path="res://scenes/ui/hud/ScoreBoardUI.tscn" id="2_0v7in"]
+
+[node name="InGameUI" type="Control" node_paths=PackedStringArray("PlayerUIManager", "ScoreBoardUI")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0v7in")
+PlayerUIManager = NodePath("PlayerUIManager")
+ScoreBoardUI = NodePath("ScoreBoardUI")
+metadata/_custom_type_script = "uid://q2t60gt2kvx1"
+
+[node name="PlayerUIManager" parent="." instance=ExtResource("1_wcfvi")]
+visible = false
+layout_mode = 1
+
+[node name="ScoreBoardUI" parent="." instance=ExtResource("2_0v7in")]
+visible = false
+layout_mode = 1
+anchors_preset = 13
+anchor_bottom = 1.0
+offset_left = -397.0
+offset_top = 93.0
+offset_right = 397.0
+offset_bottom = -49.0
+grow_vertical = 2

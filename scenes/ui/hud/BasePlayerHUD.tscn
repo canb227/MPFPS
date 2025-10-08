@@ -2,28 +2,22 @@
 
 [ext_resource type="SpriteFrames" uid="uid://6ris0asu4w0y" path="res://assets/ui/hud/crosshairs_white.tres" id="1_fv3a0"]
 
-[node name="BasePlayerHud" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
-[node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 1
+[node name="CenterContainer" type="CenterContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="center" type="Control" parent="CenterContainer"]
+[node name="center" type="Control" parent="."]
 layout_mode = 2
 
-[node name="crosshair" type="AnimatedSprite2D" parent="CenterContainer/center"]
+[node name="crosshair" type="AnimatedSprite2D" parent="center"]
 scale = Vector2(0.395, 0.395)
 sprite_frames = ExtResource("1_fv3a0")
 frame = 23
 speed_scale = 0.0
+
+[node name="BasePlayerHud" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 1

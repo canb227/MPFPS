@@ -300,14 +300,15 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         cam = new();
         cameraLocationNode.AddChild(cam);
 
-        Global.ui.SwitchFullScreenUI("BasePlayerHUD");
+        Global.ui.ToGameUI();
+        Global.ui.ToPlayerCharacterUI();
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
         //setup UI
-        playerUIManager = (PlayerUIManager)GD.Load<PackedScene>("res://scenes/ui/hud/playerUI.tscn").Instantiate();
-        playerUIManager.UpdateRoleUI(team);
-        playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
-        cam.AddChild(playerUIManager);
+        //playerUIManager = (PlayerUIManager)GD.Load<PackedScene>("res://scenes/ui/hud/playerUI.tscn").Instantiate();
+        //playerUIManager.UpdateRoleUI(team);
+        //playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
+        //AddChild(playerUIManager);
     }
 
     public override Camera3D GetCamera()

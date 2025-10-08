@@ -22,35 +22,44 @@ public partial class UI : Node
         { "UI_LoadingScreen","res://scenes/ui/menu/LoadingScreen.tscn" },
         { "UI_MainMenu", "res://scenes/ui/menu/MainMenu.tscn" },
         { "BasePlayerHUD", "res://scenes/ui/hud/BasePlayerHUD.tscn" },
+        { "InGameUI", "res://scenes/ui/hud/InGameUI.tscn"}
     };
 
     public void ToLobbyUI()
     {
         SwitchFullScreenUI("DEBUG_Launcher");
     }
-
-    public void ToGameUI()
-    {
-        SwitchFullScreenUI("BasePlayerHUD");
-    }
     internal void ToMainMenuUI()
     {
         SwitchFullScreenUI("UI_MainMenu");
     }
 
+    public void ToGameUI()
+    {
+        InGameUI playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
+        playerUI.PlayerUIManager.Visible = false;
+    }
 
-    public void SwitchFullScreenUI(string sceneName)
+    public void ToPlayerCharacterUI()
+    {
+        InGameUI playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
+        playerUI.PlayerUIManager.Visible = true;
+    }
+
+
+    public Control SwitchFullScreenUI(string sceneName)
     {
         Logging.Log($"Setting fullscreen UI to: {sceneName}.", "UI");
         ClearFullScreenUI();
         if (sceneName.Equals("NONE"))
         {
-            return;
+            return null;
         }
 
-        Control loadedUI = LoadUI(sceneName); 
+        Control loadedUI = LoadUI(sceneName);
         currentFullScreenUI = loadedUI;
         currentFullScreenUI.Show();
+        return loadedUI;
     }
 
     private Control LoadUI(string sceneName)

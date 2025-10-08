@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://dp035d7xehaf3"]
+[gd_scene load_steps=5 format=3 uid="uid://dp035d7xehaf3"]
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
+[ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
 [ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://scenes/ui/hud/inventoryUI.tscn" id="2_mr6xf"]
-[ext_resource type="PackedScene" uid="uid://y7cd32qk1btg" path="res://scenes/ui/hud/ScoreBoardUI.tscn" id="3_ppqf0"]
+[ext_resource type="PackedScene" uid="uid://q4k0brkivjy2" path="res://scenes/ui/hud/BasePlayerHUD.tscn" id="4_mr6xf"]
 
-[node name="Control" type="Control"]
+[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "InventoryUI", "ScoreBoardUI")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +13,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+script = ExtResource("1_mr6xf")
+PlayerInfoUI = NodePath("bottomleftUI")
+InventoryUI = NodePath("inventoryUI")
+ScoreBoardUI = NodePath("")
+metadata/_custom_type_script = "uid://dj5onwk1keewc"
 
 [node name="bottomleftUI" parent="." instance=ExtResource("1_ct4y5")]
 layout_mode = 1
@@ -19,6 +25,5 @@ layout_mode = 1
 [node name="inventoryUI" parent="." instance=ExtResource("2_mr6xf")]
 layout_mode = 1
 
-[node name="ScoreBoardUI" parent="." instance=ExtResource("3_ppqf0")]
+[node name="CenterContainer" parent="." instance=ExtResource("4_mr6xf")]
 layout_mode = 1
-offset_bottom = 0.0

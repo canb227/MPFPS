@@ -37,6 +37,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 
         base._Ready();
         Logging.Log($"Spawned a new player character with id:{id} and authority/controllerID: {authority}/{controllingPlayerID}.", "PlayerCharacter");
+        //add to UI
+        Logging.Log($"Adding new player to scoreboard, assume they are alive on join?", "PlayerCharacter");
+        
         if (controllingPlayerID == Global.steamid)
         {
             Logging.Log($"A GOBasePlayerCharacter that I am controlling just spawned! Creating camera and hooking up inputs!", "PlayerCharacter");
