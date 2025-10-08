@@ -20,6 +20,11 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     [Export]
     public virtual Node3D cameraLocationNode { get; set; }
 
+    [Export]
+    public virtual Node3D firstPersonEquipmentAttachmentPoint {  get; set; }
+
+    [Export]
+    public virtual Node3D thirdPersonEquipmentAttachmentPoint { get; set; }
 
     public virtual ulong controllingPlayerID { get; set; }
     public virtual Team team {  get; set; }
