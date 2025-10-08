@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cfq0atktc7jfp"]
+[gd_scene load_steps=4 format=3 uid="uid://cfq0atktc7jfp"]
 
-[ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://ui/bottomleftUI.tscn" id="1_b55sv"]
-[ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://ui/inventoryUI.tscn" id="2_smdr6"]
+[ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_b55sv"]
+[ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://scenes/ui/hud/inventoryUI.tscn" id="2_smdr6"]
+[ext_resource type="PackedScene" uid="uid://y7cd32qk1btg" path="res://scenes/ui/hud/ScoreBoardUI.tscn" id="3_dwftj"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -10,9 +11,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="bottomleftUI" parent="." instance=ExtResource("1_b55sv")]
 layout_mode = 1
 
 [node name="inventoryUI" parent="." instance=ExtResource("2_smdr6")]
 layout_mode = 1
+
+[node name="ScoreBoardUI" parent="." instance=ExtResource("3_dwftj")]
+layout_mode = 1
+offset_bottom = 0.0

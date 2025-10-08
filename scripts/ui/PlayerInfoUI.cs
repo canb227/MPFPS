@@ -18,16 +18,6 @@ public partial class PlayerInfoUI : MarginContainer
     [Export] public Label HealthLabel;
     [Export] public ProgressBar AmmoBar;
     [Export] public Label AmmoLabel;
-    float uiTimeLeftSeconds = 600;
-
-    public override void _PhysicsProcess(double delta)
-    {
-        uiTimeLeftSeconds -= (float)delta;
-        int minutes = (int)Math.Floor(uiTimeLeftSeconds / 60);
-        int seconds = (int)uiTimeLeftSeconds % 60;
-
-        TimeLeftLabel.Text = $"{minutes:D2}:{seconds:D2}";
-    }
 
     public void UpdateRoleUI(Team newTeam)
     {
@@ -53,13 +43,9 @@ public partial class PlayerInfoUI : MarginContainer
             TeamLabel.Text = "None?";
         }
     }
-    public void UpdateTimeLeft(float timeLeftSeconds)
+    public void UpdateTimeLeftUI(string timeLeftString)
     {
-        uiTimeLeftSeconds = timeLeftSeconds;
-        int minutes = (int)Math.Floor(uiTimeLeftSeconds / 60);
-        int seconds = (int)uiTimeLeftSeconds % 60;
-
-        TimeLeftLabel.Text = $"{minutes:D2}:{seconds:D2}";
+        TimeLeftLabel.Text = timeLeftString;
     }
     public void UpdateStunUI(int newStunBarRemaning)
     {

@@ -39,6 +39,18 @@ public static class Utils
         return texture;
     }
 
+    internal static Texture2D GetSmallSteamAvatar(ulong id)
+    {
+        int avatarHandle = SteamFriends.GetSmallFriendAvatar(new CSteamID(id));
+        SteamUtils.GetImageSize(avatarHandle, out uint width, out uint height);
+        int size = (int)(width * height * 4); // RGBA format
+        byte[] avatarData = new byte[size];
+        SteamUtils.GetImageRGBA(avatarHandle, avatarData, size);
+        Image testImage = Image.CreateFromData((int)width, (int)height, false, Image.Format.Rgba8, avatarData);
+        ImageTexture texture = ImageTexture.CreateFromImage(testImage);
+        return texture;
+    }
+
     internal static bool IsFirstLaunch()
     {
         if (DirAccess.DirExistsAbsolute("user://saves"))
