@@ -53,6 +53,10 @@ public partial class GameState : Node3D
     /// </summary>
     public GameStateOptions options = new();
 
+    public GameModeManager gameModeManager;
+
+    public AIManager AIManager;
+
     /// <summary>
     /// true if the game has actually started
     /// </summary>
@@ -498,9 +502,11 @@ public partial class GameState : Node3D
         GameModeManager gmm = new();
         gmm.Name = "Game Mode Manager";
         AddChild(gmm);
+        gameModeManager = gmm;
         AIManager aim = new();
         aim.Name = "AI Manager";
         AddChild(aim);
+        AIManager = aim;
         if (Global.Lobby.bIsLobbyHost)
         {
             gmm.GameStartAsHost();
