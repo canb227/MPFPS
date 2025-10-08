@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://okoshuflxtf0"]
+
+[ext_resource type="Script" uid="uid://c2gb7hn6fwi8s" path="res://scripts/game/GameObjects/InventoryItems/hands/Hands.cs" id="1_flpyn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_flpyn"]
+size = Vector3(1, 0.19555664, 1)
+
+[node name="Hands" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_flpyn")
+firstPersonScene = NodePath("fps")
+thirdPersonScene = NodePath("tps")
+animationPlayer = NodePath("AnimationPlayer")
+metadata/_custom_type_script = "uid://c2gb7hn6fwi8s"
+
+[node name="fps" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="fps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.41015625, -0.0339278, 0)
+size = Vector3(0.1796875, 0.11401367, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="fps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39160043, -0.0339278, 0)
+size = Vector3(0.1796875, 0.11401367, 1)
+
+[node name="tps" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="tps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.41015625, -0.0339278, 0)
+size = Vector3(0.1796875, 0.11401367, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="tps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39160043, -0.0339278, 0)
+size = Vector3(0.1796875, 0.11401367, 1)
+
+[node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0423584, 0)
+shape = SubResource("BoxShape3D_flpyn")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

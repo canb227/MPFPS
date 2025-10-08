@@ -3,6 +3,7 @@ using Godot;
 using ImGuiNET;
 using MessagePack;
 using System;
+using System.Linq;
 
 [GlobalClass]
 public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInventory
@@ -18,6 +19,8 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public ActionFlags lastTickActions { get; set; }
 
     public PlayerInfoUI playerInfoUI { get; set; }
+
+
 
     public override void _Ready()
     {
@@ -35,9 +38,74 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     private void SetupInventory()
     {
-        //throw new NotImplementedException();
+        inventory = new();
+        Hands hands = ResourceLoader.Load<PackedScene>("res://scenes/GameObjects/items/equipment/Hands.tscn").Instantiate<Hands>();
+        if (controllingPlayerID == Global.steamid)
+        {
+            firstPersonEquipmentAttachmentPoint.AddChild(hands);
+        }
+        else
+        {
+            thirdPersonEquipmentAttachmentPoint.AddChild(hands);
+        }
+        inventory.GetGroup(InventoryGroupCategory.Hands).StoreItem(hands);
+        Equip(InventoryGroupCategory.Hands);
+
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void Pickup(IsInventoryItem item)
+    {
+        if (item is GOBaseInventoryItem i)
+        {
+            if (IsMe())
+            {
+                firstPersonEquipmentAttachmentPoint.AddChild(i);
+            }
+            else
+            {
+                thirdPersonEquipmentAttachmentPoint.AddChild(i);
+            }
+            i.OnPickup(controllingPlayerID);
+        }
+
+    }
+
+    [RPCMethod(mode =RPCMode.SendToAllPeers)]
+    public void Equip(InventoryGroupCategory category, int index = 0)
+    {
+        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
+        {
+            Logging.Error($"Cannot equip item!", "BasicPlayer");
+            return;
+        }
+        if (equipped != null)
+        {
+            equipped.OnUnequipped(controllingPlayerID);
+            equipped = null;
+        }
+        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
+        if (item is GOBaseInventoryItem i)
+        {
+            equipped = i;
+            i.OnEquipped(controllingPlayerID);
+        }
+    }
+
+    public void EquipNext()
+    {
+        Equip(inventory.groups[inventory.GetNextIndex(equipped.category)].category);
+    }
+
+    public void EquipPrevious()
+    {
+
+    }
+
+    public void DropEquipped()
+    {
+
+    }
     public override void ProcessStateUpdate(byte[] _update)
     {
         BasicPlayerStateUpdate update = MessagePackSerializer.Deserialize<BasicPlayerStateUpdate>(_update);
@@ -180,8 +248,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
             {
                 if (rayCast.GetCollider() is IsInventoryItem s)
                 {
-                    s.OnPickup(id);
-                    inventory.StoreItem(s);
+                    Pickup(s);
                 }
                 else if (rayCast.GetCollider() is IsInteractable i)
                 {
@@ -262,25 +329,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         }
     }
 
-    public void EquipNext()
-    {
-
-    }
-
-    public void EquipPrevious()
-    {
-
-    }
-
-    public void DropEquipped()
-    {
-
-    }
-
-    public void Equip(InventoryGroupCategory category, int index = 0)
-    {
-
-    }
 
     public override void Assignment(Team team, Role role)
     {
@@ -292,6 +340,11 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         }
     }
 
+
+    private bool IsMe()
+    {
+        return Global.steamid == controllingPlayerID;
+    }
 }
 
 [MessagePackObject]

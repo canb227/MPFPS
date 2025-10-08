@@ -18,11 +18,11 @@ public enum ActionFlags : UInt64
     CrouchToggle = 1L<<6,
     Sprint = 1L<<7,
     SprintToggle = 1L<<8,
-    Prone = 1 << 9,
-    ProneToggle = 1 << 10,
+    Prone = 1L << 9,
+    ProneToggle = 1L << 10,
 
     Use = 1L<<11,
-    Reload = 1 << 12,
+    Reload = 1L << 12,
 
     Fire = 1L<<13,
     Aim = 1L<<14,
@@ -53,8 +53,7 @@ public enum ActionFlags : UInt64
     LastSlot = 1L<<35,
 
 
-    Escape = 1L<<62,
-    //Error = 1L<<63 //tbh I dunno if the last slot is 1<<63 or 1<<64
+    Escape = 1L<<62,//this is the max value
 
 
 }
