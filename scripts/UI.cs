@@ -14,6 +14,35 @@ public partial class UI : Node
     public Control currentLoadingScreen;
     public ProgressBar loadingProgressBar;
 
+    public PlayerInputData localInput { get; set; }
+    public ActionFlags lastTickActions { get; set; }
+
+    private InGameUI playerUI { get; set; }
+
+    public void PerTick(double delta)
+    {
+        if (localInput.actions.HasFlag(ActionFlags.ScoreBoard))
+        {
+            ShowScoreBoard();
+        }
+        else if (lastTickActions.HasFlag(ActionFlags.ScoreBoard))
+        {
+            HideScoreBoard();
+        }
+        lastTickActions = localInput.actions;
+    }
+
+    public void AddLocalInput()
+    {
+        if (Global.gameState.PlayerInputs.ContainsKey(Global.steamid))
+        {
+            localInput = Global.gameState.PlayerInputs[Global.steamid];
+        }
+        else
+        {
+            Logging.Error($"Tried registering local user input for UI handling but their steamid {Global.steamid} isn't in PlayerInputs", "UI");
+        }
+    }
 
     public Dictionary<string, string> FullScreenUIScenePaths = new Dictionary<string, string>()
     {
@@ -36,13 +65,13 @@ public partial class UI : Node
 
     public void ToGameUI()
     {
-        InGameUI playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
+        playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
         playerUI.PlayerUIManager.Visible = false;
     }
 
     public void ToPlayerCharacterUI()
     {
-        InGameUI playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
+        playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
         playerUI.PlayerUIManager.Visible = true;
     }
 
@@ -74,7 +103,7 @@ public partial class UI : Node
     private void ClearFullScreenUI()
     {
         Logging.Log($"Clearing fullscreen UI", "UI");
-        if (currentFullScreenUI!=null) currentFullScreenUI.Hide();
+        if (currentFullScreenUI != null) currentFullScreenUI.Hide();
         currentFullScreenUI = null;
     }
 
@@ -114,6 +143,24 @@ public partial class UI : Node
         currentLoadingScreen.GetNode<Label>("description").Text = "PLEASE SET ME";
         currentLoadingScreen.Hide();
     }
+    
+        
+    public void ShowScoreBoard()
+    {
+        if (!playerUI.ScoreBoardUI.Visible)
+        {
+            playerUI.ScoreBoardUI.Visible = true;
+        }
+    }
+
+    public void HideScoreBoard()
+    {
+        if (playerUI.ScoreBoardUI.Visible)
+        {
+            playerUI.ScoreBoardUI.Visible = false;
+        }
+    }
+
 
 
     //internal void PregameWaitingForPlayers()

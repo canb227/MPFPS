@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=28 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
 [ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_vegv4"]
 [ext_resource type="PackedScene" uid="uid://cergi4lpkn7h0" path="res://scenes/GameObjects/interactables/DeliveryMachine.tscn" id="8_viqb8"]
+[ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="9_viqb8"]
+[ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -23,6 +25,18 @@ ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
+
+[sub_resource type="Resource" id="Resource_kx1m7"]
+script = ExtResource("3_25h3n")
+triggerName = "press_down"
+cooldownSeconds = 5.0
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+
+[sub_resource type="Resource" id="Resource_vegv4"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../trap_crusher1")
+triggerName = "press_down"
+metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_6h6a0"]
 script = ExtResource("3_25h3n")
@@ -66,16 +80,16 @@ triggerableNode = NodePath("../GOLabelPrinter")
 triggerName = "print"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
-[sub_resource type="Resource" id="Resource_kx1m7"]
-script = ExtResource("3_25h3n")
-triggerName = "press_down"
-cooldownSeconds = 5.0
-metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
-
-[sub_resource type="Resource" id="Resource_vegv4"]
+[sub_resource type="Resource" id="Resource_o2jhf"]
 script = ExtResource("5_k4evv")
-triggerableNode = NodePath("../trap_crusher1")
-triggerName = "press_down"
+triggerableNode = NodePath("../FallTrap")
+triggerName = "fall"
+metadata/_custom_type_script = "uid://ceok257oa0301"
+
+[sub_resource type="Resource" id="Resource_8d4x2"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../FireTrap")
+triggerName = "firetrap"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ny6f2"]
@@ -122,6 +136,23 @@ shadow_enabled = true
 
 [node name="GameObjects" type="Node3D" parent="."]
 
+[node name="basicDoor" parent="GameObjects" instance=ExtResource("5_o33i4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, -5.992201, -1.6779103)
+
+[node name="CrusherDemo" type="Node3D" parent="GameObjects"]
+
+[node name="trap_crusher1" parent="GameObjects/CrusherDemo" instance=ExtResource("2_qvxys")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)
+triggerables = Array[Object]([SubResource("Resource_kx1m7")])
+
+[node name="button_crusher2_animated" parent="GameObjects/CrusherDemo" instance=ExtResource("3_k4evv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.363422, -7.0766, 2.3524747)
+triggers = Array[Object]([SubResource("Resource_vegv4")])
+
+[node name="button_crusher2_animated2" parent="GameObjects/CrusherDemo" instance=ExtResource("3_k4evv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.490866, -7.0766, 2.3524747)
+triggers = Array[Object]([SubResource("Resource_vegv4")])
+
 [node name="LabelingGame" type="Node3D" parent="GameObjects"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.09649, -7.4796414, -1.9709693)
 
@@ -163,23 +194,22 @@ transform = Transform3D(-0.857522, 7.496694e-08, -1.3822983e-15, 5.6702564e-08, 
 triggers = Array[Object]([SubResource("Resource_k4evv")])
 ButtonDisableCondition = 1
 
-[node name="trap_crusher1" parent="GameObjects" instance=ExtResource("2_qvxys")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -7.4347014, -1.1960058)
-triggerables = Array[Object]([SubResource("Resource_kx1m7")])
-
-[node name="button_crusher2_animated" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.363422, -7.0766, 2.3524747)
-triggers = Array[Object]([SubResource("Resource_vegv4")])
-
-[node name="button_crusher2_animated2" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.490866, -7.0766, 2.3524747)
-triggers = Array[Object]([SubResource("Resource_vegv4")])
-
-[node name="basicDoor" parent="GameObjects" instance=ExtResource("5_o33i4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, -5.992201, -1.6779103)
-
 [node name="GODeliveryMachine" parent="GameObjects" instance=ExtResource("8_viqb8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.761868, -7.510642, -1.7161186)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.154438, -7.510642, -1.7161186)
+
+[node name="FallTrap" parent="GameObjects" instance=ExtResource("9_viqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.211124, 0, -1.6044703)
+
+[node name="FallTrapButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.19547, -7.4918485, 0.40144658)
+triggers = Array[Object]([SubResource("Resource_o2jhf")])
+
+[node name="FireTrap" parent="GameObjects" instance=ExtResource("10_o2jhf")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -59.020603, -6.8081174, -1.7546511)
+
+[node name="FireTrapButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.182148, -7.4918456, 0.4780352)
+triggers = Array[Object]([SubResource("Resource_8d4x2")])
 
 [node name="statics" type="Node3D" parent="."]
 
@@ -300,9 +330,9 @@ operation = 2
 size = Vector3(5.1610107, 2.8139648, 1.3669434)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.715797, -16.308119, 22.678238)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74.53154, -16.308119, -14.021067)
 use_collision = true
-size = Vector3(151.96947, 17.631836, 101.451126)
+size = Vector3(36.337982, 17.631836, 28.052517)
 material = SubResource("StandardMaterial3D_kx1m7")
 
 [node name="CSGCylinder3D7" type="CSGCylinder3D" parent="statics"]
@@ -562,4 +592,34 @@ size = Vector3(1, 2.4663086, 4.807556)
 
 [node name="CSGBox3D50" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.419, -6.2875896, -1.2582991)
+size = Vector3(1, 2.4663086, 4.807556)
+
+[node name="CSGBox3D51" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.934822, -6.2875896, -1.2582991)
+size = Vector3(1, 2.4663086, 4.807556)
+
+[node name="CSGBox3D52" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.762918, -16.308119, -14.033365)
+use_collision = true
+size = Vector3(86.60487, 17.631836, 28.02792)
+material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="CSGBox3D53" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.046556, -16.308119, 39.43025)
+use_collision = true
+size = Vector3(125.17215, 17.631836, 78.937294)
+material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="CSGBox3D54" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.212933, -16.308119, -15.643007)
+use_collision = true
+size = Vector3(2.2907176, 17.631836, 24.808638)
+material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="CSGBox3D55" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.347996, -6.2875896, -1.2582991)
+size = Vector3(1, 2.4663086, 4.807556)
+
+[node name="CSGBox3D56" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -61.964813, -6.2875896, -1.2582991)
 size = Vector3(1, 2.4663086, 4.807556)

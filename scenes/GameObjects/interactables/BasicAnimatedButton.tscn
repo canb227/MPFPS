@@ -341,7 +341,7 @@ _data = {
 &"rest": SubResource("Animation_ple8t")
 }
 
-[node name="LabellingMonitorButton" type="StaticBody3D" node_paths=PackedStringArray("animationTree")]
+[node name="BasicAnimatedButton" type="StaticBody3D" node_paths=PackedStringArray("animationTree")]
 script = ExtResource("1_mcndx")
 animationTree = NodePath("AnimationTree")
 interactCooldownSeconds = 0.8

@@ -257,6 +257,10 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
             }
         }
+        if (input.actions.HasFlag(ActionFlags.ScoreBoard))
+        {
+            //could play a looking at wrist animation or something
+        }
     }
 
     private void HandleMouseLook(double delta)
@@ -300,7 +304,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         cam = new();
         cameraLocationNode.AddChild(cam);
 
-        Global.ui.ToGameUI();
         Global.ui.ToPlayerCharacterUI();
         Input.MouseMode = Input.MouseModeEnum.Captured;
 

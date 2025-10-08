@@ -52,7 +52,7 @@ public enum ActionFlags : UInt64
     PrevSlot = 1L<<34,
     LastSlot = 1L<<35,
 
-
+    ScoreBoard = 1L<<61,
     Escape = 1L<<62,//this is the max value
 
 

@@ -189,6 +189,9 @@ public partial class GameState : Node3D
             gameObject.PerTickShared(delta);
         }
 
+        //Jeffrey added this :) so the UI can process local input in the same way as other input idk
+        Global.ui.PerTick(delta);
+
         var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();
         bool continueUpdating = true;
         int numUpdates = 0;

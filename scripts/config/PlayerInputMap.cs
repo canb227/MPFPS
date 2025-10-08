@@ -34,6 +34,7 @@ public class PlayerInputMap
             { Key.Q, ActionFlags.LeanLeft },
             { Key.E, ActionFlags.LeanRight },
 
+            { Key.Tab, ActionFlags.ScoreBoard },
             { Key.Escape, ActionFlags.Escape },
         };
 

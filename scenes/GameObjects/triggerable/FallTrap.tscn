@@ -48,11 +48,12 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_losqi")
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6tput"]
-points = PackedVector3Array(1.1479797, 0, 1.6361179, -1.1479721, 0, 1.6361179, 1.1479797, 0, -1.6361179, -1.1479721, 0, -1.6361179)
+[sub_resource type="BoxShape3D" id="BoxShape3D_d4mm2"]
+size = Vector3(2.2983398, 0.26732635, 3.2713623)
 
 [sub_resource type="Animation" id="Animation_juug1"]
 length = 0.001
+capture_included = true
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -62,49 +63,26 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
+"update": 2,
 "values": [0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SteamAudioPlayer:playing")
+tracks/1/path = NodePath("SteamAudioPlayer:volume_db")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SteamAudioPlayer2:playing")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("SteamAudioPlayer2:volume_db")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [-40.0]
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_6tput"]
 resource_name = "fall"
-length = 5.0
+length = 9.0
+capture_included = true
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -114,44 +92,43 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2, 2.4, 5),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
+"update": 2,
 "values": [0.0, -6.0, -6.0, 0.0]
 }
-tracks/1/type = "value"
+tracks/1/type = "audio"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SteamAudioPlayer:playing")
+tracks/1/path = NodePath("SteamAudioPlayer")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, true]
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_pgnvn")
+}, {
+"end_offset": 3.9748,
+"start_offset": 0.0,
+"stream": ExtResource("3_d4mm2")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_pgnvn")
+}],
+"times": PackedFloat32Array(0, 2.4, 5)
 }
+tracks/1/use_blend = true
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("SteamAudioPlayer2:playing")
+tracks/2/path = NodePath("SteamAudioPlayer:volume_db")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(2.4, 5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("SteamAudioPlayer2:volume_db")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(2.3666666, 2.6666667, 3.3, 4.3, 5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 2.3333333, 2.4, 2.7000003, 3.3333335, 4.3250003, 5, 5.01),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [-18.0, -12.0, 0.0, 0.0, -6.0]
+"values": [0.0, 0.0, -18.0, -12.0, 0.0, 0.0, -6.0, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pgnvn"]
@@ -160,21 +137,20 @@ _data = {
 &"fall": SubResource("Animation_6tput")
 }
 
-[node name="FallTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "hurtboxList")]
+[node name="FallTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
 script = ExtResource("1_d4mm2")
 animationPlayer = NodePath("AnimationPlayer")
-hurtboxList = []
 triggerables = Array[Object]([SubResource("Resource_5g06f")])
 metadata/_custom_type_script = "uid://cno377a7j6wr4"
 
 [node name="FallTrap2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1.2268664, 0, 0, 0, 1, 0, -0.01849027, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01849027, 0)
 mesh = SubResource("ArrayMesh_juug1")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1.2268664, 0, 0, 0, 1, 0, -0.01849027, 0)
-shape = SubResource("ConvexPolygonShape3D_6tput")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0031738281, -0.15888931, -0.006652832)
+shape = SubResource("BoxShape3D_d4mm2")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -183,11 +159,4 @@ libraries = {
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09517568, 0)
-stream = ExtResource("2_pgnvn")
-panning_strength = 0.0
-
-[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09517568, 0)
-stream = ExtResource("3_d4mm2")
-volume_db = -40.0
 panning_strength = 0.0
