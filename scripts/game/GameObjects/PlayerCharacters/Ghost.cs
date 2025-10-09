@@ -193,14 +193,12 @@ public partial class Ghost : GOBasePlayerCharacter
 
     protected override void SetupLocalPlayerCharacter()
     {
-        cam = new();
-        lookRotationNode.AddChild(cam);
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
     public override Camera3D GetCamera()
     {
-        return cam;
+        return camera;
     }
 
     public override string GenerateStateString()

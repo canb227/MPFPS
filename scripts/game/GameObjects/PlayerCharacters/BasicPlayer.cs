@@ -5,6 +5,12 @@ using MessagePack;
 using System;
 using System.Linq;
 
+public enum CharacterState
+{
+    Living,
+    Missing,
+    Dead
+}
 [GlobalClass]
 public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
@@ -12,6 +18,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public float currentHealth { get; set; }
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
+    public CharacterState state { get; set; }
 
     public override void _Ready()
     {
@@ -21,10 +28,9 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         rayCast = new();
         rayCast.TargetPosition = new Vector3(0, 0, -10);
         rayCast.CollideWithBodies = true;
-        cameraLocationNode.AddChild(rayCast);
+        camera.AddChild(rayCast);
 
 
-        Global.ui.inGameUI.ScoreBoardUI.AddLivingWorkerPlayerRow(controllingPlayerID);
     }
 
     private void SetupInventory()
@@ -278,14 +284,13 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
             float mouseX = input.LookInputVector.X * 5 * ((float)delta);
             float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
 
-            float newXRot = cameraLocationNode.RotationDegrees.X - mouseY;
+            float newXRot = camera.RotationDegrees.X - mouseY;
             float newYRot = RotationDegrees.Y - mouseX;
 
             if (newXRot > camXRotMax) { newXRot = camXRotMax; }
             if (newXRot < camXRotMin) { newXRot = camXRotMin; }
 
-            cameraLocationNode.RotationDegrees = new Vector3(newXRot, cameraLocationNode.RotationDegrees.Y, cameraLocationNode.RotationDegrees.Z);
-            lookRotationNode.RotationDegrees = cameraLocationNode.RotationDegrees;
+            camera.RotationDegrees = new Vector3(newXRot, camera.RotationDegrees.Y, camera.RotationDegrees.Z);
             RotationDegrees = new Vector3(RotationDegrees.X, newYRot, RotationDegrees.Z);
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
@@ -308,8 +313,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     protected override void SetupLocalPlayerCharacter()
     {
-        cam = new();
-        cameraLocationNode.AddChild(cam);
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
         SetupInventory();
@@ -317,7 +320,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     public override Camera3D GetCamera()
     {
-        return cam;
+        return camera;
     }
 
     public override string GenerateStateString()
@@ -340,6 +343,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     public void OnDeath()
     {
+        Global.ui.inGameUI.ScoreBoardUI.AddDeadWorkerPlayerRow(authority);
         if (controllingPlayerID == Global.steamid)
         {
             Global.ui.inGameUI.PlayerUIManager.Visible = false;
@@ -353,6 +357,11 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         this.role = role;
     }
 
+    public override void Respawn()
+    {
+        base.Respawn();
+        Global.ui.inGameUI.ScoreBoardUI.AddLivingWorkerPlayerRow(authority);
+    }
 
 
 

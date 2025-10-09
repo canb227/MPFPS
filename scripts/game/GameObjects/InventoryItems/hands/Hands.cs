@@ -119,7 +119,7 @@ public partial class Hands : GOBaseInventoryItem
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {
         ulong playerID = (ulong)data.paramList[0];
-        Global.gameState
+        //Global.gameState
         return true;
     }
 }

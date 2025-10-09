@@ -10,21 +10,21 @@ albedo_texture = ExtResource("2_5i5vb")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_5mfnq"]
 
-[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("thirdPersonModel", "lookRotationNode", "cameraLocationNode")]
+[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("thirdPersonModel", "lookRotationNode", "camera")]
 script = ExtResource("1_xy2rk")
 thirdPersonModel = NodePath("mesh")
-lookRotationNode = NodePath("cameraParent")
-cameraLocationNode = NodePath("cameraParent")
+camera = NodePath("Camera3D")
 metadata/_custom_type_script = "uid://dlqiqow6onvpu"
 
 [node name="mesh" type="MeshInstance3D" parent="."]
+layers = 2
 mesh = SubResource("SphereMesh_bbnym")
 surface_material_override/0 = SubResource("StandardMaterial3D_veat2")
 
 [node name="collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_5mfnq")
 
-[node name="cameraParent" type="Node3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="."]
 
 [node name="SteamAudioListener" type="SteamAudioListener" parent="."]
 

@@ -21,6 +21,11 @@ public partial class ScoreBoardUI : MarginContainer
     [Export] public VBoxContainer MissingWorkersList;
     [Export] public VBoxContainer DeadWorkersList;
 
+    public void UpdatePlayerRowStatus(ulong playerID)
+    {
+        
+    }
+
     public void UpdateTimeLeftUI(string timeLeftString)
     {
         TimeRemainingNumber.Text = timeLeftString;

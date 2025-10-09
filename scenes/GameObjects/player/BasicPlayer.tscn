@@ -24,15 +24,14 @@ points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
 height = 2.4057617
 
-[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "lookRotationNode", "cameraLocationNode", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "lookRotationNode", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_dt3qt")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("thirdPersonModel")
-lookRotationNode = NodePath("thirdPersonModel/head")
-cameraLocationNode = NodePath("firstPersonModel/camLocation")
-firstPersonEquipmentAttachmentPoint = NodePath("firstPersonModel/camLocation/attachment")
+camera = NodePath("firstPersonModel/Camera3D")
+firstPersonEquipmentAttachmentPoint = NodePath("firstPersonModel/Camera3D/attachment")
 thirdPersonEquipmentAttachmentPoint = NodePath("thirdPersonModel/attachment")
 metadata/_custom_type_script = "uid://c3mqjyhty6l5p"
 
@@ -70,7 +69,7 @@ shape = SubResource("CapsuleShape3D_oc7gj")
 [node name="firstPersonModel" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0055122, -0.15601164)
 
-[node name="camLocation" type="Node3D" parent="firstPersonModel"]
+[node name="Camera3D" type="Camera3D" parent="firstPersonModel"]
 
-[node name="attachment" type="Node3D" parent="firstPersonModel/camLocation"]
+[node name="attachment" type="Node3D" parent="firstPersonModel/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27011144, -0.17565012)

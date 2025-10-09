@@ -15,9 +15,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual Node3D thirdPersonModel { get; set; }
 
     [Export]
-    public virtual Node3D lookRotationNode { get; set; }
-
-    [Export]
     public virtual Camera3D camera { get; set; }
 
     [Export]
@@ -56,7 +53,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         return true;
     }
 
-    public virtual void SpawnSelf()
+    public virtual void Respawn()
     {
         this.Transform = Global.gameState.GetPlayerSpawnTransform();
         ResetCharacterInfo();
@@ -64,7 +61,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         {
             Global.gameState.PlayerCharacters[controllingPlayerID].ReleaseControl();
         }
-        TakeControl();
+        TakeControl(authority);
     }
 
     [RPCMethod(mode=RPCMode.SendToAllPeers)]

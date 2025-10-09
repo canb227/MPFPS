@@ -81,6 +81,9 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartNewRound()
     {
+
+        //I want to call respawn on the BasicPlayer I am the authority of here
+        
         //Move my ghost to the void
         //Move my player to the correct spot
         //take control of the player character
@@ -215,7 +218,7 @@ public partial class GameModeManager : Node
             StartEmergencyEvacuation();
         }
     }
-    
+
     public int GetNumManagersAlive()
     {
         return numManagersAlive;
@@ -240,9 +243,9 @@ public partial class GameModeManager : Node
         {
             case GameModeType.TTT:
                 Global.ui.ToGameUI();
-                Global.gameState
-                //Spawn my spectator character and hide it somewhere
-                //Spawn my actual character and hide it somewhere
+                SpawnSelf(GameObjectType.Ghost); //Spawn my spectator character and hide it somewhere
+                SpawnSelf(GameObjectType.BasicPlayer); //Spawn my actual character and hide it somewhere
+
                 //Finish any other init type stuff
                 //TakeControl of my spectator Character
                 //Teleport my spectator to a good spot
@@ -252,8 +255,26 @@ public partial class GameModeManager : Node
                 Logging.Error($"Unknown game mode - cannot start game!", "GameModeManager");
                 break;
         }
-
-
+    }
+    public void SpawnSelf(GameObjectType pcType)
+    {
+        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
+        {
+            Transform3D transform = Transform3D.Identity;
+            transform.Origin = new Vector3(0, -20, 0);
+            GameState.GameObjectConstructorData data = new GameState.GameObjectConstructorData();
+            data.spawnTransform = transform;
+            data.id = Global.gameState.GenerateNewID();
+            data.authority = Global.steamid;
+            data.type = pcType;
+            List<Object> paramList = new List<Object>();
+            data.paramList = paramList;
+            Global.gameState.Auth_SpawnObject(pcType, data);
+        }
+        else
+        {
+            Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
+        }
     }
 }
 

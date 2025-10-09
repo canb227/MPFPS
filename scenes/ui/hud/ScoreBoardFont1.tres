@@ -1,4 +1,4 @@
-[gd_resource type="LabelSettings" load_steps=0 format=3 uid="uid://bds86vvucgvfm"]
+[gd_resource type="LabelSettings" format=3 uid="uid://bds86vvucgvfm"]
 
 [resource]
 shadow_color = Color(0, 0, 0, 1)
