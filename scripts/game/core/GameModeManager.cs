@@ -15,8 +15,8 @@ public partial class GameModeManager : Node
 {
 
     GameStateOptions options;
-    public List<BasicPlayer> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
-    public List<Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public Dictionary<ulong, BasicPlayer> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
     public List<PackageOrderInfo> packageOrders = new();
 
     public double remainingRoundTime;
@@ -83,6 +83,7 @@ public partial class GameModeManager : Node
     {
 
         //I want to call respawn on the BasicPlayer that I am the authority of, but how do I find it
+        basicPlayers[Global.steamid].Respawn();
 
         //Move my ghost to the void
         //Move my player to the correct spot
@@ -245,7 +246,7 @@ public partial class GameModeManager : Node
                 Global.ui.ToGameUI();
                 SpawnSelf(GameObjectType.Ghost); //Spawn my spectator character and hide it somewhere
                 SpawnSelf(GameObjectType.BasicPlayer); //Spawn my actual character and hide it somewhere
-
+                ghostPlayers[Global.steamid].Respawn();
                 //Finish any other init type stuff
                 //TakeControl of my spectator Character
                 //Teleport my spectator to a good spot

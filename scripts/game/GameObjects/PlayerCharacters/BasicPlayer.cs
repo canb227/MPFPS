@@ -29,8 +29,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         rayCast.TargetPosition = new Vector3(0, 0, -10);
         rayCast.CollideWithBodies = true;
         camera.AddChild(rayCast);
-
-
     }
 
     private void SetupInventory()
@@ -368,7 +366,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {
         base.InitFromData(data);
-        Global.gameState.gameModeManager.basicPlayers.Add(this);
+        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
         return true;
     }
 

@@ -237,7 +237,7 @@ public partial class Ghost : GOBasePlayerCharacter
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {
         base.InitFromData(data);
-        Global.gameState.gameModeManager.ghostPlayers.Add(this);
+        Global.gameState.gameModeManager.ghostPlayers.Add(authority, this);
         return true;
     }
 }
