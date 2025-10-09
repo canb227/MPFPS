@@ -81,15 +81,17 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void AddLivingWorkerPlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
         if (playerRow == null)
         {
-            ScoreBoardPlayerRow temp = new ScoreBoardPlayerRow(playerID);
+            ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
+            temp.SetPlayerID(playerID);
             LivingWorkersList.AddChild(temp);
         }
         else
         {
-            Logging.Error($"Tried to add player to Living Worker list but they are already on the scoreboard somewhere, use MovePlayerToLiving instead.", "ScoreBoardUI");
+            Logging.Log($"Tried to add player to Living Worker list but they are already on the scoreboard somewhere, using MovePlayerToLiving instead.", "ScoreBoardUI");
+            MovePlayerToLiving(playerID);
         }
 
     }
@@ -99,12 +101,14 @@ public partial class ScoreBoardUI : MarginContainer
         ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
         if (playerRow == null)
         {
-            ScoreBoardPlayerRow temp = new ScoreBoardPlayerRow(playerID);
+            ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
+            temp.SetPlayerID(playerID);
             MissingWorkersList.AddChild(temp);
         }
         else
         {
-            Logging.Error($"Tried to add player to Missing Worker list but they are already on the scoreboard somewhere, use MovePlayerToMissing instead.", "ScoreBoardUI");
+            Logging.Log($"Tried to add player to Missing Worker list but they are already on the scoreboard somewhere, using MovePlayerToMissing instead.", "ScoreBoardUI");
+            MovePlayerToMissing(playerID);
         }
     }
 
@@ -113,12 +117,14 @@ public partial class ScoreBoardUI : MarginContainer
         ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
         if (playerRow == null)
         {
-            ScoreBoardPlayerRow temp = new ScoreBoardPlayerRow(playerID);
+            ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
+            temp.SetPlayerID(playerID);
             DeadWorkersList.AddChild(temp);
         }
         else
         {
-            Logging.Error($"Tried to add player to Dead Worker list but they are already on the scoreboard somewhere, use MovePlayerToDead instead.", "ScoreBoardUI");
+            Logging.Log($"Tried to add player to Dead Worker list but they are already on the scoreboard somewhere, using MovePlayerToDead instead.", "ScoreBoardUI");
+            MovePlayerToDead(playerID);
         }
     }
 

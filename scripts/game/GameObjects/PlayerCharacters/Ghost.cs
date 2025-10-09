@@ -7,11 +7,6 @@ using System;
 [GlobalClass]
 public partial class Ghost : GOBasePlayerCharacter
 {
-    public ActionFlags lastTickActions { get; set; }
-
-    private PlayerCamera cam { get; set; }
-
-    public RayCast3D rayCast { get; set; }
 
     public override void _Ready()
     {
@@ -46,74 +41,77 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override void PerTickAuth(double delta)
     {
-        if (Input.MouseMode == Input.MouseModeEnum.Captured)
+        if (input != null)
         {
-            float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
-            float newXRot = RotationDegrees.X - mouseY;
-
-            if (newXRot > camXRotMax) { newXRot = camXRotMax; }
-            if (newXRot < camXRotMin) { newXRot = camXRotMin; }
-
-            RotationDegrees = new Vector3(newXRot, (float)(RotationDegrees.Y - input.LookInputVector.X * 5 * delta), RotationDegrees.Z);
-        }
-        input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
-
-        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
-        {
-            if (rayCast.IsColliding())
+            if (Input.MouseMode == Input.MouseModeEnum.Captured)
             {
-                if (rayCast.GetCollider() is IsInteractable i)
+                float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
+                float newXRot = RotationDegrees.X - mouseY;
+
+                if (newXRot > camXRotMax) { newXRot = camXRotMax; }
+                if (newXRot < camXRotMin) { newXRot = camXRotMin; }
+
+                RotationDegrees = new Vector3(newXRot, (float)(RotationDegrees.Y - input.LookInputVector.X * 5 * delta), RotationDegrees.Z);
+            }
+            input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
+
+            if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
+            {
+                if (rayCast.IsColliding())
                 {
-                    i.Local_OnInteract(id);
+                    if (rayCast.GetCollider() is IsInteractable i)
+                    {
+                        i.Local_OnInteract(id);
+                    }
                 }
             }
+
+            if (input.actions.HasFlag(ActionFlags.Sprint))
+            {
+                speed = 12;
+            }
+
+            float moveZ = input.MovementInputVector.X;
+            float moveX = input.MovementInputVector.Y;
+
+            Vector3 localVelocity = Transform.Basis.Inverse() * Velocity;
+
+            localVelocity.Y = 0;
+
+            if (moveZ == 0)
+            {
+                localVelocity.Z = 0f;
+            }
+            else
+            {
+                localVelocity.Z = moveZ * speed;
+            }
+
+            if (moveX == 0)
+            {
+                localVelocity.X = 0f;
+            }
+            else
+            {
+                localVelocity.X = moveX * speed;
+            }
+
+            Vector3 globalVelocity = Transform.Basis * localVelocity;
+
+            if (input.actions.HasFlag(ActionFlags.Jump))
+            {
+                globalVelocity.Y = 1 * speed * .66f;
+            }
+            else if (input.actions.HasFlag(ActionFlags.Crouch))
+            {
+                globalVelocity.Y = -1 * speed * .66f;
+            }
+
+
+            Velocity = globalVelocity;
+            MoveAndSlide();
+            lastTickActions = input.actions;
         }
-
-        if (input.actions.HasFlag(ActionFlags.Sprint))
-        {
-            speed = 12;
-        }
-
-        float moveZ = input.MovementInputVector.X;
-        float moveX = input.MovementInputVector.Y;
-
-        Vector3 localVelocity = Transform.Basis.Inverse() * Velocity;
-
-        localVelocity.Y = 0;
-
-        if (moveZ==0)
-        {
-            localVelocity.Z = 0f;
-        }
-        else
-        {
-            localVelocity.Z = moveZ * speed;
-        }
-
-        if (moveX == 0)
-        {
-            localVelocity.X = 0f;
-        }
-        else
-        {
-            localVelocity.X = moveX * speed;
-        }
-
-        Vector3 globalVelocity = Transform.Basis * localVelocity;
-
-        if (input.actions.HasFlag(ActionFlags.Jump))
-        {
-            globalVelocity.Y = 1 * speed * .66f;
-        }
-        else if (input.actions.HasFlag(ActionFlags.Crouch))
-        {
-            globalVelocity.Y = -1 * speed * .66f;
-        }
-
-
-        Velocity = globalVelocity;
-        MoveAndSlide();
-        lastTickActions = input.actions;
     }
 
 
@@ -126,12 +124,12 @@ public partial class Ghost : GOBasePlayerCharacter
             ImGui.Text("InputMvVector: " + input.MovementInputVector.ToString());
             ImGui.Text("InputLookVector: " + input.LookInputVector.ToString());
             ImGui.Text($"Actions flag: {input.actions}");
-            
+
             ImGui.End();
         }
 
 
-}
+    }
 
     public override void PerTickLocal(double delta)
     {
@@ -195,11 +193,8 @@ public partial class Ghost : GOBasePlayerCharacter
 
     protected override void SetupLocalPlayerCharacter()
     {
-        lookRotationNode = GetNode<Node3D>("cameraParent");
-        PlayerCamera cam = new();
+        cam = new();
         lookRotationNode.AddChild(cam);
-        this.cam = cam;
-        Global.ui.SwitchFullScreenUI("BasePlayerHUD");
         Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
@@ -227,6 +222,16 @@ public partial class Ghost : GOBasePlayerCharacter
     public override void PerFrameShared(double delta)
     {
 
+    }
+    public override void ResetCharacterInfo()
+    {
+
+    }
+    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    {
+        base.InitFromData(data);
+        Global.gameState.gameModeManager.ghostPlayers.Add(this);
+        return true;
     }
 }
 

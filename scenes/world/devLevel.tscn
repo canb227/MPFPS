@@ -198,7 +198,7 @@ ButtonDisableCondition = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.154438, -7.510642, -1.7161186)
 
 [node name="FallTrap" parent="GameObjects" instance=ExtResource("9_viqb8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.211124, 0, -1.6044703)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.211124, -7.481255, -1.6044703)
 
 [node name="FallTrapButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.19547, -7.4918485, 0.40144658)
@@ -599,15 +599,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.934822, -6.2875896, -1.25
 size = Vector3(1, 2.4663086, 4.807556)
 
 [node name="CSGBox3D52" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.762918, -16.308119, -14.033365)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7800579, -16.308119, -14.033365)
 use_collision = true
-size = Vector3(86.60487, 17.631836, 28.02792)
+size = Vector3(111.69083, 17.631836, 28.02792)
 material = SubResource("StandardMaterial3D_kx1m7")
 
 [node name="CSGBox3D53" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.046556, -16.308119, 39.43025)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.45727, -16.308119, 39.43025)
 use_collision = true
-size = Vector3(125.17215, 17.631836, 78.937294)
+size = Vector3(150.35072, 17.631836, 78.937294)
 material = SubResource("StandardMaterial3D_kx1m7")
 
 [node name="CSGBox3D54" type="CSGBox3D" parent="statics"]
@@ -621,5 +621,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.347996, -6.2875896, -1.25
 size = Vector3(1, 2.4663086, 4.807556)
 
 [node name="CSGBox3D56" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -61.964813, -6.2875896, -1.2582991)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62.661816, -6.2875896, -1.2582991)
 size = Vector3(1, 2.4663086, 4.807556)
+
+[node name="CSGBox3D57" type="CSGBox3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.212933, -24.15016, -1.6529589)
+use_collision = true
+size = Vector3(2.2907176, 1.9477539, 3.389182)
+material = SubResource("StandardMaterial3D_kx1m7")

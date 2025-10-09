@@ -11,9 +11,8 @@ public static class GameObjectLoader
         { "LabelPaper", (GameObjectType.LabelPaper, "res://scenes/GameObjects/props/LabelPaper.tscn", typeof(GOLabelPaper)) },
         { "PaperBox" , (GameObjectType.PaperBox, "res://scenes/GameObjects/props/PaperBox.tscn", typeof(GOPaperBox)) },
         { "ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
-        {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
-        {"tony", (GameObjectType.Tony,"res://scenes/GameObjects/player/tony.tscn", typeof(Tony))},
-        {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayer)) }
+        { "ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
+        { "basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayer)) }
     };
 
     internal static GameObject LoadObjectByType(GameObjectType type)
@@ -77,7 +76,6 @@ public enum GameObjectType
     ERROR,
     Ball,
     Ghost,
-    Tony,
     BasicPlayer,
     GameButton,
     Crusher,

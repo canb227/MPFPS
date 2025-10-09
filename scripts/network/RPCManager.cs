@@ -14,6 +14,7 @@ public enum RPCType
     ERROR,
     Chat,
     StartGame,
+    RespawnPlayers,
 
 }
 
@@ -101,6 +102,10 @@ public static class RPCManager
                 Logging.Log($"Network command from {sender} to start game on map {packet.stringParams[0]}!", "RPCManager");
                 Global.gameState.StartGame(packet.stringParams[0]);
                 break;
+            case RPCType.RespawnPlayers:
+                Logging.Log($"Network command from {sender} to respawn players!", "RPCManager");
+                Global.gameState.gameModeManager.RespawnPlayers();
+                break;
             case RPCType.Chat:
                 Logging.Log($"Network chat from {sender}!", "RPCManager");
                 ChatReceivedEvent?.Invoke(packet.stringParams[0], sender);
@@ -131,12 +136,21 @@ public static class RPCManager
         Logging.Log($"RPC SENT: Type=StartGame, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
         Global.network.BroadcastData(payload,Channel.NetCommands,Global.Lobby.lobbyPeers.ToList());
     }
+    
+    public static void NetCommand_RespawnPlayers()
+    {
+        RPCPacket packet = new();
+        packet.type = RPCType.RespawnPlayers;
+        byte[] payload = MessagePackSerializer.Serialize(packet);
+        Logging.Log($"RPC SENT: Type=RespawnPlayers, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
+        Global.network.BroadcastData(payload,Channel.NetCommands,Global.Lobby.lobbyPeers.ToList());
+    }
 
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
 
-        ProcessRPC(packet.nodePath,packet.methodName, packet.parameters);
+        ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
     }
 
     public static void RPC(Node context, string methodName, List<Object> parameters)

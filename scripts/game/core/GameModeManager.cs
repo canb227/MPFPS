@@ -5,8 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 public partial class GameModeManager : Node
 {
-    
+
     GameStateOptions options;
+    public List<BasicPlayer> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public List<Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public List<PackageOrderInfo> packageOrders = new();
+
+    public double remainingRoundTime;
+    private int numTraitorsAlive;
+    private int numInnocentsAlive;
+    private int numManagersAlive;
+    private int totalPlayers;
+
+
+    private int numFinishedOrders;
+    private int ordersNeeded;
 
 
     public override void _Ready()
@@ -17,11 +30,79 @@ public partial class GameModeManager : Node
     public async void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
+        RespawnGhosts();
+        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        StartNewRound();
+    }
+
+    public async void TraitorsWin()
+    {
+        //display a UI element, play a sound or music? then start the countdown for a new round
+        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        StartNewRound();
+    }
+
+    public async void InnocentsWin()
+    {
+        //display a UI element, play a sound or music? then start the countdown for a new round
+        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        StartNewRound();
+    }
+
+    public async void EndRound()
+    {
+        //display a UI element, play a sound or music? then start the countdown for a new round
+        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        StartNewRound();
+    }
+
+    public void StartEmergencyEvacuation()
+    {
+
+    }
+
+    public void StartEndOfGameEvacuation()
+    {
+
+    }
+
+
+
+    public void RespawnGhosts()
+    {
+        foreach (Ghost ghostPlayer in ghostPlayers)
+        {
+            ghostPlayer.SpawnSelf();
+        }
+    }
+
+    public void RespawnPlayers()
+    {
+        foreach (BasicPlayer basicPlayer in basicPlayers)
+        {
+            basicPlayer.SpawnSelf();
+        }
+    }
+
+
+
+    public async void StartNewRound()
+    {
+        RespawnPlayers();
+        totalPlayers = basicPlayers.Count();
+        GenerateOrders();
         await ToSignal(GetTree().CreateTimer(Global.gameState.options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
         AssignRoles();
     }
 
-    private void AssignRoles()
+    public void GenerateOrders()
+    {
+        packageOrders.Clear();
+        //generate and add to packageOrders
+        ordersNeeded = 4;
+    }
+
+    public void AssignRoles()
     {
         List<ulong> players = Global.Lobby.lobbyPeers.ToList();
         List<ulong> traitors = new();
@@ -34,21 +115,25 @@ public partial class GameModeManager : Node
         {
             numManagers = 1;
         }
-        Logging.Log($"Out of {numPlayers} players, {numTraitors} will be picked as traitors","GameModeManager");
+        Logging.Log($"Out of {numPlayers} players, {numTraitors} will be picked as traitors", "GameModeManager");
         for (int i = 0; i < numTraitors; i++)
         {
             ulong selectedID = players[Random.Shared.Next(numPlayers)];
             players.Remove(selectedID);
             traitors.Add(selectedID);
         }
+        numTraitorsAlive = numTraitors;
 
-        Logging.Log($"Out of {numPlayers} players, {numManagers} will be picked as managers","GameModeManager");
+        Logging.Log($"Out of {numPlayers} players, {numManagers} will be picked as managers", "GameModeManager");
         for (int i = 0; i < numManagers; i++)
         {
             ulong selectedID = players[Random.Shared.Next(numPlayers)];
             players.Remove(selectedID);
             managers.Add(selectedID);
         }
+        numManagersAlive = numManagers;
+
+        numInnocentsAlive = numPlayers - numManagers - numTraitors;
 
         foreach (ulong id in traitors)
         {
@@ -59,7 +144,7 @@ public partial class GameModeManager : Node
             byte[] data = MessagePackSerializer.Serialize(pa);
             RPCManager.RPC(this, "AssignRole", [id, Team.Traitor, Role.Normal]);
         }
-        
+
         foreach (ulong id in managers)
         {
             PlayerAssignment pa = new();
@@ -86,7 +171,75 @@ public partial class GameModeManager : Node
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
         Global.gameState.PlayerCharacters[id].Assignment(team, role);
+        if (id == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
+        }
     }
+
+    public int GetNumFinishedOrders()
+    {
+        return numFinishedOrders;
+    }
+    public void SetNumFinishedOrders(int numFinished)
+    {
+        numFinishedOrders = numFinished;
+        if (numFinishedOrders >= ordersNeeded)
+        {
+            StartEndOfGameEvacuation();
+        }
+    }
+    public int GetNumTraitorsAlive()
+    {
+        return numTraitorsAlive;
+    }
+    public void SetNumTraitorsAlive(int numAlive)
+    {
+        numTraitorsAlive = numAlive;
+        if (numTraitorsAlive <= 0)
+        {
+            //do something maybe
+        }
+        else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+        {
+            StartEmergencyEvacuation();
+        }
+    }
+
+    public int GetNumInnocentsAlive()
+    {
+        return numInnocentsAlive;
+    }
+    public void SetNumInnocentsAlive(int numAlive)
+    {
+        numInnocentsAlive = numAlive;
+        if (numInnocentsAlive + numManagersAlive <= 0)
+        {
+            TraitorsWin();
+        }
+        else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+        {
+            StartEmergencyEvacuation();
+        }
+    }
+    
+    public int GetNumManagersAlive()
+    {
+        return numManagersAlive;
+    }
+    public void SetNumManagersAlive(int numAlive)
+    {
+        numManagersAlive = numAlive;
+        if (numInnocentsAlive + numManagersAlive <= 0)
+        {
+            TraitorsWin();
+        }
+        else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+        {
+            StartEmergencyEvacuation();
+        }
+    }
+    
 }
 
 public enum Team

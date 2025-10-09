@@ -188,8 +188,6 @@ public partial class GameState : Node3D
             }
             gameObject.PerTickShared(delta);
         }
-
-        //Jeffrey added this :) so the UI can process local input in the same way as other input idk
         Global.ui.PerTick(delta);
 
         var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();
@@ -276,7 +274,7 @@ public partial class GameState : Node3D
     /// Spawn the local player as a character with the given type 
     /// </summary>
     /// <param name="pcType"></param>
-    public void SpawnSelf(GameObjectType pcType)
+    public void InitAndSpawnSelf(GameObjectType pcType)
     {
 
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
@@ -284,6 +282,27 @@ public partial class GameState : Node3D
             Transform3D SpawnTransform = GetPlayerSpawnTransform();
             GameObjectConstructorData data = new GameObjectConstructorData();
             data.spawnTransform = SpawnTransform;
+            data.id = GenerateNewID();
+            data.authority = Global.steamid;
+            data.type = pcType;
+            List<Object> paramList = new List<Object>();
+            data.paramList = paramList;
+            Auth_SpawnObject(pcType, data);
+        }
+        else
+        {
+            Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
+        }
+    }
+
+    public void InitSelf(GameObjectType pcType)
+    {
+        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
+        {
+            Transform3D InitTransform = Transform3D.Identity;
+            InitTransform.Origin = new Vector3(0, -20, 0);
+            GameObjectConstructorData data = new GameObjectConstructorData();
+            data.spawnTransform = InitTransform;
             data.id = GenerateNewID();
             data.authority = Global.steamid;
             data.type = pcType;
@@ -498,10 +517,6 @@ public partial class GameState : Node3D
         Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
         Global.ui.StartLoadingScreen();
         LoadStaticLevel(scenePath);
-        SpawnSelf(GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type);
-        Global.ui.StopLoadingScreen();
-        gameStarted = true;
-
         GameModeManager gmm = new();
         gmm.Name = "Game Mode Manager";
         AddChild(gmm);
@@ -510,6 +525,15 @@ public partial class GameState : Node3D
         aim.Name = "AI Manager";
         AddChild(aim);
         AIManager = aim;
+        Global.ui.ToGameUI();
+        InitSelf(GameObjectLoader.GameObjectDictionary["basicPlayer"].type);
+        InitSelf(GameObjectLoader.GameObjectDictionary["ghost"].type);
+        Global.ui.StopLoadingScreen();
+        gameStarted = true;
+
+
+
+
         if (Global.Lobby.bIsLobbyHost)
         {
             gmm.GameStartAsHost();
@@ -679,7 +703,7 @@ public partial class GameState : Node3D
         debugTarget = go;
     }
 
-    private Transform3D GetPlayerSpawnTransform()
+    public Transform3D GetPlayerSpawnTransform()
     {
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }

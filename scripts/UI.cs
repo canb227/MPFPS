@@ -17,17 +17,17 @@ public partial class UI : Node
     public PlayerInputData localInput { get; set; }
     public ActionFlags lastTickActions { get; set; }
 
-    private InGameUI playerUI { get; set; }
+    public InGameUI inGameUI { get; set; }
 
     public void PerTick(double delta)
     {
         if (localInput.actions.HasFlag(ActionFlags.ScoreBoard))
         {
-            ShowScoreBoard();
+            inGameUI.ShowScoreBoard();
         }
         else if (lastTickActions.HasFlag(ActionFlags.ScoreBoard))
         {
-            HideScoreBoard();
+            inGameUI.HideScoreBoard();
         }
         lastTickActions = localInput.actions;
     }
@@ -65,14 +65,7 @@ public partial class UI : Node
 
     public void ToGameUI()
     {
-        playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
-        playerUI.PlayerUIManager.Visible = false;
-    }
-
-    public void ToPlayerCharacterUI()
-    {
-        playerUI = (InGameUI)SwitchFullScreenUI("InGameUI");
-        playerUI.PlayerUIManager.Visible = true;
+        inGameUI = (InGameUI)SwitchFullScreenUI("InGameUI");
     }
 
 
@@ -142,23 +135,6 @@ public partial class UI : Node
         loadingProgressBar.Value = 0;
         currentLoadingScreen.GetNode<Label>("description").Text = "PLEASE SET ME";
         currentLoadingScreen.Hide();
-    }
-    
-        
-    public void ShowScoreBoard()
-    {
-        if (!playerUI.ScoreBoardUI.Visible)
-        {
-            playerUI.ScoreBoardUI.Visible = true;
-        }
-    }
-
-    public void HideScoreBoard()
-    {
-        if (playerUI.ScoreBoardUI.Visible)
-        {
-            playerUI.ScoreBoardUI.Visible = false;
-        }
     }
 
 

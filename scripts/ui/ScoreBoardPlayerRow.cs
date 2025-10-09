@@ -19,15 +19,14 @@ public partial class ScoreBoardPlayerRow : HBoxContainer
     [Export] public Label deaths;
     [Export] public Label ping;
 
-    public ScoreBoardPlayerRow(ulong playerID)
+    public void SetPlayerID(ulong playerID)
     {
         this.playerID = playerID;
-        playerName.Name = Utils.IDToName(playerID);
-        playerIcon.Texture = Utils.GetSmallSteamAvatar(playerID);
     }
-
     public override void _Ready()
     {
+        playerName.Text = Utils.IDToName(playerID);
+        playerIcon.Texture = Utils.GetSmallSteamAvatar(playerID);
         Name = playerID.ToString();
     }
 

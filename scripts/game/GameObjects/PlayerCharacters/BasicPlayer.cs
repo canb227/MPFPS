@@ -8,19 +8,10 @@ using System.Linq;
 [GlobalClass]
 public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
-
-    private PlayerCamera cam { get; set; }
-
-    public RayCast3D rayCast { get; set; }
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
     public Inventory inventory { get; set; }
     public IsInventoryItem equipped { get; set; }
-    public ActionFlags lastTickActions { get; set; }
-
-    public PlayerUIManager playerUIManager { get; set; }
-
-
 
     public override void _Ready()
     {
@@ -34,6 +25,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
 
         SetupInventory();
+        Global.ui.inGameUI.ScoreBoardUI.AddLivingWorkerPlayerRow(controllingPlayerID);
     }
 
     private void SetupInventory()
@@ -71,7 +63,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     }
 
-    [RPCMethod(mode =RPCMode.SendToAllPeers)]
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void Equip(InventoryGroupCategory category, int index = 0)
     {
         if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
@@ -131,17 +123,25 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     private Vector3 jumpVelocity = new Vector3(0, 5, 0);
     private bool airbrake = false;
 
+
+
     public override void PerTickAuth(double delta)
     {
-        HandleNonMovementInput(delta);
-        HandleEquippedPassthruInput(delta);
-        HandleMovementInputAndPhysics(delta);
-        lastTickActions = input.actions;
+        if (input != null)
+        {
+            HandleNonMovementInput(delta);
+            HandleEquippedPassthruInput(delta);
+            HandleMovementInputAndPhysics(delta);
+            lastTickActions = input.actions;
+        }
     }
 
     public override void PerFrameShared(double delta)
     {
-        HandleMouseLook(delta);
+        if (input != null)
+        {
+            HandleMouseLook(delta);
+        }
     }
 
     private void HandleMovementInputAndPhysics(double delta)
@@ -261,6 +261,10 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         {
             //could play a looking at wrist animation or something
         }
+        if (input.actions.HasFlag(ActionFlags.Prone))
+        {
+
+        }
     }
 
     private void HandleMouseLook(double delta)
@@ -278,7 +282,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
             cameraLocationNode.RotationDegrees = new Vector3(newXRot, cameraLocationNode.RotationDegrees.Y, cameraLocationNode.RotationDegrees.Z);
             lookRotationNode.RotationDegrees = cameraLocationNode.RotationDegrees;
-            RotationDegrees = new Vector3(RotationDegrees.X,newYRot, RotationDegrees.Z);
+            RotationDegrees = new Vector3(RotationDegrees.X, newYRot, RotationDegrees.Z);
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
     }
@@ -300,18 +304,9 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     protected override void SetupLocalPlayerCharacter()
     {
-
         cam = new();
         cameraLocationNode.AddChild(cam);
-
-        Global.ui.ToPlayerCharacterUI();
         Input.MouseMode = Input.MouseModeEnum.Captured;
-
-        //setup UI
-        //playerUIManager = (PlayerUIManager)GD.Load<PackedScene>("res://scenes/ui/hud/playerUI.tscn").Instantiate();
-        //playerUIManager.UpdateRoleUI(team);
-        //playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
-        //AddChild(playerUIManager);
     }
 
     public override Camera3D GetCamera()
@@ -327,13 +322,21 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public void TakeDamage(float damage, ulong byID)
     {
         currentHealth -= damage;
-        //ui update
-        playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
+        if (controllingPlayerID == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
+        }
         if (currentHealth < 0)
         {
-            //ui update
-            playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
+            OnDeath();
+        }
+    }
 
+    public void OnDeath()
+    {
+        if (controllingPlayerID == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.Visible = false;
         }
     }
 
@@ -342,10 +345,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     {
         this.team = team;
         this.role = role;
-        if (playerUIManager != null)
-        {
-            playerUIManager.UpdateRoleUI(team);
-        }
     }
 
 
@@ -353,6 +352,21 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     {
         return Global.steamid == controllingPlayerID;
     }
+
+    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    {
+        base.InitFromData(data);
+        Global.gameState.gameModeManager.basicPlayers.Add(this);
+        return true;
+    }
+
+    public override void ResetCharacterInfo()
+    {
+        maxHealth = 100;
+        currentHealth = 100;
+        SetupInventory();
+    }
+
 }
 
 [MessagePackObject]
