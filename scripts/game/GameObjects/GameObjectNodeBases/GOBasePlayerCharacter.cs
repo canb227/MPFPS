@@ -31,15 +31,15 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual Role role { get; set; }
     public virtual PlayerInputData input { get; set; }
     public override bool predict { get; set; } = true;
+    protected PlayerCamera cam { get; set; }
+    public RayCast3D rayCast { get; set; }
+    public ActionFlags lastTickActions { get; set; }
 
     public override void _Ready()
     {
 
         base._Ready();
         Logging.Log($"Spawned a new player character with id:{id} and authority/controllerID: {authority}/{controllingPlayerID}.", "PlayerCharacter");
-        //add to UI
-        Logging.Log($"Adding new player to scoreboard, assume they are alive on join?", "PlayerCharacter");
-        
         if (controllingPlayerID == Global.steamid)
         {
             Logging.Log($"A GOBasePlayerCharacter that I am controlling just spawned! Creating camera and hooking up inputs!", "PlayerCharacter");
@@ -50,16 +50,42 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             Global.gameState.PlayerInputs.Add(controllingPlayerID, new PlayerInputData());
             Global.gameState.PlayerInputs[controllingPlayerID].playerID = controllingPlayerID;
         }
-        input = Global.gameState.PlayerInputs[controllingPlayerID];
+        //input = Global.gameState.PlayerInputs[controllingPlayerID];
     }
 
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {
         GlobalTransform = data.spawnTransform;
         controllingPlayerID = data.authority;
-        Global.gameState.PlayerCharacters[controllingPlayerID] = this;
         return true;
     }
+
+    public virtual void SpawnSelf()
+    {
+        this.Transform = Global.gameState.GetPlayerSpawnTransform();
+        ResetCharacterInfo();
+        if (Global.gameState.PlayerCharacters.ContainsKey(controllingPlayerID))
+        {
+            Global.gameState.PlayerCharacters[controllingPlayerID].ReleaseControl();
+        }
+        TakeControl();
+    }
+
+    public virtual void TakeControl()
+    {
+        Global.gameState.PlayerCharacters[controllingPlayerID] = this;
+        input = Global.gameState.PlayerInputs[controllingPlayerID];
+        cam.Current = true;
+    }
+
+    public void ReleaseControl()
+    {
+        Global.gameState.PlayerCharacters[controllingPlayerID] = null;
+        input = null;
+        cam.Current = false;
+    }
+
+    public abstract void ResetCharacterInfo();
 
     public abstract void Assignment(Team team, Role role);
 

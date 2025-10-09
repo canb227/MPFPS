@@ -77,7 +77,6 @@ public enum GameObjectType
     ERROR,
     Ball,
     Ghost,
-    Tony,
     BasicPlayer,
     GameButton,
     Crusher,

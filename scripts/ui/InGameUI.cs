@@ -41,4 +41,20 @@ public partial class InGameUI : Control
     {
         ScoreBoardUI.UpdatePlayerName(newPlayerName, playerID);
     }
+
+    public void ShowScoreBoard()
+    {
+        if (!ScoreBoardUI.Visible)
+        {
+            ScoreBoardUI.Visible = true;
+        }
+    }
+
+    public void HideScoreBoard()
+    {
+        if (ScoreBoardUI.Visible)
+        {
+            ScoreBoardUI.Visible = false;
+        }
+    }
 }
