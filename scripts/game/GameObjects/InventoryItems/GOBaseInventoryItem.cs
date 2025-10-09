@@ -33,10 +33,12 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
         firstPersonScene.Hide();
         thirdPersonScene.Show();
         this.CollisionLayer = 2;
+        Freeze = true;
     }
 
     public virtual void OnDropped(ulong byID)
     {
+        Freeze = false;
         this.CollisionLayer = 2;
         equippedBy = 0;
         inInventoryOf = 0;
@@ -44,6 +46,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     public virtual void OnEquipped(ulong byID)
     {
         this.CollisionLayer = 0;
+        Freeze = true;
         equippedBy = byID;
         inInventoryOf = 0;
         if (byID == Global.steamid)
@@ -57,6 +60,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     }
     public virtual void OnPickup(ulong byID)
     {
+        Freeze = true;
         this.CollisionLayer = 0;
         firstPersonScene.Hide();
         thirdPersonScene.Hide();
@@ -64,6 +68,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     }
     public virtual void OnUnequipped(ulong byID)
     {
+        Freeze = true;
         equippedBy = 0;
         inInventoryOf = byID;
         firstPersonScene.Hide();

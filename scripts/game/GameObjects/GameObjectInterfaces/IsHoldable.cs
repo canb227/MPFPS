@@ -11,4 +11,5 @@ public interface IsHoldable
     public float heldFriction { get; set; }
 
     void OnHold(ulong byID);
+    void OnRelease(ulong byID);
 }

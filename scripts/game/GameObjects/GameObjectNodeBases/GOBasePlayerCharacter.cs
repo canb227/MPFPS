@@ -69,6 +69,10 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     protected abstract void SetupLocalPlayerCharacter();
 
     public abstract Camera3D GetCamera();
+
+
+    public abstract void Pickup(IsInventoryItem item);
+    public abstract void Equip(InventoryGroupCategory category, int index = 0);
     public override void PerTickAuth(double delta)
     { 
     

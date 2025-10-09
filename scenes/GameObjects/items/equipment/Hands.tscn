@@ -5,10 +5,11 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_flpyn"]
 size = Vector3(1, 0.19555664, 1)
 
-[node name="Hands" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[node name="Hands" type="RigidBody3D" node_paths=PackedStringArray("HoldPosition", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_flpyn")
+HoldPosition = NodePath("holdPos")
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
@@ -39,3 +40,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0423584, 0)
 shape = SubResource("BoxShape3D_flpyn")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="holdPos" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16601455, -2.399157)

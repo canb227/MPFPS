@@ -228,6 +228,16 @@ public partial class Ghost : GOBasePlayerCharacter
     {
 
     }
+
+    public override void Pickup(IsInventoryItem item)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Equip(InventoryGroupCategory category, int index = 0)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 [MessagePackObject]

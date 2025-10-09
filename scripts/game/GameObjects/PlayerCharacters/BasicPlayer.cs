@@ -14,7 +14,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     public RayCast3D rayCast { get; set; }
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
-    public Inventory inventory { get; set; }
+    public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public ActionFlags lastTickActions { get; set; }
 
@@ -33,38 +33,41 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         cameraLocationNode.AddChild(rayCast);
 
 
-        SetupInventory();
+
     }
 
     private void SetupInventory()
     {
-        inventory = new();
-        Hands hands = ResourceLoader.Load<PackedScene>("res://scenes/GameObjects/items/equipment/Hands.tscn").Instantiate<Hands>();
-        if (controllingPlayerID == Global.steamid)
-        {
-            firstPersonEquipmentAttachmentPoint.AddChild(hands);
-        }
-        else
-        {
-            thirdPersonEquipmentAttachmentPoint.AddChild(hands);
-        }
-        inventory.GetGroup(InventoryGroupCategory.Hands).StoreItem(hands);
-        Equip(InventoryGroupCategory.Hands);
-
+        Global.gameState.Auth_SpawnObject(GameObjectType.Hands, new(GameObjectType.Hands));
     }
 
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void Pickup(IsInventoryItem item)
+    public override void Pickup(IsInventoryItem item)
     {
         if (item is GOBaseInventoryItem i)
         {
+            if (inventory.HasGroup(i.category))
+            {
+                InventoryGroup group = inventory.GetGroup(i.category);
+                if (group.CanStoreOrReplaceItem(item))
+                {
+                    group.StoreOrReplaceItem(item,out IsInventoryItem replaced);
+                    if (replaced != null)
+                    {
+                        (replaced as Node3D).Reparent(Global.gameState.nodeGameObjects);
+                        replaced.OnDropped(controllingPlayerID);
+                    }
+
+                }
+            }
             if (IsMe())
             {
-                firstPersonEquipmentAttachmentPoint.AddChild(i);
+                i.Reparent(firstPersonEquipmentAttachmentPoint, false);
             }
             else
             {
-                thirdPersonEquipmentAttachmentPoint.AddChild(i);
+                i.Reparent(thirdPersonEquipmentAttachmentPoint, false);
             }
             i.OnPickup(controllingPlayerID);
         }
@@ -72,7 +75,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     }
 
     [RPCMethod(mode =RPCMode.SendToAllPeers)]
-    public void Equip(InventoryGroupCategory category, int index = 0)
+    public override void Equip(InventoryGroupCategory category, int index = 0)
     {
         if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
         {
@@ -136,6 +139,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         HandleNonMovementInput(delta);
         HandleEquippedPassthruInput(delta);
         HandleMovementInputAndPhysics(delta);
+
         lastTickActions = input.actions;
     }
 
@@ -307,6 +311,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         Global.ui.ToPlayerCharacterUI();
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
+        SetupInventory();
         //setup UI
         //playerUIManager = (PlayerUIManager)GD.Load<PackedScene>("res://scenes/ui/hud/playerUI.tscn").Instantiate();
         //playerUIManager.UpdateRoleUI(team);

@@ -73,4 +73,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0055122, -0.15601164)
 [node name="camLocation" type="Node3D" parent="firstPersonModel"]
 
 [node name="attachment" type="Node3D" parent="firstPersonModel/camLocation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.17565012)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27011144, -0.17565012)

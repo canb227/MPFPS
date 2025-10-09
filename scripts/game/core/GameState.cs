@@ -74,7 +74,7 @@ public partial class GameState : Node3D
 
     //public tracking vars
     private Node3D nodePlayers;
-    private Node3D nodeGameObjects;
+    public Node3D nodeGameObjects;
     private Node3D nodeStaticLevel;
     private List<Marker3D> PlayerSpawnPoints = new();
     private GameObject debugTarget;
