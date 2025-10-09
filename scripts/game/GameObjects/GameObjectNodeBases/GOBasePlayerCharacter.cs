@@ -37,7 +37,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 
     public override void _Ready()
     {
-
         base._Ready();
         Logging.Log($"Spawned a new player character with id:{id} and authority/controllerID: {authority}/{controllingPlayerID}.", "PlayerCharacter");
         if (controllingPlayerID == Global.steamid)
@@ -45,12 +44,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             Logging.Log($"A GOBasePlayerCharacter that I am controlling just spawned! Creating camera and hooking up inputs!", "PlayerCharacter");
             SetupLocalPlayerCharacter();
         }
-        else
-        {
-            Global.gameState.PlayerInputs.Add(controllingPlayerID, new PlayerInputData());
-            Global.gameState.PlayerInputs[controllingPlayerID].playerID = controllingPlayerID;
-        }
-        //input = Global.gameState.PlayerInputs[controllingPlayerID];
     }
 
     public override bool InitFromData(GameState.GameObjectConstructorData data)

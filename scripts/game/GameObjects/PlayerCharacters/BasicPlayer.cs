@@ -29,7 +29,9 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     private void SetupInventory()
     {
-        Global.gameState.Auth_SpawnObject(GameObjectType.Hands, new(GameObjectType.Hands));
+        GameState.GameObjectConstructorData data = new(GameObjectType.Hands);
+        data.paramList.Add(id);
+        Global.gameState.Auth_SpawnObject(GameObjectType.Hands, data);
     }
 
 
@@ -311,11 +313,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         Input.MouseMode = Input.MouseModeEnum.Captured;
 
         SetupInventory();
-        //setup UI
-        //playerUIManager = (PlayerUIManager)GD.Load<PackedScene>("res://scenes/ui/hud/playerUI.tscn").Instantiate();
-        //playerUIManager.UpdateRoleUI(team);
-        //playerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);;
-        //AddChild(playerUIManager);
     }
 
     public override Camera3D GetCamera()

@@ -122,6 +122,8 @@ public partial class GameState : Node3D
             {
                 PushLocalPlayerData();
             }
+            Global.gameState.PlayerInputs.Add(newPlayerSteamID, new PlayerInputData());
+            Global.gameState.PlayerInputs[newPlayerSteamID].playerID = newPlayerSteamID;
         }
     }
 
@@ -270,39 +272,12 @@ public partial class GameState : Node3D
 
     }
 
-    /// <summary>
-    /// Spawn the local player as a character with the given type 
-    /// </summary>
-    /// <param name="pcType"></param>
-    public void InitAndSpawnSelf(GameObjectType pcType)
-    {
-
-        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
-        {
-            Transform3D SpawnTransform = GetPlayerSpawnTransform();
-            GameObjectConstructorData data = new GameObjectConstructorData();
-            data.spawnTransform = SpawnTransform;
-            data.id = GenerateNewID();
-            data.authority = Global.steamid;
-            data.type = pcType;
-            List<Object> paramList = new List<Object>();
-            data.paramList = paramList;
-            Auth_SpawnObject(pcType, data);
-        }
-        else
-        {
-            Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
-        }
-    }
-
-    public void InitSelf(GameObjectType pcType)
+    public void SpawnSelf(GameObjectType pcType)
     {
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
         {
-            Transform3D InitTransform = Transform3D.Identity;
-            InitTransform.Origin = new Vector3(0, -20, 0);
             GameObjectConstructorData data = new GameObjectConstructorData();
-            data.spawnTransform = InitTransform;
+            data.spawnTransform = GetPlayerSpawnTransform();
             data.id = GenerateNewID();
             data.authority = Global.steamid;
             data.type = pcType;
@@ -526,8 +501,8 @@ public partial class GameState : Node3D
         AddChild(aim);
         AIManager = aim;
         Global.ui.ToGameUI();
-        InitSelf(GameObjectLoader.GameObjectDictionary["basicPlayer"].type);
-        InitSelf(GameObjectLoader.GameObjectDictionary["ghost"].type);
+        SpawnSelf(GameObjectLoader.GameObjectDictionary["basicPlayer"].type);
+        SpawnSelf(GameObjectLoader.GameObjectDictionary["ghost"].type);
         Global.ui.StopLoadingScreen();
         gameStarted = true;
 

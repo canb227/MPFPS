@@ -235,10 +235,7 @@ public partial class Ghost : GOBasePlayerCharacter
     {
         throw new NotImplementedException();
     }
-    public override void ResetCharacterInfo()
-    {
 
-    }
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {
         base.InitFromData(data);
