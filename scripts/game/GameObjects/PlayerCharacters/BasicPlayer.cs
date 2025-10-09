@@ -354,10 +354,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
     }
 
 
-    private bool IsMe()
-    {
-        return Global.steamid == controllingPlayerID;
-    }
+
 
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {

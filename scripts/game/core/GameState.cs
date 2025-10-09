@@ -106,9 +106,7 @@ public partial class GameState : Node3D
         Lobby.JoinedToLobbyEvent += OnJoinedToLobby;
         Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
 
-        
     }
-
 
     private void OnNewLobbyPeerAdded(ulong newPlayerSteamID)
     {
@@ -270,25 +268,6 @@ public partial class GameState : Node3D
             Logging.Warn("Static level meta has no \"playerSpawns\" node! Skipping player spawn init", "GameStateLevel");
         }
 
-    }
-
-    public void SpawnSelf(GameObjectType pcType)
-    {
-        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
-        {
-            GameObjectConstructorData data = new GameObjectConstructorData();
-            data.spawnTransform = GetPlayerSpawnTransform();
-            data.id = GenerateNewID();
-            data.authority = Global.steamid;
-            data.type = pcType;
-            List<Object> paramList = new List<Object>();
-            data.paramList = paramList;
-            Auth_SpawnObject(pcType, data);
-        }
-        else
-        {
-            Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
-        }
     }
 
     [MessagePackObject]
@@ -487,33 +466,33 @@ public partial class GameState : Node3D
     /// Only for RPC use, Do not call directly. See <see cref="RPCManager.NetCommand_StartGame(string)"/>
     /// </summary>
     /// <param name="scenePath"></param>
-    public void StartGame(string scenePath)
+    /// 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void StartGame(string scenePath, GameModeType gameMode)
     {
         Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
         Global.ui.StartLoadingScreen();
         LoadStaticLevel(scenePath);
+
         GameModeManager gmm = new();
         gmm.Name = "Game Mode Manager";
         AddChild(gmm);
         gameModeManager = gmm;
+
         AIManager aim = new();
         aim.Name = "AI Manager";
         AddChild(aim);
         AIManager = aim;
-        Global.ui.ToGameUI();
-        SpawnSelf(GameObjectLoader.GameObjectDictionary["basicPlayer"].type);
-        SpawnSelf(GameObjectLoader.GameObjectDictionary["ghost"].type);
-        Global.ui.StopLoadingScreen();
+
+        gmm.StartGameMode(scenePath, gameMode);
         gameStarted = true;
-
-
-
 
         if (Global.Lobby.bIsLobbyHost)
         {
             gmm.GameStartAsHost();
             aim.GameStartAsHost();
         }
+
         ProcessMode = ProcessModeEnum.Pausable;
     }
 

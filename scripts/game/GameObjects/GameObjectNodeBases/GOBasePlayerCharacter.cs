@@ -18,7 +18,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual Node3D lookRotationNode { get; set; }
 
     [Export]
-    public virtual Node3D cameraLocationNode { get; set; }
+    public virtual Camera3D camera { get; set; }
 
     [Export]
     public virtual Node3D firstPersonEquipmentAttachmentPoint {  get; set; }
@@ -26,14 +26,18 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     [Export]
     public virtual Node3D thirdPersonEquipmentAttachmentPoint { get; set; }
 
-    public virtual ulong controllingPlayerID { get; set; }
+    public virtual ulong controllingPlayerID { get; set; } = 0;
     public virtual Team team {  get; set; }
     public virtual Role role { get; set; }
     public virtual PlayerInputData input { get; set; }
     public override bool predict { get; set; } = true;
-    protected PlayerCamera cam { get; set; }
     public RayCast3D rayCast { get; set; }
     public ActionFlags lastTickActions { get; set; }
+
+    public bool IsMe()
+    {
+        return Global.steamid == controllingPlayerID;
+    }
 
     public override void _Ready()
     {
@@ -49,7 +53,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public override bool InitFromData(GameState.GameObjectConstructorData data)
     {
         GlobalTransform = data.spawnTransform;
-        controllingPlayerID = data.authority;
         return true;
     }
 
@@ -64,18 +67,50 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         TakeControl();
     }
 
-    public virtual void TakeControl()
+    [RPCMethod(mode=RPCMode.SendToAllPeers)]
+    public virtual void TakeControl(ulong playerID)
     {
-        Global.gameState.PlayerCharacters[controllingPlayerID] = this;
-        input = Global.gameState.PlayerInputs[controllingPlayerID];
-        cam.Current = true;
+        if (controllingPlayerID != 0)
+        {
+            Logging.Error($"Cannot take control of player character, they are already being controlled", "PlayerCharacter");
+        }
+        else if (Global.gameState.PlayerCharacters[controllingPlayerID] != null)
+        {
+            Logging.Error($"Player {playerID} Cannot take control of player character, they are already controlling character: {Global.gameState.PlayerCharacters[controllingPlayerID].id.ToString()} ", "PlayerCharacter");
+        }
+        else
+        {
+            controllingPlayerID = playerID;
+            Global.gameState.PlayerCharacters[controllingPlayerID] = this;
+            input = Global.gameState.PlayerInputs[controllingPlayerID];
+            if (IsMe())
+            {
+                camera.Current = true;
+            }
+        }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void ReleaseControl()
     {
-        Global.gameState.PlayerCharacters[controllingPlayerID] = null;
-        input = null;
-        cam.Current = false;
+        if (controllingPlayerID == 0)
+        {
+            Logging.Error($"Cannot release control of player character, they are not being controlled", "PlayerCharacter");
+        }
+        else if (Global.gameState.PlayerCharacters[controllingPlayerID].id != id)
+        {
+            Logging.Error($"Player {controllingPlayerID} Cannot release control of player character {id}, they are not controlling this character.", "PlayerCharacter");
+        }
+        else
+        {
+            Global.gameState.PlayerCharacters[controllingPlayerID] = null;
+            controllingPlayerID = 0;
+            input = null;
+            if (IsMe())
+            {
+                camera.Current = false;
+            }
+        }
     }
 
     public abstract void ResetCharacterInfo();

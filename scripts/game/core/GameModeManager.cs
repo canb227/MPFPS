@@ -3,6 +3,14 @@ using MessagePack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+public enum GameModeType
+{
+    None,
+    TTT,
+}
+
+
 public partial class GameModeManager : Node
 {
 
@@ -30,9 +38,13 @@ public partial class GameModeManager : Node
     public async void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
-        RespawnGhosts();
         await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        StartNewRound();
+        RPCManager.RPC(this, "StartNewRound", []);
+
+        await ToSignal(GetTree().CreateTimer(Global.gameState.options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
+        AssignRoles();
+
+        GenerateOrders();
     }
 
     public async void TraitorsWin()
@@ -66,33 +78,14 @@ public partial class GameModeManager : Node
 
     }
 
-
-
-    public void RespawnGhosts()
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void StartNewRound()
     {
-        foreach (Ghost ghostPlayer in ghostPlayers)
-        {
-            ghostPlayer.SpawnSelf();
-        }
-    }
-
-    public void RespawnPlayers()
-    {
-        foreach (BasicPlayer basicPlayer in basicPlayers)
-        {
-            basicPlayer.SpawnSelf();
-        }
-    }
+        //Move my ghost to the void
+        //Move my player to the correct spot
+        //take control of the player character
 
 
-
-    public async void StartNewRound()
-    {
-        RespawnPlayers();
-        totalPlayers = basicPlayers.Count();
-        GenerateOrders();
-        await ToSignal(GetTree().CreateTimer(Global.gameState.options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
-        AssignRoles();
     }
 
     public void GenerateOrders()
@@ -239,7 +232,29 @@ public partial class GameModeManager : Node
             StartEmergencyEvacuation();
         }
     }
-    
+
+    internal void StartGameMode(string scenePath, GameModeType gameMode)
+    {
+
+        switch (gameMode)
+        {
+            case GameModeType.TTT:
+                Global.ui.ToGameUI();
+                Global.gameState
+                //Spawn my spectator character and hide it somewhere
+                //Spawn my actual character and hide it somewhere
+                //Finish any other init type stuff
+                //TakeControl of my spectator Character
+                //Teleport my spectator to a good spot
+                Global.ui.StopLoadingScreen();
+                break;
+            default:
+                Logging.Error($"Unknown game mode - cannot start game!", "GameModeManager");
+                break;
+        }
+
+
+    }
 }
 
 public enum Team

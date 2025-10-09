@@ -195,7 +195,7 @@ public partial class DebugScreen : Control
 
     private void StartGameButton_Pressed()
     {
-        RPCManager.NetCommand_StartGame(directLoadMap_mapPaths[directLoadMap_mapList.Selected]);
+        RPCManager.RPC(Global.gameState,"StartGame", [directLoadMap_mapPaths[directLoadMap_mapList.Selected],GameModeType.TTT]);
     }
 
 

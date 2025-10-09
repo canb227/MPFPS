@@ -13,9 +13,6 @@ public enum RPCType
 {
     ERROR,
     Chat,
-    StartGame,
-    RespawnPlayers,
-
 }
 
 [MessagePackObject]
@@ -98,14 +95,6 @@ public static class RPCManager
             case RPCType.ERROR:
                 Logging.Error($"Invalid network command received from {sender}!", "RPCManager");
                 break;
-            case RPCType.StartGame:
-                Logging.Log($"Network command from {sender} to start game on map {packet.stringParams[0]}!", "RPCManager");
-                Global.gameState.StartGame(packet.stringParams[0]);
-                break;
-            case RPCType.RespawnPlayers:
-                Logging.Log($"Network command from {sender} to respawn players!", "RPCManager");
-                Global.gameState.gameModeManager.RespawnPlayers();
-                break;
             case RPCType.Chat:
                 Logging.Log($"Network chat from {sender}!", "RPCManager");
                 ChatReceivedEvent?.Invoke(packet.stringParams[0], sender);
@@ -125,26 +114,7 @@ public static class RPCManager
         Logging.Log($"RPC SENT: Type=Chat, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
         Global.network.BroadcastData(payload, Channel.NetCommands, Global.Lobby.lobbyPeers.ToList());
     }
-
-    public static void NetCommand_StartGame(string scenePathOfMap)
-    {
-        RPCPacket packet = new();
-        packet.type = RPCType.StartGame;
-        packet.stringParams = new();
-        packet.stringParams.Add(scenePathOfMap);
-        byte[] payload = MessagePackSerializer.Serialize(packet);
-        Logging.Log($"RPC SENT: Type=StartGame, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
-        Global.network.BroadcastData(payload,Channel.NetCommands,Global.Lobby.lobbyPeers.ToList());
-    }
     
-    public static void NetCommand_RespawnPlayers()
-    {
-        RPCPacket packet = new();
-        packet.type = RPCType.RespawnPlayers;
-        byte[] payload = MessagePackSerializer.Serialize(packet);
-        Logging.Log($"RPC SENT: Type=RespawnPlayers, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
-        Global.network.BroadcastData(payload,Channel.NetCommands,Global.Lobby.lobbyPeers.ToList());
-    }
 
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
