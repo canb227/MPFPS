@@ -52,7 +52,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         GlobalTransform = data.spawnTransform;
         return true;
     }
-
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public virtual void Respawn()
     {
         this.Transform = Global.gameState.GetPlayerSpawnTransform();

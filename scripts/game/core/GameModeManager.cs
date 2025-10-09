@@ -82,8 +82,8 @@ public partial class GameModeManager : Node
     public void StartNewRound()
     {
 
-        //I want to call respawn on the BasicPlayer I am the authority of here
-        
+        //I want to call respawn on the BasicPlayer that I am the authority of, but how do I find it
+
         //Move my ghost to the void
         //Move my player to the correct spot
         //take control of the player character
@@ -249,6 +249,8 @@ public partial class GameModeManager : Node
                 //Finish any other init type stuff
                 //TakeControl of my spectator Character
                 //Teleport my spectator to a good spot
+                //I want to respawn my spectator to do the above
+
                 Global.ui.StopLoadingScreen();
                 break;
             default:
