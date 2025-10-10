@@ -36,6 +36,8 @@ public partial class GameModeManager : Node
     public delegate void GameModeOptionsReceived(GameModeOptions options, ulong sender);
     public static event GameModeOptionsReceived GameModeOptionsReceivedEvent;
 
+    public int roundNumber = 0;
+
     public override void _Ready()
     {
         Logging.Log($"Starting Game Mode manager", "GameModeManager");
@@ -110,16 +112,40 @@ public partial class GameModeManager : Node
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public async void StartNewRound()
+    public void StartNewRound()
     {
-        RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
+        if (roundNumber == 0)
+        {
+            RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
+            SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
+            SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
+        }
+        else
+        {
+            GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
+            RPCManager.RPC(pc, "ReleaseControl", []);
 
+            //I would do this:
+            //  pc.ReleaseControl();
+            //  pc.Queue_Free();
+            //  SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
+            //
+            //you would do something like this probably?
+            //  pc.ReleaseControl();
+            //  BasicPlayer bp = basicPlayers[Global.steamID];
+            //  bp.reset();
+            //  bp.GlobalTransform = MapManager.GetPlayerSpawnTransform();
+            //  RPCManager.RPC(bp,"TakeControl",[Global.steamID]);
+            //  
+            //
+            //They do the same thing at the end of the day
 
-        SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
-        //await ToSignal(GetTree().CreateTimer(.1), SceneTreeTimer.SignalName.Timeout);
-        SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
-
+            SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
+        }
+        roundNumber++;
     }
+
+
 
     private void SpawnCharacterStartingInventory(GOBasePlayerCharacter pc)
     {

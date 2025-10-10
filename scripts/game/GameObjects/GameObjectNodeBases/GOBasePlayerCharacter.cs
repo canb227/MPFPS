@@ -39,7 +39,10 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public abstract void Equip(InventoryGroupCategory category, int index = 0);
 
 
+    public virtual void Reset()
+    {
 
+    }
 
     public override void _Ready()
     {
