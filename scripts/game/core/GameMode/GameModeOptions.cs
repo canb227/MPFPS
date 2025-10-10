@@ -28,7 +28,7 @@ public class GameModeOptions
     public float roleAssignmentDelay = 5;
 
     [Key(6)]
-    public float newRoundDelay = 10;
+    public float newRoundDelay = 2;
 
 
 }

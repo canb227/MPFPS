@@ -133,6 +133,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             HandleEquippedPassthruInput(delta);
             HandleMovementInputAndPhysics(delta);
             lastTickActions = input.actions;
+            input.actions = 0;
         }
     }
 
@@ -265,6 +266,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
 
         }
+
     }
 
     private void HandleMouseLook(double delta)

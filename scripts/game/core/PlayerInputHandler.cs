@@ -23,14 +23,15 @@ public partial class PlayerInputHandler : Node
             {
                 if (@event.IsAction(action))
                 {
+
                     if(@event.IsPressed())
                     {
                         Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | InputMapManager.actionNameToActionFlagMap[action];
                     }
-                    else if (@event.IsReleased())
-                    {
-                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~InputMapManager.actionNameToActionFlagMap[action];
-                    }
+                    //else if (@event.IsReleased())
+                    //{
+                    //    Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~InputMapManager.actionNameToActionFlagMap[action];
+                    //}
                 }
             }
         }

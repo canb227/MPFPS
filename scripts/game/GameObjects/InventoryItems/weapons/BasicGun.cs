@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using ImGuiGodot.Internal;
 using MessagePack;
 using System;
 using System.Collections.Generic;
@@ -8,83 +9,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public partial class BasicGun : GOBaseRigidBody, IsInventoryItem
+[GlobalClass]
+public partial class BasicGun : GOBaseInventoryItem
 {
-    public InventoryGroupCategory category { get; set; }
-    public ulong inInventoryOf { get; set; }
-    public ulong equippedBy { get; set; }
-    public bool droppable { get; set; }
-    public Node3D firstPersonScene { get; set; }
-    public Node3D thirdPersonScene { get; set; }
+    public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
+    public override bool droppable { get; set; } = true;
 
-    public override string GenerateStateString()
+    private ActionFlags lastTickActions;
+    public override void HandleInput(ActionFlags input)
     {
-        return "help";
-    }
-
-    public override byte[] GenerateStateUpdate()
-    {
-        return new byte[0];
-    }
-
-    public void HandleInput(ActionFlags actionFlags)
-    {
-        
-    }
-
-    public void OnDropped(ulong byID)
-    {
-        
-    }
-
-    public void OnEquipped(ulong byID)
-    {
-        
-    }
-
-    public void OnPickup(ulong byID)
-    {
-        
-    }
-
-    public void OnUnequipped(ulong byID)
-    {
-        
-    }
-
-    public override void PerFrameAuth(double delta)
-    {
-        
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-        
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-        
-    }
-
-    public override void PerTickAuth(double delta)
-    {
-        
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-        
-    }
-
-    public override void PerTickShared(double delta)
-    {
-        
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-        
+        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
+        {
+            Logging.Log($"Pew!", "BasicGun");
+        }
     }
 }
 

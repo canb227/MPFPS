@@ -21,6 +21,8 @@ public partial class Hands : GOBaseInventoryItem
     [Export]
     Node3D HoldPosition { get; set; }
 
+    Node3D CurrentHoldPosition { get; set; }
+
     public override void _Ready()
     {
         base._Ready();
@@ -34,7 +36,9 @@ public partial class Hands : GOBaseInventoryItem
             rayCast = pc.rayCast;
         }
 
-
+        CurrentHoldPosition = new();
+        AddChild(CurrentHoldPosition);
+        CurrentHoldPosition.Position = HoldPosition.Position;
     }
 
     public override void PerFrameShared(double delta)
@@ -43,7 +47,7 @@ public partial class Hands : GOBaseInventoryItem
         {
             if (holding is GOBaseRigidBody rb)
             {
-                rb.ApplyForce((HoldPosition.GlobalPosition - rb.GlobalPosition)*50);
+                rb.ApplyForce((CurrentHoldPosition.GlobalPosition - rb.GlobalPosition)*50);
             }
         }
     }
@@ -60,6 +64,7 @@ public partial class Hands : GOBaseInventoryItem
                     if (col is IsHoldable item)
                     {
                         Logging.Log($"Hand raycast hit holdable item: {(item as Node).ToString()}", "Hands");
+                        CurrentHoldPosition.Position = HoldPosition.Position;
                         holding = item;
                         holding.OnHold(equippedBy);
                         item.currentlyHeldBy = equippedBy;
@@ -83,16 +88,18 @@ public partial class Hands : GOBaseInventoryItem
 
         if (input.HasFlag(ActionFlags.NextSlot))
         {
-            Vector3 pos = HoldPosition.Position;
-            pos.Z -= 1 / 120;
-            HoldPosition.Position = pos;
+
+            Vector3 pos = CurrentHoldPosition.Position;
+            pos.Z -= 0.3f;
+            CurrentHoldPosition.Position = pos;
         }
 
         if (input.HasFlag(ActionFlags.PrevSlot))
         {
-            Vector3 pos = HoldPosition.Position;
-            pos.Z += 1 / 120;
-            HoldPosition.Position = pos;
+
+            Vector3 pos = CurrentHoldPosition.Position;
+            pos.Z += 0.3f;
+            CurrentHoldPosition.Position = pos;
         }
         lastTickActions = input;
     }

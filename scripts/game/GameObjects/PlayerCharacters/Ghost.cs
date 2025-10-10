@@ -111,6 +111,7 @@ public partial class Ghost : GOBasePlayerCharacter
             Velocity = globalVelocity;
             MoveAndSlide();
             lastTickActions = input.actions;
+            input.actions = 0;
         }
     }
 

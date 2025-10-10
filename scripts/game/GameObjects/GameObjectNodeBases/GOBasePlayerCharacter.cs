@@ -124,8 +124,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     }
 
     public override void PerFrameAuth(double delta)
-    { 
-    
+    {
+
     }
 
     public override void PerTickLocal(double delta)
