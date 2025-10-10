@@ -20,7 +20,7 @@ public partial class GOPackageItem : SimpleShape
         base._Ready();
     }
 
-    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    public override bool InitFromData(GameObjectConstructorData data)
     {
         if (base.InitFromData(data))
         {

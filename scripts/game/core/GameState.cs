@@ -7,6 +7,38 @@ using System.Collections.Generic;
 using System.Linq;
 using static Lobby;
 
+[MessagePackObject]
+public struct GameObjectConstructorData
+{
+    [Key(0)]
+    public ulong id;
+    [Key(1)]
+    public ulong authority;
+    [Key(2)]
+    public GameObjectType type;
+    [Key(3)]
+    public Transform3D spawnTransform;
+    [Key(4)]
+    public List<object> paramList;
+
+    public GameObjectConstructorData(ulong id, ulong authority, GameObjectType type)
+    {
+        this.id = id;
+        this.authority = authority;
+        this.type = type;
+        this.paramList = new();
+        this.spawnTransform = Transform3D.Identity;
+    }
+
+    public GameObjectConstructorData(GameObjectType type)
+    {
+        this.type = type;
+        this.id = Global.gameState.GenerateNewID();
+        this.authority = Global.steamid;
+        this.paramList = new();
+        this.spawnTransform = Transform3D.Identity;
+    }
+}
 
 /// <summary>
 /// Central game management singleton. Handles core game processing loop, player input routing, object spawning, network sync, and other stuff
@@ -24,24 +56,14 @@ public partial class GameState : Node3D
     public Dictionary<ulong, PlayerInputData> PlayerInputs = new();
 
     /// <summary>
-    /// List of all player characters for easy access - be sure to update this if you reroute a player's input to a different character. Keyed by playerID (SteamID).
-    /// </summary>
-    public Dictionary<ulong, GOBasePlayerCharacter> PlayerCharacters = new();
-
-    /// <summary>
     /// Player data list, keyed by playerID (SteamID). Stores various tidbits about all of our peers (including ourselves)
     /// </summary>
     public Dictionary<ulong, PlayerData> PlayerData = new();
 
     /// <summary>
-    /// State update buffer - will one day help smooth inconsistent network performance. Doesn't really do anything yet.
+    /// 
     /// </summary>
-    public Queue<StateUpdatePacket> StateUpdatePacketBuffer = new();
-
-    /// <summary>
-    /// Player input buffer - will one day help smooth inconsistent network performance. Doesn't really do anything yet.
-    /// </summary>
-    public Queue<PlayerInputData> PlayerInputPacketBuffer = new();
+    public Dictionary<ulong, ulong> PlayerIDToControlledCharacter = new();
 
     /// <summary>
     /// How many Physics frames have passed since the game started. We are co-opting Godot Physics tick rate as the networking tick rate.
@@ -49,12 +71,13 @@ public partial class GameState : Node3D
     public ulong tick = 0;
 
     /// <summary>
-    /// Our current local understanding of gameState options
+    /// 
     /// </summary>
-    public GameStateOptions options = new();
-
     public GameModeManager gameModeManager;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public AIManager AIManager;
 
     /// <summary>
@@ -62,38 +85,33 @@ public partial class GameState : Node3D
     /// </summary>
     public bool gameStarted = false;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public ulong defaultAuth = 0;
-
-    //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
-    public delegate void GameStateOptionsReceived(GameStateOptions options, ulong sender);
-    public static event GameStateOptionsReceived GameStateOptionsReceivedEvent;
 
     //This event fires whenever a player's data changes. Subscribe with GameState.PlayerDataReceivedEvent += MyFuncNameHere;
     public delegate void PlayerDataReceived(PlayerData data, ulong sender);
     public static event PlayerDataReceived PlayerDataReceivedEvent;
 
-    //public tracking vars
-    private Node3D nodePlayers;
-    public Node3D nodeGameObjects;
-    private Node3D nodeStaticLevel;
-    private List<Marker3D> PlayerSpawnPoints = new();
+    /// <summary>
+    /// 
+    /// </summary>
+    public Node3D GameObjectNodeParent;
+
+
     private GameObject debugTarget;
     private int numUpdatesPerFrame = 20;
-    private ulong staticIDCounter = 1;
-
-    public ulong StateFreshnessThreshold { get; private set; } = 60;
+    private ulong StateFreshnessThreshold { get; set; } = 60;
+    private Queue<StateUpdatePacket> StateUpdatePacketBuffer = new();
+    private Queue<PlayerInputData> PlayerInputPacketBuffer = new();
 
     //runs after GameState gets added to scenetree during Main.cs init
     public override void _Ready()
     {
-        //Create some little organizers for our scenetree
-        nodePlayers = new Node3D();
-        nodePlayers.Name = "Players";
-        AddChild(nodePlayers);
-
-        nodeGameObjects = new Node3D();
-        nodeGameObjects.Name = "GameObjects";
-        AddChild(nodeGameObjects);
+        GameObjectNodeParent = new Node3D();
+        GameObjectNodeParent.Name = "GameObjects";
+        AddChild(GameObjectNodeParent);
 
         //Add a little guy that plugs in to the Godot sceneTree so it can collect our local input.
         PlayerInputHandler PIH = new PlayerInputHandler();
@@ -108,20 +126,44 @@ public partial class GameState : Node3D
 
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void StartGame(string scenePath, GameModeType gameMode)
+    {
+        Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
+        Global.ui.StartLoadingScreen();
+        MapManager.LoadMap(scenePath);
+
+        GameModeManager gmm = new();
+        gmm.Name = "Game Mode Manager";
+        AddChild(gmm);
+        gameModeManager = gmm;
+
+        AIManager aim = new();
+        aim.Name = "AI Manager";
+        AddChild(aim);
+        AIManager = aim;
+
+        gmm.StartGameMode(scenePath, gameMode);
+        gameStarted = true;
+
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            gmm.GameStartAsHost();
+            aim.GameStartAsHost();
+        }
+        ProcessMode = ProcessModeEnum.Pausable;
+    }
+
     private void OnNewLobbyPeerAdded(ulong newPlayerSteamID)
     {
         if (!NetworkUtils.IsMe(newPlayerSteamID))
         {
-            if (Global.Lobby.bIsLobbyHost)
-            {
-                PushGameStateOptions();
-            }
             if(newPlayerSteamID!=Global.Lobby.LobbyHostSteamID)
             {
                 PushLocalPlayerData();
             }
-            Global.gameState.PlayerInputs.Add(newPlayerSteamID, new PlayerInputData());
-            Global.gameState.PlayerInputs[newPlayerSteamID].playerID = newPlayerSteamID;
+            PlayerInputs.Add(newPlayerSteamID, new PlayerInputData());
+            PlayerInputs[newPlayerSteamID].playerID = newPlayerSteamID;
         }
     }
 
@@ -209,99 +251,7 @@ public partial class GameState : Node3D
         Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
     }
 
-    /// <summary>
-    /// Loads a Scene from the file system that holds a static level. Basic processing is done to fetch various nodes we expect to see in the level <see cref="LoadStaticLevelMetas"/>
-    /// </summary>
-    /// <param name="scenePath"></param>
-    public void LoadStaticLevel(string scenePath)
-    {
-        Global.ui.SetLoadingScreenDescription("Loading map...");
-        Logging.Log($"Loading static level from scene at path: {scenePath}", "GameStateLevel");
-        if (nodeStaticLevel != null)
-        {
-            nodeStaticLevel.QueueFree();
-            nodeStaticLevel = null;
-        }
-        nodeStaticLevel = ResourceLoader.Load<PackedScene>(scenePath).Instantiate<Node3D>();
-        AddChild(nodeStaticLevel);
-        LoadStaticLevelMetas();
-        LoadStaticLevelGameObjects();
-    }
 
-    private void LoadStaticLevelGameObjects()
-    {
-        Global.ui.SetLoadingScreenDescription("Loading map gameObjects...");
-        foreach (Node node in Utils.GetChildrenRecursive(nodeStaticLevel, new()))
-        {
-            if (node is GameObject obj)
-            {
-                Local_RegisterExistingObject(obj, staticIDCounter++, defaultAuth, obj.type);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Parse the loaded static level and try to find some useful stuff that may or may not be there.
-    /// </summary>
-    public void LoadStaticLevelMetas()
-    {
-        //TODO: Establish a static level meta contract for expected nodes
-        Logging.Log($"Attempting to find meta nodes in static level...", "GameStateLevel");
-        Node meta = nodeStaticLevel.GetNode("meta");
-        if (meta==null)
-        {
-            Logging.Warn("Static level has no top-level \"meta\" node! Skipping meta node init","GameStateLevel");
-            return;
-        }
-
-        if (meta.GetNode("playerSpawns")!=null)
-        {
-
-            foreach (Marker3D marker in nodeStaticLevel.GetNode("meta/playerSpawns").GetChildren())
-            {
-                PlayerSpawnPoints.Add(marker);
-            }
-            Logging.Log($"Loaded {PlayerSpawnPoints.Count} player spawn points.", "GameStateLevel");
-        }
-        else
-        {
-            Logging.Warn("Static level meta has no \"playerSpawns\" node! Skipping player spawn init", "GameStateLevel");
-        }
-
-    }
-
-    [MessagePackObject]
-    public struct GameObjectConstructorData
-    {
-        [Key(0)]
-        public ulong id;
-        [Key(1)]
-        public ulong authority;
-        [Key(2)]
-        public GameObjectType type;
-        [Key(3)]
-        public Transform3D spawnTransform;
-        [Key(4)]
-        public List<object> paramList;
-
-        public GameObjectConstructorData(ulong id, ulong authority, GameObjectType type)
-        {
-            this.id = id;
-            this.authority = authority;
-            this.type = type;
-            this.paramList = new();
-            this.spawnTransform = Transform3D.Identity;
-        }
-
-        public GameObjectConstructorData (GameObjectType type)
-        {
-            this.type = type;
-            this.id = Global.gameState.GenerateNewID();
-            this.authority = Global.steamid;
-            this.paramList = new();
-            this.spawnTransform = Transform3D.Identity;
-        }
-    }
 
     /// <summary>
     /// Commands all clients to construct a GameObject from the given information 
@@ -345,7 +295,7 @@ public partial class GameState : Node3D
                 if (newObj is Node n)
                 {
                     GameObjects[newObj.id] = newObj;
-                    nodeGameObjects.AddChild(n, true);
+                    GameObjectNodeParent.AddChild(n, true);
                 }
             }
             else
@@ -355,27 +305,10 @@ public partial class GameState : Node3D
         }
     }
 
-    /// <summary>
-    /// havent decided if this is gonna be a thing yet
-    /// </summary>
-    /// <param name="id"></param>
-    public void DestroyAsAuth(ulong id)
-    {
-        throw new NotImplementedException();
-        Logging.Warn("auth destruction not yet networked", "GameState");
-        if (GameObjects.TryGetValue(id, out GameObject obj))
-        {
-            obj.destroyed = true;
-            (obj as Node).ProcessMode = ProcessModeEnum.Disabled;
-            (obj as Node3D).Visible = false;
-        }
-    }
-
 
     //Private and internal API functions below
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private GameObject Local_RegisterExistingObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
+    public GameObject Local_RegisterExistingObject(GameObject gameObject, ulong id, ulong authority, GameObjectType type)
     {
         if (GameObjects.ContainsKey(id))
         {
@@ -414,52 +347,10 @@ public partial class GameState : Node3D
     }
 
     // stuf ==========================================================================
-
-    public void PushGameStateOptions()
-    {
-        byte[] payload = MessagePackSerializer.Serialize(options);
-        Global.network.BroadcastData(payload, Channel.GameStateOptions, Global.Lobby.lobbyPeers.ToList());
-    }
-
     public void PushLocalPlayerData()
     {
         byte[] payload = MessagePackSerializer.Serialize(PlayerData[Global.steamid]);
         Global.network.BroadcastData(payload, Channel.PlayerData, Global.Lobby.lobbyPeers.ToList());
-    }
-
-
-    /// <summary>
-    /// Only for RPC use, Do not call directly. See <see cref="RPCManager.NetCommand_StartGame(string)"/>
-    /// </summary>
-    /// <param name="scenePath"></param>
-    /// 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void StartGame(string scenePath, GameModeType gameMode)
-    {
-        Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
-        Global.ui.StartLoadingScreen();
-        LoadStaticLevel(scenePath);
-
-        GameModeManager gmm = new();
-        gmm.Name = "Game Mode Manager";
-        AddChild(gmm);
-        gameModeManager = gmm;
-
-        AIManager aim = new();
-        aim.Name = "AI Manager";
-        AddChild(aim);
-        AIManager = aim;
-
-        gmm.StartGameMode(scenePath, gameMode);
-        gameStarted = true;
-
-        if (Global.Lobby.bIsLobbyHost)
-        {
-            gmm.GameStartAsHost();
-            aim.GameStartAsHost();
-        }
-
-        ProcessMode = ProcessModeEnum.Pausable;
     }
 
     private void GameStateDebug()
@@ -479,20 +370,6 @@ public partial class GameState : Node3D
                 ImGui.Text($"ID:{gameObject.id} | TYPE:{gameObject.type} | AUTHORITY:{gameObject.authority}");
             }
         }
-        ImGui.End();
-
-        ImGui.Begin("Peer Input Debug");
-        ImGui.Text($"Number of peer inputs: {PlayerInputs.Count}");
-        //foreach (var input in PlayerInputs)
-        //{
-        //    int count = 0;
-        //    foreach(var action in input.Value.actions)
-        //    {
-        //        if (action.Value == true) count++;
-
-        //    }
-        //    ImGui.Text($"Peer: {input.Key} is pressing {count} actions");
-        //}
         ImGui.End();
 
         if (debugTarget != null)
@@ -537,34 +414,30 @@ public partial class GameState : Node3D
         while (processStateUpdates)
         {
             StateUpdatePacket stateUpdate = StateUpdatePacketBuffer.Dequeue();
-            switch (stateUpdate.flag)
+
+            if (GameObjects.TryGetValue(stateUpdate.objectID, out GameObject updateObj))
             {
-                case StateUpdateFlag.Update:
-                    if (GameObjects.TryGetValue(stateUpdate.objectID, out GameObject updateObj))
-                    {
-                        if (updateObj.authority != stateUpdate.sender)
-                        {
-                            Logging.Error($"Peer: {stateUpdate.sender} is making claims on an object ({updateObj.id}) they are not authority of!", "GameState");
-                            return;
-                        }
-                        if (updateObj.type != updateObj.type)
-                        {
-                            Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
-                            return;
-                        }
-                        updateObj.ProcessStateUpdate(stateUpdate.data);
-                    }
-                    else
-                    {
-                        Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
-                        //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
-                        //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
-                        //fixObj.ProcessStateUpdate(stateUpdate.data);
-                    }
-                    break;
-                default:
-                    break;
+                if (updateObj.authority != stateUpdate.sender)
+                {
+                    Logging.Error($"Peer: {stateUpdate.sender} is making claims on an object ({updateObj.id}) they are not authority of!", "GameState");
+                    return;
+                }
+                if (updateObj.type != updateObj.type)
+                {
+                    Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
+                    return;
+                }
+                updateObj.ProcessStateUpdate(stateUpdate.data);
             }
+            else
+            {
+                Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
+                //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
+                //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
+                //fixObj.ProcessStateUpdate(stateUpdate.data);
+            }
+
+            
             if (StateUpdatePacketBuffer.Count>0)
             {
                 processStateUpdates = true;
@@ -578,12 +451,7 @@ public partial class GameState : Node3D
 
 
     //Incoming Network Message Processors ----------------------------------------------------------------------------------
-    public void ProcessGameStateOptionsPacketBytes(byte[] payload, ulong sender)
-    {
-        GameStateOptions opts = MessagePackSerializer.Deserialize<GameStateOptions>(payload);
-        options = opts;
-        GameStateOptionsReceivedEvent?.Invoke(options, sender);
-    }
+
 
     public void ProcessStateUpdatePacketBytes(byte[] stateUpdatePacketBytes, ulong sender)
     {
@@ -623,20 +491,6 @@ public partial class GameState : Node3D
         debugTarget = go;
     }
 
-    public Transform3D GetPlayerSpawnTransform()
-    {
-        return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
-    }
-
-    public GOBasePlayerCharacter GetLocalPlayerCharacter()
-    {
-        return PlayerCharacters[Global.steamid];
-    }
-
-    public GOBasePlayerCharacter GetPlayerCharacter(ulong id)
-    {
-        return PlayerCharacters[id];
-    }
 
     /// <summary>
     /// elite collision-proof id generation scheme - patent pending
@@ -650,6 +504,29 @@ public partial class GameState : Node3D
             id = (ulong)Random.Shared.NextInt64();
         }
         return id;
+    }
+
+    public GOBasePlayerCharacter GetCharacterControlledBy(ulong playerID)
+    {
+        if (PlayerIDToControlledCharacter.TryGetValue(playerID,out ulong charID))
+        {
+            if (GameObjects.TryGetValue(charID, out GameObject obj))
+            {
+                if (obj is GOBasePlayerCharacter pc)
+                {
+                    return pc;
+                }
+            }
+            else
+            {
+                Logging.Error($"The requested gameObject ID {charID} was not found in the GameObject dictionary!", "GameState");
+            }
+        }
+        else
+        {
+            Logging.Error($"The requested playerID {playerID} was not found in the PlayerIDToCurrentlyControlledCharacter dictionary!", "GameState");
+        }
+        return null;
     }
 }
 

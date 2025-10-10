@@ -12,7 +12,7 @@ public enum CharacterState
     Dead
 }
 [GlobalClass]
-public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInventory
+public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
@@ -31,14 +31,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         camera.AddChild(rayCast);
     }
 
-    private void SetupInventory()
-    {
-        GameState.GameObjectConstructorData data = new(GameObjectType.Hands);
-        data.paramList.Add(id);
-        Global.gameState.Auth_SpawnObject(GameObjectType.Hands, data);
-    }
-
-
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public override void Pickup(IsInventoryItem item)
     {
@@ -52,7 +44,7 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
                     group.StoreOrReplaceItem(item,out IsInventoryItem replaced);
                     if (replaced != null)
                     {
-                        (replaced as Node3D).Reparent(Global.gameState.nodeGameObjects);
+                        (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
                         replaced.OnDropped(controllingPlayerID);
                     }
 
@@ -309,13 +301,6 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
 
     }
 
-    protected override void SetupLocalPlayerCharacter()
-    {
-        Input.MouseMode = Input.MouseModeEnum.Captured;
-
-        SetupInventory();
-    }
-
     public override Camera3D GetCamera()
     {
         return camera;
@@ -355,28 +340,23 @@ public partial class BasicPlayer : GOBasePlayerCharacter, IsDamagable, HasInvent
         this.role = role;
     }
 
-    public override void Respawn()
-    {
-        base.Respawn();
-        Global.ui.inGameUI.ScoreBoardUI.AddLivingWorkerPlayerRow(authority);
-    }
-
-
-
-    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    public override bool InitFromData(GameObjectConstructorData data)
     {
         base.InitFromData(data);
         Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
         return true;
     }
 
-    public override void ResetCharacterInfo()
+
+    protected override void OnControlTaken(ulong byID)
     {
-        maxHealth = 100;
-        currentHealth = 100;
-        SetupInventory();
+        
     }
 
+    protected override void OnControlReleased()
+    {
+        
+    }
 }
 
 [MessagePackObject]

@@ -152,7 +152,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             {
                 viewportLabel.Text = "Preparing...";
             }
-            GameState.GameObjectConstructorData data = new(GameObjectType.LabelPaper);
+            GameObjectConstructorData data = new(GameObjectType.LabelPaper);
             data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
             data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
             int digit1 = (monitor1.textOptionsIndex + 1) * 100;

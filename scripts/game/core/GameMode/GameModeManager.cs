@@ -14,34 +14,65 @@ public enum GameModeType
 public partial class GameModeManager : Node
 {
 
-    GameStateOptions options;
-    public Dictionary<ulong, BasicPlayer> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
+
+    public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
     public List<PackageOrderInfo> packageOrders = new();
+   
+    /// <summary>
+    /// Our current local understanding of gameState options
+    /// </summary>
+    public GameModeOptions options = new();
 
     public double remainingRoundTime;
     private int numTraitorsAlive;
     private int numInnocentsAlive;
     private int numManagersAlive;
     private int totalPlayers;
-
-
     private int numFinishedOrders;
     private int ordersNeeded;
 
+    //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
+    public delegate void GameModeOptionsReceived(GameModeOptions options, ulong sender);
+    public static event GameModeOptionsReceived GameModeOptionsReceivedEvent;
 
     public override void _Ready()
     {
         Logging.Log($"Starting Game Mode manager", "GameModeManager");
-        options = Global.gameState.options;
+        Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
     }
+
+    public void ProcessGameModeOptionsPacketBytes(byte[] payload, ulong sender)
+    {
+        GameModeOptions opts = MessagePackSerializer.Deserialize<GameModeOptions>(payload);
+        options = opts;
+        GameModeOptionsReceivedEvent?.Invoke(options, sender);
+    }
+
+    private void OnNewLobbyPeerAdded(ulong newPlayerSteamID)
+    {
+        if (!NetworkUtils.IsMe(newPlayerSteamID))
+        {
+            if (Global.Lobby.bIsLobbyHost)
+            {
+                PushGameStateOptions();
+            }
+        }
+    }
+
+    public void PushGameStateOptions()
+    {
+        byte[] payload = MessagePackSerializer.Serialize(options);
+        Global.network.BroadcastData(payload, Channel.GameStateOptions, Global.Lobby.lobbyPeers.ToList());
+    }
+
     public async void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
-        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         RPCManager.RPC(this, "StartNewRound", []);
 
-        await ToSignal(GetTree().CreateTimer(Global.gameState.options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
         AssignRoles();
 
         GenerateOrders();
@@ -50,21 +81,21 @@ public partial class GameModeManager : Node
     public async void TraitorsWin()
     {
         //display a UI element, play a sound or music? then start the countdown for a new round
-        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
 
     public async void InnocentsWin()
     {
         //display a UI element, play a sound or music? then start the countdown for a new round
-        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
 
     public async void EndRound()
     {
         //display a UI element, play a sound or music? then start the countdown for a new round
-        await ToSignal(GetTree().CreateTimer(Global.gameState.options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
 
@@ -79,17 +110,22 @@ public partial class GameModeManager : Node
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void StartNewRound()
+    public async void StartNewRound()
     {
-
-        //I want to call respawn on the BasicPlayer that I am the authority of, but how do I find it
-        basicPlayers[Global.steamid].Respawn();
-
-        //Move my ghost to the void
-        //Move my player to the correct spot
-        //take control of the player character
+        RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
 
 
+        SpawnLocalPlayerCharacter(GameObjectType.BasicPlayer);
+                await ToSignal(GetTree().CreateTimer(1), SceneTreeTimer.SignalName.Timeout);
+        SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
+
+    }
+
+    private void SpawnCharacterStartingInventory(GOBasePlayerCharacter pc)
+    {
+        GameObjectConstructorData data = new(GameObjectType.Hands);
+        data.paramList.Add(pc.id);
+        Global.gameState.Auth_SpawnObject(GameObjectType.Hands, data);
     }
 
     public void GenerateOrders()
@@ -167,7 +203,7 @@ public partial class GameModeManager : Node
     public void AssignRole(ulong id, Team team, Role role)
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
-        Global.gameState.PlayerCharacters[id].Assignment(team, role);
+        basicPlayers[id].Assignment(team, role);
         if (id == Global.steamid)
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
@@ -244,13 +280,8 @@ public partial class GameModeManager : Node
         {
             case GameModeType.TTT:
                 Global.ui.ToGameUI();
-                SpawnSelf(GameObjectType.Ghost); //Spawn my spectator character and hide it somewhere
-                SpawnSelf(GameObjectType.BasicPlayer); //Spawn my actual character and hide it somewhere
-                ghostPlayers[Global.steamid].Respawn();
-                //Finish any other init type stuff
-                //TakeControl of my spectator Character
-                //Teleport my spectator to a good spot
-                //I want to respawn my spectator to do the above
+
+                SpawnLocalPlayerCharacter(GameObjectType.Ghost);
 
                 Global.ui.StopLoadingScreen();
                 break;
@@ -259,14 +290,13 @@ public partial class GameModeManager : Node
                 break;
         }
     }
-    public void SpawnSelf(GameObjectType pcType)
+
+    public void SpawnLocalPlayerCharacter(GameObjectType pcType)
     {
-        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter pc)
+        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
-            Transform3D transform = Transform3D.Identity;
-            transform.Origin = new Vector3(0, -20, 0);
-            GameState.GameObjectConstructorData data = new GameState.GameObjectConstructorData();
-            data.spawnTransform = transform;
+            GameObjectConstructorData data = new GameObjectConstructorData();
+            data.spawnTransform = MapManager.GetPlayerSpawnTransform();
             data.id = Global.gameState.GenerateNewID();
             data.authority = Global.steamid;
             data.type = pcType;

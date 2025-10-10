@@ -3,6 +3,7 @@ using ImGuiGodot.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ public partial class Hands : GOBaseInventoryItem
 {
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Hands; 
     public override bool droppable { get; set; } = false;
-
+    
     public IsHoldable holding { get; set; }
 
     private ActionFlags lastTickActions;
@@ -23,13 +24,17 @@ public partial class Hands : GOBaseInventoryItem
     public override void _Ready()
     {
         base._Ready();
-        rayCast = new();
-        rayCast.TargetPosition = new Vector3(0, 0, -20);
-        rayCast.CollideWithBodies = true;
-        AddChild(rayCast);
 
-        Global.gameState.PlayerCharacters[authority].Pickup(this);
-        Global.gameState.PlayerCharacters[authority].Equip(this.category);
+
+        if (equippedBy!=0)
+        {
+            GOBasePlayerCharacter pc = (Global.gameState.GameObjects[equippedBy] as GOBasePlayerCharacter);
+            pc.Pickup(this);
+            pc.Equip(InventoryGroupCategory.Hands);
+            rayCast = pc.rayCast;
+        }
+
+
     }
 
     public override void PerFrameShared(double delta)
@@ -116,10 +121,11 @@ public partial class Hands : GOBaseInventoryItem
         Logging.Log($"Hands Unequipped", "Hands");
     }
 
-    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    public override bool InitFromData(GameObjectConstructorData data)
     {
-        ulong playerID = (ulong)data.paramList[0];
-        //Global.gameState
+        ulong objID = (ulong)data.paramList[0];
+        equippedBy = objID;
+
         return true;
     }
 }

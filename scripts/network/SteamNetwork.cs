@@ -286,7 +286,7 @@ public class SteamNetwork
                 Global.gameState.ProcessPlayerInputPacketBytes(payload, sender);
                 break;
             case Channel.GameStateOptions:
-                Global.gameState.ProcessGameStateOptionsPacketBytes(payload, sender);
+                Global.gameState.gameModeManager.ProcessGameModeOptionsPacketBytes(payload, sender);
                 break;
             case Channel.PlayerData:
                 Global.gameState.ProcessPlayerDataPacketBytes(payload, sender);

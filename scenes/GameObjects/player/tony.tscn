@@ -1,13 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwlnhe2vt2upf"]
-
-[ext_resource type="Script" uid="uid://bm6a7meh5jprp" path="res://scripts/game/GameObjects/PlayerCharacters/Tony.cs" id="1_21aoa"]
+[gd_scene load_steps=3 format=3 uid="uid://cwlnhe2vt2upf"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_21aoa"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_crodn"]
 
 [node name="Tony" type="CharacterBody3D"]
-script = ExtResource("1_21aoa")
 metadata/_custom_type_script = "uid://bm6a7meh5jprp"
 
 [node name="collider" type="CollisionShape3D" parent="."]

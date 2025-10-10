@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://1tfhv6c0xvan"]
 
-[ext_resource type="Script" uid="uid://c3mqjyhty6l5p" path="res://scripts/game/GameObjects/PlayerCharacters/BasicPlayer.cs" id="1_dt3qt"]
+[ext_resource type="Script" uid="uid://dlgw61h0fjdvg" path="res://scripts/game/GameObjects/PlayerCharacters/BasicPlayerCharacter.cs" id="1_dt3qt"]
 [ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="2_y05oo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bcbfx"]
@@ -24,7 +24,7 @@ points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
 height = 2.4057617
 
-[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "lookRotationNode", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_dt3qt")
@@ -33,7 +33,6 @@ thirdPersonModel = NodePath("thirdPersonModel")
 camera = NodePath("firstPersonModel/Camera3D")
 firstPersonEquipmentAttachmentPoint = NodePath("firstPersonModel/Camera3D/attachment")
 thirdPersonEquipmentAttachmentPoint = NodePath("thirdPersonModel/attachment")
-metadata/_custom_type_script = "uid://c3mqjyhty6l5p"
 
 [node name="thirdPersonModel" type="Node3D" parent="."]
 

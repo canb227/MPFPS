@@ -191,11 +191,6 @@ public partial class Ghost : GOBasePlayerCharacter
 
     }
 
-    protected override void SetupLocalPlayerCharacter()
-    {
-        Input.MouseMode = Input.MouseModeEnum.Captured;
-    }
-
     public override Camera3D GetCamera()
     {
         return camera;
@@ -220,25 +215,32 @@ public partial class Ghost : GOBasePlayerCharacter
     public override void PerFrameShared(double delta)
     {
 
-    }    public override void ResetCharacterInfo()
-    {
-
-    }
+    }   
     public override void Pickup(IsInventoryItem item)
     {
-        throw new NotImplementedException();
+
     }
 
     public override void Equip(InventoryGroupCategory category, int index = 0)
     {
-        throw new NotImplementedException();
+
     }
 
-    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    public override bool InitFromData(GameObjectConstructorData data)
     {
         base.InitFromData(data);
         Global.gameState.gameModeManager.ghostPlayers.Add(authority, this);
         return true;
+    }
+
+    protected override void OnControlTaken(ulong byID)
+    {
+        Show();
+    }
+
+    protected override void OnControlReleased()
+    {
+        Hide();
     }
 }
 

@@ -8,144 +8,83 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public partial class BasicGun : GOBaseRigidBody, IsInventoryItem, IsInteractable
+public partial class BasicGun : GOBaseRigidBody, IsInventoryItem
 {
-
+    public InventoryGroupCategory category { get; set; }
     public ulong inInventoryOf { get; set; }
     public ulong equippedBy { get; set; }
-    public  bool droppable { get; set; }
-
-    [Export]
+    public bool droppable { get; set; }
     public Node3D firstPersonScene { get; set; }
-
-    [Export]
     public Node3D thirdPersonScene { get; set; }
 
-    public InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
-    public override float priority { get; set; } = 10;
-
-    private MeshInstance3D mesh {  get; set; }
-    private CollisionShape3D collider {  get; set; }
-    public ulong lastInteractTick { get; set; }
-    public ulong lastInteractPlayer { get; set; }
-    public float interactCooldownSeconds { get; set; }
-    public Array<Triggers> triggers { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public bool useSelfCooldown { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public ButtonDisableCondition ButtonCooldownSetting { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public bool interactCooldownReady { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-    public void HandleInput(ActionFlags actionFlags)
-    {
-        if (actionFlags.HasFlag(ActionFlags.Fire))
-        {
-            Fire();
-        }
-    }
-
-
-
-
-
-
-    public override void PerFrameAuth(double delta)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void PerTickAuth(double delta)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void ProcessStateUpdate(byte[] update)
-    {
-        BasicGunStateUpdate upd = MessagePackSerializer.Deserialize<BasicGunStateUpdate>(update);
-        GlobalPosition = upd.position;
-        GlobalRotation = upd.rotation;
-        inInventoryOf = upd.inInventoryOf;
-        equippedBy = upd.equippedBy;
-    }
     public override string GenerateStateString()
     {
-        return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
+        return "help";
     }
 
     public override byte[] GenerateStateUpdate()
     {
-        BasicGunStateUpdate upd = new BasicGunStateUpdate();
-        upd.position = GlobalPosition;
-        upd.rotation = GlobalRotation;
-        upd.equippedBy = equippedBy;
-        upd.inInventoryOf = inInventoryOf;
-        return MessagePackSerializer.Serialize(upd);
+        return new byte[0];
     }
 
-    private void Fire()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnPickup(ulong byID)
-    {
-        mesh.Hide();
-        collider.Disabled = true;
-        GlobalPosition = Vector3.Zero;
-        inInventoryOf = byID;
-    }
-
-    public void OnUnequipped(ulong byID)
-    {
-        equippedBy = 0;
-        inInventoryOf = byID;
-    }
-
-    public void Local_OnInteract(ulong byID)
+    public void HandleInput(ActionFlags actionFlags)
     {
         
-        OnPickup(byID);
     }
 
     public void OnDropped(ulong byID)
     {
-        firstPersonScene.Hide();
-        thirdPersonScene.Hide();
-        inInventoryOf = 0;
-        equippedBy = 0;
-        this.GlobalPosition = PCUtils.InFrontOf(Global.gameState.PlayerCharacters[byID], 1);
-        mesh.Show();
-        collider.Disabled = false;
-        this.SetPhysicsProcess(true);
+        
     }
 
     public void OnEquipped(ulong byID)
     {
-        equippedBy = byID;
-
+        
     }
 
-    public bool CanInteract(ulong byID)
+    public void OnPickup(ulong byID)
     {
-        throw new NotImplementedException();
+        
     }
 
-    public override void PerTickShared(double delta)
+    public void OnUnequipped(ulong byID)
     {
-        throw new NotImplementedException();
+        
+    }
+
+    public override void PerFrameAuth(double delta)
+    {
+        
+    }
+
+    public override void PerFrameLocal(double delta)
+    {
+        
     }
 
     public override void PerFrameShared(double delta)
     {
-        throw new NotImplementedException();
+        
+    }
+
+    public override void PerTickAuth(double delta)
+    {
+        
+    }
+
+    public override void PerTickLocal(double delta)
+    {
+        
+    }
+
+    public override void PerTickShared(double delta)
+    {
+        
+    }
+
+    public override void ProcessStateUpdate(byte[] update)
+    {
+        
     }
 }
 

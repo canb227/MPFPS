@@ -203,10 +203,10 @@ public partial class Console : Node
     {
         if (GameObjectLoader.GameObjectDictionary.TryGetValue(objectName, out var entry))
         {
-            GameState.GameObjectConstructorData data = new(entry.type);
+            GameObjectConstructorData data = new(entry.type);
 
-            var playerForwardVector = -Global.gameState.GetLocalPlayerCharacter().GlobalTransform.Basis.Z.Normalized();
-            Vector3 spawnPosition = Global.gameState.GetLocalPlayerCharacter().GlobalPosition + (playerForwardVector * 5);
+            var playerForwardVector = -Global.gameState.GetCharacterControlledBy(Global.steamid).GlobalTransform.Basis.Z.Normalized();
+            Vector3 spawnPosition = Global.gameState.GetCharacterControlledBy(Global.steamid).GlobalPosition + (playerForwardVector * 5);
             data.spawnTransform = new();
             data.spawnTransform.Origin = spawnPosition;
 
@@ -216,7 +216,7 @@ public partial class Console : Node
 
     public void destroy(ulong id)
     {
-        Global.gameState.DestroyAsAuth(id);
+        //Global.gameState.DestroyAsAuth(id);
     }
 
     public void impulse(ulong id)

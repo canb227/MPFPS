@@ -31,38 +31,27 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public RayCast3D rayCast { get; set; }
     public ActionFlags lastTickActions { get; set; }
 
-    public bool IsMe()
-    {
-        return Global.steamid == controllingPlayerID;
-    }
+
+    public abstract void Assignment(Team team, Role role);
+
+    public abstract Camera3D GetCamera();
+    public abstract void Pickup(IsInventoryItem item);
+    public abstract void Equip(InventoryGroupCategory category, int index = 0);
+
+
+
 
     public override void _Ready()
     {
         base._Ready();
-        Logging.Log($"Spawned a new player character with id:{id} and authority/controllerID: {authority}/{controllingPlayerID}.", "PlayerCharacter");
-        if (controllingPlayerID == Global.steamid)
-        {
-            Logging.Log($"A GOBasePlayerCharacter that I am controlling just spawned! Creating camera and hooking up inputs!", "PlayerCharacter");
-            SetupLocalPlayerCharacter();
-        }
+        Logging.Log($"Spawned a new player character with id:{id} and authority: {authority}.", "PlayerCharacter");
     }
 
-    public override bool InitFromData(GameState.GameObjectConstructorData data)
+    public override bool InitFromData(GameObjectConstructorData data)
     {
         GlobalTransform = data.spawnTransform;
-        return true;
-    }
-    
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public virtual void Respawn()
-    {
-        this.Transform = Global.gameState.GetPlayerSpawnTransform();
-        ResetCharacterInfo();
-        if (Global.gameState.PlayerCharacters.ContainsKey(controllingPlayerID))
-        {
-            Global.gameState.PlayerCharacters[controllingPlayerID].ReleaseControl();
-        }
         TakeControl(authority);
+        return true;
     }
 
     [RPCMethod(mode=RPCMode.SendToAllPeers)]
@@ -70,61 +59,65 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     {
         if (controllingPlayerID != 0)
         {
-            Logging.Error($"Cannot take control of player character, they are already being controlled", "PlayerCharacter");
+            Logging.Error($"Player {playerID} cannot take control of player character {id}, that character is already being controlled by player {controllingPlayerID}", "PlayerCharacter");
         }
-        else if (controllingPlayerID != 0 && Global.gameState.PlayerCharacters[controllingPlayerID] != null)
+        else if (Global.gameState.PlayerIDToControlledCharacter.TryGetValue(playerID, out ulong charID) && charID!=0)
         {
-            Logging.Error($"Player {playerID} Cannot take control of player character, they are already controlling character: {Global.gameState.PlayerCharacters[controllingPlayerID].id.ToString()} ", "PlayerCharacter");
+            Logging.Error($"Player {playerID} Cannot take control of player character {id}, that player is already controlling character: {Global.gameState.GetCharacterControlledBy(controllingPlayerID).id} ", "PlayerCharacter");
         }
         else
         {
             controllingPlayerID = playerID;
-            Global.gameState.PlayerCharacters[controllingPlayerID] = this;
+            Global.gameState.PlayerIDToControlledCharacter[playerID] = id;
             input = Global.gameState.PlayerInputs[controllingPlayerID];
             if (IsMe())
             {
                 camera.Current = true;
+                Input.MouseMode = Input.MouseModeEnum.Captured;
             }
+
+            OnControlTaken(playerID);
         }
     }
 
+    protected abstract void OnControlTaken(ulong byID);
+
+
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void ReleaseControl()
+    public virtual void ReleaseControl()
     {
         if (controllingPlayerID == 0)
         {
-            Logging.Error($"Cannot release control of player character, they are not being controlled", "PlayerCharacter");
+            Logging.Error($"Cannot release control of player character {id}, they are not being controlled", "PlayerCharacter");
         }
-        else if (Global.gameState.PlayerCharacters[controllingPlayerID].id != id)
+        else if (Global.gameState.GetCharacterControlledBy(controllingPlayerID).id != id)
         {
-            Logging.Error($"Player {controllingPlayerID} Cannot release control of player character {id}, they are not controlling this character.", "PlayerCharacter");
+            Logging.Error($"Something has gone wrong", "PlayerCharacter");
         }
         else
         {
-            Global.gameState.PlayerCharacters[controllingPlayerID] = null;
+            Global.gameState.PlayerIDToControlledCharacter[controllingPlayerID] = 0;
             controllingPlayerID = 0;
             input = null;
+
             if (IsMe())
             {
                 camera.Current = false;
+                Input.MouseMode = Input.MouseModeEnum.Confined;
             }
+
+            OnControlReleased();
         }
     }
 
-    public abstract void ResetCharacterInfo();
+    protected abstract void OnControlReleased();
 
-    public abstract void Assignment(Team team, Role role);
+    public bool IsMe()
+    {
+        return Global.steamid == controllingPlayerID;
+    }
 
-    /// <summary>
-    /// PlayerCharacters must implement this function such that the cameraParent object is correctly set to the object that sets the camera's position
-    /// </summary>
-    protected abstract void SetupLocalPlayerCharacter();
-
-    public abstract Camera3D GetCamera();
-
-
-    public abstract void Pickup(IsInventoryItem item);
-    public abstract void Equip(InventoryGroupCategory category, int index = 0);
     public override void PerTickAuth(double delta)
     { 
     

@@ -138,7 +138,7 @@ public partial class Main : Node
         if (Global.bConsoleOpen && Global.gameState.gameStarted && Input.IsActionJustPressed("Fire"))
         {
             var mpos = GetViewport().GetMousePosition();
-            GOBasePlayerCharacter pc = Global.gameState.GetLocalPlayerCharacter();
+            GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
             if (pc != null)
             {
                 var from = pc.GetCamera().ProjectRayOrigin(mpos);

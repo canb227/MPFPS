@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=29 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cergi4lpkn7h0" path="res://scenes/GameObjects/interactables/DeliveryMachine.tscn" id="8_viqb8"]
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="9_viqb8"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
+[ext_resource type="PackedScene" uid="uid://5hersv1yydvn" path="res://scenes/GameObjects/props/Ball.tscn" id="11_8d4x2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -210,6 +211,15 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -59.
 [node name="FireTrapButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.182148, -7.4918456, 0.4780352)
 triggers = Array[Object]([SubResource("Resource_8d4x2")])
+
+[node name="Ball" parent="GameObjects" instance=ExtResource("11_8d4x2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.659403, -6.992202, 7.245866)
+
+[node name="Ball2" parent="GameObjects" instance=ExtResource("11_8d4x2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.659403, -6.992202, 9.46949)
+
+[node name="Ball3" parent="GameObjects" instance=ExtResource("11_8d4x2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.659403, -6.992202, 11.812106)
 
 [node name="statics" type="Node3D" parent="."]
 
