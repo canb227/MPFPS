@@ -115,8 +115,8 @@ public partial class GameModeManager : Node
         RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
 
 
-        SpawnLocalPlayerCharacter(GameObjectType.BasicPlayer);
-                await ToSignal(GetTree().CreateTimer(1), SceneTreeTimer.SignalName.Timeout);
+        SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
+        //await ToSignal(GetTree().CreateTimer(.1), SceneTreeTimer.SignalName.Timeout);
         SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
 
     }
@@ -281,7 +281,7 @@ public partial class GameModeManager : Node
             case GameModeType.TTT:
                 Global.ui.ToGameUI();
 
-                SpawnLocalPlayerCharacter(GameObjectType.Ghost);
+                SpawnAndControlNewLocalPlayerCharacter(GameObjectType.Ghost);
 
                 Global.ui.StopLoadingScreen();
                 break;
@@ -291,7 +291,7 @@ public partial class GameModeManager : Node
         }
     }
 
-    public void SpawnLocalPlayerCharacter(GameObjectType pcType)
+    public void SpawnAndControlNewLocalPlayerCharacter(GameObjectType pcType)
     {
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
