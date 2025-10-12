@@ -1,0 +1,99 @@
+[gd_scene load_steps=5 format=3 uid="uid://cu47jqvm583t2"]
+
+[ext_resource type="PackedScene" uid="uid://ce8jw6w84vfee" path="res://scenes/ui/hud/deliveryReportRow.tscn" id="1_o6jka"]
+[ext_resource type="Script" uid="uid://45ecunum1t1c" path="res://scripts/ui/RoundReportUI.cs" id="1_r3yvf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3bm1k"]
+bg_color = Color(0.7411765, 0.007843138, 0.023529412, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_c5loa"]
+font_size = 100
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="RoundReportUI" type="PanelContainer" node_paths=PackedStringArray("ResultBackground", "ResultLabel", "PlayerCountLabel", "RoundLastLabel", "DeliveriesVBox")]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 471.0
+offset_top = 147.0
+offset_right = -471.0
+offset_bottom = -182.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_r3yvf")
+ResultBackground = NodePath("MarginContainer/VBoxContainer/ResultBackground")
+ResultLabel = NodePath("MarginContainer/VBoxContainer/ResultBackground/ResultLabel")
+PlayerCountLabel = NodePath("MarginContainer/VBoxContainer/RoundInfo/HBoxContainer/PlayerCountLabel")
+RoundLastLabel = NodePath("MarginContainer/VBoxContainer/RoundInfo/HBoxContainer/RoundLastLabel")
+DeliveriesVBox = NodePath("MarginContainer/VBoxContainer/DeliveryResults/Deliveries")
+DeliveryRowScene = ExtResource("1_o6jka")
+metadata/_custom_type_script = "uid://45ecunum1t1c"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="ResultBackground" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3bm1k")
+
+[node name="ResultLabel" type="Label" parent="MarginContainer/VBoxContainer/ResultBackground"]
+layout_mode = 2
+text = "THE TRAITORS WIN"
+label_settings = SubResource("LabelSettings_c5loa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoundInfo" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_right = 32
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/RoundInfo"]
+layout_mode = 2
+
+[node name="PlayerCountLabel" type="Label" parent="MarginContainer/VBoxContainer/RoundInfo/HBoxContainer"]
+layout_mode = 2
+text = "X Players took part, Y of them were traitors"
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/RoundInfo/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RoundLastLabel" type="Label" parent="MarginContainer/VBoxContainer/RoundInfo/HBoxContainer"]
+layout_mode = 2
+text = "The round lasted 00:00"
+horizontal_alignment = 2
+
+[node name="DeliveryResults" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+
+[node name="Deliveries" type="VBoxContainer" parent="MarginContainer/VBoxContainer/DeliveryResults"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Close"

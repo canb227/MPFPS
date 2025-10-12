@@ -114,6 +114,12 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void QueueFreeHelper()
+    {
+        QueueFree();
+    }
+
     protected abstract void OnControlReleased();
 
     public bool IsMe()

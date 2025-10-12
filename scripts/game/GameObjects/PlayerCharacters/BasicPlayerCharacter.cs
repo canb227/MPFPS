@@ -2,6 +2,7 @@
 using Godot;
 using ImGuiNET;
 using MessagePack;
+using Steamworks;
 using System;
 using System.Linq;
 
@@ -19,6 +20,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
+    public bool isAlive { get; set; }
 
     public override void _Ready()
     {
@@ -262,9 +264,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             //could play a looking at wrist animation or something
         }
-        if (input.actions.HasFlag(ActionFlags.Prone))
+        if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
         {
-
+            TakeDamage(20, 0);
         }
 
     }
@@ -328,11 +330,22 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void OnDeath()
     {
-        Global.ui.inGameUI.ScoreBoardUI.AddDeadWorkerPlayerRow(authority);
-        if (controllingPlayerID == Global.steamid)
+        state = CharacterState.Missing;
+        currentHealth = 0;
+        Global.ui.inGameUI.ScoreBoardUI.PlayerDied(authority);
+        ulong tempControllingPlayerID = controllingPlayerID;
+        RPCManager.RPC(this, "ReleaseControl", []);
+        RPCManager.RPC(Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID], "TakeControl", [tempControllingPlayerID]);
+    }
+
+    public void OnFound()
+    {
+        if(state != CharacterState.Dead)
         {
-            Global.ui.inGameUI.PlayerUIManager.Visible = false;
+            state = CharacterState.Dead;
+            Global.ui.inGameUI.ScoreBoardUI.PlayerFound(authority);
         }
+
     }
 
 
@@ -352,12 +365,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     protected override void OnControlTaken(ulong byID)
     {
-        
+        Global.ui.inGameUI.PlayerUIManager.ShowPlayerUI();
     }
 
     protected override void OnControlReleased()
     {
-        
+        Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
     }
 }
 

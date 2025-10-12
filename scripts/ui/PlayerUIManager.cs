@@ -13,6 +13,15 @@ public partial class PlayerUIManager : Control
     [Export] public PlayerInfoUI PlayerInfoUI;
     [Export] public MarginContainer InventoryUI;
 
+    public void ShowPlayerUI()
+    {
+
+    }
+    public void HidePlayerUI()
+    {
+        
+    }
+
     public void UpdateTimeLeftUI(string timerString)
     {
         PlayerInfoUI.UpdateTimeLeftUI(timerString);

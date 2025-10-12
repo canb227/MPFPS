@@ -117,6 +117,76 @@ public partial class ScoreBoardUI : MarginContainer
         }
     }
 
+    public void NewRound()
+    {
+        //clear all of our visual lists
+        foreach (var child in LivingWorkersList.GetChildren())
+        {
+            child.QueueFree();
+        }
+        foreach (var child in MissingWorkersList.GetChildren())
+        {
+            child.QueueFree();
+        }
+        foreach (var child in DeadWorkersList.GetChildren())
+        {
+            child.QueueFree();
+        }
+
+        //use the basicplayers list
+        foreach(ulong basicPlayerID in Global.gameState.gameModeManager.basicPlayers.Keys)
+        {
+            AddLivingWorkerPlayerRow(basicPlayerID);
+        }
+    }
+
+    public void SetPlayerIDAsTraitor(ulong playerID)
+    {
+        //only set the row as traitor for traitors
+        if(Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Traitor)
+        {
+            ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+            playerRow.SetAsTraitor();
+        }
+    }
+    
+    public void SetPlayerIDAsManager(ulong playerID)
+    {
+        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        playerRow.SetAsManager();
+    }
+
+    public void PlayerIsTraitor(ulong playerID)
+    {
+        //local player is an innocent so we do nothing, leaving the traitor player unlabeled
+        if (Global.gameState.gameModeManager.basicPlayers[Global.steamid].isAlive && (Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Innocent || Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Manager))
+        {
+
+        }
+        else //local player is a traitor so they get objective truth
+        {
+            SetPlayerIDAsTraitor(playerID);
+        }
+    }
+
+    public void PlayerDied(ulong playerID)
+    {
+        //local player is alive and an innocent so we do nothing, leaving the dead player as alive
+        if (Global.gameState.gameModeManager.basicPlayers[Global.steamid].isAlive && (Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Innocent || Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Manager))
+        {
+
+        }
+        else //local player is either dead or a traitor so they get objective truth
+        {
+            AddMissingWorkerPlayerRow(playerID);
+        }
+    }
+    
+    public void PlayerFound(ulong playerID)
+    {
+        AddDeadWorkerPlayerRow(playerID);
+    }
+
     public void AddDeadWorkerPlayerRow(ulong playerID)
     {
         ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());

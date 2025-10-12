@@ -17,6 +17,7 @@ public partial class GameModeManager : Node
 
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public List<ulong> disconnectedPlayers = new();
     public List<PackageOrderInfo> packageOrders = new();
    
     /// <summary>
@@ -61,7 +62,7 @@ public partial class GameModeManager : Node
             }
         }
     }
-
+    
     public void PushGameStateOptions()
     {
         byte[] payload = MessagePackSerializer.Serialize(options);
@@ -80,32 +81,33 @@ public partial class GameModeManager : Node
         GenerateOrders();
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void TraitorsWin()
     {
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void InnocentsWin()
     {
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
-
-    public async void EndRound()
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public async void ForceEndRound()
     {
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEmergencyEvacuation()
     {
 
     }
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEndOfGameEvacuation()
     {
 
@@ -124,24 +126,11 @@ public partial class GameModeManager : Node
         {
             GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
             RPCManager.RPC(pc, "ReleaseControl", []);
-
-            //I would do this:
-            //  pc.ReleaseControl();
-            //  pc.Queue_Free();
-            //  SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
-            //
-            //you would do something like this probably?
-            //  pc.ReleaseControl();
-            //  BasicPlayer bp = basicPlayers[Global.steamID];
-            //  bp.reset();
-            //  bp.GlobalTransform = MapManager.GetPlayerSpawnTransform();
-            //  RPCManager.RPC(bp,"TakeControl",[Global.steamID]);
-            //  
-            //
-            //They do the same thing at the end of the day
-
+            SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
+        //clear the scoreboard and readd each basicplayer, role assignment comes later
+        Global.ui.inGameUI.ScoreBoardUI.NewRound();
         roundNumber++;
     }
 
@@ -255,13 +244,16 @@ public partial class GameModeManager : Node
     public void SetNumTraitorsAlive(int numAlive)
     {
         numTraitorsAlive = numAlive;
-        if (numTraitorsAlive <= 0)
+        if (Global.Lobby.bIsLobbyHost)
         {
-            //do something maybe
-        }
-        else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
-        {
-            StartEmergencyEvacuation();
+            if (numTraitorsAlive <= 0)
+            {
+                //do something maybe
+            }
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            {
+                StartEmergencyEvacuation();
+            }
         }
     }
 
@@ -272,13 +264,16 @@ public partial class GameModeManager : Node
     public void SetNumInnocentsAlive(int numAlive)
     {
         numInnocentsAlive = numAlive;
-        if (numInnocentsAlive + numManagersAlive <= 0)
+        if (Global.Lobby.bIsLobbyHost)
         {
-            TraitorsWin();
-        }
-        else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
-        {
-            StartEmergencyEvacuation();
+            if (numInnocentsAlive + numManagersAlive <= 0)
+            {
+                TraitorsWin();
+            }
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            {
+                StartEmergencyEvacuation();
+            }
         }
     }
 
@@ -289,13 +284,16 @@ public partial class GameModeManager : Node
     public void SetNumManagersAlive(int numAlive)
     {
         numManagersAlive = numAlive;
-        if (numInnocentsAlive + numManagersAlive <= 0)
+        if (Global.Lobby.bIsLobbyHost)
         {
-            TraitorsWin();
-        }
-        else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
-        {
-            StartEmergencyEvacuation();
+            if (numInnocentsAlive + numManagersAlive <= 0)
+            {
+                TraitorsWin();
+            }
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            {
+                StartEmergencyEvacuation();
+            }
         }
     }
 

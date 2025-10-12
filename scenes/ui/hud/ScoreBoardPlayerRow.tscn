@@ -1,48 +1,54 @@
-[gd_scene load_steps=4 format=3 uid="uid://t36dlqxqsmob"]
+[gd_scene load_steps=5 format=3 uid="uid://t36dlqxqsmob"]
 
 [ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="1_m33o4"]
 [ext_resource type="Script" uid="uid://c5lkll7h4pcwe" path="res://scripts/ui/ScoreBoardPlayerRow.cs" id="1_yf2bk"]
 [ext_resource type="LabelSettings" uid="uid://bds86vvucgvfm" path="res://scenes/ui/hud/ScoreBoardFont1.tres" id="2_oupsd"]
 
-[node name="ScoreBoardPlayerRow" type="HBoxContainer" node_paths=PackedStringArray("playerIcon", "playerName", "karma", "score", "deaths", "ping")]
-offset_left = 503.0
-offset_right = 503.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yf2bk"]
+bg_color = Color(0.09019608, 0.09019608, 0.09019608, 1)
+
+[node name="ScoreBoardPlayerRow" type="PanelContainer" node_paths=PackedStringArray("playerIcon", "playerName", "karma", "score", "deaths", "ping")]
+offset_right = 499.0
 offset_bottom = 32.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yf2bk")
 script = ExtResource("1_yf2bk")
-playerIcon = NodePath("PlayerBox/PlayerIcon")
-playerName = NodePath("PlayerBox/PlayerName")
-karma = NodePath("Stats/Karma")
-score = NodePath("Stats/Score")
-deaths = NodePath("Stats/Deaths")
-ping = NodePath("Stats/Ping")
+playerIcon = NodePath("HBoxContainer2/PlayerBox/PlayerIcon")
+playerName = NodePath("HBoxContainer2/PlayerBox/PlayerName")
+karma = NodePath("HBoxContainer2/Stats/Karma")
+score = NodePath("HBoxContainer2/Stats/Score")
+deaths = NodePath("HBoxContainer2/Stats/Deaths")
+ping = NodePath("HBoxContainer2/Stats/Ping")
 metadata/_custom_type_script = "uid://c5lkll7h4pcwe"
 
-[node name="PlayerBox" type="HBoxContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PlayerBox" type="HBoxContainer" parent="HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayerIcon" type="TextureRect" parent="PlayerBox"]
+[node name="PlayerIcon" type="TextureRect" parent="HBoxContainer2/PlayerBox"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("1_m33o4")
 expand_mode = 2
 stretch_mode = 5
 
-[node name="Control" type="Control" parent="PlayerBox"]
+[node name="Control" type="Control" parent="HBoxContainer2/PlayerBox"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
-[node name="PlayerName" type="Label" parent="PlayerBox"]
+[node name="PlayerName" type="Label" parent="HBoxContainer2/PlayerBox"]
 layout_mode = 2
 text = "This is the player name"
 label_settings = ExtResource("2_oupsd")
 
-[node name="Stats" type="HBoxContainer" parent="."]
+[node name="Stats" type="HBoxContainer" parent="HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 10
 alignment = 2
 
-[node name="Karma" type="Label" parent="Stats"]
+[node name="Karma" type="Label" parent="HBoxContainer2/Stats"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "1111"
@@ -51,7 +57,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Score" type="Label" parent="Stats"]
+[node name="Score" type="Label" parent="HBoxContainer2/Stats"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "1111"
@@ -60,7 +66,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Deaths" type="Label" parent="Stats"]
+[node name="Deaths" type="Label" parent="HBoxContainer2/Stats"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "1111"
@@ -69,7 +75,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Ping" type="Label" parent="Stats"]
+[node name="Ping" type="Label" parent="HBoxContainer2/Stats"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "1111"

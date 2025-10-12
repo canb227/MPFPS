@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://ce8jw6w84vfee"]
+
+[ext_resource type="Texture2D" uid="uid://doy4ka51rjtuf" path="res://assets/ui/hud/xmark.png" id="1_pgsw3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_fl2mi"]
+font_color = Color(1, 0.26, 0.26, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="Delivery" type="HBoxContainer"]
+
+[node name="ResultIcon" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("1_pgsw3")
+expand_mode = 2
+
+[node name="ResultLabel" type="Label" parent="."]
+layout_mode = 2
+text = "FAILED"
+label_settings = SubResource("LabelSettings_fl2mi")
+
+[node name="DeliveryNumberLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Delivery 1:"
+
+[node name="DeliveryInfoLabel" type="Label" parent="."]
+layout_mode = 2
+text = "123 Catnip Court; Hammer, RubberDucky; Medium Box"

@@ -9,7 +9,7 @@ using System.Reflection;
 
 
 [GlobalClass]
-public partial class ScoreBoardPlayerRow : HBoxContainer
+public partial class ScoreBoardPlayerRow : PanelContainer
 {
     public ulong playerID;
     [Export] public TextureRect playerIcon;
@@ -28,6 +28,25 @@ public partial class ScoreBoardPlayerRow : HBoxContainer
         playerName.Text = Utils.IDToName(playerID);
         playerIcon.Texture = Utils.GetSmallSteamAvatar(playerID);
         Name = playerID.ToString();
+        ResetTeamVisual();
+    }
+
+    public void ResetTeamVisual()
+    {
+        StyleBoxFlat styleBox = GetThemeStylebox("panel") as StyleBoxFlat;
+        styleBox.BgColor = new Godot.Color(0.009f, 0.009f, 0.009f); //default grey
+    }
+
+    public void SetAsTraitor()
+    {
+        StyleBoxFlat styleBox = GetThemeStylebox("panel") as StyleBoxFlat;
+        styleBox.BgColor = new Godot.Color(0.803f, 0.003f, 0.004f); //red
+    }
+    
+    public void SetAsManager()
+    {
+        StyleBoxFlat styleBox = GetThemeStylebox("panel") as StyleBoxFlat;
+        styleBox.BgColor = new Godot.Color(0.005f, 0.005f, 0.65f); //blue
     }
 
     public void UpdatePlayerIcon(TextureRect newPlayerIcon)
