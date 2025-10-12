@@ -21,7 +21,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
     public bool isAlive { get; set; }
+    public float camXRotMax = 85;
+    public float camXRotMin = -85;
+    public float baseSpeed = 3;
+    public float acceleration = 1;
+    public float deceleration = 1;
+    public float finalSpeed;
+    private Vector3 jumpVelocity = new Vector3(0, 5, 0);
+    private bool airbrake = false;
 
+
+        //this is basically our constructor
+    public override bool InitFromData(GameObjectConstructorData data)
+    {
+        base.InitFromData(data);
+        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        return true;
+    }
     public override void _Ready()
     {
         base._Ready();
@@ -31,74 +47,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         rayCast.TargetPosition = new Vector3(0, 0, -10);
         rayCast.CollideWithBodies = true;
         camera.AddChild(rayCast);
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public override void Pickup(IsInventoryItem item)
-    {
-        if (item is GOBaseInventoryItem i)
-        {
-            if (inventory.HasGroup(i.category))
-            {
-                InventoryGroup group = inventory.GetGroup(i.category);
-                if (group.CanStoreOrReplaceItem(item))
-                {
-                    group.StoreOrReplaceItem(item,out IsInventoryItem replaced);
-                    if (replaced != null)
-                    {
-                        (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
-                        replaced.OnDropped(controllingPlayerID);
-                    }
-
-                }
-            }
-            if (IsMe())
-            {
-                i.Reparent(firstPersonEquipmentAttachmentPoint, false);
-            }
-            else
-            {
-                i.Reparent(thirdPersonEquipmentAttachmentPoint, false);
-            }
-            i.OnPickup(controllingPlayerID);
-        }
-
-    }
-
-    [RPCMethod(mode =RPCMode.SendToAllPeers)]
-    public override void Equip(InventoryGroupCategory category, int index = 0)
-    {
-        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
-        {
-            Logging.Error($"Cannot equip item!", "BasicPlayer");
-            return;
-        }
-        if (equipped != null)
-        {
-            equipped.OnUnequipped(controllingPlayerID);
-            equipped = null;
-        }
-        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
-        if (item is GOBaseInventoryItem i)
-        {
-            equipped = i;
-            i.OnEquipped(controllingPlayerID);
-        }
-    }
-
-    public void EquipNext()
-    {
-        Equip(inventory.groups[inventory.GetNextIndex(equipped.category)].category);
-    }
-
-    public void EquipPrevious()
-    {
-
-    }
-
-    public void DropEquipped()
-    {
-
     }
     public override void ProcessStateUpdate(byte[] _update)
     {
@@ -115,18 +63,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return MessagePackSerializer.Serialize(update);
     }
 
-
-    public float camXRotMax = 85;
-    public float camXRotMin = -85;
-    public float baseSpeed = 3;
-    public float acceleration = 1;
-    public float deceleration = 1;
-    public float finalSpeed;
-    private Vector3 jumpVelocity = new Vector3(0, 5, 0);
-    private bool airbrake = false;
-
-
-
+    //various input functions, PerTickAuth is the main loop
     public override void PerTickAuth(double delta)
     {
         if (input != null)
@@ -147,6 +84,41 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
     }
 
+    private void HandleNonMovementInput(double delta)
+    {
+        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
+        {
+            if (rayCast.IsColliding())
+            {
+                if (rayCast.GetCollider() is IsInventoryItem s)
+                {
+                    Pickup(s);
+                }
+                else if (rayCast.GetCollider() is IsInteractable i)
+                {
+                    i.Local_OnInteract(id);
+                }
+            }
+        }
+        if (input.actions.HasFlag(ActionFlags.ScoreBoard))
+        {
+            //could play a looking at wrist animation or something
+        }
+        if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
+        {
+            TakeDamage(20, 0);
+        }
+    }
+
+    private void HandleEquippedPassthruInput(double delta)
+    {
+        if (equipped != null)
+        {
+            equipped.HandleInput(input.actions);
+        }
+
+    }
+    
     private void HandleMovementInputAndPhysics(double delta)
     {
         Velocity = HandleYAxis(Velocity, delta);
@@ -234,43 +206,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return globalVelocity;
     }
 
-    private void HandleEquippedPassthruInput(double delta)
-    {
-        if (equipped != null)
-        {
-            equipped.HandleInput(input.actions);
-        }
-
-    }
-
-    private void HandleNonMovementInput(double delta)
-    {
-        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
-        {
-            if (rayCast.IsColliding())
-            {
-                if (rayCast.GetCollider() is IsInventoryItem s)
-                {
-                    Pickup(s);
-                }
-                else if (rayCast.GetCollider() is IsInteractable i)
-                {
-                    i.Local_OnInteract(id);
-                }
-
-            }
-        }
-        if (input.actions.HasFlag(ActionFlags.ScoreBoard))
-        {
-            //could play a looking at wrist animation or something
-        }
-        if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
-        {
-            TakeDamage(20, 0);
-        }
-
-    }
-
     private void HandleMouseLook(double delta)
     {
         if (Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -298,11 +233,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             ImGui.Text("InputMvVector: " + input.MovementInputVector.ToString());
             ImGui.Text("InputLookVector: " + input.LookInputVector.ToString());
             ImGui.Text($"Actions flag: {input.actions}");
-
             ImGui.End();
         }
-
-
     }
 
     public override Camera3D GetCamera()
@@ -315,15 +247,88 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
 
+    //Equipment Functions
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public override void Pickup(IsInventoryItem item)
+    {
+        if (item is GOBaseInventoryItem i)
+        {
+            if (inventory.HasGroup(i.category))
+            {
+                InventoryGroup group = inventory.GetGroup(i.category);
+                if (group.CanStoreOrReplaceItem(item))
+                {
+                    group.StoreOrReplaceItem(item,out IsInventoryItem replaced);
+                    if (replaced != null)
+                    {
+                        (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
+                        replaced.OnDropped(controllingPlayerID);
+                    }
+
+                }
+            }
+            if (IsMe())
+            {
+                i.Reparent(firstPersonEquipmentAttachmentPoint, false);
+            }
+            else
+            {
+                i.Reparent(thirdPersonEquipmentAttachmentPoint, false);
+            }
+            i.OnPickup(controllingPlayerID);
+        }
+
+    }
+
+    [RPCMethod(mode =RPCMode.SendToAllPeers)]
+    public override void Equip(InventoryGroupCategory category, int index = 0)
+    {
+        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
+        {
+            Logging.Error($"Cannot equip item!", "BasicPlayer");
+            return;
+        }
+        if (equipped != null)
+        {
+            equipped.OnUnequipped(controllingPlayerID);
+            equipped = null;
+        }
+        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
+        if (item is GOBaseInventoryItem i)
+        {
+            equipped = i;
+            i.OnEquipped(controllingPlayerID);
+        }
+    }
+
+    public void EquipNext()
+    {
+        Equip(inventory.groups[inventory.GetNextIndex(equipped.category)].category);
+    }
+
+    public void EquipPrevious()
+    {
+
+    }
+
+    public void DropEquipped()
+    {
+
+    }
+
+    //Character State (Health, Stun, Death, etc)
     public void TakeDamage(float damage, ulong byID)
     {
         currentHealth -= damage;
+        Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
         if (controllingPlayerID == Global.steamid)
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
         }
         if (currentHealth < 0)
         {
+            Logging.Log($"{authority} PlayerCharacter has died", "BasicPlayerCharacter");
             OnDeath();
         }
     }
@@ -348,31 +353,27 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     }
 
-
     public override void Assignment(Team team, Role role)
     {
         this.team = team;
         this.role = role;
     }
 
-    public override bool InitFromData(GameObjectConstructorData data)
-    {
-        base.InitFromData(data);
-        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
-        return true;
-    }
 
-
+    //Control
     protected override void OnControlTaken(ulong byID)
     {
+        Logging.Log("Enabling Player UI", "BasicPlayerCharacter");
         Global.ui.inGameUI.PlayerUIManager.ShowPlayerUI();
     }
 
     protected override void OnControlReleased()
     {
+        Logging.Log("Disabling Player UI", "BasicPlayerCharacter");
         Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
     }
 }
+
 
 [MessagePackObject]
 public struct BasicPlayerStateUpdate

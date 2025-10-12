@@ -77,9 +77,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             {
                 camera.Current = true;
                 Input.MouseMode = Input.MouseModeEnum.Captured;
+                OnControlTaken(playerID);
             }
-
-            OnControlTaken(playerID);
         }
     }
 

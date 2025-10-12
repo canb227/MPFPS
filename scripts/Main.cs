@@ -63,7 +63,6 @@ public partial class Main : Node
         Global.gameState.Name = "GameState";
         AddChild(Global.gameState);
         
-        Global.ui.AddLocalInput();
         Global.ui.StopLoadingScreen();
 
         //Create the Lobby system, register a reference to it with Global, and "host" a new lobby right away.

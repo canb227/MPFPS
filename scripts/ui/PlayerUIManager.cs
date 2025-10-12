@@ -15,11 +15,13 @@ public partial class PlayerUIManager : Control
 
     public void ShowPlayerUI()
     {
-
+        Visible = true;
+        PlayerInfoUI.Visible = true;
     }
     public void HidePlayerUI()
     {
-        
+        Visible = false;
+        PlayerInfoUI.Visible = false;
     }
 
     public void UpdateTimeLeftUI(string timerString)

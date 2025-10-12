@@ -14,34 +14,23 @@ public partial class UI : Node
     public Control currentLoadingScreen;
     public ProgressBar loadingProgressBar;
 
-    public PlayerInputData localInput { get; set; }
     public ActionFlags lastTickActions { get; set; }
 
     public InGameUI inGameUI { get; set; }
 
     public void PerTick(double delta)
     {
-        if (localInput.actions.HasFlag(ActionFlags.ScoreBoard))
+        if (Global.gameState.PlayerInputs[Global.steamid].actions.HasFlag(ActionFlags.ScoreBoard))
         {
+            GD.Print("TAB PRESSED");
             inGameUI.ShowScoreBoard();
         }
         else if (lastTickActions.HasFlag(ActionFlags.ScoreBoard))
         {
+            GD.Print("TAB Released");
             inGameUI.HideScoreBoard();
         }
-        lastTickActions = localInput.actions;
-    }
-
-    public void AddLocalInput()
-    {
-        if (Global.gameState.PlayerInputs.ContainsKey(Global.steamid))
-        {
-            localInput = Global.gameState.PlayerInputs[Global.steamid];
-        }
-        else
-        {
-            Logging.Error($"Tried registering local user input for UI handling but their steamid {Global.steamid} isn't in PlayerInputs", "UI");
-        }
+        lastTickActions = Global.gameState.PlayerInputs[Global.steamid].actions;
     }
 
     public Dictionary<string, string> FullScreenUIScenePaths = new Dictionary<string, string>()
