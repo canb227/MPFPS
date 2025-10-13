@@ -62,7 +62,7 @@ public partial class GameModeManager : Node
             }
         }
     }
-    
+
     public void PushGameStateOptions()
     {
         byte[] payload = MessagePackSerializer.Serialize(options);
@@ -157,8 +157,8 @@ public partial class GameModeManager : Node
         List<ulong> managers = new();
 
         int numPlayers = players.Count;
-        int numTraitors = Math.Max(Mathf.FloorToInt(numPlayers * options.percentTraitors), 1);
-        int numManagers = 0;
+        int numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
+        int numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
         if (numTraitors > 1)
         {
             numManagers = 1;

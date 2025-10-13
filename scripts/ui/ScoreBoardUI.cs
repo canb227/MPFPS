@@ -68,7 +68,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void RemovePlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
         if (playerRow != null)
         {
             playerRow.QueueFree();
@@ -99,7 +99,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void AddMissingWorkerPlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
         if (playerRow == null)
         {
             ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
@@ -113,26 +113,19 @@ public partial class ScoreBoardUI : MarginContainer
         }
     }
 
-    public void NewRound()
+    public void AddDeadWorkerPlayerRow(ulong playerID)
     {
-        //clear all of our visual lists
-        foreach (var child in LivingWorkersList.GetChildren())
+        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
+        if (playerRow == null)
         {
-            child.QueueFree();
+            ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
+            temp.SetPlayerID(playerID);
+            DeadWorkersList.AddChild(temp);
         }
-        foreach (var child in MissingWorkersList.GetChildren())
+        else
         {
-            child.QueueFree();
-        }
-        foreach (var child in DeadWorkersList.GetChildren())
-        {
-            child.QueueFree();
-        }
-
-        //use the basicplayers list
-        foreach(ulong basicPlayerID in Global.gameState.gameModeManager.basicPlayers.Keys)
-        {
-            AddLivingWorkerPlayerRow(basicPlayerID);
+            Logging.Log($"Tried to add player to Dead Worker list but they are already on the scoreboard somewhere, using MovePlayerToDead instead.", "ScoreBoardUI");
+            MovePlayerToDead(playerID);
         }
     }
 
@@ -183,21 +176,32 @@ public partial class ScoreBoardUI : MarginContainer
         AddDeadWorkerPlayerRow(playerID);
     }
 
-    public void AddDeadWorkerPlayerRow(ulong playerID)
+    public void NewRound()
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
-        if (playerRow == null)
+        //clear all of our visual lists
+        foreach (var child in LivingWorkersList.GetChildren())
         {
-            ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
-            temp.SetPlayerID(playerID);
-            DeadWorkersList.AddChild(temp);
+            child.QueueFree();
         }
-        else
+        foreach (var child in MissingWorkersList.GetChildren())
         {
-            Logging.Log($"Tried to add player to Dead Worker list but they are already on the scoreboard somewhere, using MovePlayerToDead instead.", "ScoreBoardUI");
-            MovePlayerToDead(playerID);
+            child.QueueFree();
+        }
+        foreach (var child in DeadWorkersList.GetChildren())
+        {
+            child.QueueFree();
+        }
+
+        //use the basicplayers list
+        foreach(ulong basicPlayerID in Global.gameState.gameModeManager.basicPlayers.Keys)
+        {
+            AddLivingWorkerPlayerRow(basicPlayerID);
         }
     }
+
+    
+
+
 
     //player inner-row updates
     public void UpdatePlayerIcon(TextureRect newPlayerIcon, ulong playerID)

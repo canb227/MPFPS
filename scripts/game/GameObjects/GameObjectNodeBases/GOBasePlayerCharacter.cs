@@ -99,6 +99,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         }
         else
         {
+            OnControlReleased();
             Global.gameState.PlayerIDToControlledCharacter[controllingPlayerID] = 0;
             controllingPlayerID = 0;
             input = null;
@@ -108,8 +109,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                 camera.Current = false;
                 Input.MouseMode = Input.MouseModeEnum.Confined;
             }
-
-            OnControlReleased();
         }
     }
 

@@ -13,8 +13,9 @@ public partial class PlayerUIManager : Control
     [Export] public PlayerInfoUI PlayerInfoUI;
     [Export] public MarginContainer InventoryUI;
 
-    public void ShowPlayerUI()
+    public void ShowPlayerUI(ulong characterID)
     {
+        UpdateHealthUI((int)Global.gameState.gameModeManager.basicPlayers[characterID].currentHealth, (int)Global.gameState.gameModeManager.basicPlayers[characterID].maxHealth);
         Visible = true;
         PlayerInfoUI.Visible = true;
     }

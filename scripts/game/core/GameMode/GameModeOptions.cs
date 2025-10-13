@@ -16,13 +16,13 @@ public class GameModeOptions
     public bool debugMode = false;
 
     [Key(2)]
-    public float percentTraitors = 0.2f;
+    public float percentTraitors = 0.5f;
 
     [Key(3)]
     public int maxTraitors = 2;
 
     [Key(4)]
-    public int minTraitors = 1;
+    public float percentManagers = 0.166666f;
 
     [Key(5)]
     public float roleAssignmentDelay = 5;

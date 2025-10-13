@@ -15,8 +15,8 @@ public enum CharacterState
 [GlobalClass]
 public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
-    public float maxHealth { get; set; }
-    public float currentHealth { get; set; }
+    public float maxHealth { get; set; } = 100;
+    public float currentHealth { get; set; } = 100;
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
@@ -31,11 +31,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private bool airbrake = false;
 
 
-        //this is basically our constructor
+    //this is basically our constructor
     public override bool InitFromData(GameObjectConstructorData data)
     {
-        base.InitFromData(data);
         Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        base.InitFromData(data);
         return true;
     }
     public override void _Ready()
@@ -66,10 +66,17 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //various input functions, PerTickAuth is the main loop
     public override void PerTickAuth(double delta)
     {
+        //we wrap each one because an input could kill the character meaning the later calls have no input anymore
         if (input != null)
         {
             HandleNonMovementInput(delta);
+        }
+        if (input != null)
+        {
             HandleEquippedPassthruInput(delta);
+        }
+        if (input != null)
+        {
             HandleMovementInputAndPhysics(delta);
             lastTickActions = input.actions;
         }
@@ -360,14 +367,20 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //Control
     protected override void OnControlTaken(ulong byID)
     {
-        Logging.Log("Enabling Player UI", "BasicPlayerCharacter");
-        Global.ui.inGameUI.PlayerUIManager.ShowPlayerUI();
+        if(byID == Global.steamid)
+        {
+            Logging.Log("Enabling Player UI " + byID, "BasicPlayerCharacter");
+            Global.ui.inGameUI.PlayerUIManager.ShowPlayerUI(authority);
+        }
     }
 
     protected override void OnControlReleased()
     {
-        Logging.Log("Disabling Player UI", "BasicPlayerCharacter");
-        Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
+        if (controllingPlayerID == Global.steamid)
+        {
+            Logging.Log("Disabling Player UI " + controllingPlayerID, "BasicPlayerCharacter");
+            Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
+        }
     }
 }
 
