@@ -46,7 +46,7 @@ public partial class Hurtbox : Area3D
                 {
                     if (go is IsDamagable d)
                     {
-                        RPCManager.RPC(node, "TakeDamage", [damagePerTick,0]);
+                        RPCManager.RPC(node, "TakeDamage", [damagePerTick,(ulong)0]);
                     }
                 }
                 else

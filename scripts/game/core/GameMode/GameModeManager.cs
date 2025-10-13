@@ -84,6 +84,7 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void TraitorsWin()
     {
+        Logging.Log("Traitors Win As Peer", "GameModeManager");
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
@@ -91,6 +92,7 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void InnocentsWin()
     {
+        Logging.Log("Innocents Win As Peer", "GameModeManager");
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
@@ -98,6 +100,7 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void ForceEndRound()
     {
+        Logging.Log("ForceEndRound as Peer", "GameModeManager");
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
@@ -105,17 +108,18 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEmergencyEvacuation()
     {
-
+        Logging.Log("Start Emergency Evacuation as Peer", "GameModeManager");
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEndOfGameEvacuation()
     {
-
+        Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartNewRound()
     {
+        Logging.Log("Starting New Round as Peer", "GameModeManager");
         if (roundNumber == 0)
         {
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
@@ -152,7 +156,7 @@ public partial class GameModeManager : Node
 
     public void AssignRoles()
     {
-        List<ulong> players = Global.Lobby.lobbyPeers.ToList();
+        List<ulong> players = basicPlayers.Keys.ToList();
         List<ulong> traitors = new();
         List<ulong> managers = new();
 
@@ -246,6 +250,7 @@ public partial class GameModeManager : Node
         numTraitorsAlive = numAlive;
         if (Global.Lobby.bIsLobbyHost)
         {
+            Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
             if (numTraitorsAlive <= 0)
             {
                 //do something maybe
@@ -266,6 +271,7 @@ public partial class GameModeManager : Node
         numInnocentsAlive = numAlive;
         if (Global.Lobby.bIsLobbyHost)
         {
+            Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
             if (numInnocentsAlive + numManagersAlive <= 0)
             {
                 TraitorsWin();
@@ -286,6 +292,7 @@ public partial class GameModeManager : Node
         numManagersAlive = numAlive;
         if (Global.Lobby.bIsLobbyHost)
         {
+            Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
             if (numInnocentsAlive + numManagersAlive <= 0)
             {
                 TraitorsWin();

@@ -321,7 +321,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     }
 
-    //Character State (Health, Stun, Death, etc)
+    //Character State Functions (Health, Stun, Death, etc) \\
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TakeDamage(float damage, ulong byID)
     {
         currentHealth -= damage;
@@ -330,21 +332,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
         }
-        if (currentHealth < 0)
+        if (currentHealth <= 0)
         {
             Logging.Log($"{authority} PlayerCharacter has died", "BasicPlayerCharacter");
             OnDeath();
         }
     }
 
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OnDeath()
     {
         state = CharacterState.Missing;
         currentHealth = 0;
         Global.ui.inGameUI.ScoreBoardUI.PlayerDied(authority);
         ulong tempControllingPlayerID = controllingPlayerID;
-        RPCManager.RPC(this, "ReleaseControl", []);
-        RPCManager.RPC(Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID], "TakeControl", [tempControllingPlayerID]);
+        ReleaseControl();
+        Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
     }
 
     public void OnFound()

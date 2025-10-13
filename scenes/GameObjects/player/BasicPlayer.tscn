@@ -72,3 +72,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0055122, -0.15601164)
 
 [node name="attachment" type="Node3D" parent="firstPersonModel/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27011144, -0.17565012)
+
+[node name="SteamAudioVoice" type="SteamAudioPlayer" parent="firstPersonModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0022827387, -0.1726473)
+panning_strength = 0.0
+
+[node name="SteamAudioCharacter" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0022827387, -0.021221459)
+panning_strength = 0.0
