@@ -249,6 +249,11 @@ public partial class GameState : Node3D
         var localInput = PlayerInputs[Global.steamid];
         byte[] data = MessagePackSerializer.Serialize(localInput);
         Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
+
+        foreach( var input in PlayerInputs)
+        {
+            input.Value.actions = 0;
+        }
     }
 
 

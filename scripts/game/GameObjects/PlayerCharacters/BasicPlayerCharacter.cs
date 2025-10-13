@@ -72,7 +72,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             HandleEquippedPassthruInput(delta);
             HandleMovementInputAndPhysics(delta);
             lastTickActions = input.actions;
-            input.actions = 0;
         }
     }
 
@@ -100,10 +99,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 }
             }
         }
-        if (input.actions.HasFlag(ActionFlags.ScoreBoard))
-        {
-            //could play a looking at wrist animation or something
-        }
+       
+
         if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
         {
             TakeDamage(20, 0);

@@ -22,15 +22,16 @@ public partial class UI : Node
     {
         if (Global.gameState.PlayerInputs[Global.steamid].actions.HasFlag(ActionFlags.ScoreBoard))
         {
-            GD.Print("TAB PRESSED");
-            inGameUI.ShowScoreBoard();
+           // GD.Print("TAB PRESSED");
+           // inGameUI.ShowScoreBoard();
         }
         else if (lastTickActions.HasFlag(ActionFlags.ScoreBoard))
         {
-            GD.Print("TAB Released");
-            inGameUI.HideScoreBoard();
+           // GD.Print("TAB Released");
+           // inGameUI.HideScoreBoard();
         }
         lastTickActions = Global.gameState.PlayerInputs[Global.steamid].actions;
+       // GD.Print(lastTickActions.HasFlag(ActionFlags.ScoreBoard));
     }
 
     public Dictionary<string, string> FullScreenUIScenePaths = new Dictionary<string, string>()
@@ -57,6 +58,17 @@ public partial class UI : Node
         inGameUI = (InGameUI)SwitchFullScreenUI("InGameUI");
     }
 
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("ScoreBoard"))
+        {
+            inGameUI.ShowScoreBoard();
+        }
+        else if (@event.IsActionReleased("ScoreBoard"))
+        {
+            inGameUI.HideScoreBoard();
+        }
+    }
 
     public Control SwitchFullScreenUI(string sceneName)
     {

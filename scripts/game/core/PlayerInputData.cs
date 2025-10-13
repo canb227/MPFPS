@@ -1,4 +1,5 @@
 using Godot;
+using ImGuiGodot.Internal;
 using MessagePack;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,29 @@ public partial class PlayerInputData
 
     [Key(3)]
     public ActionFlags actions;
+
+    public bool JustPressed(ActionFlags lastTickActions, ActionFlags action)
+    {
+        if (!lastTickActions.HasFlag(action) && actions.HasFlag(action))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool JustReleased(ActionFlags lastTickActions, ActionFlags action)
+    {
+        if (lastTickActions.HasFlag(action) && !actions.HasFlag(action))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
