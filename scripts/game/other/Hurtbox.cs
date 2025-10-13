@@ -26,26 +26,39 @@ public partial class Hurtbox : Area3D
     [Export]
     public bool active {  get; set; }
 
-    internal void DoDamage()
+    public override void _Ready()
     {
-        if (!active)
+        BodyEntered += Hurtbox_BodyEntered;
+    }
+
+    private void Hurtbox_BodyEntered(Node3D body)
+    {
+
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        foreach (Node3D node in GetOverlappingBodies())
         {
-            return;
-        }
-        foreach (Node node in GetOverlappingBodies())
-        {
-            if (node is IsDamagable d)
+            if (node is GameObject go)
             {
-                if (instantKill)
+                if (go.authority == Global.steamid)
                 {
-                    d.TakeDamage(d.maxHealth, 0);
+                    if (go is IsDamagable d)
+                    {
+                        RPCManager.RPC(node, "TakeDamage", [damagePerTick,0]);
+                    }
                 }
                 else
                 {
-                    d.TakeDamage(damagePerTick, 0);
+                    if (go is IsDamagable d)
+                    {
+
+                    }
                 }
             }
         }
     }
+
 }
 
