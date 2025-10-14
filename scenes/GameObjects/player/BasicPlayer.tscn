@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://1tfhv6c0xvan"]
+[gd_scene load_steps=10 format=3 uid="uid://1tfhv6c0xvan"]
 
 [ext_resource type="Script" uid="uid://dlgw61h0fjdvg" path="res://scripts/game/GameObjects/PlayerCharacters/BasicPlayerCharacter.cs" id="1_dt3qt"]
 [ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="2_y05oo"]
+[ext_resource type="AudioStream" uid="uid://dn5rx0u0gk0uf" path="res://assets/audio/character/footsteps/concrete1.wav" id="3_bcbfx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bcbfx"]
 albedo_texture = ExtResource("2_y05oo")
@@ -24,12 +25,13 @@ points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
 height = 2.4057617
 
-[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "movementSFX", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_dt3qt")
 ourVoiceSpeaker = NodePath("firstPersonModel/SteamAudioVoice")
-characterSFX = NodePath("SteamAudioCharacter")
+characterSFX = NodePath("SteamAudioCharacterSFX")
+movementSFX = NodePath("SteamAudioMovementSFX")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("thirdPersonModel")
 camera = NodePath("firstPersonModel/Camera3D")
@@ -79,8 +81,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27011144, -0.17565012)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0022827387, -0.1726473)
 panning_strength = 0.0
 
-[node name="SteamAudioCharacter" type="SteamAudioPlayer" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0022827387, -0.021221459)
+[node name="SteamAudioCharacterSFX" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0759262, -0.021221459)
+panning_strength = 0.0
+
+[node name="SteamAudioMovementSFX" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5308789, -0.021221459)
+stream = ExtResource("3_bcbfx")
 panning_strength = 0.0
 
 [node name="Skeleton3D" type="Skeleton3D" parent="."]

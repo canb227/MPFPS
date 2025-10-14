@@ -15,10 +15,9 @@ public enum CharacterState
 [GlobalClass]
 public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
-    [Export]
-    public AudioStreamPlayer3D ourVoiceSpeaker;
-    [Export]
-    public AudioStreamPlayer3D characterSFX;
+    [Export] public AudioStreamPlayer3D ourVoiceSpeaker;
+    [Export] public AudioStreamPlayer3D characterSFX;
+    [Export] public AudioStreamPlayer3D movementSFX;
     public CharacterSoundManager characterSoundManager = new();
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
@@ -115,7 +114,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
         {
-            TakeDamage(20, 0, SoundType.Generic);
+            TakeDamage(20, 0, PainSoundType.Generic);
         }
     }
 
@@ -182,6 +181,16 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 localVelocity.X = GetDeceleratedVelocity(localVelocity.X, deceleration);
             }
+
+            //we are moving enough and on the ground so calculate footsteps
+            if (Math.Abs(localVelocity.Z) + Math.Abs(localVelocity.X) > 0.0f)
+            {
+                characterSoundManager.rpc_PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
+            }
+            // else
+            // {
+            //     nextStepTiming
+            // }
         }
 
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
@@ -210,6 +219,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             if (IsOnFloor())
             {
                 globalVelocity += jumpVelocity;
+                characterSoundManager.rpc_PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
             }
         }
         return globalVelocity;
@@ -328,13 +338,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //Character State Functions (Health, Stun, Death, etc) \\
 
-    public void TakeDamage(float damage, ulong byID, SoundType soundType)
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
         RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeDamage(float damage, ulong byID, SoundType soundType)
+    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
         if (state == CharacterState.Living)
         {

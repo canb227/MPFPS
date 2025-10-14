@@ -9,7 +9,7 @@ public interface IsDamagable
 {
     public float maxHealth { get; set; }
     public float currentHealth { get; set; }
-    public void TakeDamage(float damage,ulong byID, SoundType soundType);
+    public void TakeDamage(float damage,ulong byID, PainSoundType soundType);
 
 }
 

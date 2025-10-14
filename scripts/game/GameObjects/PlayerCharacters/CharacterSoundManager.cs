@@ -1,34 +1,110 @@
 using Godot;
 using System;
 
-public enum SoundType
+public enum PainSoundType
 {
     Generic,
     Fire,
     Bullet,
 }
+public enum MovementSoundType
+{
+    Generic,
+    Duct,
+    Ladder,
+    Metal,
+    Grate,
+    Tile,
+    Wood,
+}
 public partial class CharacterSoundManager : Node
 {
-    public void PlayDamageSound(AudioStreamPlayer3D audioStream, SoundType soundType)
+    private float stepTimer;
+    private int lastStepIndex;
+    public void PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
+    {
+        RPCManager.RPC(this, "rpc_PlayMovementSound", [audioStream, soundType, isJump]);
+    }
+
+    public void PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType)
     {
         RPCManager.RPC(this, "rpc_PlayDamageSound", [audioStream, soundType]);
     }
-    
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_PlayDamageSound(AudioStreamPlayer3D audioStream, SoundType soundType)
+    public void rpc_PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType)
     {
-        if (soundType == SoundType.Generic)
+        if (soundType == PainSoundType.Generic)
         {
             PlayGenericPainSound(audioStream);
         }
-        if (soundType == SoundType.Bullet)
+        else if (soundType == PainSoundType.Bullet)
         {
             PlayBulletPainSound(audioStream);
         }
-        if (soundType == SoundType.Fire)
+        else if (soundType == PainSoundType.Fire)
         {
             PlayFirePainSound(audioStream);
         }
+        else
+        {
+            Logging.Error("Invalid SoundType for Pain: " + soundType.ToString(), "CharacterSoundManager");
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
+    {
+        if (soundType == MovementSoundType.Generic)
+        {
+            PlayGenericFootstepSound(audioStream, isJump);
+        }
+
+        else
+        {
+            Logging.Error("Invalid SoundType for Movement: " + soundType.ToString(), "CharacterSoundManager");
+        }
+    }
+    
+    public void PlayGenericFootstepSound(AudioStreamPlayer3D audioStream, bool isJump)
+    {
+        //increase step sound if this is a jump
+        if (isJump)
+        {
+            audioStream.VolumeDb = 6.0f;
+        }
+        else
+        {
+            audioStream.VolumeDb = 0.0f;
+            if (audioStream.GetPlaybackPosition() < 0.4 && audioStream.Playing)
+            {
+                return;
+            }
+        }
+        //if its a jump play the new loud step immediately otherwise skip as we have a previous step sound playing
+
+        string[] stepSounds =
+        {
+            "res://assets/audio/character/footsteps/concrete1.wav",
+            "res://assets/audio/character/footsteps/concrete2.wav",
+            "res://assets/audio/character/footsteps/concrete3.wav",
+            "res://assets/audio/character/footsteps/concrete4.wav",
+
+        };
+        Random rand = new();
+        int index;
+        do
+        {
+            index = rand.Next(stepSounds.Length);
+        } while (index == lastStepIndex && stepSounds.Length > 1);
+
+        lastStepIndex = index;
+
+        //pitch variation (0.95–1.05)
+        float pitch = 0.95f + (float)rand.NextDouble() * 0.1f;
+        audioStream.PitchScale = pitch;
+        audioStream.Stream = GD.Load<AudioStream>(stepSounds[index]);
+        audioStream.Play();
     }
 
     public void PlayDeathSound(AudioStreamPlayer3D audioStream)
@@ -71,7 +147,6 @@ public partial class CharacterSoundManager : Node
 
     private void PlayFirePainSound(AudioStreamPlayer3D audioStream)
     {
-        // Put your audio file paths in an array
         if(audioStream.Playing)
         {
             return;

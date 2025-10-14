@@ -26,7 +26,7 @@ public partial class Hurtbox : Area3D
     [Export]
     public bool active { get; set; }
     [Export]
-    public SoundType damageSoundType { get; set; }
+    public PainSoundType damageSoundType { get; set; }
 
     public override void _Ready()
     {
