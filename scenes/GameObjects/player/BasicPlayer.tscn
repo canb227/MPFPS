@@ -24,10 +24,12 @@ points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
 height = 2.4057617
 
-[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_dt3qt")
+ourVoiceSpeaker = NodePath("firstPersonModel/SteamAudioVoice")
+characterSFX = NodePath("SteamAudioCharacter")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("thirdPersonModel")
 camera = NodePath("firstPersonModel/Camera3D")
@@ -80,3 +82,5 @@ panning_strength = 0.0
 [node name="SteamAudioCharacter" type="SteamAudioPlayer" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0022827387, -0.021221459)
 panning_strength = 0.0
+
+[node name="Skeleton3D" type="Skeleton3D" parent="."]

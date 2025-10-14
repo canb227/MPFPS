@@ -16,10 +16,10 @@ public class GameModeOptions
     public bool debugMode = false;
 
     [Key(2)]
-    public float percentTraitors = 0.5f;
+    public float percentTraitors = 0.333333f;
 
     [Key(3)]
-    public int maxTraitors = 2;
+    public int maxTraitors = 8;
 
     [Key(4)]
     public float percentManagers = 0.166666f;
@@ -29,6 +29,13 @@ public class GameModeOptions
 
     [Key(6)]
     public float newRoundDelay = 2;
+
+    [Key(8)]
+    public bool manualOverride = true;
+    [Key(9)]
+    public int manualTraitorCount = 0;
+    [Key(10)]
+    public int manualManagerCount = 1;
 
 
 }

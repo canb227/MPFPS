@@ -24,7 +24,9 @@ public partial class Hurtbox : Area3D
     public bool hurtsNPCs { get; set; }
 
     [Export]
-    public bool active {  get; set; }
+    public bool active { get; set; }
+    [Export]
+    public SoundType damageSoundType { get; set; }
 
     public override void _Ready()
     {
@@ -46,7 +48,7 @@ public partial class Hurtbox : Area3D
                 {
                     if (go is IsDamagable d)
                     {
-                        RPCManager.RPC(node, "TakeDamage", [damagePerTick,(ulong)0]);
+                        d.TakeDamage(damagePerTick, (ulong)0, damageSoundType);
                     }
                 }
                 else

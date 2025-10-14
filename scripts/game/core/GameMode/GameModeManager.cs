@@ -163,6 +163,11 @@ public partial class GameModeManager : Node
         int numPlayers = players.Count;
         int numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
         int numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
+        if (options.manualOverride)
+        {
+            numTraitors = options.manualTraitorCount;
+            numManagers = options.manualManagerCount;
+        }     
         if (numTraitors > 1)
         {
             numManagers = 1;
@@ -223,6 +228,14 @@ public partial class GameModeManager : Node
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
         basicPlayers[id].Assignment(team, role);
+        if (team == Team.Traitor)
+        {
+            Global.ui.inGameUI.ScoreBoardUI.PlayerIsTraitor(id);
+        }
+        if (team == Team.Manager)
+        {
+            Global.ui.inGameUI.ScoreBoardUI.PlayerIsManager(id);
+        }
         if (id == Global.steamid)
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);

@@ -30,7 +30,7 @@ public partial class ScoreBoardUI : MarginContainer
     //Move Worker Section
     public void MovePlayerToLiving(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow != null)
         {
             playerRow.Reparent(LivingWorkersList);
@@ -43,7 +43,7 @@ public partial class ScoreBoardUI : MarginContainer
     }
     public void MovePlayerToMissing(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow != null)
         {
             playerRow.Reparent(MissingWorkersList);
@@ -55,7 +55,7 @@ public partial class ScoreBoardUI : MarginContainer
     }
     public void MovePlayerToDead(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow != null)
         {
             playerRow.Reparent(DeadWorkersList);
@@ -68,7 +68,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void RemovePlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow != null)
         {
             playerRow.QueueFree();
@@ -82,7 +82,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void AddLivingWorkerPlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow == null)
         {
             ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
@@ -99,7 +99,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void AddMissingWorkerPlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow == null)
         {
             ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
@@ -115,7 +115,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void AddDeadWorkerPlayerRow(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNodeOrNull<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow == null)
         {
             ScoreBoardPlayerRow temp = ResourceLoader.Load<PackedScene>("res://scenes/ui/hud/ScoreBoardPlayerRow.tscn").Instantiate<ScoreBoardPlayerRow>();
@@ -134,21 +134,26 @@ public partial class ScoreBoardUI : MarginContainer
         //only set the row as traitor for traitors
         if(Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Traitor)
         {
-            ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+            ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
             playerRow.SetAsTraitor();
         }
     }
-    
+
     public void SetPlayerIDAsManager(ulong playerID)
     {
-        ScoreBoardPlayerRow playerRow = GetNode<ScoreBoardPlayerRow>(playerID.ToString());
+        ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         playerRow.SetAsManager();
+    }
+    
+    public void PlayerIsManager(ulong playerID)
+    {
+        SetPlayerIDAsManager(playerID);
     }
 
     public void PlayerIsTraitor(ulong playerID)
     {
         //local player is an innocent so we do nothing, leaving the traitor player unlabeled
-        if (Global.gameState.gameModeManager.basicPlayers[Global.steamid].isAlive && (Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Innocent || Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Manager))
+        if (Global.gameState.gameModeManager.basicPlayers[Global.steamid].state == CharacterState.Living && (Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Innocent || Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Manager))
         {
 
         }
@@ -161,7 +166,7 @@ public partial class ScoreBoardUI : MarginContainer
     public void PlayerDied(ulong playerID)
     {
         //local player is alive and an innocent so we do nothing, leaving the dead player as alive
-        if (Global.gameState.gameModeManager.basicPlayers[Global.steamid].isAlive && (Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Innocent || Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Manager))
+        if (Global.gameState.gameModeManager.basicPlayers[Global.steamid].state == CharacterState.Living && (Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Innocent || Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Manager))
         {
 
         }
@@ -169,11 +174,35 @@ public partial class ScoreBoardUI : MarginContainer
         {
             AddMissingWorkerPlayerRow(playerID);
         }
+        //local player died so update scoreboard
+        if (playerID == Global.steamid)
+        {
+            UpdateScoreboardForDeadPlayer();
+        }
     }
-    
+
+    private void UpdateScoreboardForDeadPlayer()
+    {
+        //TODO
+    }
+
     public void PlayerFound(ulong playerID)
     {
         AddDeadWorkerPlayerRow(playerID);
+    }
+    
+    public ScoreBoardPlayerRow GetNodeFromLists(string playerID)
+    {
+        ScoreBoardPlayerRow temp = (ScoreBoardPlayerRow)LivingWorkersList.GetNodeOrNull<PanelContainer>(playerID);
+        if (temp == null)
+        {
+            temp = (ScoreBoardPlayerRow)MissingWorkersList.GetNodeOrNull<PanelContainer>(playerID);
+        }
+        if (temp == null)
+        {
+            temp = (ScoreBoardPlayerRow)DeadWorkersList.GetNodeOrNull<PanelContainer>(playerID);
+        }
+        return temp;
     }
 
     public void NewRound()

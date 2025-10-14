@@ -15,12 +15,16 @@ public enum CharacterState
 [GlobalClass]
 public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
+    [Export]
+    public AudioStreamPlayer3D ourVoiceSpeaker;
+    [Export]
+    public AudioStreamPlayer3D characterSFX;
+    public CharacterSoundManager characterSoundManager = new();
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
-    public bool isAlive { get; set; }
     public float camXRotMax = 85;
     public float camXRotMin = -85;
     public float baseSpeed = 3;
@@ -29,6 +33,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float finalSpeed;
     private Vector3 jumpVelocity = new Vector3(0, 5, 0);
     private bool airbrake = false;
+
 
 
     //this is basically our constructor
@@ -106,11 +111,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 }
             }
         }
-       
+
 
         if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
         {
-            TakeDamage(20, 0);
+            TakeDamage(20, 0, SoundType.Generic);
         }
     }
 
@@ -122,7 +127,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
 
     }
-    
+
     private void HandleMovementInputAndPhysics(double delta)
     {
         Velocity = HandleYAxis(Velocity, delta);
@@ -252,7 +257,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     }
 
     //Equipment Functions
-    
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public override void Pickup(IsInventoryItem item)
     {
@@ -263,7 +268,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 InventoryGroup group = inventory.GetGroup(i.category);
                 if (group.CanStoreOrReplaceItem(item))
                 {
-                    group.StoreOrReplaceItem(item,out IsInventoryItem replaced);
+                    group.StoreOrReplaceItem(item, out IsInventoryItem replaced);
                     if (replaced != null)
                     {
                         (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
@@ -285,7 +290,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     }
 
-    [RPCMethod(mode =RPCMode.SendToAllPeers)]
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public override void Equip(InventoryGroupCategory category, int index = 0)
     {
         if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
@@ -323,26 +328,45 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //Character State Functions (Health, Stun, Death, etc) \\
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void TakeDamage(float damage, ulong byID)
+    public void TakeDamage(float damage, ulong byID, SoundType soundType)
     {
-        currentHealth -= damage;
-        Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
-        if (controllingPlayerID == Global.steamid)
+        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_TakeDamage(float damage, ulong byID, SoundType soundType)
+    {
+        if (state == CharacterState.Living)
         {
-            Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
+            currentHealth -= damage;
+            characterSoundManager.rpc_PlayDamageSound(characterSFX, soundType);
+            Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
+            if (controllingPlayerID == Global.steamid)
+            {
+                Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
+            }
+            if (currentHealth <= 0)
+            {
+                Logging.Log($"{authority} PlayerCharacter has died", "BasicPlayerCharacter");
+                rpc_OnDeath();
+            }
         }
-        if (currentHealth <= 0)
+        else
         {
-            Logging.Log($"{authority} PlayerCharacter has died", "BasicPlayerCharacter");
-            OnDeath();
+            Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
         }
     }
 
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OnDeath()
     {
+        RPCManager.RPC(this, "rpc_TakeDamage", []);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_OnDeath()
+    {
+        characterSoundManager.PlayDeathSound(characterSFX);
+        inventory.DropAllItems();
         state = CharacterState.Missing;
         currentHealth = 0;
         Global.ui.inGameUI.ScoreBoardUI.PlayerDied(authority);
@@ -351,9 +375,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
     }
 
+    
+
     public void OnFound()
     {
-        if(state != CharacterState.Dead)
+        if (state != CharacterState.Dead)
         {
             state = CharacterState.Dead;
             Global.ui.inGameUI.ScoreBoardUI.PlayerFound(authority);
@@ -371,7 +397,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //Control
     protected override void OnControlTaken(ulong byID)
     {
-        if(byID == Global.steamid)
+        if (byID == Global.steamid)
         {
             Logging.Log("Enabling Player UI " + byID, "BasicPlayerCharacter");
             Global.ui.inGameUI.PlayerUIManager.ShowPlayerUI(authority);

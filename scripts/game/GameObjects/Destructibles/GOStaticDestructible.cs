@@ -62,7 +62,7 @@ public partial class GOStaticDestructible : GOBaseStaticBody, IsDamagable
         currentHealth = state.currentHealth;
     }
 
-    public void TakeDamage(float damage, ulong byID)
+    public void TakeDamage(float damage, ulong byID, SoundType soundType)
     {
         currentHealth -= damage;
         if (currentHealth < 0)

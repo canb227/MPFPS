@@ -68,7 +68,10 @@ public class Inventory
         }
         return index;
     }
-
+    public void DropAllItems()
+    {
+        //drop all gameobject items onto the ground
+    }
 }
 
 public class InventoryGroup
