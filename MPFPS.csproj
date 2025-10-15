@@ -33,6 +33,5 @@
     <Folder Include="scripts\game\GameObjects\InventoryItems\special\" />
     <Folder Include="scripts\game\GameObjects\InventoryItems\role\" />
     <Folder Include="scripts\game\GameObjects\InventoryItems\tools\" />
-    <Folder Include="scripts\game\GameObjects\NPCs\" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://bg2178j2f8lof"]
+
+[ext_resource type="Script" uid="uid://pn3ue2g0wb0k" path="res://scripts/game/GameObjects/Triggerable/SwarmRobotSpawner.cs" id="1_iq2lg"]
+[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_lsgdq"]
+
+[sub_resource type="Resource" id="Resource_aevcy"]
+script = ExtResource("2_lsgdq")
+triggerName = "spawn"
+cooldownSeconds = 0.1
+metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lsgdq"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_aevcy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjtfv"]
+albedo_color = Color(1, 0.45999998, 0.45999998, 1)
+
+[node name="SwarmRobotSpawner" type="StaticBody3D"]
+script = ExtResource("1_iq2lg")
+triggerables = Array[Object]([SubResource("Resource_aevcy")])
+metadata/_custom_type_script = "uid://pn3ue2g0wb0k"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_lsgdq")
+disabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_aevcy")
+surface_material_override/0 = SubResource("StandardMaterial3D_xjtfv")

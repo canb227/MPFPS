@@ -119,7 +119,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override void PerFrameAuth(double delta)
     {
-        if (Global.DrawDebugScreens)
+        if (Global.DrawDebugScreens && controllingPlayerID !=0)
         {
             ImGui.Begin("PC Debug");
             ImGui.Text("InputMvVector: " + input.MovementInputVector.ToString());

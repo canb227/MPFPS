@@ -31,11 +31,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public CharacterState state { get; set; }
     public float camXRotMax = 85;
     public float camXRotMin = -85;
-    public float baseSpeed = 3;
+    public float baseSpeed = 6;
     public float acceleration = 1;
     public float deceleration = 1;
     public float finalSpeed;
-    private Vector3 jumpVelocity = new Vector3(0, 5, 0);
+    private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
 
 

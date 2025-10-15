@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://cnuhisk5vamn4"]
+
+[ext_resource type="Script" uid="uid://kuimq525di4f" path="res://scripts/game/GameObjects/NPCs/SwarmRobot.cs" id="1_aj03a"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3tng0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fq2r"]
+albedo_color = Color(1, 0.49, 0.49, 1)
+
+[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("navAgent")]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_aj03a")
+navAgent = NodePath("NavigationAgent3D")
+metadata/_custom_type_script = "uid://kuimq525di4f"
+
+[node name="collider" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_aj03a")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_3tng0")
+surface_material_override/0 = SubResource("StandardMaterial3D_1fq2r")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
