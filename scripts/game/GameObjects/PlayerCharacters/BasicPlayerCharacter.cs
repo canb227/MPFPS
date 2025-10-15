@@ -115,6 +115,27 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
     }
 
+    public override void PerTickShared(double delta)
+    {
+        //use input from local and remote players to calculate footsteps
+        if (input != null)
+        {
+            if (input.actions.HasFlag(ActionFlags.Jump))
+            {
+                if (IsOnFloor())
+                {
+                    characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
+                }
+            }
+            else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f)
+            {
+                characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
+            }
+        }
+        
+    }
+
+
     private void HandleNonMovementInput(double delta)
     {
         if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
@@ -157,6 +178,41 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         Velocity = HandleYAxis(Velocity, delta);
 
+        Vector3 localVelocity = CalculateLocalVelocity();
+
+        Velocity = PCUtils.GlobalizeVector(this, localVelocity);
+        MoveAndSlide();
+    }
+
+    private float GetDeceleratedVelocity(float vel, float decel)
+    {
+        return vel > 0 ? Math.Max(vel - decel, 0) : Math.Min(vel + decel, 0);
+    }
+
+    private float GetClampedVelocity(float vel, float move, float accel, float max)
+    {
+        return Math.Clamp(vel + (move > 0 ? accel : -accel), -max, max);
+    }
+
+    private Vector3 HandleYAxis(Vector3 globalVelocity, double delta)
+    {
+        if (!IsOnFloor())
+        {
+            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta;
+        }
+
+        if (input.actions.HasFlag(ActionFlags.Jump))
+        {
+            if (IsOnFloor())
+            {
+                globalVelocity += jumpVelocity;
+            }
+        }
+        return globalVelocity;
+    }
+
+    private Vector3 CalculateLocalVelocity()
+    {
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
@@ -208,47 +264,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 localVelocity.X = GetDeceleratedVelocity(localVelocity.X, deceleration);
             }
 
-            //we are moving enough and on the ground so calculate footsteps
-            if (Math.Abs(localVelocity.Z) + Math.Abs(localVelocity.X) > 0.0f)
-            {
-                characterSoundManager.rpc_PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
-            }
-            // else
-            // {
-            //     nextStepTiming
-            // }
         }
-
-        Velocity = PCUtils.GlobalizeVector(this, localVelocity);
-        MoveAndSlide();
-    }
-
-    private float GetDeceleratedVelocity(float vel, float decel)
-    {
-        return vel > 0 ? Math.Max(vel - decel, 0) : Math.Min(vel + decel, 0);
-    }
-
-    private float GetClampedVelocity(float vel, float move, float accel, float max)
-    {
-        return Math.Clamp(vel + (move > 0 ? accel : -accel), -max, max);
-    }
-
-    private Vector3 HandleYAxis(Vector3 globalVelocity, double delta)
-    {
-        if (!IsOnFloor())
-        {
-            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta;
-        }
-
-        if (input.actions.HasFlag(ActionFlags.Jump))
-        {
-            if (IsOnFloor())
-            {
-                globalVelocity += jumpVelocity;
-                characterSoundManager.rpc_PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
-            }
-        }
-        return globalVelocity;
+        return localVelocity;
     }
 
     private void HandleMouseLook(double delta)
@@ -376,7 +393,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             currentStunBar -= damage;
             currentTimeUntilStunRegen = stunRegenDelaySeconds;
-            characterSoundManager.rpc_PlayDamageSound(characterSFX, soundType);
+            characterSoundManager.PlayDamageSound(characterSFX, soundType);
             Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
@@ -416,10 +433,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
+        TakeStunDamage(damage*2, byID, PainSoundType.None);
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
-            characterSoundManager.rpc_PlayDamageSound(characterSFX, soundType);
+            characterSoundManager.PlayDamageSound(characterSFX, soundType);
             Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
@@ -473,6 +491,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         this.team = team;
         this.role = role;
     }
+
+    public override void TakeControl(ulong playerID)
+    {
+        base.TakeControl(playerID);
+        Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
+        Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
+        Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
+    }
+
 
 
     //Control
