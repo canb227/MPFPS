@@ -21,18 +21,8 @@ public partial class CharacterSoundManager : Node
 {
     private float stepTimer;
     private int lastStepIndex;
-    public void PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
-    {
-        RPCManager.RPC(this, "rpc_PlayMovementSound", [audioStream, soundType, isJump]);
-    }
 
     public void PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType)
-    {
-        RPCManager.RPC(this, "rpc_PlayDamageSound", [audioStream, soundType]);
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType)
     {
         if (soundType == PainSoundType.Generic)
         {
@@ -52,8 +42,7 @@ public partial class CharacterSoundManager : Node
         }
     }
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
+    public void PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
     {
         if (soundType == MovementSoundType.Generic)
         {
