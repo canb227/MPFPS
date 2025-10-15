@@ -118,16 +118,19 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void PerTickShared(double delta)
     {
         //use input from local and remote players to calculate footsteps
-        if (input.actions.HasFlag(ActionFlags.Jump))
+        if (input != null)
         {
-            if (IsOnFloor())
+            if (input.actions.HasFlag(ActionFlags.Jump))
             {
-                characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
+                if (IsOnFloor())
+                {
+                    characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
+                }
             }
-        }
-        else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f)
-        {
-            characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
+            else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f)
+            {
+                characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
+            }
         }
         
     }
@@ -430,6 +433,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
+        TakeStunDamage(damage*2, byID, PainSoundType.None);
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
@@ -487,6 +491,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         this.team = team;
         this.role = role;
     }
+
+    public override void TakeControl(ulong playerID)
+    {
+        base.TakeControl(playerID);
+        Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
+        Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
+        Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
+    }
+
 
 
     //Control

@@ -3,12 +3,14 @@ using System;
 
 public enum PainSoundType
 {
+    None,
     Generic,
     Fire,
     Bullet,
 }
 public enum MovementSoundType
 {
+    None,
     Generic,
     Duct,
     Ladder,
@@ -24,7 +26,11 @@ public partial class CharacterSoundManager : Node
 
     public void PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType)
     {
-        if (soundType == PainSoundType.Generic)
+        if (soundType == PainSoundType.None)
+        {
+            
+        }
+        else if (soundType == PainSoundType.Generic)
         {
             PlayGenericPainSound(audioStream);
         }
@@ -44,11 +50,14 @@ public partial class CharacterSoundManager : Node
 
     public void PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
     {
-        if (soundType == MovementSoundType.Generic)
+        if (soundType == MovementSoundType.None)
+        {
+            
+        }
+        else if (soundType == MovementSoundType.Generic)
         {
             PlayGenericFootstepSound(audioStream, isJump);
         }
-
         else
         {
             Logging.Error("Invalid SoundType for Movement: " + soundType.ToString(), "CharacterSoundManager");
