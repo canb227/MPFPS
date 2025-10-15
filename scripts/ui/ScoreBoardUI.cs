@@ -210,17 +210,17 @@ public partial class ScoreBoardUI : MarginContainer
         //clear all of our visual lists
         foreach (var child in LivingWorkersList.GetChildren())
         {
-            child.QueueFree();
+            child.Free();
         }
         foreach (var child in MissingWorkersList.GetChildren())
         {
-            child.QueueFree();
+            child.Free();
         }
         foreach (var child in DeadWorkersList.GetChildren())
         {
-            child.QueueFree();
+            child.Free();
         }
-
+        Logging.Log("Cleared the scoreboard of all rows, now adding based on basicPlayers", "ScoreBoardUI");
         //use the basicplayers list
         foreach(ulong basicPlayerID in Global.gameState.gameModeManager.basicPlayers.Keys)
         {

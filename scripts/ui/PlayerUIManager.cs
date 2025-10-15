@@ -35,9 +35,9 @@ public partial class PlayerUIManager : Control
     {
         PlayerInfoUI.UpdateRoleUI(newTeam);
     }
-    public void UpdateStunUI(int newStunBarRemaning)
+    public void UpdateStunUI(int newStunBarRemaning, int maxStunBar)
     {
-        PlayerInfoUI.UpdateStunUI(newStunBarRemaning);
+        PlayerInfoUI.UpdateStunUI(newStunBarRemaning, maxStunBar);
     }
     public void UpdateAmmoUI(int remainingAmmo, int maxAmmo)
     {

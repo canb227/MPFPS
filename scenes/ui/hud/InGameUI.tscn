@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://y7cd32qk1btg" path="res://scenes/ui/hud/ScoreBoardUI.tscn" id="2_0v7in"]
 [ext_resource type="PackedScene" uid="uid://cu47jqvm583t2" path="res://scenes/ui/hud/RoundReport.tscn" id="4_t1kl0"]
 
-[node name="InGameUI" type="Control" node_paths=PackedStringArray("PlayerUIManager", "ScoreBoardUI")]
+[node name="InGameUI" type="Control" node_paths=PackedStringArray("PlayerUIManager", "ScoreBoard", "RoundReport")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,19 +15,12 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_0v7in")
 PlayerUIManager = NodePath("PlayerUIManager")
-ScoreBoardUI = NodePath("ScoreBoardUI")
+ScoreBoard = NodePath("ScoreBoardUI")
+RoundReport = NodePath("RoundReport")
 metadata/_custom_type_script = "uid://q2t60gt2kvx1"
 
 [node name="PlayerUIManager" parent="." instance=ExtResource("1_wcfvi")]
-visible = false
 layout_mode = 1
-
-[node name="RoundReport" parent="." instance=ExtResource("4_t1kl0")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-offset_top = 154.0
-offset_bottom = -164.0
 
 [node name="ScoreBoardUI" parent="." instance=ExtResource("2_0v7in")]
 visible = false
@@ -39,3 +32,14 @@ offset_top = 93.0
 offset_right = 542.0
 offset_bottom = -49.0
 grow_vertical = 2
+
+[node name="RoundReport" parent="." instance=ExtResource("4_t1kl0")]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -489.0
+offset_top = 120.0
+offset_right = 489.0
+offset_bottom = -146.0

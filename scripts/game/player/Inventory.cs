@@ -70,7 +70,11 @@ public class Inventory
     }
     public void DropAllItems()
     {
-        //drop all gameobject items onto the ground
+        //drop all items onto the ground
+    }
+    public void DropHeldItem()
+    {
+        //drop currently held item onto the ground
     }
 }
 

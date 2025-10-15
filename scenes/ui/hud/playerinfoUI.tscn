@@ -147,7 +147,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/background = SubResource("StyleBoxFlat_ddji3")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fud4g")
-value = 94.04
+value = 100.0
 show_percentage = false
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
@@ -160,7 +160,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/background = SubResource("StyleBoxFlat_6fief")
 theme_override_styles/fill = SubResource("StyleBoxFlat_vl348")
-value = 87.9
+value = 100.0
 show_percentage = false
 
 [node name="HealthLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HealthBar"]
@@ -184,7 +184,7 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/background = SubResource("StyleBoxFlat_dntob")
 theme_override_styles/fill = SubResource("StyleBoxFlat_mgex2")
-value = 86.0
+value = 100.0
 show_percentage = false
 
 [node name="AmmoLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer4/AmmoBar"]

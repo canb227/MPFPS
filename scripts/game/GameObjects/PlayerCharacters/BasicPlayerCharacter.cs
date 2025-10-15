@@ -21,6 +21,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public CharacterSoundManager characterSoundManager = new();
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
+    public float maxStunBar { get; set; } = 100;
+    public float currentStunBar { get; set; } = 100;
+    public float currentTimeUntilStunRegen { get; set; } = 0;
+    public float stunRegenDelaySeconds { get; set; } = 3;
+    public float stunRegenRatePerSecond { get; set; } = 5;
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
@@ -84,6 +89,22 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             HandleMovementInputAndPhysics(delta);
             lastTickActions = input.actions;
         }
+        //stun regen
+        if (currentTimeUntilStunRegen <= 0)
+        {
+            if(currentStunBar < maxStunBar)
+            {
+                currentStunBar = Math.Min(currentStunBar + (stunRegenRatePerSecond * (float)delta), maxStunBar);
+                if (controllingPlayerID == Global.steamid)
+                {
+                    Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
+                }
+            }
+        }
+        else
+        {
+            currentTimeUntilStunRegen -= (float)delta;
+        }
     }
 
     public override void PerFrameShared(double delta)
@@ -112,9 +133,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
 
 
-        if (!lastTickActions.HasFlag(ActionFlags.ProneToggle) && input.actions.HasFlag(ActionFlags.ProneToggle))
+        if (!lastTickActions.HasFlag(ActionFlags.LeanLeft) && input.actions.HasFlag(ActionFlags.LeanLeft))
         {
             TakeDamage(20, 0, PainSoundType.Generic);
+        }
+
+        if (!lastTickActions.HasFlag(ActionFlags.LeanRight) && input.actions.HasFlag(ActionFlags.LeanRight))
+        {
+            TakeStunDamage(20, 0, PainSoundType.Bullet);
         }
     }
 
@@ -338,6 +364,50 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //Character State Functions (Health, Stun, Death, etc) \\
 
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    {
+        RPCManager.RPC(this, "rpc_TakeStunDamage", [damage,byID,soundType]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    {
+        if (state == CharacterState.Living)
+        {
+            currentStunBar -= damage;
+            currentTimeUntilStunRegen = stunRegenDelaySeconds;
+            characterSoundManager.rpc_PlayDamageSound(characterSFX, soundType);
+            Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
+            if (controllingPlayerID == Global.steamid)
+            {
+                Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar); ;
+            }
+            if (currentStunBar <= 0)
+            {
+                rpc_OnKnockedOut();
+            }
+        }
+        else
+        {
+            Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
+        }
+    }
+
+    public void OnKnockedOut()
+    {
+        RPCManager.RPC(this, "rpc_OnKnockedOut", []);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_OnKnockedOut()
+    {
+        Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
+        //characterSoundManager.PlayerKnockoutSound(characterSFX);
+        inventory.DropHeldItem();
+        currentStunBar = 0;
+        //ragdoll and other stuff
+    }
+
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
         RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
@@ -369,7 +439,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void OnDeath()
     {
-        RPCManager.RPC(this, "rpc_TakeDamage", []);
+        RPCManager.RPC(this, "rpc_OnDeath", []);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -379,7 +449,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         inventory.DropAllItems();
         state = CharacterState.Missing;
         currentHealth = 0;
-        Global.ui.inGameUI.ScoreBoardUI.PlayerDied(authority);
+        Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
+        Global.gameState.gameModeManager.CharacterDied(team);
         ulong tempControllingPlayerID = controllingPlayerID;
         ReleaseControl();
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
@@ -392,7 +463,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (state != CharacterState.Dead)
         {
             state = CharacterState.Dead;
-            Global.ui.inGameUI.ScoreBoardUI.PlayerFound(authority);
+            Global.ui.inGameUI.ScoreBoard.PlayerFound(authority);
         }
 
     }

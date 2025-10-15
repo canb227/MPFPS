@@ -28,14 +28,14 @@ public class GameModeOptions
     public float roleAssignmentDelay = 5;
 
     [Key(6)]
-    public float newRoundDelay = 2;
+    public float newRoundDelay = 3;
 
     [Key(8)]
     public bool manualOverride = true;
     [Key(9)]
     public int manualTraitorCount = 0;
     [Key(10)]
-    public int manualManagerCount = 1;
+    public int manualManagerCount = 0;
 
 
 }

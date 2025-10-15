@@ -9,4 +9,12 @@ public partial class RoundReportUI : PanelContainer
     [Export] public Label RoundLastLabel;
     [Export] public VBoxContainer DeliveriesVBox;
     [Export] public PackedScene DeliveryRowScene;
+    public void ShowRoundReport(Team winningTeam)
+    {
+        Visible = true;
+    }
+    public void NewRound()
+    {
+        Visible = false;
+    }
 }

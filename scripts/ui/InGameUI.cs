@@ -11,7 +11,8 @@ using System.Reflection;
 public partial class InGameUI : Control
 {
     [Export] public PlayerUIManager PlayerUIManager;
-    [Export] public ScoreBoardUI ScoreBoardUI;
+    [Export] public ScoreBoardUI ScoreBoard;
+    [Export] public RoundReportUI RoundReport;
 
     float uiTimeLeftSeconds = 600;
 
@@ -34,32 +35,48 @@ public partial class InGameUI : Control
     //scoreboard functions
     public void UpdatePlayerIcon(TextureRect newPlayerIcon, ulong playerID)
     {
-        ScoreBoardUI.UpdatePlayerIcon(newPlayerIcon, playerID);
+        ScoreBoard.UpdatePlayerIcon(newPlayerIcon, playerID);
     }
 
     public void UpdatePlayerName(string newPlayerName, ulong playerID)
     {
-        ScoreBoardUI.UpdatePlayerName(newPlayerName, playerID);
+        ScoreBoard.UpdatePlayerName(newPlayerName, playerID);
     }
 
     public void ToggleScoreBoard()
     {
-        ScoreBoardUI.Visible = !ScoreBoardUI.Visible;
+        ScoreBoard.Visible = !ScoreBoard.Visible;
     }
 
     public void ShowScoreBoard()
     {
-        if (!ScoreBoardUI.Visible)
+        if (!ScoreBoard.Visible)
         {
-            ScoreBoardUI.Visible = true;
+            ScoreBoard.Visible = true;
         }
     }
 
     public void HideScoreBoard()
     {
-        if (ScoreBoardUI.Visible)
+        if (ScoreBoard.Visible)
         {
-            ScoreBoardUI.Visible = false;
+            ScoreBoard.Visible = false;
+        }
+    }
+
+    public void ShowRoundReport(Team winningTeam)
+    {
+        if (!RoundReport.Visible)
+        {
+            RoundReport.ShowRoundReport(winningTeam);
+        }
+    }
+
+    public void HideRoundReport()
+    {
+        if (RoundReport.Visible)
+        {
+            RoundReport.Visible = false;
         }
     }
 }

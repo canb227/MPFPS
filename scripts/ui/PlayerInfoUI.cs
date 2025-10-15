@@ -47,8 +47,9 @@ public partial class PlayerInfoUI : MarginContainer
     {
         TimeLeftLabel.Text = timeLeftString;
     }
-    public void UpdateStunUI(int newStunBarRemaning)
+    public void UpdateStunUI(int newStunBarRemaning, int maxStunBar)
     {
+        StunBar.MaxValue = maxStunBar;
         StunBar.Value = newStunBarRemaning;
     }
     public void UpdateAmmoUI(int remainingAmmo, int maxAmmo)

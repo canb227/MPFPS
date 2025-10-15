@@ -85,7 +85,7 @@ public partial class GameModeManager : Node
     public async void TraitorsWin()
     {
         Logging.Log("Traitors Win As Peer", "GameModeManager");
-        //display a UI element, play a sound or music? then start the countdown for a new round
+        Global.ui.inGameUI.ShowRoundReport(Team.Traitor);
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
     }
@@ -93,6 +93,7 @@ public partial class GameModeManager : Node
     public async void InnocentsWin()
     {
         Logging.Log("Innocents Win As Peer", "GameModeManager");
+        Global.ui.inGameUI.ShowRoundReport(Team.Innocent);
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
@@ -101,6 +102,7 @@ public partial class GameModeManager : Node
     public async void ForceEndRound()
     {
         Logging.Log("ForceEndRound as Peer", "GameModeManager");
+        Global.ui.inGameUI.ShowRoundReport(Team.None);
         //display a UI element, play a sound or music? then start the countdown for a new round
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         StartNewRound();
@@ -119,22 +121,34 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartNewRound()
     {
-        Logging.Log("Starting New Round as Peer", "GameModeManager");
         if (roundNumber == 0)
         {
+            Logging.Log("Starting First Round as Peer", "GameModeManager");
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
         else
         {
+            //
+            Logging.Log("Cleaning up previous round as Peer, done as a map reload later?", "GameModeManager");
             GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
             RPCManager.RPC(pc, "ReleaseControl", []);
+            foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
+            {
+                Global.gameState.GameObjects.Remove(basicPlayer.id);
+                basicPlayer.QueueFree();
+            }
+            basicPlayers.Clear();
+            //
+            Logging.Log("Starting New Round as Peer", "GameModeManager");
+            //RPCManager.RPC(pc, "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
-        //clear the scoreboard and readd each basicplayer, role assignment comes later
-        Global.ui.inGameUI.ScoreBoardUI.NewRound();
+        //clear the scoreboard , role assignment comes later
+        Global.ui.inGameUI.RoundReport.NewRound();
+        Global.ui.inGameUI.ScoreBoard.NewRound();
         roundNumber++;
     }
 
@@ -156,7 +170,15 @@ public partial class GameModeManager : Node
 
     public void AssignRoles()
     {
-        List<ulong> players = basicPlayers.Keys.ToList();
+        //only assign roles to living players, in case somebody dies pre-round.
+        List<ulong> players = new();
+        foreach(var player in basicPlayers)
+        {
+            if(player.Value.state == CharacterState.Living)
+            {
+                players.Add(player.Key);
+            }
+        }
         List<ulong> traitors = new();
         List<ulong> managers = new();
 
@@ -221,6 +243,10 @@ public partial class GameModeManager : Node
             byte[] data = MessagePackSerializer.Serialize(pa);
             RPCManager.RPC(this, "AssignRole", [id, Team.Innocent, Role.Normal]);
         }
+        if(numPlayers == 0)
+        {
+            RPCManager.RPC(this, "ForceEndRound", []);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -230,11 +256,11 @@ public partial class GameModeManager : Node
         basicPlayers[id].Assignment(team, role);
         if (team == Team.Traitor)
         {
-            Global.ui.inGameUI.ScoreBoardUI.PlayerIsTraitor(id);
+            Global.ui.inGameUI.ScoreBoard.PlayerIsTraitor(id);
         }
         if (team == Team.Manager)
         {
-            Global.ui.inGameUI.ScoreBoardUI.PlayerIsManager(id);
+            Global.ui.inGameUI.ScoreBoard.PlayerIsManager(id);
         }
         if (id == Global.steamid)
         {
@@ -270,9 +296,14 @@ public partial class GameModeManager : Node
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
             {
-                StartEmergencyEvacuation();
+                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
+    }
+
+    public void DecreaseNumTraitorsAlive()
+    {
+        SetNumTraitorsAlive(numTraitorsAlive - 1);
     }
 
     public int GetNumInnocentsAlive()
@@ -287,13 +318,18 @@ public partial class GameModeManager : Node
             Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
             if (numInnocentsAlive + numManagersAlive <= 0)
             {
-                TraitorsWin();
+                RPCManager.RPC(this, "TraitorsWin", []);
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
             {
-                StartEmergencyEvacuation();
+                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
+    }
+    
+    public void DecreaseNumInnocentsAlive()
+    {
+        SetNumInnocentsAlive(numInnocentsAlive - 1);
     }
 
     public int GetNumManagersAlive()
@@ -308,12 +344,34 @@ public partial class GameModeManager : Node
             Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
             if (numInnocentsAlive + numManagersAlive <= 0)
             {
-                TraitorsWin();
+                RPCManager.RPC(this, "TraitorsWin", []);
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
             {
-                StartEmergencyEvacuation();
+                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
+        }
+    }
+
+    public void DecreaseNumManagersAlive()
+    {
+        SetNumManagersAlive(numManagersAlive - 1);
+    }
+
+    public void CharacterDied(Team team)
+    {
+        Logging.Log("A Character has died", "GameModeManager");
+        if (team == Team.Innocent)
+        {
+            DecreaseNumInnocentsAlive();
+        }
+        else if (team == Team.Manager)
+        {
+            DecreaseNumManagersAlive();
+        }
+        else if (team == Team.Traitor)
+        {
+            DecreaseNumTraitorsAlive();
         }
     }
 
