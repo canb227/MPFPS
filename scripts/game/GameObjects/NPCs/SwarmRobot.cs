@@ -20,10 +20,6 @@ public partial class SwarmRobot : GOBaseNPC
     {
         base._Ready();
 
-        if (authority == Global.steamid)
-        {
-            Global.gameState.AIManager.controlledNPCs.Add(this);
-        }    
 
         navAgent.PathDesiredDistance = 0.5f;
         navAgent.TargetDesiredDistance = 0.5f;

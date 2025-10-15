@@ -14,6 +14,14 @@ public partial class GOBaseNPC : GOBaseCharacterBody3D
     [Export]
     public Node3D MovementTarget = new();
 
+    public override void _Ready()
+    {
+        if (authority == Global.steamid)
+        {
+            Global.gameState.AIManager.controlledNPCs.Add(this);
+        }
+
+    }
 
     public override string GenerateStateString()
     {
