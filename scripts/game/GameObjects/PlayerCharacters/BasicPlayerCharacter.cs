@@ -117,8 +117,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerTickShared(double delta)
     {
-        Velocity = HandleYAxis(Velocity, delta);
-
         //use input from local and remote players to calculate footsteps
         if (input.actions.HasFlag(ActionFlags.Jump))
         {
@@ -392,7 +390,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             currentStunBar -= damage;
             currentTimeUntilStunRegen = stunRegenDelaySeconds;
-            characterSoundManager.rpc_PlayDamageSound(characterSFX, soundType);
+            characterSoundManager.PlayDamageSound(characterSFX, soundType);
             Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
@@ -435,7 +433,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
-            characterSoundManager.rpc_PlayDamageSound(characterSFX, soundType);
+            characterSoundManager.PlayDamageSound(characterSFX, soundType);
             Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
