@@ -51,6 +51,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.destroy),"destroy","Destroys the object with the given ID");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.impulse), "impulse", "Applies a random physics impulse to the object with the given ID");
         LimboConsole.RegisterCommand(new Callable(this, MethodName.interact));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.spawnRobot));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.trigger));
     }
 
@@ -199,6 +200,19 @@ public partial class Console : Node
 
     ////////////////////////////////////// IN GAME ///////////////////////////////////////////////
     
+    public void spawnRobot()
+    {
+        GameObjectConstructorData data = new(GameObjectType.SwarmRobot);
+        data.paramList.Add(Global.instance.GetPathTo(Global.gameState.GetCharacterControlledBy(Global.steamid)).ToString());
+        data.paramList.Add(SwarmRobotState.SIMPLECHASE);
+        var playerForwardVector = -Global.gameState.GetCharacterControlledBy(Global.steamid).GlobalTransform.Basis.Z.Normalized();
+        Vector3 spawnPosition = Global.gameState.GetCharacterControlledBy(Global.steamid).GlobalPosition + (playerForwardVector * 5);
+        spawnPosition.Y += 5;
+        data.spawnTransform = Transform3D.Identity;
+        data.spawnTransform.Origin = spawnPosition;
+        Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobot, data);
+    }
+
     public void spawn(string objectName)
     {
         if (GameObjectLoader.GameObjectDictionary.TryGetValue(objectName, out var entry))
@@ -207,7 +221,7 @@ public partial class Console : Node
 
             var playerForwardVector = -Global.gameState.GetCharacterControlledBy(Global.steamid).GlobalTransform.Basis.Z.Normalized();
             Vector3 spawnPosition = Global.gameState.GetCharacterControlledBy(Global.steamid).GlobalPosition + (playerForwardVector * 5);
-            data.spawnTransform = new();
+            data.spawnTransform = Transform3D.Identity;
             data.spawnTransform.Origin = spawnPosition;
 
             Global.gameState.Auth_SpawnObject(entry.type, data);

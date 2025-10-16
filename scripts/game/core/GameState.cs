@@ -214,7 +214,7 @@ public partial class GameState : Node3D
         tick++;
 
         //Iterate thru all registered GameObjects based on authority.
-        foreach(GameObject gameObject in GameObjects.Values)
+        foreach(GameObject gameObject in GameObjects.Values.ToArray())
         {
             if (gameObject.authority==Global.steamid)
             {
