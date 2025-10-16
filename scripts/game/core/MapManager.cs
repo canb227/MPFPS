@@ -7,12 +7,14 @@ public static class MapManager
 {
     private static Node3D nodeStaticLevel;
     private static List<Marker3D> PlayerSpawnPoints = new();
+    public static List<ItemMarker3D> ItemSpawnPoints = new();
     private static ulong staticIDCounter = 1;
 
     public static Transform3D GetPlayerSpawnTransform()
     {
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }
+    
 
     /// <summary>
     /// Loads a Scene from the file system that holds a static level. Basic processing is done to fetch various nodes we expect to see in the level <see cref="LoadMapMetas"/>
@@ -73,6 +75,31 @@ public static class MapManager
             Logging.Warn("Static level meta has no \"playerSpawns\" node! Skipping player spawn init", "GameStateLevel");
         }
 
+        if (meta.GetNode("itemSpawns") != null)
+        {
+            Node itemSpawns = meta.GetNode("itemSpawns");
+            CollectItemMarkers(itemSpawns, ItemSpawnPoints);
+            Logging.Log($"Loaded {PlayerSpawnPoints.Count} player spawn points.", "GameStateLevel");
+        }
+        else
+        {
+            Logging.Warn("Static level meta has no \"itemSpawns\" node! Skipping item spawn init", "GameStateLevel");
+        }
+
+    }
+
+    private static void CollectItemMarkers(Node parent, List<ItemMarker3D> list)
+    {
+        foreach (Node child in parent.GetChildren())
+        {
+            if (child is ItemMarker3D marker)
+            {
+                list.Add(marker);
+            }
+
+            // Recurse into this child's children
+            CollectItemMarkers(child, list);
+        }
     }
 
 }

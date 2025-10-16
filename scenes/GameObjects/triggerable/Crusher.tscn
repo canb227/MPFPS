@@ -304,6 +304,10 @@ shape = SubResource("ConvexPolygonShape3D_pytuy")
 script = ExtResource("7_pytuy")
 damagePerTick = 1.0
 instantKill = true
+hurtsInnocents = true
+hurtsTraitors = true
+hurtsNPCs = true
+active = true
 metadata/_custom_type_script = "uid://chlcmntip4s3"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox"]

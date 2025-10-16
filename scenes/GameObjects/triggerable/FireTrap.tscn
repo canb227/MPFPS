@@ -193,7 +193,7 @@ hurtsInnocents = true
 hurtsTraitors = true
 hurtsNPCs = true
 active = true
-damageSoundType = 1
+damageSoundType = 2
 
 [node name="HurtBoxShape" type="CollisionShape3D" parent="Hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4694743, 0.04663086, 0.03012085)

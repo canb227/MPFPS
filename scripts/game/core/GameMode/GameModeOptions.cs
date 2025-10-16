@@ -36,6 +36,8 @@ public class GameModeOptions
     public int manualTraitorCount = 0;
     [Key(10)]
     public int manualManagerCount = 0;
+    [Key(11)]
+    public int itemsPerPackage = 3;
 
 
 }

@@ -2,6 +2,8 @@ using Godot;
 using MessagePack;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 
 public enum GameModeType
@@ -14,11 +16,18 @@ public enum GameModeType
 public partial class GameModeManager : Node
 {
 
-
+    public SpawnManager spawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
     public List<ulong> disconnectedPlayers = new();
     public List<PackageOrderInfo> packageOrders = new();
+    
+    public List<string> possibleRoundAddressNumbers = new();
+    public List<string> possibleRoundAddressStreets = new();
+    public List<string> possibleRoundAddressSuffixes = new();
+    public Dictionary<GameObjectType, int> minimumItemTypeCount = new();
+
+
    
     /// <summary>
     /// Our current local understanding of gameState options
@@ -78,7 +87,7 @@ public partial class GameModeManager : Node
         await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
         AssignRoles();
 
-        GenerateOrders();
+
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -130,8 +139,7 @@ public partial class GameModeManager : Node
         }
         else
         {
-            //
-            Logging.Log("Cleaning up previous round as Peer, done as a map reload later?", "GameModeManager");
+            Logging.Log("Cleaning up previous round as Peer if needed, done as a map reload later?", "GameModeManager");
             GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
             RPCManager.RPC(pc, "ReleaseControl", []);
             foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
@@ -140,16 +148,21 @@ public partial class GameModeManager : Node
                 basicPlayer.QueueFree();
             }
             basicPlayers.Clear();
-            //
+
             Logging.Log("Starting New Round as Peer", "GameModeManager");
             //RPCManager.RPC(pc, "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
+        roundNumber++;
         //clear the scoreboard , role assignment comes later
         Global.ui.inGameUI.RoundReport.NewRound();
         Global.ui.inGameUI.ScoreBoard.NewRound();
-        roundNumber++;
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            GenerateOrders();
+            spawnManager.GenerateItems(minimumItemTypeCount);
+        }
     }
 
 
@@ -164,9 +177,75 @@ public partial class GameModeManager : Node
     public void GenerateOrders()
     {
         packageOrders.Clear();
-        //generate and add to packageOrders
-        ordersNeeded = 4;
+
+        //determine our possible address details
+        Random rand = new();
+        possibleRoundAddressNumbers = possibleAddressNumbersSuperSet
+            .OrderBy(x => rand.Next())
+            .Take(4)
+            .ToList();
+
+        possibleRoundAddressStreets = possibleAddressStreetsSuperSet
+            .OrderBy(x => rand.Next())
+            .Take(4)
+            .ToList();
+
+        possibleRoundAddressSuffixes = possibleAddressSuffixesSuperSet
+            .OrderBy(x => rand.Next())
+            .Take(4)
+            .ToList();
+
+        ordersNeeded = 4; //determine this dynamically or via some pre-set scale
+
+
+        // we create duplicates so we keep the possibles for other uses, monitors etc
+        List<string> numbers = possibleRoundAddressNumbers.ToList();
+        List<string> streets = possibleRoundAddressStreets.ToList();
+        List<string> suffixes = possibleRoundAddressSuffixes.ToList();
+        for (int i = 0; i < ordersNeeded; i++)
+        {
+            if (numbers.Count == 0 || streets.Count == 0 || suffixes.Count == 0)
+                break; // stop if we run out of unique options
+
+            // Pick random index from each list
+            int numIndex = rand.Next(numbers.Count);
+            int streetIndex = rand.Next(streets.Count);
+            int suffixIndex = rand.Next(suffixes.Count);
+
+            string number = numbers[numIndex];
+            string street = streets[streetIndex];
+            string suffix = suffixes[suffixIndex];
+
+            // Remove the used options so they can't be reused
+            numbers.RemoveAt(numIndex);
+            streets.RemoveAt(streetIndex);
+            suffixes.RemoveAt(suffixIndex);
+
+            //pick some random item enums
+            List<GameObjectType> allPossibleTypes = GameObjectLoader.GetAllObjectsOfType(typeof(GOPackageItem));
+            List<GameObjectType> randomTypes = new();
+            for (int j = 0; j < options.itemsPerPackage; j++)
+            {
+                GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)-1];
+                randomTypes.Add(randomType);
+
+                if (minimumItemTypeCount.ContainsKey(randomType))
+                    minimumItemTypeCount[randomType]++;
+                else
+                    minimumItemTypeCount[randomType] = 1;
+            }
+            // Construct your order with the chosen values
+            packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
+        }
+        RPCManager.RPC(this, "SetPackageOrders", [packageOrders]);
     }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void SetPackageOrders(List<PackageOrderInfo> packageOrders)
+    {
+        this.packageOrders = packageOrders;
+    }
+
 
     public void AssignRoles()
     {
@@ -411,6 +490,31 @@ public partial class GameModeManager : Node
             Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
         }
     }
+
+    public readonly static List<string> possibleAddressNumbersSuperSet = new()
+    {
+        "101", "123", "145", "200", "256",
+        "300", "325", "400", "450", "500",
+        "612", "700", "742", "800", "850",
+        "900", "950", "1000", "1105", "1200", 
+    };
+
+    public readonly static List<string> possibleAddressStreetsSuperSet = new()
+    {
+        "Main", "Oak", "Pine", "Maple", "Cedar",
+        "Elm", "Walnut", "Chestnut", "Birch", "Willow",
+        "Highland", "Riverside", "Park", "Hillcrest", "Sunset",
+        "Valley", "Forest", "Lakeview", "Broadway", "Washington"
+    };
+
+    public readonly static List<string> possibleAddressSuffixesSuperSet = new()
+    {
+        "Street", "Avenue", "Road", "Boulevard", "Lane",
+        "Drive", "Court", "Circle", "Terrace", "Place",
+        "Way", "Trail", "Parkway", "Square", "Loop",
+        "Crescent", "Highway", "Row", "Alley", "Commons"
+    };
+
 }
 
 public enum Team

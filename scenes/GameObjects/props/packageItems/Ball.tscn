@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://btoejklvvye8q"]
+
+[ext_resource type="Script" uid="uid://cye1eerla8svy" path="res://scripts/game/GameObjects/RigidBodies/GOPackageItem.cs" id="1_jy20a"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_rggur"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ickoh"]
+
+[node name="GOPackageItem" type="RigidBody3D"]
+script = ExtResource("1_jy20a")
+metadata/_custom_type_script = "uid://cye1eerla8svy"
+
+[node name="GOPackageItem" type="RigidBody3D" parent="." node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
+script = ExtResource("1_jy20a")
+packageItemMesh = NodePath("mesh")
+packageItemCollider = NodePath("collider")
+metadata/_custom_type_script = "uid://cye1eerla8svy"
+
+[node name="mesh" type="MeshInstance3D" parent="GOPackageItem"]
+mesh = SubResource("SphereMesh_rggur")
+skeleton = NodePath("")
+
+[node name="collider" type="CollisionShape3D" parent="GOPackageItem"]
+shape = SubResource("SphereShape3D_ickoh")

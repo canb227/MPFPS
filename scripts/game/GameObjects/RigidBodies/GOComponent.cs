@@ -3,7 +3,7 @@ using Godot;
 using MessagePack;
 
 [GlobalClass]
-public partial class GOPackageItem : SimpleShape
+public partial class GOComponent : SimpleShape
 {
     [Export] public MeshInstance3D packageItemMesh { get; set; }
     [Export] public CollisionShape3D packageItemCollider { get; set; }
@@ -23,4 +23,5 @@ public partial class GOPackageItem : SimpleShape
         return false;
     }
 }
+
 
