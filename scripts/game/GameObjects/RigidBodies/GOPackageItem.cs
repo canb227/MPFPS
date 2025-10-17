@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using MessagePack;
@@ -7,7 +8,21 @@ public partial class GOPackageItem : SimpleShape
 {
     [Export] public MeshInstance3D packageItemMesh { get; set; }
     [Export] public CollisionShape3D packageItemCollider { get; set; }
-    [Export] public GameObjectType itemType;
+    [Export] public GameObjectType itemType { get; set; }
+    [Export] public Texture2D icon { get; set; }
+    [Export] public String displayName { get; set; }
+
+    public static Dictionary<GameObjectType, string> ItemIconDictionary = new()
+    {
+
+    };
+
+    public static Dictionary<GameObjectType, string> ItemDisplayNameDictionary = new()
+    {
+
+    };
+
+    
 
     public override void _Ready()
     {

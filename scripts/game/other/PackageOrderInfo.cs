@@ -35,7 +35,7 @@ public class PackageOrderInfo
         Global.gameState.gameModeManager.SetNumFinishedOrders(Global.gameState.gameModeManager.GetNumFinishedOrders() + 1);
     }
 
-    public bool IsOrderFinished()
+    public bool OrderIsFinished()
     {
         return isFinished;
     }

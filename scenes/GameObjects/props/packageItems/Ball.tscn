@@ -6,19 +6,16 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ickoh"]
 
-[node name="GOPackageItem" type="RigidBody3D"]
-script = ExtResource("1_jy20a")
-metadata/_custom_type_script = "uid://cye1eerla8svy"
-
-[node name="GOPackageItem" type="RigidBody3D" parent="." node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
+[node name="GOPackageItem" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
 script = ExtResource("1_jy20a")
 packageItemMesh = NodePath("mesh")
 packageItemCollider = NodePath("collider")
+itemType = 9
 metadata/_custom_type_script = "uid://cye1eerla8svy"
 
-[node name="mesh" type="MeshInstance3D" parent="GOPackageItem"]
+[node name="mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_rggur")
 skeleton = NodePath("")
 
-[node name="collider" type="CollisionShape3D" parent="GOPackageItem"]
+[node name="collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_ickoh")

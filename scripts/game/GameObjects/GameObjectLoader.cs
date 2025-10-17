@@ -6,6 +6,7 @@ using System.Security.AccessControl;
 public static class GameObjectLoader
 {
 
+
     public static Dictionary<string, (GameObjectType type, string scenePath, Type cls)> GameObjectDictionary = new()
     {
         //Misc
@@ -21,6 +22,7 @@ public static class GameObjectLoader
         {"PackageBall", (GameObjectType.PackageBall,"res://scenes/GameObjects/props/packageItems/Ball.tscn", typeof(GOPackageItem))},
         {"PackageBox", (GameObjectType.PackageBox,"res://scenes/GameObjects/props/packageItems/PaperBox.tscn", typeof(GOPackageItem))},
     };
+
 
     //get all objects from the GameObjectDictionary of a given type and return a list of their GameObjectType enum
     public static List<GameObjectType> GetAllObjectsOfType(Type type)
@@ -87,6 +89,22 @@ public static class GameObjectLoader
         }
         return null;
     }
+
+    public static Dictionary<GameObjectType, string> GameObjectIconDictionary = new()
+    {
+        //Misc
+        { GameObjectType.LabelPaper, "res://assets/ui/icons/LabelPaper.png" },
+        { GameObjectType.PaperBox, "res://assets/ui/icons/PaperBox.png" },
+        { GameObjectType.Ball, "res://assets/ui/icons/Ball.png" },
+        { GameObjectType.Ghost, "res://assets/ui/icons/Ghost.png" },
+        { GameObjectType.Hands, "res://assets/ui/icons/Hands.png" },
+        { GameObjectType.BasicPlayer, "res://assets/ui/icons/BasicPlayer.png" },
+        { GameObjectType.SwarmRobot, "res://assets/ui/icons/SwarmRobot.png" },
+
+        // PackageItems
+        { GameObjectType.PackageBall, "res://assets/ui/icons/PackageBall.png" },
+        { GameObjectType.PackageBox, "res://assets/ui/icons/PackageBox.png" },
+    };
 
 }
 
