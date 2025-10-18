@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Security.AccessControl;
+using System.Linq;
 
 public static class GameObjectLoader
 {
@@ -24,16 +25,20 @@ public static class GameObjectLoader
     };
 
 
-    //get all objects from the GameObjectDictionary of a given type and return a list of their GameObjectType enum
     public static List<GameObjectType> GetAllObjectsOfType(Type type)
     {
-        return new List<GameObjectType>();
+        return GameObjectDictionary
+            .Where(kvp => kvp.Value.cls == type)
+            .Select(kvp => kvp.Value.type)
+            .ToList();
     }
 
-    //get all objects from the GameObjectDictionary of a given type and return a list of their string keys
     public static List<string> GetAllObjectNamesOfType(Type type)
     {
-        return new List<string>();
+        return GameObjectDictionary
+            .Where(kvp => kvp.Value.cls == type)
+            .Select(kvp => kvp.Key)
+            .ToList();
     }
 
     internal static GameObject LoadObjectByType(GameObjectType type)

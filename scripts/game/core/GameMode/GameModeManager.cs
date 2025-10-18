@@ -15,6 +15,9 @@ public enum GameModeType
 
 public partial class GameModeManager : Node
 {
+    //Events
+    public static event Action OnPackageOrdersUpdated;
+    //
 
     public SpawnManager spawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
@@ -226,7 +229,7 @@ public partial class GameModeManager : Node
             List<GameObjectType> randomTypes = new();
             for (int j = 0; j < options.itemsPerPackage; j++)
             {
-                GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)-1];
+                GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)];
                 randomTypes.Add(randomType);
 
                 if (minimumItemTypeCount.ContainsKey(randomType))
@@ -237,13 +240,14 @@ public partial class GameModeManager : Node
             // Construct your order with the chosen values
             packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
         }
-        RPCManager.RPC(this, "SetPackageOrders", [packageOrders]);
+        //RPCManager.RPC(this, "SetPackageOrders", new List<object> {packageOrders}); //THIS NEEDS TO BE RPCs
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void SetPackageOrders(List<PackageOrderInfo> packageOrders)
+    public void SetPackageOrders(List<PackageOrderInfo> packageOrdersArray)
     {
-        this.packageOrders = packageOrders;
+        packageOrders = packageOrdersArray;
+        OnPackageOrdersUpdated?.Invoke();
     }
 
 
@@ -269,10 +273,6 @@ public partial class GameModeManager : Node
             numTraitors = options.manualTraitorCount;
             numManagers = options.manualManagerCount;
         }     
-        if (numTraitors > 1)
-        {
-            numManagers = 1;
-        }
         Logging.Log($"Out of {numPlayers} players, {numTraitors} will be picked as traitors", "GameModeManager");
         for (int i = 0; i < numTraitors; i++)
         {

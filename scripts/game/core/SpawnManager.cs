@@ -82,6 +82,7 @@ public static ItemMarker3D PickWeightedMarker(List<ItemMarker3D> markers, Random
         // Pick random markers that allow this type and spawn
         ItemMarker3D choosenMarker = PickWeightedMarker(roundSpawnPoints, new Random());
         SpawnItem(choosenMarker, type);
+        roundSpawnPoints.Remove(choosenMarker);
     }
 
     private void SpawnItem(string type, ItemMarker3D marker, List<ItemMarker3D> roundSpawnPoints)
@@ -99,7 +100,6 @@ public static ItemMarker3D PickWeightedMarker(List<ItemMarker3D> markers, Random
         {
             SpawnRandomPackageItem(marker);
         }
-        roundSpawnPoints.Remove(marker);
     }
 
     private void SpawnItem(ItemMarker3D marker, GameObjectType type)

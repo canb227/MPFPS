@@ -1,6 +1,6 @@
-[gd_scene load_steps=18 format=4 uid="uid://rq1ajbvigovp"]
+[gd_scene load_steps=19 format=4 uid="uid://rq1ajbvigovp"]
 
-[ext_resource type="Script" uid="uid://wshjks802r6a" path="res://scripts/game/GameObjects/Triggerable/GOLabelMonitor.cs" id="1_f0381"]
+[ext_resource type="Script" uid="uid://bgwmp1xqbe05v" path="res://scripts/game/GameObjects/StaticBodies/GOOrderMonitor.cs" id="1_b1rst"]
 [ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_2j675"]
 [ext_resource type="Texture2D" uid="uid://dw4kwuk1gsp20" path="res://assets/models/warehouse/Monitor3_Emission.png" id="3_b1bh5"]
 [ext_resource type="Texture2D" uid="uid://cq3v5vihmoiux" path="res://assets/models/warehouse/Monitor3_Roughness.png" id="4_etg75"]
@@ -10,6 +10,7 @@
 [ext_resource type="LabelSettings" uid="uid://cb2wnywd8ccac" path="res://scenes/ui/hud/MonitorFontTiny.tres" id="8_b1bh5"]
 [ext_resource type="LabelSettings" uid="uid://dk2mmexlg7wcm" path="res://scenes/ui/hud/MonitorFont1.tres" id="8_etg75"]
 [ext_resource type="Texture2D" uid="uid://pbf5lbiw2g2g" path="res://assets/models/warehouse/firehazard.png" id="9_etg75"]
+[ext_resource type="Texture2D" uid="uid://bo8phlg4dqlad" path="res://assets/ui/hud/checkmark.png" id="11_crmeu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovy27"]
 resource_name = "Monitor 3a"
@@ -106,12 +107,13 @@ albedo_texture = SubResource("ViewportTexture_etg75")
 [sub_resource type="BoxShape3D" id="BoxShape3D_awrdi"]
 size = Vector3(0.9414, 0.8323, 0.7557)
 
-[node name="GOOrderMonitor" type="StaticBody3D" node_paths=PackedStringArray("viewport")]
-script = ExtResource("1_f0381")
-viewport = NodePath("")
-addressTextOptions = Array[String](["PLACEHOLDER"])
-triggerables = Array[Object]([])
-metadata/_custom_type_script = "uid://wshjks802r6a"
+[node name="GOOrderMonitor" type="StaticBody3D" node_paths=PackedStringArray("orderNumberLabel", "packageItems", "addressLabel", "orderCompletedImage")]
+script = ExtResource("1_b1rst")
+orderNumberLabel = NodePath("SubViewport/MarginContainer/VBoxContainer/OrderNumber")
+packageItems = NodePath("SubViewport/MarginContainer/VBoxContainer/PackageItems")
+addressLabel = NodePath("SubViewport/MarginContainer/VBoxContainer/AddressLabel")
+orderCompletedImage = NodePath("SubViewport/MarginContainer/OrderFinished")
+metadata/_custom_type_script = "uid://mgqy8kbvn6nd"
 
 [node name="Mesh_OrderMonitor" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
@@ -254,3 +256,8 @@ text = "123 Address Please Buh"
 label_settings = ExtResource("8_etg75")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="OrderFinished" type="TextureRect" parent="SubViewport/MarginContainer"]
+visible = false
+layout_mode = 2
+texture = ExtResource("11_crmeu")

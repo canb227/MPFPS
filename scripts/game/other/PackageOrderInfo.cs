@@ -14,7 +14,8 @@ public class PackageOrderInfo
     public string addressSuffix;
     [Key(3)]
     public List<GameObjectType> neededPackageItems;
-    private bool isFinished;
+    [Key(4)]
+    public bool isFinished;
 
     public PackageOrderInfo()
     {
