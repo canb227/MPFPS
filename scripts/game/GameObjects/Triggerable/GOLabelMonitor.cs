@@ -11,9 +11,9 @@ public partial class GOLabelMonitor : GOBaseStaticTriggerable
     public SubViewport viewport { get; set; }
     private Label viewportLabel { get; set; }
 
-    //export is temporary for testing, should be filled elsewhere
-    [Export]
-    public Array<string> addressTextOptions { get; set; }
+    [Export] public LabelMonitorType labelMonitorType { get; set; }
+    public List<string> addressTextOptions { get; set; }
+    
     public int textOptionsIndex { get; set; } = 0;
 
 
@@ -21,6 +21,23 @@ public partial class GOLabelMonitor : GOBaseStaticTriggerable
     {
         base._Ready();
         viewportLabel = viewport.GetNode<Label>("Label");
+        GameModeManager.OnPossibleAddressesUpdated += AddressTextOptionsChanged;
+    }
+
+    public void AddressTextOptionsChanged()
+    {
+        if (labelMonitorType == LabelMonitorType.Number)
+        {
+            addressTextOptions = Global.gameState.gameModeManager.possibleRoundAddressNumbers;
+        }
+        else if (labelMonitorType == LabelMonitorType.Street)
+        {
+            addressTextOptions = Global.gameState.gameModeManager.possibleRoundAddressStreets;
+        }
+        else if (labelMonitorType == LabelMonitorType.Suffix)
+        {
+            addressTextOptions = Global.gameState.gameModeManager.possibleRoundAddressSuffixes;
+        }
         viewportLabel.Text = addressTextOptions[textOptionsIndex];
     }
 
@@ -30,5 +47,12 @@ public partial class GOLabelMonitor : GOBaseStaticTriggerable
         textOptionsIndex = (textOptionsIndex + 1) % addressTextOptions.Count;
         viewportLabel.Text = addressTextOptions[textOptionsIndex];
     }
-    
+
+}
+
+public enum LabelMonitorType
+{
+    Number,
+    Street,
+    Suffix
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=4 uid="uid://rq1ajbvigovp"]
+[gd_scene load_steps=21 format=4 uid="uid://rq1ajbvigovp"]
 
 [ext_resource type="Script" uid="uid://bgwmp1xqbe05v" path="res://scripts/game/GameObjects/StaticBodies/GOOrderMonitor.cs" id="1_b1rst"]
 [ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_2j675"]
@@ -16,7 +16,6 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovy27"]
 resource_name = "Monitor 3a"
 cull_mode = 2
-albedo_texture = ExtResource("2_2j675")
 metallic_texture = ExtResource("4_etg75")
 metallic_texture_channel = 2
 roughness_texture = ExtResource("4_etg75")
@@ -98,6 +97,10 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cikkf")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l2pxy"]
+albedo_texture = ExtResource("2_2j675")
+texture_filter = 0
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_qgd0c"]
 viewport_path = NodePath("SubViewport")
 
@@ -107,23 +110,25 @@ render_priority = 0
 shader = ExtResource("7_l2pxy")
 shader_parameter/screen_tex = SubResource("ViewportTexture_qgd0c")
 shader_parameter/curvature = 0.2
-shader_parameter/scanline_strength = 0.2
+shader_parameter/scanline_strength = 0.3
 shader_parameter/vignette_strength = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awrdi"]
 size = Vector3(0.9414, 0.8323, 0.7557)
 
-[node name="GOOrderMonitor" type="StaticBody3D" node_paths=PackedStringArray("orderNumberLabel", "packageItems", "addressLabel", "orderCompletedImage")]
+[node name="GOOrderMonitor" type="StaticBody3D" node_paths=PackedStringArray("MonitorScreen", "orderNumberLabel", "packageItems", "addressLabel", "orderCompletedImage")]
 script = ExtResource("1_b1rst")
-orderNumberLabel = NodePath("SubViewport/MarginContainer/VBoxContainer/OrderNumber")
-packageItems = NodePath("SubViewport/MarginContainer/VBoxContainer/PackageItems")
-addressLabel = NodePath("SubViewport/MarginContainer/VBoxContainer/AddressLabel")
-orderCompletedImage = NodePath("SubViewport/MarginContainer/OrderFinished")
+MonitorScreen = NodePath("SubViewport/MonitorDisplay")
+orderNumberLabel = NodePath("SubViewport/MonitorDisplay/VBoxContainer/OrderNumber")
+packageItems = NodePath("SubViewport/MonitorDisplay/VBoxContainer/PackageItems")
+addressLabel = NodePath("SubViewport/MonitorDisplay/VBoxContainer/AddressLabel")
+orderCompletedImage = NodePath("SubViewport/MonitorDisplay/OrderFinished")
 
 [node name="Mesh_OrderMonitor" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xkreb")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2pxy")
 surface_material_override/1 = SubResource("ShaderMaterial_b1rst")
 metadata/extras = {
 "center_x": 3.8146973e-06,
@@ -161,107 +166,128 @@ offset_right = 375.296
 offset_bottom = 269.31198
 texture = ExtResource("7_2j675")
 
-[node name="MarginContainer" type="MarginContainer" parent="SubViewport"]
+[node name="MonitorDisplay" type="MarginContainer" parent="SubViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/MonitorDisplay"]
 layout_mode = 2
 alignment = 1
 
-[node name="OrderNumber" type="Label" parent="SubViewport/MarginContainer/VBoxContainer"]
+[node name="OrderNumber" type="Label" parent="SubViewport/MonitorDisplay/VBoxContainer"]
 layout_mode = 2
 text = "Order #1"
 label_settings = ExtResource("8_etg75")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer2" type="Control" parent="SubViewport/MarginContainer/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="SubViewport/MonitorDisplay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PackageItems" type="HBoxContainer" parent="SubViewport/MarginContainer/VBoxContainer"]
+[node name="PackageItems" type="HBoxContainer" parent="SubViewport/MonitorDisplay/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="PackageItem1" type="VBoxContainer" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems"]
-custom_minimum_size = Vector2(128, 0)
+[node name="PackageItem1" type="VBoxContainer" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems/PackageItem1"]
+[node name="TextureRect" type="TextureRect" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem1"]
 layout_mode = 2
 texture = ExtResource("9_etg75")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems/PackageItem1"]
+[node name="Label" type="Label" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem1"]
 layout_mode = 2
 text = "Hello World"
 label_settings = ExtResource("8_b1bh5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems"]
+[node name="Spacer" type="Control" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
-[node name="PackageItem2" type="VBoxContainer" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems"]
-custom_minimum_size = Vector2(128, 0)
+[node name="PackageItem2" type="VBoxContainer" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems/PackageItem2"]
+[node name="TextureRect" type="TextureRect" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem2"]
 layout_mode = 2
 texture = ExtResource("9_etg75")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems/PackageItem2"]
+[node name="Label" type="Label" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem2"]
 layout_mode = 2
 text = "Hello World"
 label_settings = ExtResource("8_b1bh5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer2" type="Control" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems"]
+[node name="Spacer2" type="Control" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
 custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
-[node name="PackageItem3" type="VBoxContainer" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems"]
-custom_minimum_size = Vector2(128, 0)
+[node name="PackageItem3" type="VBoxContainer" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="TextureRect" type="TextureRect" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems/PackageItem3"]
+[node name="TextureRect" type="TextureRect" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem3"]
 layout_mode = 2
 texture = ExtResource("9_etg75")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SubViewport/MarginContainer/VBoxContainer/PackageItems/PackageItem3"]
+[node name="Label" type="Label" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem3"]
 layout_mode = 2
 text = "Hello World"
 label_settings = ExtResource("8_b1bh5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="SubViewport/MarginContainer/VBoxContainer"]
+[node name="Spacer3" type="Control" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="PackageItem4" type="VBoxContainer" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem4"]
+layout_mode = 2
+texture = ExtResource("9_etg75")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SubViewport/MonitorDisplay/VBoxContainer/PackageItems/PackageItem4"]
+layout_mode = 2
+text = "Hello World"
+label_settings = ExtResource("8_b1bh5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="SubViewport/MonitorDisplay/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AddressLabel" type="Label" parent="SubViewport/MarginContainer/VBoxContainer"]
+[node name="AddressLabel" type="Label" parent="SubViewport/MonitorDisplay/VBoxContainer"]
 layout_mode = 2
 text = "123 Address Please Buh"
 label_settings = ExtResource("8_etg75")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="OrderFinished" type="TextureRect" parent="SubViewport/MarginContainer"]
+[node name="OrderFinished" type="TextureRect" parent="SubViewport/MonitorDisplay"]
 visible = false
 layout_mode = 2
 texture = ExtResource("11_crmeu")

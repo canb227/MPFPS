@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=33 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" uid="uid://cergi4lpkn7h0" path="res://scenes/GameObjects/interactables/DeliveryMachine.tscn" id="8_viqb8"]
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="9_viqb8"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
-[ext_resource type="PackedScene" uid="uid://5hersv1yydvn" path="res://scenes/GameObjects/props/Ball.tscn" id="11_8d4x2"]
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
 
@@ -313,7 +312,7 @@ metadata/_custom_type_script = "uid://crewntngyd76c"
 [node name="mixedItemTest" type="Node" parent="meta/itemSpawns"]
 
 [node name="1" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.323156, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.695156, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -321,7 +320,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="2" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.502447, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.874447, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -329,7 +328,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="3" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.777456, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.149456, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -337,7 +336,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="4" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.931822, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.303822, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -345,7 +344,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="5" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.370909, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.742908, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -353,7 +352,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="6" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.715826, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.087826, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -361,7 +360,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="7" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.214422, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.586422, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -369,7 +368,7 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="8" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.413322, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.785324, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
@@ -377,11 +376,67 @@ canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="9" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.800392, -0.13796583, 23.00846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.172394, -0.13796583, 22.14509)
 script = ExtResource("1_12nid")
 canSpawnWeapons = true
 canSpawnPackageItems = true
 canSpawnComponents = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="accessoriesItemTest" type="Node" parent="meta/itemSpawns"]
+
+[node name="1" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.53086, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="2" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.71015, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="3" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.98516, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="4" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.139526, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="5" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.578613, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="6" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.92353, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="7" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.422127, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="8" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.621025, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="9" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.008095, -0.13796583, 22.259497)
+script = ExtResource("1_12nid")
+canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -416,17 +471,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.09649, -7.4796414, -1.970
 
 [node name="GOLabelMonitor" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9941063, 8.68178, 0.119417906)
-addressTextOptions = Array[String](["1234", "5678", "9123"])
 triggerables = Array[Object]([SubResource("Resource_6h6a0")])
 
 [node name="GOLabelMonitor2" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.9933434, 8.68178, 0.07935941)
-addressTextOptions = Array[String](["THATHOLDER", "THISHOLDER", "THEHOLDERING"])
+labelMonitorType = 1
 triggerables = Array[Object]([SubResource("Resource_l6pk1")])
 
 [node name="GOLabelMonitor3" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0038223267, 8.68178, 0.039525986)
-addressTextOptions = Array[String](["Street", "Court", "Drive", "Lane"])
+labelMonitorType = 2
 triggerables = Array[Object]([SubResource("Resource_7fd8x")])
 
 [node name="GOLabellingMonitorButton" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("3_k4evv")]
@@ -472,15 +526,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.154438, -0.4036541, -1.71
 [node name="basicDoor" parent="GameObjects/interactables&traps" instance=ExtResource("5_o33i4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, 1.1147871, -1.6779103)
 
-[node name="Ball" parent="GameObjects" instance=ExtResource("11_8d4x2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.659403, 0.11478615, 7.245866)
-
-[node name="Ball2" parent="GameObjects" instance=ExtResource("11_8d4x2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.659403, 0.11478615, 9.46949)
-
-[node name="Ball3" parent="GameObjects" instance=ExtResource("11_8d4x2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.659403, 0.11478615, 11.812106)
-
 [node name="SwarmRobotSpawner" parent="GameObjects" instance=ExtResource("12_12nid")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3303785, 3.5941045, -7.341351)
 
@@ -490,7 +535,7 @@ triggers = Array[Object]([SubResource("Resource_wkfce")])
 interactCooldownSeconds = 0.0
 
 [node name="Node3D" type="Node3D" parent="GameObjects"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.644836, 0, 12.036894)
+transform = Transform3D(1, 0, 0, 0, 0.98748, 0.15774444, 0, -0.15774444, 0.98748, -41.644836, 1.5254246, 12.131912)
 
 [node name="GOOrderMonitor" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.68087, 0.54171205, -0.1393528)

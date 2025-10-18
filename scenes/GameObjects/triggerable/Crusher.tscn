@@ -301,17 +301,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
 shape = SubResource("ConvexPolygonShape3D_pytuy")
 
 [node name="Hurtbox" type="Area3D" parent="PressArm"]
+collision_layer = 0
+collision_mask = 2
 script = ExtResource("7_pytuy")
-damagePerTick = 1.0
-instantKill = true
+damagePerTick = 10000.0
 hurtsInnocents = true
 hurtsTraitors = true
 hurtsNPCs = true
 active = true
+damageSoundType = 1
 metadata/_custom_type_script = "uid://chlcmntip4s3"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24401093, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0082603, 0)
 shape = SubResource("ConvexPolygonShape3D_v4yce")
 disabled = true
 debug_color = Color(0.9817453, 0.102193944, 0.22886682, 0.41960785)

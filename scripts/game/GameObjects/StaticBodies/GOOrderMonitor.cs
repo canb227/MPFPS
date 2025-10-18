@@ -6,6 +6,7 @@ using MessagePack;
 [GlobalClass]
 public partial class GOOrderMonitor : GOBaseStaticBody
 {
+    [Export] public MarginContainer MonitorScreen { get; set; }
     [Export] public Label orderNumberLabel { get; set; }
     [Export] public HBoxContainer packageItems { get; set; }
     [Export] public Label addressLabel { get; set; }
@@ -59,11 +60,13 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     {
         orderCompletedImage.Visible = false;
         orderNumberLabel.Text = "Order #" + orderNumber;
-        if(Global.gameState.gameModeManager.packageOrders.Count < orderNumber)
+        if (Global.gameState.gameModeManager.packageOrders.Count < orderNumber)
         {
             Logging.Warn("Trying to update order of a monitor that doesn't exist (packageOrders.Count < orderNumber [for this monitor]).", "GOOrderMonitor");
+            MonitorScreen.Visible = false;
             return;
         }
+        MonitorScreen.Visible = true;
         PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber-1];
         if (orderInfo.OrderIsFinished())
         {
@@ -77,7 +80,8 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         foreach (GameObjectType item in orderInfo.neededPackageItems)
         {
             VBoxContainer itemContainer = new();
-            itemContainer.CustomMinimumSize = new Vector2(128, 0);
+            //itemContainer.CustomMinimumSize = new Vector2(128, 0);
+            itemContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
             TextureRect texture = new();
             texture.Texture = (Texture2D)ResourceLoader.Load(GOPackageItem.ItemIconDictionary[item]);
             texture.ExpandMode = TextureRect.ExpandModeEnum.FitHeight;

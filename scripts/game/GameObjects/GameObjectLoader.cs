@@ -15,13 +15,22 @@ public static class GameObjectLoader
         { "PaperBox" , (GameObjectType.PaperBox, "res://scenes/GameObjects/props/PaperBox.tscn", typeof(GOPaperBox)) },
         { "ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
-        {"Hands", (GameObjectType.Hands,"res://scenes/GameObjects/items/equipment/Hands.tscn", typeof(Hands))},
         {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayerCharacter)) },
         {"swarmRobot" ,(GameObjectType.SwarmRobot,"res://scenes/GameObjects/npcs/SwarmRobot.tscn",typeof(SwarmRobot)) },
 
+        //InventoryItems
+        {"Hands", (GameObjectType.Hands,"res://scenes/GameObjects/items/equipment/Hands.tscn", typeof(Hands))},
+        {"BasicGun", (GameObjectType.BasicGun,"res://scenes/GameObjects/items/equipment/BasicGun.tscn", typeof(BasicGun))},
+
+        //AccessoryItems
+        {"BasicAccessory", (GameObjectType.BasicAccessory,"res://scenes/GameObjects/items/accessory/BasicAccessory.tscn", typeof(GOBaseAccessory))},
+
+        //Components
+        {"PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
+
         //PackageItems
         {"PackageBall", (GameObjectType.PackageBall,"res://scenes/GameObjects/props/packageItems/Ball.tscn", typeof(GOPackageItem))},
-        {"PackageBox", (GameObjectType.PackageBox,"res://scenes/GameObjects/props/packageItems/PaperBox.tscn", typeof(GOPackageItem))},
+        {"PackageBox", (GameObjectType.PackageBox,"res://scenes/GameObjects/props/packageItems/Box.tscn", typeof(GOPackageItem))},
     };
 
 
@@ -32,6 +41,15 @@ public static class GameObjectLoader
             .Select(kvp => kvp.Value.type)
             .ToList();
     }
+
+    public static Type GetTypeOfGameObjectType(GameObjectType gameObjectType)
+    {
+        return GameObjectDictionary
+            .Where(kvp => kvp.Value.type == gameObjectType)
+            .Select(kvp => kvp.Value.cls)
+            .FirstOrDefault();
+    }
+
 
     public static List<string> GetAllObjectNamesOfType(Type type)
     {
@@ -94,23 +112,6 @@ public static class GameObjectLoader
         }
         return null;
     }
-
-    public static Dictionary<GameObjectType, string> GameObjectIconDictionary = new()
-    {
-        //Misc
-        { GameObjectType.LabelPaper, "res://assets/ui/icons/LabelPaper.png" },
-        { GameObjectType.PaperBox, "res://assets/ui/icons/PaperBox.png" },
-        { GameObjectType.Ball, "res://assets/ui/icons/Ball.png" },
-        { GameObjectType.Ghost, "res://assets/ui/icons/Ghost.png" },
-        { GameObjectType.Hands, "res://assets/ui/icons/Hands.png" },
-        { GameObjectType.BasicPlayer, "res://assets/ui/icons/BasicPlayer.png" },
-        { GameObjectType.SwarmRobot, "res://assets/ui/icons/SwarmRobot.png" },
-
-        // PackageItems
-        { GameObjectType.PackageBall, "res://assets/ui/icons/PackageBall.png" },
-        { GameObjectType.PackageBox, "res://assets/ui/icons/PackageBox.png" },
-    };
-
 }
 
 public enum GameObjectType
@@ -123,8 +124,16 @@ public enum GameObjectType
     Crusher,
     LabelPaper,
     PaperBox,
+    //inventory items
     Hands,
+    BasicGun,
+    //accessory items
+    BasicAccessory,
+    //components
+    PowerCell,
+    //package items
     PackageBall,
     PackageBox,
+    //robot
     SwarmRobot
 }

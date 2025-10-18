@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://72k7rfi0kvts"]
+[gd_scene load_steps=20 format=4 uid="uid://72k7rfi0kvts"]
 
 [ext_resource type="Script" uid="uid://wshjks802r6a" path="res://scripts/game/GameObjects/Triggerable/GOLabelMonitor.cs" id="1_7w8ct"]
 [ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_3lxmq"]
@@ -12,7 +12,6 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovy27"]
 resource_name = "Monitor 3a"
 cull_mode = 2
-albedo_texture = ExtResource("2_3lxmq")
 metallic_texture = ExtResource("4_ni7p5")
 metallic_texture_channel = 2
 roughness_texture = ExtResource("4_ni7p5")
@@ -94,6 +93,10 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cikkf")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3lxmq"]
+albedo_texture = ExtResource("2_3lxmq")
+texture_filter = 0
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_5ts4f"]
 viewport_path = NodePath("screen")
 
@@ -102,9 +105,8 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("7_3lxmq")
 shader_parameter/screen_tex = SubResource("ViewportTexture_5ts4f")
-shader_parameter/time = 0.0
 shader_parameter/curvature = 0.2
-shader_parameter/scanline_strength = 0.2
+shader_parameter/scanline_strength = 0.3
 shader_parameter/vignette_strength = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awrdi"]
@@ -141,7 +143,6 @@ shadow_color = Color(0, 0, 0, 1)
 [node name="GOLabelMonitor" type="StaticBody3D" node_paths=PackedStringArray("viewport")]
 script = ExtResource("1_7w8ct")
 viewport = NodePath("screen")
-addressTextOptions = Array[String](["PLACEHOLDER"])
 triggerables = Array[Object]([])
 metadata/_custom_type_script = "uid://wshjks802r6a"
 
@@ -149,6 +150,7 @@ metadata/_custom_type_script = "uid://wshjks802r6a"
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xkreb")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_3lxmq")
 surface_material_override/1 = SubResource("ShaderMaterial_5ts4f")
 metadata/extras = {
 "center_x": 3.8146973e-06,

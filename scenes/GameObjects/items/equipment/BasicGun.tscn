@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://juf5gjmljg3f"]
+
+[ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_qceyg"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qceyg"]
+height = 1.0063477
+radius = 0.15234375
+
+[node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+script = ExtResource("1_qceyg")
+firstPersonScene = NodePath("fps")
+thirdPersonScene = NodePath("tps")
+animationPlayer = NodePath("AnimationPlayer")
+metadata/_custom_type_script = "uid://dl524mp8g0aei"
+
+[node name="fps" type="Node3D" parent="."]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="fps"]
+transform = Transform3D(0.3, 0, 0, 0, -2.1855694e-08, -0.3, 0, 0.5, -1.3113417e-08, 0.38784015, 0, 0)
+
+[node name="tps" type="Node3D" parent="."]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="tps"]
+transform = Transform3D(0.3, 0, 0, 0, -2.1855694e-08, -0.3, 0, 0.5, -1.3113417e-08, 0.38784015, 0, 0)
+
+[node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.38751912, 0.00368537, -0.0021972635)
+shape = SubResource("CylinderShape3D_qceyg")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("")

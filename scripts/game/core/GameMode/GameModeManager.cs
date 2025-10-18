@@ -17,9 +17,10 @@ public partial class GameModeManager : Node
 {
     //Events
     public static event Action OnPackageOrdersUpdated;
+    public static event Action OnPossibleAddressesUpdated;
     //
 
-    public SpawnManager spawnManager = new();
+    public ItemSpawnManager itemSpawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
     public List<ulong> disconnectedPlayers = new();
@@ -164,7 +165,7 @@ public partial class GameModeManager : Node
         if (Global.Lobby.bIsLobbyHost)
         {
             GenerateOrders();
-            spawnManager.GenerateItems(minimumItemTypeCount);
+            itemSpawnManager.GenerateItems(minimumItemTypeCount);
         }
     }
 
@@ -198,7 +199,11 @@ public partial class GameModeManager : Node
             .Take(4)
             .ToList();
 
-        ordersNeeded = 4; //determine this dynamically or via some pre-set scale
+        //RPCManager.RPC(this, "SetPossibleRoundAddresses", new List<object> {possibleRoundAddressNumbers, possibleRoundAddressStreets, possibleRoundAddressSuffixes}); //THIS NEEDS TO BE RPC'd TODO
+        OnPossibleAddressesUpdated?.Invoke(); //remove this once we fix the RPC
+
+
+        ordersNeeded = 4; //determine this dynamically or via some pre-set scale (update the Take value above too)
 
 
         // we create duplicates so we keep the possibles for other uses, monitors etc
@@ -227,7 +232,8 @@ public partial class GameModeManager : Node
             //pick some random item enums
             List<GameObjectType> allPossibleTypes = GameObjectLoader.GetAllObjectsOfType(typeof(GOPackageItem));
             List<GameObjectType> randomTypes = new();
-            for (int j = 0; j < options.itemsPerPackage; j++)
+            int randomizer = rand.Next(3)-1; //between 0 and 2 (-1) -1 to 1
+            for (int j = 0; j < options.itemsPerPackage+randomizer; j++)
             {
                 GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)];
                 randomTypes.Add(randomType);
@@ -242,6 +248,16 @@ public partial class GameModeManager : Node
         }
         //RPCManager.RPC(this, "SetPackageOrders", new List<object> {packageOrders}); //THIS NEEDS TO BE RPC'd TODO
         OnPackageOrdersUpdated?.Invoke(); //remove this once we fix the RPC
+    }
+
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void SetPossibleRoundAddresses(List<string> possibleRoundAddressNumbersArray, List<string> possibleRoundAddressStreetsArray, List<string> possibleRoundAddressSuffixesArray)
+    {
+        possibleRoundAddressNumbers = possibleRoundAddressNumbersArray;
+        possibleRoundAddressStreets = possibleRoundAddressStreetsArray;
+        possibleRoundAddressSuffixes = possibleRoundAddressSuffixesArray;
+        OnPossibleAddressesUpdated?.Invoke();
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
