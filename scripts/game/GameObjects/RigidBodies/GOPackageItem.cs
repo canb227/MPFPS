@@ -14,12 +14,14 @@ public partial class GOPackageItem : SimpleShape
 
     public static Dictionary<GameObjectType, string> ItemIconDictionary = new()
     {
-
+        {GameObjectType.PackageBall, "res://assets/ui/icons/packageball.png" },
+        {GameObjectType.PackageBox, "res://assets/ui/icons/packagebox.png" },
     };
 
     public static Dictionary<GameObjectType, string> ItemDisplayNameDictionary = new()
     {
-
+        {GameObjectType.PackageBall, "Package Ball" },
+        {GameObjectType.PackageBox, "Package Box" },
     };
 
     

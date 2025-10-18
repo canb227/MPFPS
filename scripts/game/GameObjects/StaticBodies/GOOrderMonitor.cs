@@ -59,7 +59,12 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     {
         orderCompletedImage.Visible = false;
         orderNumberLabel.Text = "Order #" + orderNumber;
-        PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber];
+        if(Global.gameState.gameModeManager.packageOrders.Count < orderNumber)
+        {
+            Logging.Warn("Trying to update order of a monitor that doesn't exist (packageOrders.Count < orderNumber [for this monitor]).", "GOOrderMonitor");
+            return;
+        }
+        PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber-1];
         if (orderInfo.OrderIsFinished())
         {
             Logging.Warn("Trying to assign order to a monitor that has already been finished.", "GOOrderMonitor");

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://72k7rfi0kvts"]
+[gd_scene load_steps=19 format=4 uid="uid://72k7rfi0kvts"]
 
 [ext_resource type="Script" uid="uid://wshjks802r6a" path="res://scripts/game/GameObjects/Triggerable/GOLabelMonitor.cs" id="1_7w8ct"]
 [ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_3lxmq"]
@@ -6,7 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://cq3v5vihmoiux" path="res://assets/models/warehouse/Monitor3_Roughness.png" id="4_ni7p5"]
 [ext_resource type="Texture2D" uid="uid://dledak8w4n2nv" path="res://assets/models/warehouse/happinessisefficiency.png" id="5_6flwn"]
 [ext_resource type="Texture2D" uid="uid://dw84rikvuk5mw" path="res://assets/models/warehouse/hanging_picture_frame_01_artwork_roughness_8k.png" id="6_yma4g"]
-[ext_resource type="PackedScene" uid="uid://cwfuhttyy326e" path="res://scenes/ui/ingame/labelmonitor.tscn" id="7_sec04"]
+[ext_resource type="Shader" uid="uid://d2cgrd2gvprri" path="res://assets/materials/MonitorShader.gdshader" id="7_3lxmq"]
+[ext_resource type="Texture2D" uid="uid://dbdl8oquvln6u" path="res://assets/models/warehouse/crt_screen_mp_1.png" id="8_3lxmq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovy27"]
 resource_name = "Monitor 3a"
@@ -93,12 +94,18 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cikkf")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_i6lxw"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_5ts4f"]
 viewport_path = NodePath("screen")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t7ldp"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5ts4f"]
 resource_local_to_scene = true
-albedo_texture = SubResource("ViewportTexture_i6lxw")
+render_priority = 0
+shader = ExtResource("7_3lxmq")
+shader_parameter/screen_tex = SubResource("ViewportTexture_5ts4f")
+shader_parameter/time = 0.0
+shader_parameter/curvature = 0.2
+shader_parameter/scanline_strength = 0.2
+shader_parameter/vignette_strength = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awrdi"]
 size = Vector3(0.9414, 0.8323, 0.7557)
@@ -126,9 +133,13 @@ _data = {
 &"next": SubResource("Animation_rk2r3")
 }
 
-[node name="GOLabelMonitor" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "viewport")]
+[sub_resource type="LabelSettings" id="LabelSettings_c6i82"]
+font_size = 64
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="GOLabelMonitor" type="StaticBody3D" node_paths=PackedStringArray("viewport")]
 script = ExtResource("1_7w8ct")
-animationPlayer = NodePath("AnimationPlayer")
 viewport = NodePath("screen")
 addressTextOptions = Array[String](["PLACEHOLDER"])
 triggerables = Array[Object]([])
@@ -138,7 +149,7 @@ metadata/_custom_type_script = "uid://wshjks802r6a"
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xkreb")
 skeleton = NodePath("")
-surface_material_override/1 = SubResource("StandardMaterial3D_t7ldp")
+surface_material_override/1 = SubResource("ShaderMaterial_5ts4f")
 metadata/extras = {
 "center_x": 3.8146973e-06,
 "center_y": 0.416152,
@@ -170,4 +181,30 @@ libraries = {
 &"": SubResource("AnimationLibrary_2w72s")
 }
 
-[node name="screen" parent="." instance=ExtResource("7_sec04")]
+[node name="screen" type="SubViewport" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="screen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_3lxmq")
+
+[node name="Label" type="Label" parent="screen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -53.0
+offset_top = -89.5
+offset_right = 53.0
+offset_bottom = 89.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "ADDRESS STUFF"
+label_settings = SubResource("LabelSettings_c6i82")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

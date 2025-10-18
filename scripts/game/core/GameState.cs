@@ -196,10 +196,14 @@ public partial class GameState : Node3D
         }
 
         // Draw ImGUI debug screens if they are on
-        if(Global.DrawDebugScreens)
+        if (Global.DrawDebugScreens)
         {
             GameStateDebug();
         }
+        
+        //update time global shader parameter
+        float t = Time.GetTicksMsec() / 1000.0f;
+        RenderingServer.GlobalShaderParameterSet("time", t);
     }
 
     public override void _PhysicsProcess(double delta)

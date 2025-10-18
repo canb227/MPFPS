@@ -240,7 +240,8 @@ public partial class GameModeManager : Node
             // Construct your order with the chosen values
             packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
         }
-        //RPCManager.RPC(this, "SetPackageOrders", new List<object> {packageOrders}); //THIS NEEDS TO BE RPCs
+        //RPCManager.RPC(this, "SetPackageOrders", new List<object> {packageOrders}); //THIS NEEDS TO BE RPC'd TODO
+        OnPackageOrdersUpdated?.Invoke(); //remove this once we fix the RPC
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
