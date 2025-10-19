@@ -222,6 +222,8 @@ fill_to = Vector2(0.5641026, 0)
 size = Vector2(26, 26)
 
 [node name="GODeliveryGameMonitor" type="StaticBody3D" node_paths=PackedStringArray("lockCameraPosition", "lockPlayerPosition", "vehicle2D")]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_4hkts")
 lockCameraPosition = NodePath("CameraPosition")
 lockPlayerPosition = NodePath("PlayerPosition")

@@ -144,14 +144,7 @@ public partial class GameModeManager : Node
         else
         {
             Logging.Log("Cleaning up previous round as Peer if needed, done as a map reload later?", "GameModeManager");
-            GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
-            RPCManager.RPC(pc, "ReleaseControl", []);
-            foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
-            {
-                Global.gameState.GameObjects.Remove(basicPlayer.id);
-                basicPlayer.QueueFree();
-            }
-            basicPlayers.Clear();
+            MapManager.ResetMap();
 
             Logging.Log("Starting New Round as Peer", "GameModeManager");
             //RPCManager.RPC(pc, "ReleaseControl", []);
