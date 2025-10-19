@@ -12,9 +12,12 @@ height = 0.7019043
 radius = 0.20361328
 
 [node name="GOComponent" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_wqfhx")
 packageItemMesh = NodePath("MeshInstance3D")
 packageItemCollider = NodePath("CollisionShape3D")
+itemType = 11
 metadata/_custom_type_script = "uid://xm7xs4yetmrl"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

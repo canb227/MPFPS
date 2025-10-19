@@ -9,6 +9,8 @@ size = Vector3(2, 3, 0.3)
 points = PackedVector3Array(0.96530604, 1.4364533, 0.14999999, -1.0238096, -1.5235113, -0.1738095, -0.96530604, -1.4364533, 0.14999999, -1.0238096, 1.5235113, -0.1738095, 1.0238096, -1.5235113, -0.1738095, 1.0238096, 1.5235113, -0.1738095, -0.96530604, 1.4364533, 0.14999999, 0.96530604, -1.4364533, 0.14999999)
 
 [node name="GOOneWayHingeDoor" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_gjw82")
 interruptable = true
 degreesPerSecond = 10.0

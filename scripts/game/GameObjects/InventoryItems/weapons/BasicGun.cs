@@ -10,10 +10,17 @@ using System.Threading.Tasks;
 
 
 [GlobalClass]
-public partial class BasicGun : GOBaseInventoryItem
+public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 {
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
     public override bool droppable { get; set; } = true;
+    public ulong currentlyHeldBy { get; set; }
+    public bool customHeldPhysics { get; set; }
+    public bool snapHoldNoPhysics { get; set; }
+    public float heldWeight { get; set; }
+    public float heldDrag { get; set; }
+    public float heldFriction { get; set; }
+
 
     private ActionFlags lastTickActions;
     public override void HandleInput(ActionFlags input)
@@ -23,6 +30,22 @@ public partial class BasicGun : GOBaseInventoryItem
             Logging.Log($"Pew!", "BasicGun");
         }
     }
+
+    public virtual void OnHold(ulong byID)
+    {
+        GravityScale = 0.1f;
+        LinearDamp = 20;
+        AngularDamp = 5;
+    }
+
+    public virtual void OnRelease(ulong byID)
+    {
+        LinearVelocity = LinearVelocity.Clamp(0, 5);
+        GravityScale = 1;
+        LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
+        AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
+    }
+
 }
 
 [MessagePackObject]

@@ -9,6 +9,8 @@ size = Vector3(0.667, 0.2, 0.4)
 size = Vector3(0.6709137, 0.20661926, 0.38763428)
 
 [node name="GOPaperBox" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_ljsgb")
 metadata/_custom_type_script = "uid://e7jb8mwh675p"
 

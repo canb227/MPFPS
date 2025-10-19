@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=34 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
+[ext_resource type="PackedScene" uid="uid://juf5gjmljg3f" path="res://scenes/GameObjects/items/equipment/BasicGun.tscn" id="14_o4214"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -449,6 +450,9 @@ shadow_enabled = true
 [node name="SteamAudioConfig" type="SteamAudioConfig" parent="."]
 
 [node name="GameObjects" type="Node3D" parent="."]
+
+[node name="BasicGun" parent="GameObjects" instance=ExtResource("14_o4214")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.50813, 1.8264914, 5.05361)
 
 [node name="interactables&traps" type="Node3D" parent="GameObjects"]
 
