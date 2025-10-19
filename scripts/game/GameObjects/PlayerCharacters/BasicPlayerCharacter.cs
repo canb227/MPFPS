@@ -55,6 +55,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         rayCast = new();
         rayCast.TargetPosition = new Vector3(0, 0, -10);
         rayCast.CollideWithBodies = true;
+        rayCast.CollisionMask = 1 << 1;
         camera.AddChild(rayCast);
     }
     public override void ProcessStateUpdate(byte[] _update)
@@ -142,8 +143,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (rayCast.IsColliding())
             {
+                Logging.Log("Pressed Use And Its Colliding", "BasicPlayerCharacter");
+                var temp = rayCast.GetCollider();
+                Logging.Log("HELP: "+temp.GetType().ToString(), "BasicPlayerCharacter");
                 if (rayCast.GetCollider() is IsInventoryItem s)
                 {
+                    Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
                     Pickup(s);
                 }
                 else if (rayCast.GetCollider() is IsInteractable i)
@@ -327,7 +332,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                         (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
                         replaced.OnDropped(controllingPlayerID);
                     }
-
                 }
             }
             if (IsMe())

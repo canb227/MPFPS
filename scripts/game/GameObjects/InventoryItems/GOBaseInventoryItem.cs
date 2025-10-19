@@ -33,13 +33,15 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
         firstPersonScene.Hide();
         thirdPersonScene.Show();
         this.CollisionLayer = 2;
-        Freeze = true;
+        Freeze = false;
     }
 
     public virtual void OnDropped(ulong byID)
     {
-        Freeze = false;
+        firstPersonScene.Hide();
+        thirdPersonScene.Show();
         this.CollisionLayer = 2;
+        Freeze = false;
         equippedBy = 0;
         inInventoryOf = 0;
     }

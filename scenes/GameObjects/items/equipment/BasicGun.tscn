@@ -7,6 +7,8 @@ height = 1.0063477
 radius = 0.15234375
 
 [node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_qceyg")
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")

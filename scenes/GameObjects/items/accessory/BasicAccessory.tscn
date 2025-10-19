@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_a1vfx"]
 
-[sub_resource type="PrismMesh" id="PrismMesh_uoh2q"]
-
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_c2hcc"]
 points = PackedVector3Array(0, 0.5, 0.5, 0.5, -0.5, 0.5, 0, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="PrismMesh" id="PrismMesh_uoh2q"]
 
 [node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
 script = ExtResource("1_a1vfx")
@@ -13,6 +13,10 @@ firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
+
+[node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0.37532276, 0.103235066, 0)
+shape = SubResource("ConvexPolygonShape3D_c2hcc")
 
 [node name="fps" type="Node3D" parent="."]
 
@@ -25,10 +29,6 @@ mesh = SubResource("PrismMesh_uoh2q")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="tps"]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0.37532276, 0.103235066, 0)
 mesh = SubResource("PrismMesh_uoh2q")
-
-[node name="collider" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0.37532276, 0.103235066, 0)
-shape = SubResource("ConvexPolygonShape3D_c2hcc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("")
