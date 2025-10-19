@@ -1,11 +1,13 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 public static class MapManager
 {
     private static Node3D nodeStaticLevel;
+    private static PackedScene cachedLevel;
     private static List<Marker3D> PlayerSpawnPoints = new();
     public static List<ItemMarker3D> ItemSpawnPoints = new();
     private static ulong staticIDCounter = 1;
@@ -15,6 +17,20 @@ public static class MapManager
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }
     
+    public async static Task ResetMap()
+    {
+        Global.gameState.RemoveChild(nodeStaticLevel);
+        PlayerSpawnPoints.Clear();
+        ItemSpawnPoints.Clear();
+        staticIDCounter = 1;
+
+        await Global.gameState.ToSignal(Global.gameState.GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
+        Global.gameState.AddChild(nodeStaticLevel);
+        LoadMapMetas();
+        LoadMapGameObjects();
+    }
 
     /// <summary>
     /// Loads a Scene from the file system that holds a static level. Basic processing is done to fetch various nodes we expect to see in the level <see cref="LoadMapMetas"/>
@@ -29,7 +45,8 @@ public static class MapManager
             nodeStaticLevel.QueueFree();
             nodeStaticLevel = null;
         }
-        nodeStaticLevel = ResourceLoader.Load<PackedScene>(scenePath).Instantiate<Node3D>();
+        cachedLevel = ResourceLoader.Load<PackedScene>(scenePath);
+        nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
         Global.gameState.AddChild(nodeStaticLevel);
         LoadMapMetas();
         LoadMapGameObjects();
@@ -79,7 +96,7 @@ public static class MapManager
         {
             Node itemSpawns = meta.GetNode("itemSpawns");
             CollectItemMarkers(itemSpawns, ItemSpawnPoints);
-            Logging.Log($"Loaded {PlayerSpawnPoints.Count} player spawn points.", "GameStateLevel");
+            Logging.Log($"Loaded {ItemSpawnPoints.Count} item spawn points.", "GameStateLevel");
         }
         else
         {

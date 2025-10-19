@@ -1,10 +1,13 @@
 using Godot;
 using MessagePack;
+using MessagePack.Formatters;
+using MessagePack.Resolvers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,9 +55,14 @@ public static class RPCManager
     public delegate void ChatReceived(string msg, ulong sender);
     public static event ChatReceived ChatReceivedEvent;
 
-
+    private static IFormatterResolver resolver;
     public static void DiscoverRPCMethods()
     {
+
+        resolver = MessagePack.Resolvers.CompositeResolver.Create(
+        new[] { MessagePack.Formatters.TypelessFormatter.Instance },
+        new[] { MessagePack.Resolvers.StandardResolver.Instance, GodotResolver.Instance });
+
         Logging.Log($"Searching for RPC methods!", "RPCManager");
         Assembly assembly = Assembly.GetExecutingAssembly();
         foreach (Type type in assembly.GetTypes())
@@ -114,19 +122,39 @@ public static class RPCManager
         Logging.Log($"RPC SENT: Type=Chat, data={MessagePackSerializer.ConvertToJson(payload)}", "RPCManager");
         Global.network.BroadcastData(payload, Channel.NetCommands, Global.Lobby.lobbyPeers.ToList());
     }
-    
+
+    [MessagePackObject]
+    public class RPCMessage
+    {
+        [Key(0)]
+        public string nodePath;
+
+        [Key(1)]
+        public string methodName;
+
+        [Key(2)]
+        public dynamic[] parameters;
+
+    }
 
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
+        Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message)}", "RPCManagerWire");
+        
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
 
+        Logging.Log($"Successfully parsed payload. Parameter list has {packet.parameters.Length} values:", "RPCManagerWire");
+        foreach (var obj in packet.parameters)
+        {
+            Logging.Log($"parameter type: {obj.GetType()} | parameter to string {obj.ToString()}", "RPCManagerWire");
+        }
         ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
     }
 
-    public static void RPC(Node context, string methodName, List<Object> parameters)
+    public static void RPC(Node context, string methodName, object[] parameters)
     {
 
-        //bool isAuthority = Global.steamid == context.authority;
+
         MethodInfo method = context.GetType().GetMethod(methodName);
         if (method == null)
         {
@@ -137,6 +165,7 @@ public static class RPCManager
         {
             Logging.Error($"RPC on target type: {context.GetType().ToString()} targets method missing RPC annotation!!!:{methodName}", "RPCManager");
         }
+
         if (attribute.mode == RPCMode.OnlySendToAuth)
         {
             ulong authority = 0;
@@ -153,7 +182,9 @@ public static class RPCManager
             packet.methodName = methodName;
             packet.parameters = parameters;
 
-            Global.network.SendData(MessagePackSerializer.Serialize(packet), Channel.RPC, authority);
+            byte[] bytes = MessagePackSerializer.Serialize(packet);
+            Logging.Log($"Sending to auth RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
+            Global.network.SendData(bytes, Channel.RPC, authority);
         }
         else if(attribute.mode == RPCMode.SendToAllPeers)
         {
@@ -162,12 +193,18 @@ public static class RPCManager
             packet.methodName = methodName;
             packet.parameters = parameters;
 
-            Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.RPC, Global.Lobby.AllPeers());
+            byte[] bytes = MessagePackSerializer.Serialize(packet);
+            Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
+            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers());
+            
+
         }
     }
 
-    public static void ProcessRPC(NodePath path, string methodName, List<Object> parameters)
+    public static void ProcessRPC(NodePath path, string methodName, object[] parameters, bool paramsValueTypeOnly = false)
     {
+
+
 
         Node node = Global.instance.GetNode(path);
         if (node == null)
@@ -184,7 +221,8 @@ public static class RPCManager
         }
         try
         {
-            method.Invoke(node, parameters.ToArray());
+
+            method.Invoke(node, parameters);
         }
         catch (Exception e)
         {
@@ -199,15 +237,3 @@ public static class RPCManager
 
 }
 
-[MessagePackObject]
-public struct RPCMessage
-{
-    [Key(0)]
-    public string nodePath;
-
-    [Key(1)]
-    public string methodName;
-
-    [Key(2)]
-    public List<Object> parameters;
-}

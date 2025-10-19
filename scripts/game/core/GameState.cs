@@ -154,6 +154,19 @@ public partial class GameState : Node3D
         ProcessMode = ProcessModeEnum.Pausable;
     }
 
+    public void ResetGameState()
+    {
+        foreach (var go in GameObjects.Values)
+        {
+            (go as Node).QueueFree();
+        }
+        foreach (var playerID in PlayerIDToControlledCharacter.Keys)
+        {
+            PlayerIDToControlledCharacter[playerID] = 0;
+        }
+        GameObjects.Clear();
+    }
+
     private void OnNewLobbyPeerAdded(ulong newPlayerSteamID)
     {
         if (!NetworkUtils.IsMe(newPlayerSteamID))

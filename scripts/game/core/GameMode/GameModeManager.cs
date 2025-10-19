@@ -132,7 +132,7 @@ public partial class GameModeManager : Node
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void StartNewRound()
+    public async void StartNewRound()
     {
         if (roundNumber == 0)
         {
@@ -143,18 +143,27 @@ public partial class GameModeManager : Node
         }
         else
         {
-            Logging.Log("Cleaning up previous round as Peer if needed, done as a map reload later?", "GameModeManager");
-            GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
-            RPCManager.RPC(pc, "ReleaseControl", []);
+            //Logging.Log("Cleaning up previous round as Peer if needed, done as a map reload later?", "GameModeManager");
+            //GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
+            //RPCManager.RPC(pc, "ReleaseControl", []);
+            //foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
+            //{
+            //    Global.gameState.GameObjects.Remove(basicPlayer.id);
+            //    basicPlayer.QueueFree();
+            //}
+            //basicPlayers.Clear();
+
+            //Logging.Log("Starting New Round as Peer", "GameModeManager");
+            ////RPCManager.RPC(pc, "ReleaseControl", []);
+            ///
             foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
             {
-                Global.gameState.GameObjects.Remove(basicPlayer.id);
-                basicPlayer.QueueFree();
+                basicPlayer.ReleaseControl();
             }
             basicPlayers.Clear();
+            Global.gameState.ResetGameState();
+            await MapManager.ResetMap();
 
-            Logging.Log("Starting New Round as Peer", "GameModeManager");
-            //RPCManager.RPC(pc, "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
@@ -246,8 +255,8 @@ public partial class GameModeManager : Node
             // Construct your order with the chosen values
             packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
         }
-        //RPCManager.RPC(this, "SetPackageOrders", new List<object> {packageOrders}); //THIS NEEDS TO BE RPC'd TODO
-        OnPackageOrdersUpdated?.Invoke(); //remove this once we fix the RPC
+        RPCManager.RPC(this, "SetPackageOrders", [ packageOrders.ToList() ]); //THIS NEEDS TO BE RPC'd TODO
+        //OnPackageOrdersUpdated?.Invoke(); //remove this once we fix the RPC
     }
 
     

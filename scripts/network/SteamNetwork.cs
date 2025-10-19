@@ -20,7 +20,6 @@ public enum Channel
     PlayerData = 5,
     NetCommands = 6,
     RPC = 7,
-
 }
 /// <summary>
 /// Handles low level networking functions - implemented using SteamMessages
@@ -101,7 +100,7 @@ public class SteamNetwork
         //Uncomment this if steam relay network is being stupid
         //SteamNetworkHealthManager();
 
-        var resolver = MessagePack.Resolvers.CompositeResolver.Create(GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance);
+        var resolver = MessagePack.Resolvers.CompositeResolver.Create([MessagePack.Formatters.TypelessFormatter.Instance],[GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance]);
         var options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
         MessagePackSerializer.DefaultOptions = options;
     }

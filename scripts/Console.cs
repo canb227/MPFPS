@@ -53,6 +53,7 @@ public partial class Console : Node
         LimboConsole.RegisterCommand(new Callable(this, MethodName.interact));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.spawnRobot));
         LimboConsole.RegisterCommand(new Callable(this, MethodName.trigger));
+        LimboConsole.RegisterCommand(new Callable(this, MethodName.ForceStartNewRound));
     }
 
 
@@ -199,7 +200,11 @@ public partial class Console : Node
     }
 
     ////////////////////////////////////// IN GAME ///////////////////////////////////////////////
-    
+    public void ForceStartNewRound()
+    {
+        RPCManager.RPC(Global.gameState.gameModeManager, GameModeManager.MethodName.ForceEndRound, []);
+        RPCManager.RPC(Global.gameState.gameModeManager, GameModeManager.MethodName.StartNewRound, []);
+    }
     public void spawnRobot()
     {
         GameObjectConstructorData data = new(GameObjectType.SwarmRobot);
