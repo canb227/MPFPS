@@ -203,7 +203,7 @@ public partial class Console : Node
     public void ForceStartNewRound()
     {
         RPCManager.RPC(Global.gameState.gameModeManager, GameModeManager.MethodName.ForceEndRound, []);
-        RPCManager.RPC(Global.gameState.gameModeManager, GameModeManager.MethodName.StartNewRound, []);
+      //  RPCManager.RPC(Global.gameState.gameModeManager, GameModeManager.MethodName.StartNewRound, []);
     }
     public void spawnRobot()
     {

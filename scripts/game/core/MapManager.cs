@@ -19,7 +19,8 @@ public static class MapManager
     
     public async static Task ResetMap()
     {
-        Global.gameState.RemoveChild(nodeStaticLevel);
+        nodeStaticLevel.QueueFree();
+        nodeStaticLevel = null;
         PlayerSpawnPoints.Clear();
         ItemSpawnPoints.Clear();
         staticIDCounter = 1;
@@ -107,17 +108,24 @@ public static class MapManager
 
     private static void CollectItemMarkers(Node parent, List<ItemMarker3D> list)
     {
-        foreach (Node child in parent.GetChildren())
+
+        foreach (Node node in Utils.GetChildrenRecursive(parent, new()))
         {
-            if (child is ItemMarker3D marker)
+            if (node is ItemMarker3D marker)
             {
                 list.Add(marker);
             }
+            //foreach (Node child in parent.GetChildren())
+            //{
+            //    if (child is ItemMarker3D marker)
+            //    {
+            //        list.Add(marker);
+            //    }
 
-            // Recurse into this child's children
-            CollectItemMarkers(child, list);
+            //    // Recurse into this child's children
+            //    CollectItemMarkers(child, list);
+            //}
         }
     }
-
 }
 
