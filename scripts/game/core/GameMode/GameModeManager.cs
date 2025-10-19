@@ -156,10 +156,10 @@ public partial class GameModeManager : Node
             //Logging.Log("Starting New Round as Peer", "GameModeManager");
             ////RPCManager.RPC(pc, "ReleaseControl", []);
             ///
-            foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
-            {
-                basicPlayer.ReleaseControl();
-            }
+            // foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
+            // {
+            //     basicPlayer.ReleaseControl();
+            // }
             basicPlayers.Clear();
             Global.gameState.ResetGameState();
             await MapManager.ResetMap();
