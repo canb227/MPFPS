@@ -17,20 +17,27 @@ public static class MapManager
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }
     
-    public async static Task ResetMap()
+    public static void ResetMap()
     {
-        nodeStaticLevel.QueueFree();
+        GD.Print("hello");
+        nodeStaticLevel.Free();
+                GD.Print("hello1");
         nodeStaticLevel = null;
+                GD.Print("hello2");
         PlayerSpawnPoints.Clear();
+                GD.Print("hello3");
         ItemSpawnPoints.Clear();
+                GD.Print("hello4");
         staticIDCounter = 1;
-
-        await Global.gameState.ToSignal(Global.gameState.GetTree(), SceneTree.SignalName.ProcessFrame);
-
+        GD.Print("hello5");
         nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
+                GD.Print("hello6");
         Global.gameState.AddChild(nodeStaticLevel);
+                GD.Print("hello7");
         LoadMapMetas();
+                GD.Print("hello8");
         LoadMapGameObjects();
+        GD.Print("hello9");
     }
 
     /// <summary>

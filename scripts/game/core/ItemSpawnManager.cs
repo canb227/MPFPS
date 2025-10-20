@@ -19,6 +19,7 @@ public partial class ItemSpawnManager : Node
     List<ItemMarker3D> validMarkers = new List<ItemMarker3D>();
     foreach (var marker in markers)
     {
+        //GD.Print(marker.canSpawnPackageItems + " " + marker.canSpawnWeapons + " " + marker.canSpawnComponents + " " + marker.canSpawnAccessories);
         if (objectClass == typeof(GOPackageItem))
         {
             if (!marker.canSpawnPackageItems)

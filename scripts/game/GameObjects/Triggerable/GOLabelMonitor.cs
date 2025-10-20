@@ -24,6 +24,15 @@ public partial class GOLabelMonitor : GOBaseStaticTriggerable
         GameModeManager.OnPossibleAddressesUpdated += AddressTextOptionsChanged;
     }
 
+    public override void _Notification(int what)
+    {
+        if (what == NotificationPredelete)
+        {
+            GameModeManager.OnPossibleAddressesUpdated -= AddressTextOptionsChanged;
+        }
+    }
+
+
     public void AddressTextOptionsChanged()
     {
         if (labelMonitorType == LabelMonitorType.Number)

@@ -132,7 +132,7 @@ public partial class GameModeManager : Node
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public async void StartNewRound()
+    public void StartNewRound()
     {
         if (roundNumber == 0)
         {
@@ -143,26 +143,9 @@ public partial class GameModeManager : Node
         }
         else
         {
-            //Logging.Log("Cleaning up previous round as Peer if needed, done as a map reload later?", "GameModeManager");
-            //GOBasePlayerCharacter pc = Global.gameState.GetCharacterControlledBy(Global.steamid);
-            //RPCManager.RPC(pc, "ReleaseControl", []);
-            //foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
-            //{
-            //    Global.gameState.GameObjects.Remove(basicPlayer.id);
-            //    basicPlayer.QueueFree();
-            //}
-            //basicPlayers.Clear();
-
-            //Logging.Log("Starting New Round as Peer", "GameModeManager");
-            ////RPCManager.RPC(pc, "ReleaseControl", []);
-            ///
-            // foreach (BasicPlayerCharacter basicPlayer in basicPlayers.Values)
-            // {
-            //     basicPlayer.ReleaseControl();
-            // }
             basicPlayers.Clear();
             Global.gameState.ResetGameState();
-            await MapManager.ResetMap();
+            MapManager.ResetMap();
 
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
@@ -174,8 +157,10 @@ public partial class GameModeManager : Node
         if (Global.Lobby.bIsLobbyHost)
         {
             GenerateOrders();
+            GD.Print("hello19");
             itemSpawnManager.GenerateItems(minimumItemTypeCount);
         }
+        GD.Print("hello20");
     }
 
 

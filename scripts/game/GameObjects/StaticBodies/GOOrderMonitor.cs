@@ -56,6 +56,14 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         GameModeManager.OnPackageOrdersUpdated += UpdateDisplayedOrder;
     }
 
+    public override void _Notification(int what)
+    {
+        if (what == NotificationPredelete)
+        {
+            GameModeManager.OnPackageOrdersUpdated -= UpdateDisplayedOrder;
+        }
+    }
+
     public void UpdateDisplayedOrder()
     {
         orderCompletedImage.Visible = false;
