@@ -53,12 +53,16 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public override bool InitFromData(GameObjectConstructorData data)
     {
         GlobalTransform = data.spawnTransform;
-        TakeControl(authority);
         return true;
     }
 
-    [RPCMethod(mode=RPCMode.SendToAllPeers)]
     public virtual void TakeControl(ulong playerID)
+    {
+        RPCManager.RPC(this, "rpc_TakeControl", [playerID]);
+    }
+
+    [RPCMethod(mode=RPCMode.SendToAllPeers)]
+    public virtual void rpc_TakeControl(ulong playerID)
     {
         if (controllingPlayerID != 0)
         {

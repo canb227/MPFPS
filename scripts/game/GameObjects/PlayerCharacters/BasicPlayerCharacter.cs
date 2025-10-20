@@ -158,15 +158,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
 
+        if (!lastTickActions.HasFlag(ActionFlags.LeanRight) && input.actions.HasFlag(ActionFlags.LeanRight))
+        {
+            TakeStunDamage(20, 0, PainSoundType.Bullet);
+        }
 
         if (!lastTickActions.HasFlag(ActionFlags.LeanLeft) && input.actions.HasFlag(ActionFlags.LeanLeft))
         {
             TakeDamage(20, 0, PainSoundType.Generic);
-        }
-
-        if (!lastTickActions.HasFlag(ActionFlags.LeanRight) && input.actions.HasFlag(ActionFlags.LeanRight))
-        {
-            TakeStunDamage(20, 0, PainSoundType.Bullet);
         }
     }
 

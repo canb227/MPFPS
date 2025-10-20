@@ -10,60 +10,58 @@ using System.Linq;
 
 public partial class ItemSpawnManager : Node
 {
-
-
-    public static ItemMarker3D PickWeightedMarker(List<ItemMarker3D> markers, GameObjectType type, Random rand)
-{
-    Type objectClass = GameObjectLoader.GetTypeOfGameObjectType(type);
-
-    List<ItemMarker3D> validMarkers = new List<ItemMarker3D>();
-    foreach (var marker in markers)
+    public ItemMarker3D PickWeightedMarker(List<ItemMarker3D> markers, GameObjectType type, Random rand)
     {
-        //GD.Print(marker.canSpawnPackageItems + " " + marker.canSpawnWeapons + " " + marker.canSpawnComponents + " " + marker.canSpawnAccessories);
-        if (objectClass == typeof(GOPackageItem))
+        Type objectClass = GameObjectLoader.GetTypeOfGameObjectType(type);
+
+        List<ItemMarker3D> validMarkers = new List<ItemMarker3D>();
+        foreach (var marker in markers)
         {
-            if (!marker.canSpawnPackageItems)
-                continue;
-        }
-        else if (objectClass == typeof(BasicGun))
-        {
-            if (!marker.canSpawnWeapons)
-                continue;
-        }
-        else if (objectClass == typeof(GOComponent))
-        {
-            if (!marker.canSpawnComponents)
-                continue;
-        }
-    
-        else if (objectClass == typeof(GOBaseAccessory))
-        {
-            if (!marker.canSpawnAccessories)
-                continue;
+            if (objectClass == typeof(GOPackageItem))
+            {
+                if (!marker.canSpawnPackageItems)
+                    continue;
+            }
+            else if (objectClass == typeof(BasicGun))
+            {
+                if (!marker.canSpawnWeapons)
+                    continue;
+            }
+            else if (objectClass == typeof(GOComponent))
+            {
+                if (!marker.canSpawnComponents)
+                    continue;
+            }
+        
+            else if (objectClass == typeof(GOBaseAccessory))
+            {
+                if (!marker.canSpawnAccessories)
+                    continue;
+            }
+
+            validMarkers.Add(marker);
         }
 
-        validMarkers.Add(marker);
+        if (validMarkers.Count == 0)
+            throw new Exception("No Valid Markers in Weighted Marker Selection for Force Spawn Object");
+
+
+        int totalWeight = 0;
+        foreach (var marker in validMarkers)
+            totalWeight += marker.generalWeight;
+
+        int roll = rand.Next(0, totalWeight);
+        int cumulative = 0;
+
+        foreach (var marker in validMarkers)
+        {
+            cumulative += marker.generalWeight;
+            if (roll < cumulative)
+                return marker;
+        }
+
+        return validMarkers[validMarkers.Count - 1];
     }
-
-    if (validMarkers.Count == 0)
-        return null;
-
-    int totalWeight = 0;
-    foreach (var marker in validMarkers)
-        totalWeight += marker.generalWeight;
-
-    int roll = rand.Next(0, totalWeight);
-    int cumulative = 0;
-
-    foreach (var marker in validMarkers)
-    {
-        cumulative += marker.generalWeight;
-        if (roll < cumulative)
-            return marker;
-    }
-
-    return validMarkers[validMarkers.Count - 1];
-}
 
 
 
@@ -78,7 +76,6 @@ public partial class ItemSpawnManager : Node
                 ForceSpawnItem(item.Key, roundSpawnPoints);
             }
         }
-
         Random rand = new();
         //fill markers using random weighting
         foreach (var marker in roundSpawnPoints)
@@ -105,7 +102,7 @@ public partial class ItemSpawnManager : Node
 
                 if (spawnOptions.Count > 0)
                 {
-                    SpawnRandomItem(spawnOptions[rand.Next(spawnOptions.Count)], marker, roundSpawnPoints);
+                    SpawnRandomItem(spawnOptions[rand.Next(spawnOptions.Count)], marker);
                 }
                 else
                 {
@@ -123,9 +120,8 @@ public partial class ItemSpawnManager : Node
         roundSpawnPoints.Remove(choosenMarker);
     }
 
-    private void SpawnRandomItem(string type, ItemMarker3D marker, List<ItemMarker3D> roundSpawnPoints)
+    private void SpawnRandomItem(string type, ItemMarker3D marker)
     {
-        GD.Print($"Trying to spawn {type} at {marker.Name}");
         if (type == "Weapon")
         {
             SpawnRandomWeapon(marker);
@@ -150,7 +146,6 @@ public partial class ItemSpawnManager : Node
         GameObjectConstructorData data = new(type);
         data.spawnTransform = marker.Transform;
         Global.gameState.Auth_SpawnObject(type, data);
-        GD.Print($"Spawned {type} at {marker.Name}");
     }
 
     private void SpawnRandomWeapon(ItemMarker3D marker)

@@ -23,13 +23,11 @@ public partial class GameModeManager : Node
     public ItemSpawnManager itemSpawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
-    public List<ulong> disconnectedPlayers = new();
     public List<PackageOrderInfo> packageOrders = new();
-    
+    public Dictionary<GameObjectType, int> minimumItemTypeCount = new();
     public List<string> possibleRoundAddressNumbers = new();
     public List<string> possibleRoundAddressStreets = new();
     public List<string> possibleRoundAddressSuffixes = new();
-    public Dictionary<GameObjectType, int> minimumItemTypeCount = new();
 
 
    
@@ -144,9 +142,13 @@ public partial class GameModeManager : Node
         else
         {
             basicPlayers.Clear();
+            ghostPlayers.Clear();
+
+            minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
-
+            
+            SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
@@ -157,10 +159,8 @@ public partial class GameModeManager : Node
         if (Global.Lobby.bIsLobbyHost)
         {
             GenerateOrders();
-            GD.Print("hello19");
             itemSpawnManager.GenerateItems(minimumItemTypeCount);
         }
-        GD.Print("hello20");
     }
 
 
@@ -226,8 +226,8 @@ public partial class GameModeManager : Node
             //pick some random item enums
             List<GameObjectType> allPossibleTypes = GameObjectLoader.GetAllObjectsOfType(typeof(GOPackageItem));
             List<GameObjectType> randomTypes = new();
-            int randomizer = rand.Next(3)-1; //between 0 and 2 (-1) -1 to 1
-            for (int j = 0; j < options.itemsPerPackage+randomizer; j++)
+            int randomizer = rand.Next(3) - 1; //between 0 and 2 (-1) -1 to 1
+            for (int j = 0; j < options.itemsPerPackage + randomizer; j++)
             {
                 GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)];
                 randomTypes.Add(randomType);
@@ -240,8 +240,15 @@ public partial class GameModeManager : Node
             // Construct your order with the chosen values
             packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
         }
-        RPCManager.RPC(this, "SetPackageOrders", [ packageOrders.ToList() ]); //THIS NEEDS TO BE RPC'd TODO
-        //OnPackageOrdersUpdated?.Invoke(); //remove this once we fix the RPC
+        foreach(var order in packageOrders)
+        {
+            GD.Print(order.addressStreet);
+            foreach(var type in order.neededPackageItems)
+            {
+                GD.Print(type);
+            }
+        }
+        RPCManager.RPC(this, "SetPackageOrders", [ packageOrders.ToList() ]);
     }
 
     
@@ -483,6 +490,25 @@ public partial class GameModeManager : Node
         }
     }
 
+    public void SpawnNewLocalPlayerCharacter(GameObjectType pcType)
+    {
+        if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
+        {
+            GameObjectConstructorData data = new GameObjectConstructorData();
+            data.spawnTransform = MapManager.GetPlayerSpawnTransform();
+            data.id = Global.gameState.GenerateNewID();
+            data.authority = Global.steamid;
+            data.type = pcType;
+            List<Object> paramList = new List<Object>();
+            data.paramList = paramList;
+            Global.gameState.Auth_SpawnObject(pcType, data);
+        }
+        else
+        {
+            Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
+        }
+    }
+
     public void SpawnAndControlNewLocalPlayerCharacter(GameObjectType pcType)
     {
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
@@ -495,6 +521,7 @@ public partial class GameModeManager : Node
             List<Object> paramList = new List<Object>();
             data.paramList = paramList;
             Global.gameState.Auth_SpawnObject(pcType, data);
+            ((GOBasePlayerCharacter)Global.gameState.GameObjects[data.id]).TakeControl(Global.steamid);
         }
         else
         {

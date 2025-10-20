@@ -19,25 +19,15 @@ public static class MapManager
     
     public static void ResetMap()
     {
-        GD.Print("hello");
         nodeStaticLevel.Free();
-                GD.Print("hello1");
         nodeStaticLevel = null;
-                GD.Print("hello2");
         PlayerSpawnPoints.Clear();
-                GD.Print("hello3");
         ItemSpawnPoints.Clear();
-                GD.Print("hello4");
         staticIDCounter = 1;
-        GD.Print("hello5");
         nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
-                GD.Print("hello6");
         Global.gameState.AddChild(nodeStaticLevel);
-                GD.Print("hello7");
         LoadMapMetas();
-                GD.Print("hello8");
         LoadMapGameObjects();
-        GD.Print("hello9");
     }
 
     /// <summary>
