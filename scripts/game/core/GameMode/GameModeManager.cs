@@ -97,26 +97,30 @@ public partial class GameModeManager : Node
     {
         Logging.Log("Traitors Win As Peer", "GameModeManager");
         Global.ui.inGameUI.ShowRoundReport(Team.Traitor);
-        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        StartNewRound();
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            GameStartAsHost();
+        }
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void InnocentsWin()
     {
         Logging.Log("Innocents Win As Peer", "GameModeManager");
         Global.ui.inGameUI.ShowRoundReport(Team.Innocent);
-        //display a UI element, play a sound or music? then start the countdown for a new round
-        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        StartNewRound();
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            GameStartAsHost();
+        }
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public async void ForceEndRound()
     {
         Logging.Log("ForceEndRound as Peer", "GameModeManager");
         Global.ui.inGameUI.ShowRoundReport(Team.None);
-        //display a UI element, play a sound or music? then start the countdown for a new round
-        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        StartNewRound();
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            GameStartAsHost();
+        }
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEmergencyEvacuation()
