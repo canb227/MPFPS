@@ -50,6 +50,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void _Ready()
     {
         base._Ready();
+        this.CollisionLayer = 1 << 4; //5
+        this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 4);//1,2,5
         priority = 100;
 
         rayCast = new();
