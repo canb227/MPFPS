@@ -12,17 +12,29 @@ public partial class GOPackageItem : SimpleShape
     [Export] public Texture2D icon { get; set; }
     [Export] public String displayName { get; set; }
 
-    public static Dictionary<GameObjectType, string> ItemIconDictionary = new()
-    {
-        {GameObjectType.PackageBall, "res://assets/ui/icons/packageball.png" },
-        {GameObjectType.PackageBox, "res://assets/ui/icons/packagebox.png" },
-    };
+public static Dictionary<GameObjectType, string> ItemIconDictionary = new()
+{
+    { GameObjectType.BakingSoda, "res://assets/ui/icons/BakingSoda.png" },
+    { GameObjectType.Book, "res://assets/ui/icons/Book.png" },
+    { GameObjectType.CarBattery, "res://assets/ui/icons/CarBattery.png" },
+    { GameObjectType.GlassBottle, "res://assets/ui/icons/GlassBottle.png" },
+    { GameObjectType.HandSaw, "res://assets/ui/icons/HandSaw.png" },
+    { GameObjectType.JerryCan, "res://assets/ui/icons/JerryCan.png" },
+    { GameObjectType.SawBlade, "res://assets/ui/icons/SawBlade.png" },
+    { GameObjectType.Tire, "res://assets/ui/icons/Tire.png"},
+};
 
-    public static Dictionary<GameObjectType, string> ItemDisplayNameDictionary = new()
-    {
-        {GameObjectType.PackageBall, "Package Ball" },
-        {GameObjectType.PackageBox, "Package Box" },
-    };
+public static Dictionary<GameObjectType, string> ItemDisplayNameDictionary = new()
+{
+    { GameObjectType.BakingSoda, "Baking Soda" },
+    { GameObjectType.Book, "Book" },
+    { GameObjectType.CarBattery, "Car Battery" },
+    { GameObjectType.GlassBottle, "Glass Bottle" },
+    { GameObjectType.HandSaw, "Hand Saw" },
+    { GameObjectType.JerryCan, "Jerry Can" },
+    { GameObjectType.SawBlade, "Saw Blade" },
+    { GameObjectType.Tire, "Tire"},
+};
 
     
 

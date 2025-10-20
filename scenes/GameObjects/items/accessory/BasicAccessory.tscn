@@ -7,7 +7,10 @@ points = PackedVector3Array(0, 0.5, 0.5, 0.5, -0.5, 0.5, 0, 0.5, -0.5, -0.5, -0.
 
 [sub_resource type="PrismMesh" id="PrismMesh_uoh2q"]
 
-[node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[node name="BasicAccessory" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+collision_layer = 8
+collision_mask = 11
+continuous_cd = true
 script = ExtResource("1_a1vfx")
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")

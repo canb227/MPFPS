@@ -26,8 +26,9 @@ points = PackedVector3Array(0.08297466, -0.40223223, -0.3864078, 0.038302913, 0.
 height = 2.4057617
 
 [node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "movementSFX", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint")]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 16
+collision_mask = 19
+platform_on_leave = 2
 script = ExtResource("1_dt3qt")
 ourVoiceSpeaker = NodePath("firstPersonModel/SteamAudioVoice")
 characterSFX = NodePath("SteamAudioCharacterSFX")

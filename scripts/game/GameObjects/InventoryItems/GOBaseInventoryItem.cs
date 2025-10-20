@@ -32,7 +32,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     {
         firstPersonScene.Hide();
         thirdPersonScene.Show();
-        this.CollisionLayer = 2;
+        this.CollisionLayer = 1 << 3;
         Freeze = false;
     }
 
@@ -40,7 +40,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     {
         firstPersonScene.Hide();
         thirdPersonScene.Show();
-        this.CollisionLayer = 2;
+        this.CollisionLayer = 1 << 3;
         Freeze = false;
         equippedBy = 0;
         inInventoryOf = 0;

@@ -29,8 +29,14 @@ public static class GameObjectLoader
         {"PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
 
         //PackageItems
-        {"PackageBall", (GameObjectType.PackageBall,"res://scenes/GameObjects/props/packageItems/Ball.tscn", typeof(GOPackageItem))},
-        {"PackageBox", (GameObjectType.PackageBox,"res://scenes/GameObjects/props/packageItems/Box.tscn", typeof(GOPackageItem))},
+        {"BakingSoda", (GameObjectType.BakingSoda,"res://scenes/GameObjects/props/packageItems/BakingSoda.tscn", typeof(GOPackageItem))},
+        {"Book", (GameObjectType.Book,"res://scenes/GameObjects/props/packageItems/Book.tscn", typeof(GOPackageItem))},
+        {"CarBattery", (GameObjectType.CarBattery,"res://scenes/GameObjects/props/packageItems/CarBattery.tscn", typeof(GOPackageItem))},
+        {"GlassBottle", (GameObjectType.GlassBottle,"res://scenes/GameObjects/props/packageItems/GlassBottle.tscn", typeof(GOPackageItem))},
+        {"HandSaw", (GameObjectType.HandSaw,"res://scenes/GameObjects/props/packageItems/HandSaw.tscn", typeof(GOPackageItem))},
+        {"JerryCan", (GameObjectType.JerryCan,"res://scenes/GameObjects/props/packageItems/JerryCan.tscn", typeof(GOPackageItem))},
+        {"SawBlade", (GameObjectType.SawBlade,"res://scenes/GameObjects/props/packageItems/SawBlade.tscn", typeof(GOPackageItem))},
+        {"Tire", (GameObjectType.Tire,"res://scenes/GameObjects/props/packageItems/Tire.tscn", typeof(GOPackageItem))},
     };
 
 
@@ -132,8 +138,14 @@ public enum GameObjectType
     //components
     PowerCell,
     //package items
-    PackageBall,
-    PackageBox,
+    BakingSoda,
+    Book,
+    CarBattery,
+    GlassBottle,
+    HandSaw,
+    JerryCan,
+    SawBlade,
+    Tire,
     //robot
     SwarmRobot
 }

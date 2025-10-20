@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bl3vxwth4bafl"
-path="res://.godot/imported/packageball.png-4771964aa133ae7ad076cee495cae92a.ctex"
+uid="uid://che3cxfyc5vy1"
+path="res://.godot/imported/Tire.png-941f2cdf20edc249ade654491b45a41b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/icons/packageball.png"
-dest_files=["res://.godot/imported/packageball.png-4771964aa133ae7ad076cee495cae92a.ctex"]
+source_file="res://assets/ui/icons/Tire.png"
+dest_files=["res://.godot/imported/Tire.png-941f2cdf20edc249ade654491b45a41b.ctex"]
 
 [params]
 

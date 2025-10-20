@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=4 uid="uid://c3jtyxakswn10"]
+
+[ext_resource type="Script" uid="uid://cye1eerla8svy" path="res://scripts/game/GameObjects/RigidBodies/GOPackageItem.cs" id="1_4emyl"]
+[ext_resource type="Texture2D" uid="uid://ds8c67wvfpdgi" path="res://assets/models/props/baking_soda_1_baking_soda_1.png" id="2_534dx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7py6d"]
+resource_name = "baking_soda_1"
+cull_mode = 2
+albedo_texture = ExtResource("2_534dx")
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_85ghf"]
+_surfaces = [{
+"aabb": AABB(-0.06075001, -0.036450706, -0.19710015, 0.121500015, 0.07290071, 0.19710028),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAADAAEAAAAEAAEAAgADAAUABQAAAAIABAAGAAMABgAFAAMAAAAGAAQABgAHAAUABQAHAAAAAAAHAAYA"),
+"name": "baking_soda_1",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAAAAAAAAAAAAAAD//wAAAAD+/wAAAAD//wAAAAAAAAAA/v/+/wAA/v/+/wAAAAD+/////v8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_wxhcj"]
+resource_name = "baking_soda_1_baking_soda_1"
+_surfaces = [{
+"aabb": AABB(-0.06075001, -0.036450706, -0.19710015, 0.121500015, 0.07290071, 0.19710028),
+"attribute_data": PackedByteArray("AAD//1x00UVcdP//AADRRVx0//8tutFFLbr//1x00UX//9FFXHQAAP//AABcdNFFAADRRVx0AABcdNFFAAAAAFx00UUAAP//AADRRVx0////////LbrRRf//0UUtuv//"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_7py6d"),
+"name": "baking_soda_1",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("//8AAP////8AAAAAAAD//wAAAAD///////8AAAAA//8AAAAA//9U1QAA/v8AAFTVAAD+//7/VNUAAAAAAABU1QAA/v/+//////8AAP////8AAAAA//////7////+//////8AAAAA//8AAP7/AAD//wAAAAAAAP///v/+/wAA///+//7/AAD/vwAA/v/+//+/AAD+/wAA/7/+/////v//v///AAD//1TV/v/+/wAAVNX//wAAAABU1f7////+/1TV/3//P/9//z//f/8//3//P1TVVNVU1VTVVNVU1VTVVNX/f/9//3//f/9//3//f/9//3////9/////f////3///////3////9/////f////3+qqlVVqqpVVaqqVVWqqlVV")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_85ghf")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ior8s"]
+size = Vector3(0.25112534, 0.40053558, 0.15207672)
+
+[node name="GOPackageItem" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
+collision_layer = 2
+collision_mask = 27
+script = ExtResource("1_4emyl")
+packageItemMesh = NodePath("baking_soda_1")
+packageItemCollider = NodePath("CollisionShape3D")
+itemType = 12
+metadata/_custom_type_script = "uid://cye1eerla8svy"
+
+[node name="baking_soda_1" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, -8.742278e-08, -2, 0, 2, -8.742278e-08, 0, 0, 0)
+mesh = SubResource("ArrayMesh_wxhcj")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0011959076, 0.19849777, -3.8146973e-06)
+shape = SubResource("BoxShape3D_ior8s")

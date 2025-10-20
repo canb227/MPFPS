@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=35 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
@@ -121,6 +121,9 @@ as_normal_map = true
 albedo_color = Color(0.34781694, 0.34781697, 0.3478169, 1)
 normal_enabled = true
 normal_texture = SubResource("NoiseTexture2D_qvxys")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_k56je"]
+data = PackedVector3Array(-75.17536, -8.815918, 39.468647, -75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, -8.815918, -39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, -75.17536, 8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, -8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, 8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647)
 
 [node name="DevLevel" type="Node3D"]
 
@@ -968,6 +971,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.45727, -9.201131, 39.4302
 use_collision = true
 size = Vector3(150.35072, 17.631836, 78.937294)
 material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.45727, -9.201131, 39.43025)
+shape = SubResource("ConcavePolygonShape3D_k56je")
 
 [node name="CSGBox3D54" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.212933, -9.201131, -15.643007)

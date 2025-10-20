@@ -74,6 +74,8 @@ forward={
 3d_physics/layer_1="WorldColliders"
 3d_physics/layer_2="EntityColliders"
 3d_physics/layer_3="Hitboxes"
+3d_physics/layer_4="InventoryItems"
+3d_physics/layer_5="playerCharacter"
 
 [physics]
 

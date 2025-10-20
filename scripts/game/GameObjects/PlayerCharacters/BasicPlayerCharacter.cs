@@ -53,9 +53,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         priority = 100;
 
         rayCast = new();
-        rayCast.TargetPosition = new Vector3(0, 0, -10);
+        rayCast.TargetPosition = new Vector3(0, 0, -4);
         rayCast.CollideWithBodies = true;
-        rayCast.CollisionMask = 1 << 1;
+        rayCast.CollisionMask = (1 << 1) | (1 << 3); //layer 2 or 4, entities and inventoryitems
         camera.AddChild(rayCast);
     }
     public override void ProcessStateUpdate(byte[] _update)
@@ -185,7 +185,46 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Vector3 localVelocity = CalculateLocalVelocity();
 
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
+        PushAwayRigidBodies();
         MoveAndSlide();
+    }
+
+    private float PushForceScalar = 1.0f;
+    private float Mass = 80.0f;
+    private void PushAwayRigidBodies()
+    {
+        for (int i = 0; i < GetSlideCollisionCount(); i++)
+        {
+            KinematicCollision3D CollisionData = GetSlideCollision(i);
+
+            GodotObject UnkObj = CollisionData.GetCollider();
+
+            if (UnkObj is RigidBody3D)
+            {
+                RigidBody3D Obj = UnkObj as RigidBody3D;
+
+                // Objects with more mass than us should be harder to push.
+                // But doesn't really make sense to push faster than we are going
+                float MassRatio = Mathf.Min(1.0f, Mass / Obj.Mass);
+
+                // Optional add: Don't push object at all if it's 4x heavier or more
+                if (MassRatio < 0.25f) continue;
+
+                Vector3 PushDir = -CollisionData.GetNormal();
+                PushDir.Y = 0;
+
+                // How much velocity the object needs to increase to match player velocity in the push direction
+                float VelocityDiffInPushDir = Velocity.Dot(PushDir) - Obj.LinearVelocity.Dot(PushDir);
+
+                // Only count velocity towards push dir, away from character
+                VelocityDiffInPushDir = Mathf.Max(0.0f, VelocityDiffInPushDir);
+
+                PushDir.Y = 0; // Don't push object from above/below
+
+                float PushForce = MassRatio * PushForceScalar;
+                Obj.ApplyImpulse(PushDir * VelocityDiffInPushDir * PushForce, CollisionData.GetPosition() - Obj.GlobalPosition);
+            }
+        }
     }
 
     private float GetDeceleratedVelocity(float vel, float decel)

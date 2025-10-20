@@ -1,0 +1,64 @@
+[gd_scene load_steps=7 format=4 uid="uid://p64pd1t4jy10"]
+
+[ext_resource type="Script" uid="uid://cye1eerla8svy" path="res://scripts/game/GameObjects/RigidBodies/GOPackageItem.cs" id="1_8ua8d"]
+[ext_resource type="Texture2D" uid="uid://b38f25pw8olvt" path="res://assets/models/props/book_mp_1_books_mp_1.png" id="2_8ua8d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frfsg"]
+resource_name = "books_mp_1"
+cull_mode = 2
+albedo_texture = ExtResource("2_8ua8d")
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_oetmj"]
+_surfaces = [{
+"aabb": AABB(-0.0900002, -0.13500102, -0.048003316, 0.18001299, 0.26999998, 0.048000023),
+"format": 34896613377,
+"index_count": 126,
+"index_data": PackedByteArray("AAABAAIAAwABAAAABAAAAAIAAwAAAAQABAACAAUAAwAEAAYAAwAGAAcABgAEAAgABAAFAAgABgAIAAcAAwAHAAkACQAHAAgAAwAJAAEACQAIAAEAAgAKAAUACgAIAAUACwACAAEAAgALAAoAAQAIAAwACgAMAAgACwABAA0AAQAMAA0ACgALAA4ACwANAA4ACgAPAAwACgAOAA8ADQAMABAADQAQABEAEgAQAAwAEgAMAA8AEgARABAAEwAPAA4AEwASAA8AEwAOAA0AEgATABEAEwANABEAFAAVABYAFAAXABUAFgAVABgAFgAYABkAGgAZABgAGgAbABkA"),
+"name": "books_mp_1",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 28,
+"vertex_data": PackedByteArray("1gMAAGP9AADCBQAA2ecAAAAAAADx7gAA+v8AAP//AADWA///Y/0AAAAA///x7gAA+v////7/AAD8////ZeoAAMIF///Z5wAA/P8AAGXqAAAAAP//OBQAAAAAAAA4FAAAwgX//zAbAADCBQAAMBsAANYDAAC6BQAA1gP//7oFAAD/////mRUAAP//AACZFQAA+v///wAAAAD6/wAAAAAAAMIFJv3Z5wAAuvsm/ZkVAAC4+yb9ZeoAAMIFJv0wGwAAuvvYApkVAAC4+9gCZeoAAMIF2AIwGwAAwgXYAtnnAAA=")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2uqow"]
+resource_name = "book_mp_1_book_mp_1"
+_surfaces = [{
+"aabb": AABB(-0.0900002, -0.13500102, -0.048003316, 0.18001299, 0.26999998, 0.048000023),
+"attribute_data": PackedByteArray("AAD/C/8A/wv/AP8KAAD/Lv8A/y7/CP8K/wj/C/8J/wv/Cf8u/wj/LgAA/y7/AP8L/wD/LgAA/wv/AP8K/wj/Cv8I/wv/Cf8L/wn/Lv8I/y7/Jf85AAAAAAAA/zn/JQAA/yX/Of8vAAD/L/85/yUAAAAAAAD/Jv85AAD/Of8mAAAAAP85/wAAAP8A/zkAAAAAAAD/Of8lAAD/Jf85AAAAAP8u/zn/LwAA/y//Of8uAAD/CQAA/wj/Of8IAAD/Cf85/yYAAP8u/zn/Jv85/y4AAP8l/zn/JgAA/yb/Of8lAAD/VgAA/y//Of8vAAD/Vv85/wj///8w//b/MP///wj/9v8w//b/CP///wj/9v8w//8AAP///zn/9v85//8AAP/2"),
+"format": 34896613399,
+"index_count": 126,
+"index_data": PackedByteArray("AAABAAIAAwABAAAAAwAEAAEABQACAAEABQABAAYABQAGAAcACAAHAAYACAAGAAkACgALAAwACgANAAsADQAOAAsADwALAA4ADwAQAAsADwARABAAEgAQABEAEgATABAAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUA"),
+"material": SubResource("StandardMaterial3D_frfsg"),
+"name": "books_mp_1",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 72,
+"vertex_data": PackedByteArray("1gMAAGP9zDHCBQAA2ecGLwAAAADx7h8u+v8AAP//zyr8/wAAZeqzKgAAAAA4FAgnwgUAADAb/iXWAwAAugWwIvr/AAAAAHsq//8AAJkVlyr6/////v8v1cIF///Z5/jQ/P///2XqS9XWA///Y/0yzgAA///x7t/RAAD//zgU9tjCBf//MBsA2tYD//+6BU7d+v///wAAg9X/////mRVn1fz/AABl6gAAwgX//9nnAADCBQAA2ecAAPz///9l6gAAwgUAANnn/7/CBf//MBv/v8IFAAAwG/+/wgX//9nn/7/6/wAA/////9YD//9j/f//+v////7////WAwAAY/3///r/AAD//++//P///2Xq77/8/wAAZervv/r////+/++/wgUAADAbPYD/////mRU9gP//AACZFT2AwgX//zAbPYAAAP//OBT//9YDAAC6Bf//1gP//7oF//8AAAAAOBT///r///8AACDA//8AAJkVIMD/////mRUgwPr/AAAAACDAAAAAAPHu//8AAP//OBT//wAA///x7v//AAAAADgU///WA///Y/3//wAAAADx7v//AAD///Hu///WAwAAY/3///r/AAAAAP//1gP//7oF///WAwAAugX///r///8AAP//wgUm/dnn/7+6+yb9mRX/v7j7Jv1l6v+/wgUm/TAb/7/CBdgCMBv0/7j72AJl6tv/uvvYApkV0v/CBdgC2efq/7j7Jv1l6lPVuvvYApkVU9W4+9gCZepT1br7Jv2ZFVPVjEs5Wq1PKFjrUIlXKFVrVUpVWlWGWTxTqVqqUiJe7lCNVThVbFVJVWrV1ioo2FIwWdW1KjjacjSJ1xQvO9N5JqrSViXt0NwhONVxKkjVkyrS//9/0v//f9L//3/S//9//38AAP9/AAD/fwAA/38AANJ//3/Sf/9/0n//f9J//3//fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP//m6X//5ul//+bpf//m6X/fwAA/38AAP9/AAD/fwAA/z//f/8//3//P/9//z//f3Ra/390Wv9/dFr/f3Ra/3///2KA//9igP//YoD//2KAsP9jf8z/GICk/yyAnP86f/N/BUDrP9f/5j/N/+l/CkCpqlVVqapVVamqVVWpqlVV")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_oetmj")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8h4p5"]
+size = Vector3(0.24049377, 0.35379028, 0.064819336)
+
+[node name="GOPackageItem" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
+collision_layer = 2
+collision_mask = 27
+continuous_cd = true
+script = ExtResource("1_8ua8d")
+packageItemMesh = NodePath("book_mp_1")
+packageItemCollider = NodePath("CollisionShape3D")
+itemType = 13
+metadata/_custom_type_script = "uid://cye1eerla8svy"
+
+[node name="book_mp_1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.3, 0, 0, 0, -5.6824803e-08, -1.3, 0, 1.3, -5.6824803e-08, 0, 0, 0)
+mesh = SubResource("ArrayMesh_2uqow")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.0005264282, 0.031188965, -0.00093078613)
+shape = SubResource("BoxShape3D_8h4p5")

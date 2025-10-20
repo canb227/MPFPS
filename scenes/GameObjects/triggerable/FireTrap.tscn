@@ -186,7 +186,7 @@ draw_pass_1 = SubResource("QuadMesh_yn8cl")
 
 [node name="Hurtbox" type="Area3D" parent="."]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 18
 script = ExtResource("5_fpl05")
 damagePerTick = 3.0
 hurtsInnocents = true

@@ -97,6 +97,9 @@ public partial class GOOrderMonitor : GOBaseStaticBody
             itemContainer.AddChild(texture);
             Label label = new();
             label.Text = GOPackageItem.ItemDisplayNameDictionary[item];
+            label.LabelSettings = GD.Load<LabelSettings>("res://scenes/ui/hud/MonitorFontTiny.tres");
+            label.HorizontalAlignment = HorizontalAlignment.Center;
+            label.VerticalAlignment = VerticalAlignment.Center;
             itemContainer.AddChild(label);
 
             packageItems.AddChild(itemContainer);
