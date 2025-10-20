@@ -41,6 +41,8 @@ public static Dictionary<GameObjectType, string> ItemDisplayNameDictionary = new
     public override void _Ready()
     {
         base._Ready();
+        this.CollisionLayer = 1 << 1; //2
+        this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 3) | (1 << 4);//1,2,4,5
     }
 
     public override bool InitFromData(GameObjectConstructorData data)

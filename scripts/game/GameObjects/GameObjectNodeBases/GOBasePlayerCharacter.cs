@@ -48,6 +48,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     {
         base._Ready();
         Logging.Log($"Spawned a new player character with id:{id} and authority: {authority}.", "PlayerCharacter");
+        this.CollisionLayer = 1 << 4; //5
+        this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 4);//1,2,5
     }
 
     public override bool InitFromData(GameObjectConstructorData data)
