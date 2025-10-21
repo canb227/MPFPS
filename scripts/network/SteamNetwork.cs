@@ -3,12 +3,13 @@ using MessagePack;
 using MessagePack.Resolvers;
 using Steamworks;
 using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Collections.Specialized;
+
 using System.Dynamic;
+
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 public enum Channel
 {
@@ -88,6 +89,8 @@ public class SteamNetwork
     private int ReceiveBandwidthTracker = 0;
     private bool UltraDetailWireLogging = true;
 
+    private Dictionary<Channel,int> NumSent = new();
+    private Dictionary<Channel,int> NumRcv = new();
     public delegate void SteamNetworkingMessageReceived(Channel channel, byte[] payload, ulong sender);
     public static event SteamNetworkingMessageReceived SteamNetworkingMessageReceivedEvent;
 
@@ -99,7 +102,11 @@ public class SteamNetwork
 
         //Uncomment this if steam relay network is being stupid
         //SteamNetworkHealthManager();
-
+        foreach (Channel ch in Enum.GetValues(typeof(Channel)))
+        {
+            NumRcv[ch] = 0;
+            NumSent[ch] = 0;
+        }
         var resolver = MessagePack.Resolvers.CompositeResolver.Create([MessagePack.Formatters.TypelessFormatter.Instance],[GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance]);
         var options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
         MessagePackSerializer.DefaultOptions = options;
@@ -221,7 +228,7 @@ public class SteamNetwork
         else
         {
             SendBandwidthTracker += data.Length;
-            NumSent++;
+            NumSent[channel]++;
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
@@ -244,6 +251,10 @@ public class SteamNetwork
         List<EResult> retval = new List<EResult>();
         foreach (ulong identity in remoteSteamIDs)
         {
+            if (channel==Channel.RPC)
+            {
+                Logging.Log($"Sending RPC to: {identity}","RPCDebug");
+            }
             retval.Add(SendData(data, channel, identity, sendFlags));
         }
         return retval;
@@ -264,7 +275,7 @@ public class SteamNetwork
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
                 byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
                 ReceiveBandwidthTracker += payload.Length;
-                NumRcv++;
+                NumRcv[channel]++;
                 Logging.Log($" MSGRCV @ {steamMessage.m_usecTimeReceived.m_SteamNetworkingMicroseconds} | #{steamMessage.m_nMessageNumber} | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
                 
                 ProcessMessage(payload, channel,steamMessage.m_identityPeer.GetSteamID64());
@@ -318,7 +329,7 @@ public class SteamNetwork
         if (BandwidthTrackerCountLoopbackSend)
         {
             SendBandwidthTracker += data.Length;
-            NumSent++;
+            NumSent[channel]++;
         }
 
         Logging.Log($" MSGSND | TO: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
@@ -337,15 +348,13 @@ public class SteamNetwork
         if (BandwidthTrackerCountLoopbackReceive)
         {
             ReceiveBandwidthTracker += data.Length;
-            NumRcv++;
+            NumRcv[channel]++;
         }
 
         Logging.Log($" MSGRCV | FROM: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
         ProcessMessage(data, channel, Global.steamid);
     }
 
-    int NumSent =0;
-    int NumRcv = 0;
 
     public void Tick(double delta)
     {
@@ -362,10 +371,16 @@ public class SteamNetwork
                 SendBandwidthTracker = 0;
                 ReceiveBandwidthTracker = 0;
                 BandwidthTrackerTimer = 0;
-                NumSent = 0;
-                NumRcv = 0;
+
+                foreach (Channel ch in Enum.GetValues(typeof(Channel)))
+                {
+                    NumRcv[ch] = 0;
+                    NumSent[ch] = 0;
+                }
+
             }
         }
     }
+
 }
 
