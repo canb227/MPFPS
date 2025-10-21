@@ -60,7 +60,7 @@ public partial class UI : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if(Global.gameState.gameStarted)
+        if(Global.gameState!=null && Global.gameState.gameStarted)
         {
             if (@event.IsActionPressed("ScoreBoard"))
             {
