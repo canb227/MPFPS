@@ -243,7 +243,7 @@ public class SteamNetwork
         List<EResult> retval = new List<EResult>();
         foreach (ulong identity in remoteSteamIDs)
         {
-            retval.Add(SendData(data, channel, identity));
+            retval.Add(SendData(data, channel, identity, sendFlags));
         }
         return retval;
     }

@@ -230,7 +230,9 @@ public partial class Ghost : GOBasePlayerCharacter
     public override bool InitFromData(GameObjectConstructorData data)
     {
         base.InitFromData(data);
-        Logging.Log($"G.gs: {Global.gameState == null} G.gs.gmm: {Global.gameState.gameModeManager == null} G.gs.gmm.gP: {Global.gameState.gameModeManager.ghostPlayers == null}", "Ghost");
+        Logging.Log($"G.gs: {Global.gameState == null} ", "Ghost");
+        Logging.Log($"G.gs.gmm: {Global.gameState.gameModeManager == null} ", "Ghost");
+        Logging.Log($"G.gs.gmm.gP: {Global.gameState.gameModeManager.ghostPlayers == null}", "Ghost");
         Global.gameState.gameModeManager.ghostPlayers.Add(authority, this);
         return true;
     }

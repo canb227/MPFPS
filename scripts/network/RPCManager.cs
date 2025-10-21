@@ -184,7 +184,7 @@ public static class RPCManager
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
             Logging.Log($"Sending to auth RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
-            Global.network.SendData(bytes, Channel.RPC, authority);
+            Global.network.SendData(bytes, Channel.RPC, authority, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         }
         else if(attribute.mode == RPCMode.SendToAllPeers)
         {
@@ -195,7 +195,7 @@ public static class RPCManager
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
             Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
-            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers());
+            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         
         }
     }
