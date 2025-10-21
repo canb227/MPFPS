@@ -592,6 +592,24 @@ tracks/2/keys = {
 "values": [Vector3(-0.01877889, 0.24464165, -0.40486383)]
 }
 
+[sub_resource type="Animation" id="Animation_tsbdh"]
+resource_name = "loadpaper"
+length = 0.1
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"CheckForPaperTray"
+}]
+}
+
 [sub_resource type="Animation" id="Animation_2q2f7"]
 resource_name = "need_paper"
 length = 0.5
@@ -720,24 +738,6 @@ tracks/0/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_tsbdh"]
-resource_name = "loadpaper"
-length = 0.1
-tracks/0/type = "method"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"CheckForPaperTray"
-}]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_aqq6t"]
 _data = {
 &"RESET": SubResource("Animation_2556b"),
@@ -860,6 +860,7 @@ transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 
 shape = SubResource("ConcavePolygonShape3D_tsbdh")
 
 [node name="PaperDrawer" type="Area3D" parent="."]
+collision_mask = 26
 
 [node name="CollisionPaperDrawer" type="CollisionShape3D" parent="PaperDrawer"]
 transform = Transform3D(-1, 1.509958e-07, 0, -1.509958e-07, -1, 0, 0, 0, 1, -0.019, 0.245, -0.067)

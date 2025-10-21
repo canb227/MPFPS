@@ -54,7 +54,7 @@ continuous_cd = true
 script = ExtResource("1_nicpr")
 packageItemMesh = NodePath("glass_bottle_mx_1")
 packageItemCollider = NodePath("CollisionShape3D")
-itemType = 15
+itemType = 16
 metadata/_custom_type_script = "uid://cye1eerla8svy"
 
 [node name="glass_bottle_mx_1" type="MeshInstance3D" parent="."]

@@ -196,8 +196,7 @@ public static class RPCManager
             byte[] bytes = MessagePackSerializer.Serialize(packet);
             Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
             Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers());
-            
-
+        
         }
     }
 

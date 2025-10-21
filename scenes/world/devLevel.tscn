@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=37 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="9_viqb8"]
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
+[ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="12_k56je"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
-[ext_resource type="PackedScene" uid="uid://juf5gjmljg3f" path="res://scenes/GameObjects/items/equipment/BasicGun.tscn" id="14_o4214"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -96,6 +96,12 @@ triggerableNode = NodePath("../FireTrap")
 triggerName = "firetrap"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
+[sub_resource type="Resource" id="Resource_k56je"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../PackagingMachine")
+triggerName = "processPackage"
+metadata/_custom_type_script = "uid://ceok257oa0301"
+
 [sub_resource type="Resource" id="Resource_wkfce"]
 script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../SwarmRobotSpawner")
@@ -121,6 +127,9 @@ as_normal_map = true
 albedo_color = Color(0.34781694, 0.34781697, 0.3478169, 1)
 normal_enabled = true
 normal_texture = SubResource("NoiseTexture2D_qvxys")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_o4214"]
+data = PackedVector3Array(-55.845413, -8.815918, 14.01396, -55.845413, -8.815918, -14.01396, -55.845413, 8.815918, -14.01396, 55.845413, -8.815918, -14.01396, -55.845413, -8.815918, -14.01396, -55.845413, -8.815918, 14.01396, -55.845413, 8.815918, -14.01396, -55.845413, -8.815918, -14.01396, 55.845413, -8.815918, -14.01396, -55.845413, 8.815918, -14.01396, -55.845413, 8.815918, 14.01396, -55.845413, -8.815918, 14.01396, -55.845413, -8.815918, 14.01396, -55.845413, 8.815918, 14.01396, 55.845413, 8.815918, 14.01396, 55.845413, 8.815918, 14.01396, -55.845413, 8.815918, 14.01396, -55.845413, 8.815918, -14.01396, -55.845413, -8.815918, 14.01396, 55.845413, -8.815918, 14.01396, 55.845413, -8.815918, -14.01396, 55.845413, 8.815918, 14.01396, 55.845413, -8.815918, 14.01396, -55.845413, -8.815918, 14.01396, 55.845413, -8.815918, -14.01396, 55.845413, -8.815918, 14.01396, 55.845413, 8.815918, 14.01396, 55.845413, -8.815918, -14.01396, 55.845413, 8.815918, -14.01396, -55.845413, 8.815918, -14.01396, -55.845413, 8.815918, -14.01396, 55.845413, 8.815918, -14.01396, 55.845413, 8.815918, 14.01396, 55.845413, 8.815918, 14.01396, 55.845413, 8.815918, -14.01396, 55.845413, -8.815918, -14.01396)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_k56je"]
 data = PackedVector3Array(-75.17536, -8.815918, 39.468647, -75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, -8.815918, -39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, -75.17536, 8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, -8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, 8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647)
@@ -454,9 +463,6 @@ shadow_enabled = true
 
 [node name="GameObjects" type="Node3D" parent="."]
 
-[node name="BasicGun" parent="GameObjects" instance=ExtResource("14_o4214")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.50813, 1.8264914, 5.05361)
-
 [node name="interactables&traps" type="Node3D" parent="GameObjects"]
 
 [node name="CrusherDemo" type="Node3D" parent="GameObjects/interactables&traps"]
@@ -466,7 +472,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -0.3277135, -1.19
 triggerables = Array[Object]([SubResource("Resource_kx1m7")])
 
 [node name="button_crusher2_animated" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.363422, 0.030387878, 2.3524747)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.363422, -0.0017920136, 2.3524747)
 triggers = Array[Object]([SubResource("Resource_vegv4")])
 
 [node name="button_crusher2_animated2" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("3_k4evv")]
@@ -532,6 +538,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.154438, -0.4036541, -1.71
 
 [node name="basicDoor" parent="GameObjects/interactables&traps" instance=ExtResource("5_o33i4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, 1.1147871, -1.6779103)
+
+[node name="PackagingMachine" parent="GameObjects/interactables&traps" instance=ExtResource("12_k56je")]
+transform = Transform3D(-0.99973863, 0, -0.022861786, 0, 1, 0, 0.022861786, 0, -0.99973863, -43.652374, -0.39771473, 12.830842)
+
+[node name="packingButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
+transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -45.061207, 1.0129337, 11.838503)
+triggers = Array[Object]([SubResource("Resource_k56je")])
 
 [node name="SwarmRobotSpawner" parent="GameObjects" instance=ExtResource("12_12nid")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3303785, 3.5941045, -7.341351)
@@ -965,6 +978,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7800579, -9.201131, -14.033
 use_collision = true
 size = Vector3(111.69083, 17.631836, 28.02792)
 material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="CSGBakedCollisionShape3D2" type="CollisionShape3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7800579, -9.201131, -14.033365)
+shape = SubResource("ConcavePolygonShape3D_o4214")
 
 [node name="CSGBox3D53" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.45727, -9.201131, 39.43025)

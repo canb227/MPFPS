@@ -74,7 +74,7 @@ collision_mask = 27
 script = ExtResource("1_ywos6")
 packageItemMesh = NodePath("car_battery_1")
 packageItemCollider = NodePath("CollisionShape3D")
-itemType = 14
+itemType = 15
 metadata/_custom_type_script = "uid://cye1eerla8svy"
 
 [node name="car_battery_1" type="MeshInstance3D" parent="."]

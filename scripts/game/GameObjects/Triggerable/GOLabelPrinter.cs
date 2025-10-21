@@ -112,12 +112,17 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     {
         foreach (Node3D node in paperTrayArea.GetOverlappingBodies())
         {
-            if (node is GOPaperBox paperBox)
+            GD.Print((node is GOComponent paperBoxer).ToString());
+            if (node is GOComponent paperBox)
             {
-                //node.Dispose();
-                node.GlobalPosition = new Vector3(0, 0, 0);
-                PaperRefilled();
-                break;
+                GD.Print(paperBox.itemType);
+                if(paperBox.itemType == GameObjectType.PaperBox)
+                {
+                    //node.Dispose();
+                    node.GlobalPosition = new Vector3(0, 0, 0);
+                    PaperRefilled();
+                    break;
+                }
             }
         }
     }
@@ -130,16 +135,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         }
         else if (waitingForPaper)
         {
-            foreach (Node3D node in paperTrayArea.GetOverlappingBodies())
-            {
-                if (node is GOPaperBox paperBox)
-                {
-                    //node.Dispose();
-                    node.GlobalPosition = new Vector3(0, 0, 0);
-                    PaperRefilled();
-                    break;
-                }
-            }
+            CheckForPaperTray();
         }
         else
         {
@@ -155,15 +151,29 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             GameObjectConstructorData data = new(GameObjectType.LabelPaper);
             data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
             data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
-            int digit1 = (monitor1.textOptionsIndex + 1) * 100;
-            int digit2 = (monitor1.textOptionsIndex + 1) * 10;
-            int digit3 = monitor3.textOptionsIndex + 1;
-            data.paramList.Add(digit1 + digit2 + digit3);
+            //CALCULATE WHAT ORDER THIS ADDRESS RELATES TO, -1 IF NONE
+            int orderNum = FindOrderNumber(monitor1.addressTextOptions[monitor1.textOptionsIndex], monitor2.addressTextOptions[monitor2.textOptionsIndex], monitor3.addressTextOptions[monitor3.textOptionsIndex]);
+            data.paramList.Add(orderNum);
             Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
 
             // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
             // paperLabel.Position = paperPrintLocation.Position;
         }
+    }
+
+    public int FindOrderNumber(string addressNumber, string addressStreet, string addressSuffix)
+    {
+        // Loop through orders and try to match
+        List<PackageOrderInfo> orderList = Global.gameState.gameModeManager.packageOrders;
+        for (int orderNumber = 0; orderNumber < orderList.Count; orderNumber++)
+        {
+            if (addressNumber == orderList[orderNumber].addressNumber && addressStreet == orderList[orderNumber].addressStreet && addressSuffix == orderList[orderNumber].addressSuffix)
+            {
+                return orderNumber;
+            }
+        }
+        // No match
+        return -1;
     }
 
     public void ReadyToPrint()

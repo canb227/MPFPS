@@ -52,7 +52,7 @@ collision_mask = 27
 script = ExtResource("1_r03mr")
 packageItemMesh = NodePath("jerrycan_mx_1")
 packageItemCollider = NodePath("CollisionShape3D")
-itemType = 17
+itemType = 18
 metadata/_custom_type_script = "uid://cye1eerla8svy"
 
 [node name="jerrycan_mx_1" type="MeshInstance3D" parent="."]

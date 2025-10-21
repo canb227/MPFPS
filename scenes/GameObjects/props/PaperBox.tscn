@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://byqxm1bhqgmmy"]
 
-[ext_resource type="Script" uid="uid://e7jb8mwh675p" path="res://scripts/game/GameObjects/RigidBodies/GOPaperBox.cs" id="1_ljsgb"]
+[ext_resource type="Script" uid="uid://xm7xs4yetmrl" path="res://scripts/game/GameObjects/RigidBodies/GOComponent.cs" id="1_ljsgb"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_c2spd"]
 size = Vector3(0.667, 0.2, 0.4)
@@ -8,10 +8,14 @@ size = Vector3(0.667, 0.2, 0.4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ykkya"]
 size = Vector3(0.6709137, 0.20661926, 0.38763428)
 
-[node name="GOPaperBox" type="RigidBody3D"]
+[node name="GOPaperBox" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 27
+continuous_cd = true
 script = ExtResource("1_ljsgb")
+packageItemMesh = NodePath("MeshInstance3D")
+packageItemCollider = NodePath("CollisionShape3D")
+itemType = 7
 metadata/_custom_type_script = "uid://e7jb8mwh675p"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

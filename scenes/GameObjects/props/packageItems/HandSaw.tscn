@@ -50,7 +50,7 @@ collision_mask = 27
 continuous_cd = true
 script = ExtResource("1_okmw5")
 packageItemMesh = NodePath("hand_saw_1")
-itemType = 16
+itemType = 17
 metadata/_custom_type_script = "uid://cye1eerla8svy"
 
 [node name="hand_saw_1" type="MeshInstance3D" parent="."]

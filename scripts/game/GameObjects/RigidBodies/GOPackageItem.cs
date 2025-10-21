@@ -4,6 +4,7 @@ using Godot;
 using MessagePack;
 
 [GlobalClass]
+
 public partial class GOPackageItem : SimpleShape
 {
     [Export] public MeshInstance3D packageItemMesh { get; set; }

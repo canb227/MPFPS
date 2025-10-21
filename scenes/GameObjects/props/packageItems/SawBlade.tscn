@@ -53,7 +53,7 @@ continuous_cd = true
 script = ExtResource("1_35y1m")
 packageItemMesh = NodePath("saw_blade_1")
 packageItemCollider = NodePath("CollisionShape3D")
-itemType = 18
+itemType = 19
 metadata/_custom_type_script = "uid://cye1eerla8svy"
 
 [node name="saw_blade_1" type="MeshInstance3D" parent="."]

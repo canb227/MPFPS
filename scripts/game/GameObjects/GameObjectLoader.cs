@@ -12,7 +12,7 @@ public static class GameObjectLoader
     {
         //Misc
         { "LabelPaper", (GameObjectType.LabelPaper, "res://scenes/GameObjects/props/LabelPaper.tscn", typeof(GOLabelPaper)) },
-        { "PaperBox" , (GameObjectType.PaperBox, "res://scenes/GameObjects/props/PaperBox.tscn", typeof(GOPaperBox)) },
+        { "PaperBox" , (GameObjectType.PaperBox, "res://scenes/GameObjects/props/PaperBox.tscn", typeof(GOComponent)) },
         { "ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
         {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayerCharacter)) },
@@ -27,6 +27,9 @@ public static class GameObjectLoader
 
         //Components
         {"PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
+
+        //Package 
+        {"Package", (GameObjectType.Package, "res://scenes/GameObjects/props/Package.tscn", typeof(GOPackageBox))},
 
         //PackageItems
         {"BakingSoda", (GameObjectType.BakingSoda,"res://scenes/GameObjects/props/packageItems/BakingSoda.tscn", typeof(GOPackageItem))},
@@ -122,23 +125,24 @@ public static class GameObjectLoader
 
 public enum GameObjectType
 {
+    //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL PACKAGEITEMS KEYS GET SHIFTED IN THEIR SCENE
     ERROR,
     Ball,
     Ghost,
     BasicPlayer,
     GameButton,
+    //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL PACKAGEITEMS KEYS GET SHIFTED IN THEIR SCENE
     Crusher,
     LabelPaper,
     PaperBox,
-    //inventory items
     Hands,
     BasicGun,
-    //accessory items
+    //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL PACKAGEITEMS KEYS GET SHIFTED IN THEIR SCENE
     BasicAccessory,
-    //components
     PowerCell,
-    //package items
+    Package,
     BakingSoda,
+    //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL PACKAGEITEMS KEYS GET SHIFTED IN THEIR SCENE
     Book,
     CarBattery,
     GlassBottle,
@@ -146,6 +150,7 @@ public enum GameObjectType
     JerryCan,
     SawBlade,
     Tire,
-    //robot
-    SwarmRobot
+    //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL KEYS GET SHIFTED IN THEIR SCENEs
+    SwarmRobot,
+
 }

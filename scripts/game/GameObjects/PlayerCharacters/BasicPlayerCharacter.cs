@@ -145,9 +145,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (rayCast.IsColliding())
             {
-                Logging.Log("Pressed Use And Its Colliding", "BasicPlayerCharacter");
                 var temp = rayCast.GetCollider();
-                Logging.Log("HELP: "+temp.GetType().ToString(), "BasicPlayerCharacter");
                 if (rayCast.GetCollider() is IsInventoryItem s)
                 {
                     Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
