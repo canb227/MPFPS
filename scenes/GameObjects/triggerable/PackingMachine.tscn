@@ -5,8 +5,8 @@
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_k54qh"]
 [ext_resource type="AudioStream" uid="uid://cag32t1rb7mug" path="res://assets/audio/environment/packingMachine/elevator_stop1.wav" id="3_ss1d3"]
 [ext_resource type="AudioStream" uid="uid://wxu2cshsepw2" path="res://assets/audio/environment/packingMachine/elevator_start1.wav" id="4_he4l8"]
+[ext_resource type="AudioStream" uid="uid://duyj13ci6wny5" path="res://assets/audio/environment/elevbell1.wav" id="4_pkqno"]
 [ext_resource type="AudioStream" uid="uid://8qk0ncay2plo" path="res://assets/audio/environment/packingMachine/elevator_move_loop1.wav" id="5_nfwkh"]
-[ext_resource type="AudioStream" uid="uid://thq628y3055m" path="res://assets/audio/environment/packingMachine/elevbell1.wav" id="6_7p83q"]
 [ext_resource type="AudioStream" uid="uid://blxpt2irn6rri" path="res://assets/audio/environment/klaxon1.wav" id="7_hfxq0"]
 
 [sub_resource type="Resource" id="Resource_lwmcn"]
@@ -82,7 +82,7 @@ tracks/1/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0073069036,
-"stream": ExtResource("6_7p83q")
+"stream": ExtResource("4_pkqno")
 }],
 "times": PackedFloat32Array(0.16075188)
 }

@@ -11,4 +11,9 @@ public partial class GOShippingTube : GOTrap
         base._Ready();
         animationPlayer.Play("shippingFailed");
     }
+
+    public void ProcessShipping()
+    {
+        
+    }
 }
