@@ -449,6 +449,7 @@ public class Lobby
     /// <param name="fromSteamID"></param>
     private void AddNewPeer(ulong fromSteamID)
     {
+        Logging.Log($"Adding new peer :{fromSteamID}", "Lobby");
         lobbyPeers.Add(fromSteamID);
         NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
     }

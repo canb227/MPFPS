@@ -115,6 +115,7 @@ public partial class DebugScreen : Control
         {
             foreach (ulong peer in Global.Lobby.AllPeers())
             {
+                Logging.Log($"Lobby already has players in it, manually adding one of them :{peer}", "DebugScreen");
                 Lobby_NewLobbyPeerAddedEvent(peer);
             }
 
