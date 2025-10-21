@@ -331,7 +331,7 @@ public class Lobby
                         LeaveLobby(false);
                     }
                     Logging.Log($"Successfully joined to host {fromSteamID}. Sending request for other peers.", "Lobby");
-                    LobbyJoinedInternal(LobbyHostSteamID,false);
+                    LobbyJoinedInternal(fromSteamID,false);
                     SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.PeerListRequest, fromSteamID);
                     break;
                 }
@@ -427,7 +427,7 @@ public class Lobby
 
     public List<ulong> AllPeers()
     {
-        return lobbyPeers.ToList();
+        return lobbyPeers.Reverse().ToList();
     }
 
     public List<ulong> AllPeersExceptSelf()

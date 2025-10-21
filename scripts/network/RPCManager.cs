@@ -195,6 +195,10 @@ public static class RPCManager
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
             Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
+            foreach (var bob in Global.Lobby.AllPeers())
+            {
+                Logging.Log($"TO: {bob}", "RPCManagerWire");
+            }
             Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         
         }
