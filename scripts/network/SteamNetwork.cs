@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 
 using System.Dynamic;
-
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -173,41 +173,41 @@ public class SteamNetwork
         }
     }
 
-    public EResult SendStruct<T>(T structure, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        byte[] data = NetworkUtils.StructToBytes(structure);
-        return SendData(data, channel, remoteSteamID, sendFlags);
-    }
+    //public EResult SendStruct<T>(T structure, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    byte[] data = NetworkUtils.StructToBytes(structure);
+    //    return SendData(data, channel, remoteSteamID, sendFlags);
+    //}
 
-    public List<EResult> BroadcastStruct<T>(T structure, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (ulong identity in remoteSteamIDs)
-        {
-            retval.Add(SendStruct(structure, channel, identity, sendFlags));
-        }
-        return retval;
-    }
+    //public List<EResult> BroadcastStruct<T>(T structure, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    List<EResult> retval = new List<EResult>();
+    //    foreach (ulong identity in remoteSteamIDs)
+    //    {
+    //        retval.Add(SendStruct(structure, channel, identity, sendFlags));
+    //    }
+    //    return retval;
+    //}
 
-    public EResult SendExpando(ExpandoObject obj, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        byte[] data = MessagePackSerializer.Serialize(obj, ContractlessStandardResolver.Options);
-        if (UltraDetailWireLogging)
-        {
-            Logging.Log(MessagePackSerializer.ConvertToJson(data, ContractlessStandardResolver.Options),"UltraDetailWireLogging");
-        }
-        return SendData(data, channel, remoteSteamID, sendFlags);
-    }
+    //public EResult SendExpando(ExpandoObject obj, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    byte[] data = MessagePackSerializer.Serialize(obj, ContractlessStandardResolver.Options);
+    //    if (UltraDetailWireLogging)
+    //    {
+    //        Logging.Log(MessagePackSerializer.ConvertToJson(data, ContractlessStandardResolver.Options),"UltraDetailWireLogging");
+    //    }
+    //    return SendData(data, channel, remoteSteamID, sendFlags);
+    //}
 
-    public List<EResult> BroadcastExpando(ExpandoObject obj, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (ulong identity in remoteSteamIDs)
-        {
-            retval.Add(SendExpando(obj, channel, identity, sendFlags));
-        }
-        return retval;
-    }
+    //public List<EResult> BroadcastExpando(ExpandoObject obj, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    List<EResult> retval = new List<EResult>();
+    //    foreach (ulong identity in remoteSteamIDs)
+    //    {
+    //        retval.Add(SendExpando(obj, channel, identity, sendFlags));
+    //    }
+    //    return retval;
+    //}
 
 
     /// <summary>
@@ -222,8 +222,10 @@ public class SteamNetwork
         EResult result;
         if (bDoLoopback && NetworkUtils.IsMe(remoteSteamID))
         {
-            Loopback(channel, data);
-            result = EResult.k_EResultOK;
+            Logging.Warn($"Self Networking message send detected!!!!! this is bad", "NetworkDebug");
+            result = EResult.k_EResultFail;
+            //Loopback(channel, data);
+            //result = EResult.k_EResultOK;
         }
         else
         {
@@ -249,13 +251,24 @@ public class SteamNetwork
     public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
         List<EResult> retval = new List<EResult>();
+        bool loopbackCheck = false;
         foreach (ulong identity in remoteSteamIDs)
         {
             if (channel==Channel.RPC)
             {
                 Logging.Log($"Sending RPC to: {identity}","RPCDebug");
             }
+            if (identity==Global.steamid)
+            {
+                loopbackCheck = true;
+                continue;
+            }
             retval.Add(SendData(data, channel, identity, sendFlags));
+        }
+        if (loopbackCheck && bDoLoopback)
+        { 
+            Loopback(channel, data);
+            retval.Add(EResult.k_EResultOK);
         }
         return retval;
     }
@@ -365,7 +378,7 @@ public class SteamNetwork
             {
                 if (SendBandwidthTracker>0 || ReceiveBandwidthTracker >0)
                 {
-                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker} | num sent: {NumSent} | num rcv: {NumRcv}", "NetworkBandwidthTracker");
+                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker} | num sent: {NumSent.Sum(x=>x.Value)} | num rcv: {NumRcv.Sum(x => x.Value)}", "NetworkBandwidthTracker");
                 }
 
                 SendBandwidthTracker = 0;

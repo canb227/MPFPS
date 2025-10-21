@@ -195,7 +195,13 @@ public static class RPCManager
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
             Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
-            Logging.Log($"Param Payload: {string.Join(",", parameters)}", "RPCManagerWire");
+            foreach (var obj in parameters)
+            {
+                if (obj is byte[] arr)
+                {
+                    Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
+                }
+            }
             foreach (var bob in Global.Lobby.AllPeers())
             {
                 Logging.Log($"TO: {bob}", "RPCManagerWire");
