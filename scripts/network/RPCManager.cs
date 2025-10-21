@@ -202,10 +202,6 @@ public static class RPCManager
                     Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
                 }
             }
-            foreach (var bob in Global.Lobby.AllPeers())
-            {
-                Logging.Log($"TO: {bob}", "RPCManagerWire");
-            }
             Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         
         }

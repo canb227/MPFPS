@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 using System.Dynamic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 
@@ -254,19 +255,21 @@ public class SteamNetwork
         bool loopbackCheck = false;
         foreach (ulong identity in remoteSteamIDs)
         {
-            if (channel==Channel.RPC)
-            {
-                Logging.Log($"Sending RPC to: {identity}","RPCDebug");
-            }
+
             if (identity==Global.steamid)
             {
                 loopbackCheck = true;
                 continue;
             }
+            if (channel == Channel.RPC)
+            {
+                Logging.Log($"Sending RPC to: {identity}", "RPCDebug");
+            }
             retval.Add(SendData(data, channel, identity, sendFlags));
         }
         if (loopbackCheck && bDoLoopback)
-        { 
+        {
+            Logging.Log($"Sending RPC to: LOOPBACK", "RPCDebug");
             Loopback(channel, data);
             retval.Add(EResult.k_EResultOK);
         }
