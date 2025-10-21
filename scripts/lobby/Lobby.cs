@@ -355,7 +355,11 @@ public class Lobby
                 Logging.Log($"Request for peers from {fromSteamID}. Sending peer data.", "Lobby");
                 foreach (ulong peerID in lobbyPeers)
                 {
-                    if (peerID == fromSteamID) continue;
+                    if (peerID == fromSteamID || peerID == Global.steamid) continue;
+                    if (peerID==0)
+                    {
+                        Logging.Warn($"Malformed peer in local peer List. What happened?", "Lobby");
+                    }
                     SendLobbyMessage(BitConverter.GetBytes(peerID), LobbyMessageType.PeerListResponse, fromSteamID);
                 }
                 break;

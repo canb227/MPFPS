@@ -262,7 +262,8 @@ public class SteamNetwork
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
                 byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
                 ReceiveBandwidthTracker += payload.Length;
-                Logging.Log($" MSGRCV | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
+                Logging.Log($" MSGRCV @ {steamMessage.m_usecTimeReceived.m_SteamNetworkingMicroseconds} | #{steamMessage.m_nMessageNumber} | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
+                
                 ProcessMessage(payload, channel,steamMessage.m_identityPeer.GetSteamID64());
                 SteamNetworkingMessage_t.Release(messages[k]);
             }

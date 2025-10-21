@@ -105,7 +105,7 @@ public static class RPCManager
                 break;
             case RPCType.Chat:
                 Logging.Log($"Network chat from {sender}!", "RPCManager");
-                ChatReceivedEvent?.Invoke(packet.stringParams[0], sender);
+
                 break;
             default:
                 break;
