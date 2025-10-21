@@ -317,6 +317,7 @@ public partial class GameState : Node3D
                 if (newObj is Node n)
                 {
                     GameObjects[newObj.id] = newObj;
+                    n.Name = newObj.id.ToString();
                     GameObjectNodeParent.AddChild(n, true);
                 }
             }
