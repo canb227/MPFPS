@@ -221,6 +221,7 @@ public class SteamNetwork
         else
         {
             SendBandwidthTracker += data.Length;
+            NumSent++;
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
@@ -259,9 +260,11 @@ public class SteamNetwork
             nint[] messages = new nint[maxMessagePerFramePerChannel];
             for (int k = 0; k < SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel); k++)
             {
+
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
                 byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
                 ReceiveBandwidthTracker += payload.Length;
+                NumRcv++;
                 Logging.Log($" MSGRCV @ {steamMessage.m_usecTimeReceived.m_SteamNetworkingMicroseconds} | #{steamMessage.m_nMessageNumber} | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
                 
                 ProcessMessage(payload, channel,steamMessage.m_identityPeer.GetSteamID64());
@@ -315,6 +318,7 @@ public class SteamNetwork
         if (BandwidthTrackerCountLoopbackSend)
         {
             SendBandwidthTracker += data.Length;
+            NumSent++;
         }
 
         Logging.Log($" MSGSND | TO: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
@@ -333,11 +337,15 @@ public class SteamNetwork
         if (BandwidthTrackerCountLoopbackReceive)
         {
             ReceiveBandwidthTracker += data.Length;
+            NumRcv++;
         }
 
         Logging.Log($" MSGRCV | FROM: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
         ProcessMessage(data, channel, Global.steamid);
     }
+
+    int NumSent =0;
+    int NumRcv = 0;
 
     public void Tick(double delta)
     {
@@ -348,12 +356,14 @@ public class SteamNetwork
             {
                 if (SendBandwidthTracker>0 || ReceiveBandwidthTracker >0)
                 {
-                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker}", "NetworkBandwidthTracker");
+                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker} | num sent: {NumSent} | num rcv: {NumRcv}", "NetworkBandwidthTracker");
                 }
 
                 SendBandwidthTracker = 0;
                 ReceiveBandwidthTracker = 0;
                 BandwidthTrackerTimer = 0;
+                NumSent = 0;
+                NumRcv = 0;
             }
         }
     }
