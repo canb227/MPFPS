@@ -139,19 +139,21 @@ public static class RPCManager
 
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
-        Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message)}", "RPCManagerWire");
-        
+        bool log = sender != Global.steamid;
+
+        if (log) Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message)}", "RPCManagerWire");
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
 
-        Logging.Log($"Successfully parsed payload. Parameter list has {packet.parameters.Length} values:", "RPCManagerWire");
+        if (log) Logging.Log($"Successfully parsed payload. Parameter list has {packet.parameters.Length} values:", "RPCManagerWire");
         foreach (var obj in packet.parameters)
         {
-            Logging.Log($"parameter type: {obj.GetType()} | parameter to string {obj.ToString()}", "RPCManagerWire");
+            if (log) Logging.Log($"parameter type: {obj.GetType()} | parameter to string {obj.ToString()}", "RPCManagerWire");
             if (obj is byte[] arr)
             {
-                Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire");
+                if (log) Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire");
             }
         }
+        if(!log) Logging.Log($"Got RPC sent over loopback.", "RPCManagerWire");
         ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
     }
 

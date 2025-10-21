@@ -12,6 +12,7 @@ points = PackedVector3Array(-0.5, -0.2125, -0.5, -0.5, 0.2125, -0.5, 0.5, -0.212
 collision_layer = 2
 collision_mask = 27
 script = ExtResource("1_f57io")
+type = 12
 metadata/_custom_type_script = "uid://drr5dn6hwbo24"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

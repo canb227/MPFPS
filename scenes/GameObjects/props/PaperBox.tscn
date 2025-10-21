@@ -16,7 +16,7 @@ script = ExtResource("1_ljsgb")
 packageItemMesh = NodePath("MeshInstance3D")
 packageItemCollider = NodePath("CollisionShape3D")
 itemType = 7
-metadata/_custom_type_script = "uid://e7jb8mwh675p"
+type = 7
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_c2spd")

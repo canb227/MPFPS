@@ -264,13 +264,21 @@ public partial class GameState : Node3D
 
         //We're always the authority over our own input state, send that to all of our peers.
         var localInput = PlayerInputs[Global.steamid];
-        byte[] data = MessagePackSerializer.Serialize(localInput);
-        Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
-
-        foreach( var input in PlayerInputs)
+        if (localInput.LookInputVector == Vector2.Zero && localInput.MovementInputVector == Vector2.Zero && localInput.actions == 0)
         {
-            input.Value.actions = 0;
+            return;
         }
+        else
+        {
+            byte[] data = MessagePackSerializer.Serialize(localInput);
+            Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
+
+            //foreach (var input in PlayerInputs)
+            //{
+            //    input.Value.actions = 0;
+            //}
+        }
+
     }
 
 

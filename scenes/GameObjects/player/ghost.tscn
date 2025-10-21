@@ -16,6 +16,7 @@ collision_mask = 0
 script = ExtResource("1_xy2rk")
 thirdPersonModel = NodePath("mesh")
 camera = NodePath("Camera3D")
+type = 2
 metadata/_custom_type_script = "uid://dlqiqow6onvpu"
 
 [node name="mesh" type="MeshInstance3D" parent="."]

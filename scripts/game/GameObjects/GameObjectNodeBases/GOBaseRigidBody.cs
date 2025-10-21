@@ -7,14 +7,19 @@ using static GameState;
 
 public abstract partial class GOBaseRigidBody : RigidBody3D, GameObject
 {
+    [Export]
     public virtual ulong id { get; set; }
+    [Export]
     public virtual float priority { get; set; } = 1;
+    [Export]
     public virtual ulong authority { get; set; }
     public virtual bool dirty { get; set; } = false;
+    [Export]
     public virtual GameObjectType type { get; set; }
     public virtual bool predict { get; set; } = true;
     public virtual bool sleeping { get; set; }
     public virtual bool destroyed { get; set; }
+    [Export]
     public virtual float priorityAccumulator { get; set; }
 
     public override void _Ready()
