@@ -147,6 +147,10 @@ public static class RPCManager
         foreach (var obj in packet.parameters)
         {
             Logging.Log($"parameter type: {obj.GetType()} | parameter to string {obj.ToString()}", "RPCManagerWire");
+            if (obj is byte[] arr)
+            {
+                Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire");
+            }
         }
         ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
     }

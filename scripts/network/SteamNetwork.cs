@@ -269,7 +269,10 @@ public class SteamNetwork
         }
         if (loopbackCheck && bDoLoopback)
         {
-            Logging.Log($"Sending RPC to: LOOPBACK", "RPCDebug");
+            if (channel == Channel.RPC)
+            {
+                Logging.Log($"Sending RPC to: SELF", "RPCDebug");
+            }
             Loopback(channel, data);
             retval.Add(EResult.k_EResultOK);
         }

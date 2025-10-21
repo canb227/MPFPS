@@ -64,6 +64,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     [RPCMethod(mode=RPCMode.SendToAllPeers)]
     public virtual void rpc_TakeControl(ulong playerID)
     {
+        Logging.Log($"Player {playerID} is taking control of character {id}", "GameModeManager");
         if (controllingPlayerID != 0)
         {
             Logging.Error($"Player {playerID} cannot take control of player character {id}, that character is already being controlled by player {controllingPlayerID}", "PlayerCharacter");
@@ -79,6 +80,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             input = Global.gameState.PlayerInputs[controllingPlayerID];
             if (IsMe())
             {
+                Logging.Log($"Local inputs are now being fed to character {id}", "GameModeManager");
                 camera.Current = true;
                 Input.MouseMode = Input.MouseModeEnum.Captured;
                 OnControlTaken(playerID);
