@@ -381,9 +381,12 @@ shape = SubResource("BoxShape3D_hfxq0")
 debug_color = Color(0, 0.7126279, 0.31517208, 0.41960785)
 
 [node name="packingMachine" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.274429, 0, 0, 0, -4.5577144e-06, -1.2744293, 0, 1.2744293, -4.5577144e-06, 0.0043058395, 0.17966385, 0.006237719)
+transform = Transform3D(1.274429, 0, 0, 0, -5.5707076e-08, -1.2744293, 0, 1.2744293, -5.5707076e-08, 0.0043058395, 0.17966385, 0.006237719)
 mesh = SubResource("ArrayMesh_uesdv")
 skeleton = NodePath("")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="packingMachine"]
+transform = Transform3D(0.78466517, 0, 0, 0, -2.8061806e-06, 0.7846649, 0, -0.7846649, -2.8061806e-06, -0.0033786423, -0.35053176, -0.78839856)
 
 [node name="machineDoor" type="StaticBody3D" parent="packingMachine"]
 transform = Transform3D(1, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.462, 0)

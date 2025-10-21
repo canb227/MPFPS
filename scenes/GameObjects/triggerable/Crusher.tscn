@@ -477,7 +477,7 @@ volume_db = 3.0
 panning_strength = 0.0
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.068397045, -0.66679996)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.068397045, -0.068764985)
 
 [node name="PressBase" type="MeshInstance3D" parent="StaticBody3D"]
 mesh = SubResource("ArrayMesh_kxmu2")
@@ -487,8 +487,9 @@ skeleton = NodePath("")
 shape = SubResource("ConvexPolygonShape3D_bc21h")
 
 [node name="PackagePressArea" type="Area3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016794145, 0, 0.81530654)
-collision_mask = 19
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03566283, 0, 0.81530654)
+collision_layer = 26
+collision_mask = 26
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D/PackagePressArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013877869, 1.2188416, -0.07055473)
@@ -496,7 +497,7 @@ shape = SubResource("BoxShape3D_w3e0y")
 debug_color = Color(0.81687033, 0.001924075, 0.9740954, 0.41960785)
 
 [node name="PackageSpawnSpot" type="Marker3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47772133, 0.6732974)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84060156, 0.18780756)
 
 [node name="PressFrame" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_w6tdc")
