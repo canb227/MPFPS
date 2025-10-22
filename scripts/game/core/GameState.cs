@@ -490,12 +490,28 @@ public partial class GameState : Node3D
 
 
     //Incoming Network Message Processors ----------------------------------------------------------------------------------
-
+    private bool dedge = false;
 
     public void ProcessStateUpdatePacketBytes(byte[] stateUpdatePacketBytes, ulong sender)
     {
         Logging.Log($"Eating a state packet!", "StateUpdatePacket");
-        StateUpdatePacket stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes);
+
+        var resolver = MessagePack.Resolvers.CompositeResolver.Create([GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance]);
+        var options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
+        StateUpdatePacket stateUpdate = new();
+        try
+        {
+            stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes, options);
+        }
+        catch(Exception e)
+        {
+            if (!dedge)
+            {
+                Logging.Error($"Exception parsing state packet (SILENCING THIS ERROR): {e.ToString()}", "GameState");
+                dedge = true;
+            }
+        }
+
         if (tick-stateUpdate.tick>StateFreshnessThreshold)
         {
             StateUpdatePacketBuffer.Enqueue(stateUpdate);
