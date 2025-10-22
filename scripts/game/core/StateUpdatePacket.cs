@@ -1,5 +1,6 @@
 using Godot;
 using MessagePack;
+using System.Collections.Generic;
 /// <summary>
 /// Struct that defines a single network message that updates the state of a single IGameObject.
 /// </summary>
@@ -16,7 +17,7 @@ public struct StateUpdatePacket
     /// Byte array that contains the state data for the object.
     /// </summary>
     [Key(1)]
-    public byte[] data;
+    public List<byte> data;
 
     /// <summary>
     /// IGameObject Type enum value - must match type of object with the given ID
@@ -38,7 +39,7 @@ public struct StateUpdatePacket
 
 
 
-    public StateUpdatePacket(ulong id, byte[] data, GameObjectType type)
+    public StateUpdatePacket(ulong id, List<byte> data, GameObjectType type)
     {
         this.objectID = id;
         this.data = data;

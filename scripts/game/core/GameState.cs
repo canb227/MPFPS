@@ -466,7 +466,7 @@ public partial class GameState : Node3D
                     Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
                     return;
                 }
-                updateObj.ProcessStateUpdate(stateUpdate.data);
+                updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
             }
             else
             {
@@ -494,6 +494,7 @@ public partial class GameState : Node3D
 
     public void ProcessStateUpdatePacketBytes(byte[] stateUpdatePacketBytes, ulong sender)
     {
+        Logging.Log($"Eating a state packet!", "StateUpdatePacket");
         StateUpdatePacket stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes);
         if (tick-stateUpdate.tick>StateFreshnessThreshold)
         {

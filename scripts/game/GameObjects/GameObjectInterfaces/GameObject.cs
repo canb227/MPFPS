@@ -5,7 +5,6 @@ using static GameState;
 
 public interface GameObject
 {
-    [Export]
     ulong id { get; set; }
 
     [Export]
