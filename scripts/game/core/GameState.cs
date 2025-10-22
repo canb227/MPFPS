@@ -529,15 +529,15 @@ public partial class GameState : Node3D
         {
             return;
         }
-        
-        if ((tick-stateUpdate.tick)<=StateFreshnessThreshold)
-        {
-            StateUpdatePacketBuffer.Enqueue(stateUpdate);
-        }
-        else
-        {
-            Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! (current tick {tick}, packet tick {stateUpdate.tick}, threshold {StateFreshnessThreshold}) Discarding...", "GameState");
-        }
+        StateUpdatePacketBuffer.Enqueue(stateUpdate);
+        //if ((tick-stateUpdate.tick)<=StateFreshnessThreshold)
+        //{
+        //    StateUpdatePacketBuffer.Enqueue(stateUpdate);
+        //}
+        //else
+        //{
+        //    Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! (current tick {tick}, packet tick {stateUpdate.tick}, threshold {StateFreshnessThreshold}) Discarding...", "GameState");
+        //}
     }
 
     public void ProcessPlayerInputPacketBytes(byte[] playerInputBytes, ulong sender)
