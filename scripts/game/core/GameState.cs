@@ -249,18 +249,32 @@ public partial class GameState : Node3D
         }
         Global.ui.PerTick(delta);
 
+
+
         var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();
-        bool continueUpdating = true;
-        int numUpdates = 0;
-        while (continueUpdating && numUpdates<numUpdatesPerFrame && numUpdates<topObjects.Count)
+        if (sortedDescending.Count != 0)
         {
-            ulong objID = sortedDescending.First().Key;
-            sortedDescending.RemoveAt(0);
-            GameObjects[objID].priorityAccumulator = 0;
-            byte[] upd = GameObjects[objID].GenerateStateUpdate();
-            Global.network.BroadcastData(upd, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
-            numUpdates++;
+            bool continueUpdating = true;
+            int numUpdates = 0;
+            while (continueUpdating && numUpdates < numUpdatesPerFrame && numUpdates < topObjects.Count)
+            {
+                ulong objID = sortedDescending.First().Key;
+                sortedDescending.RemoveAt(0);
+                GameObject obj = GameObjects[objID];
+                obj.priorityAccumulator = 0;
+                byte[] upd = obj.GenerateStateUpdate();
+
+                StateUpdatePacket packet = new StateUpdatePacket();
+                packet.type = obj.type;
+                packet.objectID = objID;
+                packet.sender = Global.steamid;
+                packet.data = upd;
+                packet.tick = tick;
+                Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.GameObjectState, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
+                numUpdates++;
+            }
         }
+
 
         //We're always the authority over our own input state, send that to all of our peers.
         var localInput = PlayerInputs[Global.steamid];
@@ -494,20 +508,20 @@ public partial class GameState : Node3D
 
     public void ProcessStateUpdatePacketBytes(byte[] stateUpdatePacketBytes, ulong sender)
     {
-        Logging.Log($"Eating a state packet!", "StateUpdatePacket");
+        //Logging.Log($"State Packet: {MessagePackSerializer.ConvertToJson(stateUpdatePacketBytes)}", "StateUpdatePacket");
 
-        var resolver = MessagePack.Resolvers.CompositeResolver.Create([GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance]);
-        var options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
+
         StateUpdatePacket stateUpdate = new();
         try
         {
-            stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes, options);
+            stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes);
         }
         catch(Exception e)
         {
             if (!dedge)
             {
                 Logging.Error($"Exception parsing state packet (SILENCING THIS ERROR): {e.ToString()}", "GameState");
+                Logging.Error($"The broken packet came from sender {sender}, has a length of {stateUpdatePacketBytes.Length}", "GameState");
                 dedge = true;
             }
         }
@@ -515,13 +529,14 @@ public partial class GameState : Node3D
         {
             return;
         }
-        else if (tick-stateUpdate.tick>StateFreshnessThreshold)
+        
+        if ((tick-stateUpdate.tick)<=StateFreshnessThreshold)
         {
             StateUpdatePacketBuffer.Enqueue(stateUpdate);
         }
         else
         {
-            Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! Discarding...", "GameState");
+            Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! (current tick {tick}, packet tick {stateUpdate.tick}, threshold {StateFreshnessThreshold}) Discarding...", "GameState");
         }
     }
 

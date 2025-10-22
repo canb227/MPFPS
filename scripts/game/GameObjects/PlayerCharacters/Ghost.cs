@@ -21,6 +21,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override void ProcessStateUpdate(byte[] _update)
     {
+
         GhostUpdate update = MessagePackSerializer.Deserialize<GhostUpdate>(_update);
         GlobalRotation = update.Rotation;
         GlobalPosition = update.Position;
@@ -28,6 +29,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override byte[] GenerateStateUpdate()
     {
+
         GhostUpdate update = new GhostUpdate();
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;

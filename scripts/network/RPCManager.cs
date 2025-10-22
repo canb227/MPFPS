@@ -59,10 +59,6 @@ public static class RPCManager
     public static void DiscoverRPCMethods()
     {
 
-        resolver = MessagePack.Resolvers.CompositeResolver.Create(
-        new[] { MessagePack.Formatters.TypelessFormatter.Instance },
-        new[] { MessagePack.Resolvers.StandardResolver.Instance, GodotResolver.Instance });
-
         Logging.Log($"Searching for RPC methods!", "RPCManager");
         Assembly assembly = Assembly.GetExecutingAssembly();
         foreach (Type type in assembly.GetTypes())
