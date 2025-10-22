@@ -253,7 +253,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                             goto case CharacterState.Dead;
 
                         case CharacterState.Dead:
-                            //Global.ui.inGameUI.PlayerUIManager. //show dead player ui stuff
+                            Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
                             break;
                     }
 

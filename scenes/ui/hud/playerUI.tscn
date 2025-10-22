@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://dp035d7xehaf3"]
+[gd_scene load_steps=9 format=3 uid="uid://dp035d7xehaf3"]
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
 [ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
 [ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://scenes/ui/hud/inventoryUI.tscn" id="2_mr6xf"]
 [ext_resource type="SpriteFrames" uid="uid://6ris0asu4w0y" path="res://assets/ui/hud/crosshairs_white.tres" id="4_mr6xf"]
 [ext_resource type="LabelSettings" uid="uid://bds86vvucgvfm" path="res://scenes/ui/hud/ScoreBoardFont1.tres" id="5_ppqf0"]
+[ext_resource type="Script" uid="uid://btuvjqernuwv7" path="res://scripts/ui/DeadPlayerScreen.cs" id="6_dk55q"]
+[ext_resource type="Texture2D" uid="uid://doy4ka51rjtuf" path="res://assets/ui/hud/xmark.png" id="7_6g85b"]
+[ext_resource type="Texture2D" uid="uid://pbf5lbiw2g2g" path="res://assets/models/warehouse/firehazard.png" id="8_eow85"]
 
 [node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole")]
 layout_mode = 3
@@ -17,9 +20,9 @@ mouse_filter = 1
 script = ExtResource("1_mr6xf")
 PlayerInfoUI = NodePath("bottomleftUI")
 InventoryUI = NodePath("inventoryUI")
-targetPlayerName = NodePath("CenterContainer/VBoxContainer/TargetName")
-targetPlayerHealth = NodePath("CenterContainer/VBoxContainer/TargetHealth")
-targetPlayerRole = NodePath("CenterContainer/VBoxContainer/TargetRole")
+targetPlayerName = NodePath("CenterContainer/SeenPlayerInfo/TargetName")
+targetPlayerHealth = NodePath("CenterContainer/SeenPlayerInfo/TargetHealth")
+targetPlayerRole = NodePath("CenterContainer/SeenPlayerInfo/TargetRole")
 metadata/_custom_type_script = "uid://dj5onwk1keewc"
 
 [node name="bottomleftUI" parent="." instance=ExtResource("1_ct4y5")]
@@ -45,14 +48,14 @@ sprite_frames = ExtResource("4_mr6xf")
 frame = 23
 speed_scale = 0.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="SeenPlayerInfo" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="CenterContainer/VBoxContainer"]
+[node name="Control" type="Control" parent="CenterContainer/SeenPlayerInfo"]
 custom_minimum_size = Vector2(0, 139.955)
 layout_mode = 2
 
-[node name="TargetName" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="TargetName" type="Label" parent="CenterContainer/SeenPlayerInfo"]
 visible = false
 layout_mode = 2
 text = "Player Name Goes Here"
@@ -60,7 +63,7 @@ label_settings = ExtResource("5_ppqf0")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TargetHealth" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="TargetHealth" type="Label" parent="CenterContainer/SeenPlayerInfo"]
 visible = false
 layout_mode = 2
 text = "Healthy"
@@ -68,10 +71,124 @@ label_settings = ExtResource("5_ppqf0")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TargetRole" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="TargetRole" type="Label" parent="CenterContainer/SeenPlayerInfo"]
 visible = false
 layout_mode = 2
 text = "Security"
 label_settings = ExtResource("5_ppqf0")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="DeadPlayerScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("deadPlayerScreen", "playerNameLabel", "closeWindowButton", "teamIcon", "teamLabel", "deathIcon", "deathLabel", "lastSeenPlayerIcon", "lastSeenLabel", "closeWindowButton2")]
+custom_minimum_size = Vector2(800, 500)
+layout_mode = 2
+script = ExtResource("6_dk55q")
+deadPlayerScreen = NodePath(".")
+playerNameLabel = NodePath("VBoxContainer/TopBar/PlayerNameLabel")
+closeWindowButton = NodePath("VBoxContainer/TopBar/CloseWindowButton")
+teamIcon = NodePath("VBoxContainer/TeamInfo/HBox/TeamIcon")
+teamLabel = NodePath("VBoxContainer/TeamInfo/HBox/TeamLabel")
+deathIcon = NodePath("VBoxContainer/DeathReport/HBox/DeathIcon")
+deathLabel = NodePath("VBoxContainer/DeathReport/HBox/DeathLabel")
+lastSeenPlayerIcon = NodePath("VBoxContainer/LastSeenReport/HBox/LastSeenPlayerIcon")
+lastSeenLabel = NodePath("VBoxContainer/LastSeenReport/HBox/LastSeenLabel")
+closeWindowButton2 = NodePath("VBoxContainer/MarginContainer/HBoxContainer/CloseWindowButton2")
+metadata/_custom_type_script = "uid://btuvjqernuwv7"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/DeadPlayerScreen"]
+layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayerNameLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar"]
+layout_mode = 2
+text = "Body of (Name)"
+
+[node name="Spacer" type="Control" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseWindowButton" type="Button" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+icon = ExtResource("7_6g85b")
+icon_alignment = 1
+expand_icon = true
+
+[node name="TeamInfo" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo"]
+layout_mode = 2
+
+[node name="TeamIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("8_eow85")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="TeamLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox"]
+layout_mode = 2
+text = "(Name) was a part of the (Team)"
+
+[node name="DeathReport" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport"]
+layout_mode = 2
+
+[node name="DeathIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("8_eow85")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="DeathLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox"]
+layout_mode = 2
+text = "(Name) died (time) ago to (cause of death)"
+
+[node name="LastSeenReport" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport"]
+layout_mode = 2
+
+[node name="LastSeenPlayerIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("8_eow85")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="LastSeenLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox"]
+layout_mode = 2
+text = "(Name) saw (OtherName) right before they died"
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="CloseWindowButton2" type="Button" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+text = "Close"
