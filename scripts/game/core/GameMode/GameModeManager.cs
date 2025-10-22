@@ -18,12 +18,19 @@ public partial class GameModeManager : Node
     //Events
     public static event Action OnPackageOrdersUpdated;
     public static event Action OnPossibleAddressesUpdated;
+    public static event Action OnDeliveryQueueAppended;
+    public static event Action<int> OnOrderPacked;
+    public static event Action<int> OnOrderLabelled;
+    public static event Action<int> OnOrderReadyToDeliver;
+    public static event Action<int> OnOrderFinished;
+
     //
 
     public ItemSpawnManager itemSpawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
     public List<PackageOrderInfo> packageOrders = new();
+    public Queue<int> deliveryQueue = new();
     public Dictionary<GameObjectType, int> minimumItemTypeCount = new();
     public List<string> possibleRoundAddressNumbers = new();
     public List<string> possibleRoundAddressStreets = new();
@@ -197,11 +204,11 @@ public partial class GameModeManager : Node
             .Take(4)
             .ToList();
 
-        //RPCManager.RPC(this, "SetPossibleRoundAddresses", new List<object> {possibleRoundAddressNumbers, possibleRoundAddressStreets, possibleRoundAddressSuffixes}); //THIS NEEDS TO BE RPC'd TODO
-        OnPossibleAddressesUpdated?.Invoke(); //remove this once we fix the RPC
+        RPCManager.RPC(this, "SetPossibleRoundAddresses", [possibleRoundAddressNumbers, possibleRoundAddressStreets, possibleRoundAddressSuffixes]);
+        //OnPossibleAddressesUpdated?.Invoke(); //remove this once we fix the RPC
 
 
-        ordersNeeded = 4; //determine this dynamically or via some pre-set scale (update the Take value above too)
+        ordersNeeded = 1; //determine this dynamically or via some pre-set scale (update the Take value above too)
 
 
         // we create duplicates so we keep the possibles for other uses, monitors etc
@@ -243,14 +250,6 @@ public partial class GameModeManager : Node
             }
             // Construct your order with the chosen values
             packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
-        }
-        foreach(var order in packageOrders)
-        {
-            GD.Print(order.addressStreet);
-            foreach(var type in order.neededPackageItems)
-            {
-                GD.Print(type);
-            }
         }
         RPCManager.RPC(this, "SetPackageOrders", [ packageOrders.ToList() ]);
     }
@@ -320,9 +319,8 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Traitor;
-            pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, Team.Traitor, Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
 
         foreach (ulong id in managers)
@@ -330,9 +328,9 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Manager;
-            pa.role = Role.Normal;
+            pa.role = Role.Manager;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, Team.Manager, Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
 
         foreach (ulong id in players)
@@ -340,9 +338,8 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Innocent;
-            pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, Team.Innocent, Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
         if(numPlayers == 0)
         {
@@ -367,6 +364,7 @@ public partial class GameModeManager : Node
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
         }
+        //JEFFTODO Set the players mesh here so they match their role.
     }
 
     public int GetNumFinishedOrders()
@@ -376,7 +374,7 @@ public partial class GameModeManager : Node
     public void SetNumFinishedOrders(int numFinished)
     {
         numFinishedOrders = numFinished;
-        if (numFinishedOrders >= ordersNeeded)
+        if (numFinishedOrders >= ordersNeeded && Global.Lobby.bIsLobbyHost)
         {
             StartEndOfGameEvacuation();
         }
@@ -476,6 +474,34 @@ public partial class GameModeManager : Node
         }
     }
 
+
+
+    public void OrderPacked(int orderNumber)
+    {
+        OnOrderPacked?.Invoke(orderNumber);
+
+    }
+    public void OrderLabelled(int orderNumber)
+    {
+        OnOrderLabelled?.Invoke(orderNumber);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void OrderReadyToShip(int orderNumber)
+    {
+        packageOrders[orderNumber].waitingForDelivery = true;
+        deliveryQueue.Enqueue(orderNumber);
+        OnDeliveryQueueAppended?.Invoke();
+        OnOrderReadyToDeliver?.Invoke(orderNumber);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void OrderFinished(int orderNumber)
+    {
+        packageOrders[orderNumber].OrderFinished();
+        OnOrderFinished?.Invoke(orderNumber);
+    }
+
     internal void StartGameMode(string scenePath, GameModeType gameMode)
     {
 
@@ -570,7 +596,11 @@ public enum Team
 public enum Role
 {
     None,
-    Normal,
+    Security,
+    Manager,
+    OfficeWorker,
+    WarehouseWorker,
+    DeliveryWorker,
 
 }
 [MessagePackObject]

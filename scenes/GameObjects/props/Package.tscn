@@ -130,11 +130,12 @@ font_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imtqj"]
 bg_color = Color(0.7912414, 0.68347365, 0.50842464, 1)
 
-[node name="GOPackageBox" type="RigidBody3D" node_paths=PackedStringArray("packageMesh", "addressLabel", "packageItems")]
+[node name="GOPackageBox" type="RigidBody3D" node_paths=PackedStringArray("packageMesh", "packageCollision", "addressLabel", "packageItems")]
 collision_layer = 2
 collision_mask = 27
 script = ExtResource("1_f57io")
 packageMesh = NodePath("CardboardBox_LP")
+packageCollision = NodePath("CollisionShape3D")
 viewportTexture = SubResource("ViewportTexture_odwf8")
 addressLabel = NodePath("LabelViewport/PanelContainer/Label")
 packageItems = NodePath("ItemsViewport/PanelContainer/MarginContainer/PackageItems")

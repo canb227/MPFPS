@@ -10,6 +10,8 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     [Export] public Label orderNumberLabel { get; set; }
     [Export] public HBoxContainer packageItems { get; set; }
     [Export] public Label addressLabel { get; set; }
+    [Export] public Label orderStatusLabel { get; set; }
+    [Export] public ColorRect backgroundColor { get; set; }
     [Export] public TextureRect orderCompletedImage { get; set; }
     [Export] public int orderNumber { get; set; }
 
@@ -54,6 +56,46 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     {
         base._Ready();
         GameModeManager.OnPackageOrdersUpdated += UpdateDisplayedOrder;
+        GameModeManager.OnOrderPacked += ShowOrderAsPacked;
+        GameModeManager.OnOrderLabelled += ShowOrderAsLabelled;
+        GameModeManager.OnOrderReadyToDeliver += ShowOrderAsReadyToDeliver;
+        GameModeManager.OnOrderFinished += ShowOrderAsFinished;
+
+    }
+
+    public void ShowOrderAsPacked(int orderNumber)
+    {
+        if(this.orderNumber-1 == orderNumber)
+        {
+            orderStatusLabel.Text = "\n\n\nPackage Has Been Created...\nAwaiting Labelling...";
+            backgroundColor.Color = new(0.044f, 0.044f, 0.0f, 0.25f);
+        }
+
+    }
+    public void ShowOrderAsLabelled(int orderNumber)
+    {
+        if (this.orderNumber-1 == orderNumber)
+        {
+            orderStatusLabel.Text = "\n\nPackage Has Been Created...\nPackage Has Been Labelled...\nAwaiting Package Deposit At Shipping...";
+            backgroundColor.Color = new(0.081f, 0.001f, 0.133f, 0.25f);
+        }
+    }
+    public void ShowOrderAsReadyToDeliver(int orderNumber)
+    {
+        if (this.orderNumber-1 == orderNumber)
+        {
+            orderStatusLabel.Text = "\n\nPackage Has Been Created...\nPackage Has Been Labelled...\nPackage Has Been Deposited...\nAwaiting For Package to Be Delivered...";
+            backgroundColor.Color = new(0.0f, 0.041f, 0.141f, 0.25f);
+        }
+    }
+    public void ShowOrderAsFinished(int orderNumber)
+    {
+        if (this.orderNumber-1 == orderNumber)
+        {
+            orderStatusLabel.Text = "\n\n\nORDER COMPLETED!";
+            orderCompletedImage.Visible = true;
+            backgroundColor.Color = new(0.0f, 0.187f, 0.015f, 0.25f);
+        }
     }
 
     public override void _Notification(int what)
@@ -61,6 +103,10 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         if (what == NotificationPredelete)
         {
             GameModeManager.OnPackageOrdersUpdated -= UpdateDisplayedOrder;
+            GameModeManager.OnOrderPacked -= ShowOrderAsPacked;
+            GameModeManager.OnOrderLabelled -= ShowOrderAsLabelled;
+            GameModeManager.OnOrderReadyToDeliver -= ShowOrderAsReadyToDeliver;
+            GameModeManager.OnOrderFinished -= ShowOrderAsFinished;
         }
     }
 

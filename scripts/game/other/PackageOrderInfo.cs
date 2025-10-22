@@ -16,12 +16,15 @@ public class PackageOrderInfo
     public List<GameObjectType> neededPackageItems;
     [Key(4)]
     public bool isFinished;
-
+    [Key(5)]
+    public bool waitingForDelivery;
+    [Key(6)]
+    public bool isPacked;
     public PackageOrderInfo()
     {
         
     }
-    
+
     public PackageOrderInfo(string addressNumber, string addressStreet, string addressSuffix, List<GameObjectType> neededPackageItems)
     {
         this.addressNumber = addressNumber;

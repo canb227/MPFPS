@@ -15,6 +15,8 @@ public enum CharacterState
 [GlobalClass]
 public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
+    public event Action<ulong> KnockedOut;
+    public event Action<ulong> Killed;
     [Export] public AudioStreamPlayer3D ourVoiceSpeaker;
     [Export] public AudioStreamPlayer3D characterSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
@@ -461,6 +463,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void rpc_OnKnockedOut()
     {
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
+        KnockedOut?.Invoke(authority);
         //characterSoundManager.PlayerKnockoutSound(characterSFX);
         inventory.DropHeldItem();
         currentStunBar = 0;
@@ -505,6 +508,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath()
     {
+        Killed?.Invoke(authority);
         characterSoundManager.PlayDeathSound(characterSFX);
         inventory.DropAllItems();
         state = CharacterState.Missing;

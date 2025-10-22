@@ -1,14 +1,18 @@
-[gd_scene load_steps=29 format=4 uid="uid://dmqaqtbkumgwh"]
+[gd_scene load_steps=34 format=4 uid="uid://dmqaqtbkumgwh"]
 
 [ext_resource type="Texture2D" uid="uid://b1idtne3ix0lo" path="res://assets/models/map/packageTube_pipe_hr_3.png" id="1_jef8e"]
 [ext_resource type="Script" uid="uid://bs2urqjwct2oj" path="res://scripts/game/GameObjects/Triggerable/GOShippingTube.cs" id="1_kfj15"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_ht3jw"]
 [ext_resource type="AudioStream" uid="uid://xbjxiclvom6" path="res://assets/audio/environment/shippingTube/elevator_large_start1.wav" id="3_ht3jw"]
 [ext_resource type="AudioStream" uid="uid://sradnjkqxp64" path="res://assets/audio/environment/shippingTube/city_ventpump_loop1.wav" id="4_cmag4"]
+[ext_resource type="AudioStream" uid="uid://duyj13ci6wny5" path="res://assets/audio/environment/elevbell1.wav" id="5_exdc2"]
+[ext_resource type="AudioStream" uid="uid://c8k8usi85aevf" path="res://assets/audio/environment/shippingTube/garage_move1.wav" id="6_qbjmv"]
+[ext_resource type="AudioStream" uid="uid://blxpt2irn6rri" path="res://assets/audio/environment/klaxon1.wav" id="7_5m41q"]
 
 [sub_resource type="Resource" id="Resource_cmag4"]
 script = ExtResource("2_ht3jw")
 triggerName = "processShipping"
+cooldownSeconds = 10.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Animation" id="Animation_ht3jw"]
@@ -44,6 +48,18 @@ tracks/2/path = NodePath("MachineAudio:volume_db")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SecondCornerVentAudio:volume_db")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -102,7 +118,7 @@ tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(3),
+"times": PackedFloat32Array(5),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -128,16 +144,126 @@ tracks/5/path = NodePath("MachineAudio:volume_db")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0.3, 0.56666666, 4.4666667, 4.8333335),
+"times": PackedFloat32Array(0.3, 0.56666666, 4.4666667, 5),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [-12.0, 0.0, 0.0, 0.0]
+"values": [-12.0, 0.0, 0.0, -6.0]
+}
+
+[sub_resource type="Animation" id="Animation_22u12"]
+resource_name = "shipmentSuccess"
+length = 4.3
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MachineAudio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_exdc2")
+}],
+"times": PackedFloat32Array(1.0333333)
+}
+tracks/0/use_blend = true
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FirstCornerVentAudio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 1.1508,
+"start_offset": 0.0,
+"stream": ExtResource("6_qbjmv")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/1/use_blend = true
+tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SecondCornerVentAudio")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 1.0,
+"stream": ExtResource("6_qbjmv")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("6_qbjmv")
+}],
+"times": PackedFloat32Array(1, 2.1333334)
+}
+tracks/2/use_blend = true
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SecondCornerVentAudio:volume_db")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.9, 4.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -24.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("MainMesh/StaticBody3D:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(1, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -2.4102998, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_inedd"]
+resource_name = "shipmentFail"
+length = 1.01
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MachineAudio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("7_5m41q")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MainMesh/StaticBody3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -2.4102998, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ht3jw"]
 _data = {
 &"RESET": SubResource("Animation_ht3jw"),
-&"processShipping": SubResource("Animation_kfj15")
+&"processShipping": SubResource("Animation_kfj15"),
+&"shipmentFail": SubResource("Animation_inedd"),
+&"shipmentSuccess": SubResource("Animation_22u12")
 }
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_017nj"]
@@ -285,7 +411,6 @@ script = ExtResource("1_kfj15")
 ItemsForShipping = NodePath("MainMesh/Area3D")
 animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_cmag4")])
-metadata/_custom_type_script = "uid://bs2urqjwct2oj"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

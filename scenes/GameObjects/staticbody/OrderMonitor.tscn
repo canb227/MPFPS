@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=4 uid="uid://rq1ajbvigovp"]
+[gd_scene load_steps=22 format=4 uid="uid://rq1ajbvigovp"]
 
 [ext_resource type="Script" uid="uid://bgwmp1xqbe05v" path="res://scripts/game/GameObjects/StaticBodies/GOOrderMonitor.cs" id="1_b1rst"]
 [ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_2j675"]
@@ -116,12 +116,19 @@ shader_parameter/vignette_strength = 0.3
 [sub_resource type="BoxShape3D" id="BoxShape3D_awrdi"]
 size = Vector3(0.9414, 0.8323, 0.7557)
 
-[node name="GOOrderMonitor" type="StaticBody3D" node_paths=PackedStringArray("MonitorScreen", "orderNumberLabel", "packageItems", "addressLabel", "orderCompletedImage")]
+[sub_resource type="LabelSettings" id="LabelSettings_l2pxy"]
+font_color = Color(1, 0, 0, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="GOOrderMonitor" type="StaticBody3D" node_paths=PackedStringArray("MonitorScreen", "orderNumberLabel", "packageItems", "addressLabel", "orderStatusLabel", "backgroundColor", "orderCompletedImage")]
 script = ExtResource("1_b1rst")
 MonitorScreen = NodePath("SubViewport/MonitorDisplay")
 orderNumberLabel = NodePath("SubViewport/MonitorDisplay/VBoxContainer/OrderNumber")
 packageItems = NodePath("SubViewport/MonitorDisplay/VBoxContainer/PackageItems")
 addressLabel = NodePath("SubViewport/MonitorDisplay/VBoxContainer/AddressLabel")
+orderStatusLabel = NodePath("SubViewport/MonitorDisplay/PackageStatusLabel")
+backgroundColor = NodePath("SubViewport/BackgroundColor")
 orderCompletedImage = NodePath("SubViewport/MonitorDisplay/OrderFinished")
 
 [node name="Mesh_OrderMonitor" type="MeshInstance3D" parent="."]
@@ -291,3 +298,18 @@ vertical_alignment = 1
 visible = false
 layout_mode = 2
 texture = ExtResource("11_crmeu")
+
+[node name="PackageStatusLabel" type="Label" parent="SubViewport/MonitorDisplay"]
+layout_mode = 2
+size_flags_vertical = 0
+label_settings = SubResource("LabelSettings_l2pxy")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackgroundColor" type="ColorRect" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.21365592, 0.19155538, 0.19707716, 0.2509804)

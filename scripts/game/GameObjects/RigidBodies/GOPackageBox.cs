@@ -7,10 +7,12 @@ using MessagePack;
 public partial class GOPackageBox : SimpleShape
 {
     [Export] MeshInstance3D packageMesh { get; set; }
+    [Export] public CollisionShape3D packageCollision { get; set; }
     [Export] ViewportTexture viewportTexture { get; set; }
     [Export] Label addressLabel { get; set; }
     [Export] HBoxContainer packageItems { get; set; }
-    public int orderNumber;
+    public int orderNumber = -1;
+    public bool labelApplied = false;
 
     public override void _Ready()
     {
@@ -60,7 +62,7 @@ public partial class GOPackageBox : SimpleShape
         mat2.ResourceLocalToScene = true;
         mat2.AlbedoTexture = viewportTexture;
         packageMesh.SetSurfaceOverrideMaterial(1, mat2);
-
+        labelApplied = true;
     }
 
     public override bool InitFromData(GameObjectConstructorData data)

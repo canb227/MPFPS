@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
 [ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud/inventoryUI.tscn" id="2_mr6xf"]
-[ext_resource type="PackedScene" uid="uid://q4k0brkivjy2" path="res://scenes/ui/hud/BasePlayerHUD.tscn" id="4_mr6xf"]
+[ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://scenes/ui/hud/inventoryUI.tscn" id="2_mr6xf"]
+[ext_resource type="SpriteFrames" uid="uid://6ris0asu4w0y" path="res://assets/ui/hud/crosshairs_white.tres" id="4_mr6xf"]
 
 [node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "InventoryUI")]
 layout_mode = 3
@@ -24,5 +24,23 @@ layout_mode = 1
 [node name="inventoryUI" parent="." instance=ExtResource("2_mr6xf")]
 layout_mode = 1
 
-[node name="CenterContainer" parent="." instance=ExtResource("4_mr6xf")]
+[node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="center" type="Control" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="crosshair" type="AnimatedSprite2D" parent="CenterContainer/center"]
+scale = Vector2(0.395, 0.395)
+sprite_frames = ExtResource("4_mr6xf")
+frame = 23
+speed_scale = 0.0
+
+[node name="BasePlayerHud" type="Control" parent="CenterContainer"]
+layout_mode = 2
+mouse_filter = 1

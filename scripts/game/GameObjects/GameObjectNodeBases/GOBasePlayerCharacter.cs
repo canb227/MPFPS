@@ -27,6 +27,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual Team team {  get; set; }
     public virtual Role role { get; set; }
     public virtual PlayerInputData input { get; set; }
+    public virtual PlayerInputData inputBackup { get; set; }
     public override bool predict { get; set; } = true;
     public RayCast3D rayCast { get; set; }
     public ActionFlags lastTickActions { get; set; }
@@ -61,14 +62,14 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         RPCManager.RPC(this, "rpc_TakeControl", [playerID]);
     }
 
-    [RPCMethod(mode=RPCMode.SendToAllPeers)]
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public virtual void rpc_TakeControl(ulong playerID)
     {
         if (controllingPlayerID != 0)
         {
             Logging.Error($"Player {playerID} cannot take control of player character {id}, that character is already being controlled by player {controllingPlayerID}", "PlayerCharacter");
         }
-        else if (Global.gameState.PlayerIDToControlledCharacter.TryGetValue(playerID, out ulong charID) && charID!=0)
+        else if (Global.gameState.PlayerIDToControlledCharacter.TryGetValue(playerID, out ulong charID) && charID != 0)
         {
             Logging.Error($"Player {playerID} Cannot take control of player character {id}, that player is already controlling character: {Global.gameState.GetCharacterControlledBy(controllingPlayerID).id} ", "PlayerCharacter");
         }
@@ -84,6 +85,18 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                 OnControlTaken(playerID);
             }
         }
+    }
+
+    //Used to temporarly ignore user input, original for machine interaction/control
+    public void LockControl()
+    {
+        inputBackup = input;
+        input = new();
+    }
+    
+    public void UnlockControl()
+    {
+        input = inputBackup;
     }
 
     protected abstract void OnControlTaken(ulong byID);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=39 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
 [ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="12_k56je"]
+[ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
@@ -100,6 +101,12 @@ metadata/_custom_type_script = "uid://ceok257oa0301"
 script = ExtResource("5_k4evv")
 triggerableNode = NodePath("../PackagingMachine")
 triggerName = "processPackage"
+metadata/_custom_type_script = "uid://ceok257oa0301"
+
+[sub_resource type="Resource" id="Resource_q8pj7"]
+script = ExtResource("5_k4evv")
+triggerableNode = NodePath("../GOShippingTube")
+triggerName = "processShipping"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_wkfce"]
@@ -545,6 +552,13 @@ transform = Transform3D(-0.99973863, 0, -0.022861786, 0, 1, 0, 0.022861786, 0, -
 [node name="packingButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
 transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -45.061207, 1.0129337, 11.838503)
 triggers = Array[Object]([SubResource("Resource_k56je")])
+
+[node name="GOShippingTube" parent="GameObjects/interactables&traps" instance=ExtResource("13_o4214")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -46.5571, -0.353854, -5.452427)
+
+[node name="shippingButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
+transform = Transform3D(-1, -8.742278e-08, 0, -3.821371e-15, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, -45.472324, 0.96177036, -3.6682656)
+triggers = Array[Object]([SubResource("Resource_q8pj7")])
 
 [node name="SwarmRobotSpawner" parent="GameObjects" instance=ExtResource("12_12nid")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3303785, 3.5941045, -7.341351)

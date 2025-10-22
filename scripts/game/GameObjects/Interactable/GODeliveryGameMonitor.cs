@@ -11,49 +11,152 @@ using System.Xml.Linq;
 [GlobalClass]
 public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 {
-    [Export]
-    Node3D lockCameraPosition;
-    [Export]
-    Node3D lockPlayerPosition;
+    [Export] Node3D lockCameraPosition;
+    [Export] Node3D lockPlayerPosition;
+    [Export] AnimationPlayer animationPlayer;
 
-    [Export]
-    DeliveryVehicle2D vehicle2D;
+    [Export] DeliveryVehicle2D vehicle2D;
+    [Export] Area2D finishArea;
 
     public bool locked = false;
 
     private ActionFlags lastTickActions { get; set; }
     private PlayerInputData input;
-    private ulong activePlayerID;
+    public bool activeDelivery;
+    private ulong activeCharacterID;
+
+    private Transform3D playerCameraBackUp { get; set; }
+    private Transform3D playerPositionBackUp { get; set; }
+
+
+    public int orderID = -1;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        finishArea.BodyEntered += OnBodyEntered;
+        GameModeManager.OnDeliveryQueueAppended += NewDelivery;
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationPredelete)
+        {
+            GameModeManager.OnDeliveryQueueAppended -= NewDelivery;
+        }
+    }
+
 
     public override void Auth_HandleInteractionRequest(ulong byID, ulong onTick)
     {
         //get player controller by ID
-        if (!locked)
+        if (!locked && orderID != -1)
         {
-            activePlayerID = byID;
-            LockPlayer(byID, lockCameraPosition.Transform, lockPlayerPosition.Transform);
+            RPCManager.RPC(this, "LockPlayer", [byID, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
         }
     }
 
-    private void LockPlayer(ulong playerID, Transform3D cameraPosition, Transform3D playerPosition)
+    public void NewDelivery()
     {
-        //assign input and lock player from acting and set camera/player position
+        if (!activeDelivery && !locked && Global.gameState.gameModeManager.deliveryQueue.Any())
+        {
+            orderID = Global.gameState.gameModeManager.deliveryQueue.Dequeue();
+            activeDelivery = true;
+            PrepareMiniGameForNewDelivery();
+        }
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PlayAnimation(string animationName)
+    {
+        animationPlayer.Play(animationName);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void LockPlayer(ulong playerID, Transform3D cameraPosition, Transform3D playerPosition)
+    {
+        Logging.Log("Locking Player, and passing input to the machine", "GODeliveryGameMonitor");
+        GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[playerID];
+        if (playerCharacter is BasicPlayerCharacter basicPlayerCharacter)
+        {
+            basicPlayerCharacter.KnockedOut += UnlockPlayer;
+            basicPlayerCharacter.Killed += UnlockPlayer;
+        }
+        playerCharacter.LockControl();
+        playerCameraBackUp = playerCharacter.camera.GlobalTransform;
+        playerCharacter.camera.GlobalTransform = cameraPosition;
         locked = true;
-        input = new();
+        activeCharacterID = playerID;
+        input = Global.gameState.PlayerInputs[playerCharacter.authority];
+        
+        rpc_MiniGameStart();
     }
-
-    private void UnlockPlayer(ulong playerID)
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void UnlockPlayer(ulong playerID)
     {
-        //unassign input
-        //reset camera and player position and unlock input
-        locked = false;
-        input = new();
+        if (locked)
+        {
+            GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[playerID];
+            if (playerCharacter is BasicPlayerCharacter basicPlayerCharacter)
+            {
+                basicPlayerCharacter.KnockedOut -= UnlockPlayer;
+                basicPlayerCharacter.Killed -= UnlockPlayer;
+            }
+            playerCharacter.UnlockControl();
+            playerCharacter.camera.GlobalTransform = playerCameraBackUp;
+            locked = false;
+            input = new();
+            PlayAnimation("gameReady");
+        }
     }
 
+    public void PrepareMiniGameForNewDelivery()
+    {
+        PlayAnimation("gameReady");
+    }
+
+    public void rpc_MiniGameStart()
+    {
+        PlayAnimation("gameStart");
+        Transform2D vehicleTransform = Transform2D.Identity;
+        vehicleTransform.Origin = new(500, 500);
+        vehicle2D.Transform = vehicleTransform;
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void MiniGameWon()
     {
-        UnlockPlayer(activePlayerID);
-        //minigame win stuff
+        UnlockPlayer(activeCharacterID);
+        PlayAnimation("gameWon");
+        Global.gameState.gameModeManager.OrderFinished(orderID);
+        orderID = -1;
+        activeDelivery = false;
+        MiniGameResetDelayer(delaySeconds: 4f);
+    }
+
+    public async void MiniGameResetDelayer(float delaySeconds = 4f)
+    {
+        await ToSignal(GetTree().CreateTimer(delaySeconds), SceneTreeTimer.SignalName.Timeout);
+        PlayAnimation("gameWaiting");
+        NewDelivery();
+    }
+
+    private void OnBodyEntered(Node body)
+    {
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            if (body is DeliveryVehicle2D)
+            {
+                RPCManager.RPC(this, "MiniGameWon", []);
+            }
+        }
+        else
+        {
+            if (body is DeliveryVehicle2D)
+            {
+                Logging.Log("We are a client and won the delivery game, hopefully the host agrees", "GODeliveryGameMonitor");
+            }
+        }
     }
 
     public override void PerFrameAuth(double delta)
