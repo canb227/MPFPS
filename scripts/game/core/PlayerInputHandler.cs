@@ -28,10 +28,10 @@ public partial class PlayerInputHandler : Node
                     {
                         Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions | InputMapManager.actionNameToActionFlagMap[action];
                     }
-                    //else if (@event.IsReleased())
-                    //{
-                    //    Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~InputMapManager.actionNameToActionFlagMap[action];
-                    //}
+                    else
+                    {
+                        Global.gameState.PlayerInputs[Global.steamid].actions = Global.gameState.PlayerInputs[Global.steamid].actions & ~InputMapManager.actionNameToActionFlagMap[action];
+                    }
                 }
             }
         }

@@ -269,7 +269,7 @@ public partial class GameState : Node3D
 
         foreach( var input in PlayerInputs)
         {
-            input.Value.actions = 0;
+           // input.Value.actions = 0;
         }
     }
 
