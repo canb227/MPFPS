@@ -511,8 +511,11 @@ public partial class GameState : Node3D
                 dedge = true;
             }
         }
-
-        if (tick-stateUpdate.tick>StateFreshnessThreshold)
+        if (dedge)
+        {
+            return;
+        }
+        else if (tick-stateUpdate.tick>StateFreshnessThreshold)
         {
             StateUpdatePacketBuffer.Enqueue(stateUpdate);
         }
