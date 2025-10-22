@@ -33,7 +33,7 @@ public partial class Hands : GOBaseInventoryItem
             GOBasePlayerCharacter pc = (Global.gameState.GameObjects[equippedBy] as GOBasePlayerCharacter);
             pc.Pickup(this);
             pc.Equip(InventoryGroupCategory.Hands);
-            rayCast = pc.rayCast;
+            rayCast = pc.interactRayCast;
         }
 
         CurrentHoldPosition = new();

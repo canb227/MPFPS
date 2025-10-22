@@ -29,7 +29,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual PlayerInputData input { get; set; }
     public virtual PlayerInputData inputBackup { get; set; }
     public override bool predict { get; set; } = true;
-    public RayCast3D rayCast { get; set; }
+    public RayCast3D interactRayCast { get; set; }
+    public RayCast3D visualRayCast { get; set; }
+
     public ActionFlags lastTickActions { get; set; }
 
 
@@ -49,6 +51,11 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     {
         base._Ready();
         Logging.Log($"Spawned a new player character with id:{id} and authority: {authority}.", "PlayerCharacter");
+        visualRayCast = new();
+        visualRayCast.TargetPosition = new Vector3(0, 0, -8);
+        visualRayCast.CollideWithBodies = true;
+        visualRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, items, players
+        camera.AddChild(visualRayCast);
     }
 
     public override bool InitFromData(GameObjectConstructorData data)

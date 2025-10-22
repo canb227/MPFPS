@@ -12,6 +12,9 @@ public partial class PlayerUIManager : Control
 {
     [Export] public PlayerInfoUI PlayerInfoUI;
     [Export] public MarginContainer InventoryUI;
+    [Export] public Label targetPlayerName;
+    [Export] public Label targetPlayerHealth;
+    [Export] public Label targetPlayerRole;
 
     public void ShowPlayerUI(ulong characterID)
     {

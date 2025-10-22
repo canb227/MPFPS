@@ -31,6 +31,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
+    public ulong currentlySeenCharacterID { get; set; }
+    public CharacterState currentlySeenCharacterState { get; set; }
+    public string currentlySeenCharacterHealthString { get; set; }
     public float camXRotMax = 85;
     public float camXRotMin = -85;
     public float baseSpeed = 6;
@@ -56,11 +59,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 4);//1,2,5
         priority = 100;
 
-        rayCast = new();
-        rayCast.TargetPosition = new Vector3(0, 0, -4);
-        rayCast.CollideWithBodies = true;
-        rayCast.CollisionMask = (1 << 1) | (1 << 3); //layer 2 or 4, entities and inventoryitems
-        camera.AddChild(rayCast);
+        interactRayCast = new();
+        interactRayCast.TargetPosition = new Vector3(0, 0, -4);
+        interactRayCast.CollideWithBodies = true;
+        interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, items, players
+        camera.AddChild(interactRayCast);
     }
     public override void ProcessStateUpdate(byte[] _update)
     {
@@ -97,7 +100,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //stun regen
         if (currentTimeUntilStunRegen <= 0)
         {
-            if(currentStunBar < maxStunBar)
+            if (currentStunBar < maxStunBar)
             {
                 currentStunBar = Math.Min(currentStunBar + (stunRegenRatePerSecond * (float)delta), maxStunBar);
                 if (controllingPlayerID == Global.steamid)
@@ -109,6 +112,90 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         else
         {
             currentTimeUntilStunRegen -= (float)delta;
+        }
+        //visualRayCast for HUD info
+        HandleVisualRayCast(delta);
+
+    }
+
+    public void HandleVisualRayCast(double delta)
+    {
+        if (visualRayCast.IsColliding())
+        {
+            var temp = visualRayCast.GetCollider();
+            if (visualRayCast.GetCollider() is BasicPlayerCharacter basicPlayerCharacter)
+            {
+                if (basicPlayerCharacter.state == CharacterState.Living)
+                {
+                    (Color, string) healthInfo = basicPlayerCharacter.GetHealthInfo();
+                    if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState || healthInfo.Item2 != currentlySeenCharacterHealthString)
+                    {
+                        currentlySeenCharacterID = basicPlayerCharacter.id;
+                        currentlySeenCharacterState = basicPlayerCharacter.state;
+                        currentlySeenCharacterHealthString = healthInfo.Item2;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                        Logging.Log("We see a new living basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", basicPlayerCharacter.GetHealthInfo().Item1);
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = basicPlayerCharacter.GetHealthInfo().Item2;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = basicPlayerCharacter.role.ToString();
+                    }
+                }
+                else if (basicPlayerCharacter.state == CharacterState.Missing)
+                {
+                    if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                    {
+                        currentlySeenCharacterID = basicPlayerCharacter.id;
+                        currentlySeenCharacterState = basicPlayerCharacter.state;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                        Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = "Unidentified Body";
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.AddThemeColorOverride("font_color", Colors.Yellow);
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search and identify";
+                    }
+                }
+                else if (basicPlayerCharacter.state == CharacterState.Dead)
+                {
+                    if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                    {
+                        currentlySeenCharacterID = basicPlayerCharacter.id;
+                        currentlySeenCharacterState = basicPlayerCharacter.state;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                        Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerName.RemoveThemeColorOverride("font_color");
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
+                        Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search";
+                    }
+                }
+                else
+                {
+                    Logging.Error("Invalid Player State in Visual Check", "BasicPlayerCharacter");
+                }
+            }
+            else
+            {
+                currentlySeenCharacterID = 0;
+                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = false;
+                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = false;
+                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = false;
+            }
+        }
+        else
+        {
+            currentlySeenCharacterID = 0;
+            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = false;
+            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = false;
+            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = false;
         }
     }
 
@@ -145,17 +232,31 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
         {
-            if (rayCast.IsColliding())
+            if (interactRayCast.IsColliding())
             {
-                var temp = rayCast.GetCollider();
-                if (rayCast.GetCollider() is IsInventoryItem s)
+                var temp = interactRayCast.GetCollider();
+                if (interactRayCast.GetCollider() is IsInventoryItem s)
                 {
                     Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
                     Pickup(s);
                 }
-                else if (rayCast.GetCollider() is IsInteractable i)
+                else if (interactRayCast.GetCollider() is IsInteractable i)
                 {
                     i.Local_OnInteract(id);
+                }
+                else if (interactRayCast.GetCollider() is BasicPlayerCharacter basicPlayerCharacter)
+                {
+                    switch (basicPlayerCharacter.state)
+                    {
+                        case CharacterState.Missing:
+                            basicPlayerCharacter.OnFound();
+                            goto case CharacterState.Dead;
+
+                        case CharacterState.Dead:
+                            //Global.ui.inGameUI.PlayerUIManager. //show dead player ui stuff
+                            break;
+                    }
+
                 }
             }
         }
@@ -347,6 +448,34 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override Camera3D GetCamera()
     {
         return camera;
+    }
+
+    public (Color, string) GetHealthInfo()
+    {
+        if (currentHealth == maxHealth)
+        {
+            return (Colors.Green, "Healthy");
+        }
+        else if (currentHealth / maxHealth >= 0.75f)
+        {
+            return (Colors.GreenYellow, "Hurt");
+        }
+        else if (currentHealth / maxHealth >= 0.5f)
+        {
+            return (Colors.Yellow, "Wounded");
+        }
+        else if (currentHealth / maxHealth >= 0.25f)
+        {
+            return (Colors.Orange, "Badly Wounded");
+        }
+        else if (currentHealth / maxHealth >= 0.0f)
+        {
+            return (Colors.Red, "Near Death");
+        }
+        else
+        {
+            return (Colors.DimGray, "Dead?");
+        }
     }
 
     public override string GenerateStateString()

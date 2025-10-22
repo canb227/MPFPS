@@ -12,11 +12,6 @@ public partial class Ghost : GOBasePlayerCharacter
     {
         base._Ready();
         priority = 100;
-
-        rayCast = new();
-        rayCast.TargetPosition = new Vector3(0, 0, -50);
-        rayCast.CollideWithBodies = true;
-        AddChild(rayCast);
     }
 
     public override void ProcessStateUpdate(byte[] _update)
@@ -55,16 +50,16 @@ public partial class Ghost : GOBasePlayerCharacter
             }
             input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
 
-            if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
-            {
-                if (rayCast.IsColliding())
-                {
-                    if (rayCast.GetCollider() is IsInteractable i)
-                    {
-                        i.Local_OnInteract(id);
-                    }
-                }
-            }
+            // if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
+            // {
+            //     if (interactRayCast.IsColliding())
+            //     {
+            //         if (interactRayCast.GetCollider() is IsInteractable i)
+            //         {
+            //             i.Local_OnInteract(id);
+            //         }
+            //     }
+            //}
 
             if (input.actions.HasFlag(ActionFlags.Sprint))
             {

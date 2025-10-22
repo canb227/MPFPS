@@ -1,11 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://dp035d7xehaf3"]
+[gd_scene load_steps=6 format=3 uid="uid://dp035d7xehaf3"]
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
 [ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
 [ext_resource type="PackedScene" uid="uid://be71vq8wdukjf" path="res://scenes/ui/hud/inventoryUI.tscn" id="2_mr6xf"]
 [ext_resource type="SpriteFrames" uid="uid://6ris0asu4w0y" path="res://assets/ui/hud/crosshairs_white.tres" id="4_mr6xf"]
+[ext_resource type="LabelSettings" uid="uid://bds86vvucgvfm" path="res://scenes/ui/hud/ScoreBoardFont1.tres" id="5_ppqf0"]
 
-[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "InventoryUI")]
+[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +17,9 @@ mouse_filter = 1
 script = ExtResource("1_mr6xf")
 PlayerInfoUI = NodePath("bottomleftUI")
 InventoryUI = NodePath("inventoryUI")
+targetPlayerName = NodePath("CenterContainer/VBoxContainer/TargetName")
+targetPlayerHealth = NodePath("CenterContainer/VBoxContainer/TargetHealth")
+targetPlayerRole = NodePath("CenterContainer/VBoxContainer/TargetRole")
 metadata/_custom_type_script = "uid://dj5onwk1keewc"
 
 [node name="bottomleftUI" parent="." instance=ExtResource("1_ct4y5")]
@@ -41,6 +45,33 @@ sprite_frames = ExtResource("4_mr6xf")
 frame = 23
 speed_scale = 0.0
 
-[node name="BasePlayerHud" type="Control" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
-mouse_filter = 1
+
+[node name="Control" type="Control" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 139.955)
+layout_mode = 2
+
+[node name="TargetName" type="Label" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Player Name Goes Here"
+label_settings = ExtResource("5_ppqf0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TargetHealth" type="Label" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Healthy"
+label_settings = ExtResource("5_ppqf0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TargetRole" type="Label" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Security"
+label_settings = ExtResource("5_ppqf0")
+horizontal_alignment = 1
+vertical_alignment = 1
