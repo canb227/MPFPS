@@ -411,6 +411,14 @@ public partial class GameState : Node3D
             ImGui.Text($"ObjectStateDump: {debugTarget.GenerateStateString()}");
             ImGui.End();
         }
+
+        ImGui.Begin("Player Inputs");
+        foreach (var entry in PlayerInputs)
+        {
+            ImGui.Text($"Player ID: {entry.Key} | MvInput: {entry.Value.MovementInputVector} | LkInput: {entry.Value.LookInputVector}");
+            ImGui.Text($"Actions: {entry.Value.actions.ToString()}");
+        }
+        ImGui.End();
     }
 
     private void HandleInputQueue()

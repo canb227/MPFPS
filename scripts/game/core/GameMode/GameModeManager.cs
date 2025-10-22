@@ -83,11 +83,11 @@ public partial class GameModeManager : Node
     public async void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
-        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        RPCManager.RPC(this, "StartNewRound", []);
+        //await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        //RPCManager.RPC(this, "StartNewRound", []);
 
-        await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
-        AssignRoles();
+        //await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
+        //AssignRoles();
 
 
     }
