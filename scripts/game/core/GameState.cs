@@ -256,7 +256,7 @@ public partial class GameState : Node3D
         {
             bool continueUpdating = true;
             int numUpdates = 0;
-            while (continueUpdating && numUpdates < numUpdatesPerFrame && numUpdates < topObjects.Count)
+            while (continueUpdating && numUpdates < numUpdatesPerFrame && numUpdates < sortedDescending.Count)
             {
                 ulong objID = sortedDescending.First().Key;
                 sortedDescending.RemoveAt(0);
@@ -484,7 +484,7 @@ public partial class GameState : Node3D
             }
             else
             {
-                Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
+                //Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
                 //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                 //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                 //fixObj.ProcessStateUpdate(stateUpdate.data);
