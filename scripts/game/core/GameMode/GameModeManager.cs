@@ -516,8 +516,8 @@ public partial class GameModeManager : Node
         {
             GameObjectConstructorData data = new GameObjectConstructorData(pcType);
             data.spawnTransform = MapManager.GetPlayerSpawnTransform();
+            data.paramList.Add(true);
             Global.gameState.Auth_SpawnObject(pcType, data);
-            ((GOBasePlayerCharacter)Global.gameState.GameObjects[data.id]).TakeControl(Global.steamid);
         }
         else
         {

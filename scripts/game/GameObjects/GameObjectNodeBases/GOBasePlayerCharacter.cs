@@ -53,6 +53,11 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public override bool InitFromData(GameObjectConstructorData data)
     {
         GlobalTransform = data.spawnTransform;
+        //paramList[0] is auth takeControl boolean
+        if((bool)data.paramList[0])
+        {
+            rpc_TakeControl(authority);
+        }
         return true;
     }
 

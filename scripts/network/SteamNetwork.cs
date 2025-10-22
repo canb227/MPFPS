@@ -64,22 +64,22 @@ public class SteamNetwork
     /// <summary>
     /// If true, pack and unpack loopback messages as if they were being sent across the network. Negatively impacts performance but can help test for issues.
     /// </summary>
-    private const bool bLoopbackMemoryAllocation = false;
+    private const bool bLoopbackMemoryAllocation = true;
 
     /// <summary>
     /// If true, introduce artifical network conditions to loopback messages. TESTING ONLY
     /// </summary>
-    private const bool bNetworkSimulation = false;
+    private const bool bNetworkSimulation = true;
 
     /// <summary>
     /// Base miliseconds to delay all loopback messages
     /// </summary>
-    private const int iNetworkSimulationDelayMS = 50;
+    private const int iNetworkSimulationDelayMS = 5;
 
     /// <summary>
     /// Randomly add between 0 and this value number of miliseconds to the base delay
     /// </summary>
-    private const int iNetworkSimulationDelayVarianceMS = 100;
+    private const int iNetworkSimulationDelayVarianceMS = 1;
 
     public bool BandwidthTrackerEnabled = true;
     public bool BandwidthTrackerCountLoopbackSend = true;
