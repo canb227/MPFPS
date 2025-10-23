@@ -25,6 +25,8 @@ public partial class ScoreBoardUI : MarginContainer
     public void UpdateTimeLeftUI(string timeLeftString)
     {
         TimeRemainingNumber.Text = timeLeftString;
+        //Fix scoreboard text
+        //switch timer logically and visually to a new color and countdown when the evacuation starts
     }
 
     //Move Worker Section

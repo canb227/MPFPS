@@ -18,7 +18,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     public virtual AnimationPlayer animationPlayer { get; set; }
 
     [Export]
-    public ImageTexture icon { get; set; }
+    public ImageTexture icon { get; set; }//test inventory
 
     public virtual InventoryGroupCategory category { get; set; }
     public virtual ulong inInventoryOf { get; set; }
@@ -38,6 +38,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
 
     public virtual void OnDropped(ulong byID)
     {
+        Logging.Log(byID + " Just Dropped a " + category.ToString(), "GOBaseInventoryItem");
         firstPersonScene.Hide();
         thirdPersonScene.Show();
         this.CollisionLayer = 1 << 3;
@@ -47,6 +48,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     }
     public virtual void OnEquipped(ulong byID)
     {
+        Logging.Log(byID + " Just Equipped a " + category.ToString(), "GOBaseInventoryItem");
         this.CollisionLayer = 0;
         Freeze = true;
         equippedBy = byID;
@@ -62,6 +64,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     }
     public virtual void OnPickup(ulong byID)
     {
+        Logging.Log(byID + " Just Picked a " + category.ToString() + " Up", "GOBaseInventoryItem");
         Freeze = true;
         this.CollisionLayer = 0;
         firstPersonScene.Hide();
@@ -70,6 +73,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     }
     public virtual void OnUnequipped(ulong byID)
     {
+        Logging.Log(byID + " Just Unequipped a " + category.ToString(), "GOBaseInventoryItem");
         Freeze = true;
         equippedBy = 0;
         inInventoryOf = byID;

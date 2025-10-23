@@ -149,7 +149,7 @@ public class InventoryGroup
     {
         if (!CanStoreOrReplaceItem(item))
         {
-            Logging.Error($"Cannot store or replace this item!", "Invetory");
+            Logging.Error($"Cannot store or replace this item!", "Inventory");
             replaced = null;
             return false;
         }

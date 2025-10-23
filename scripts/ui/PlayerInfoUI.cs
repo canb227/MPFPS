@@ -40,7 +40,7 @@ public partial class PlayerInfoUI : MarginContainer
         else
         {
             styleBox.BgColor = new Godot.Color(0.333f, 0.333f, 0.333f); //grey
-            TeamLabel.Text = "None?";
+            TeamLabel.Text = "...";
         }
     }
     public void UpdateTimeLeftUI(string timeLeftString)

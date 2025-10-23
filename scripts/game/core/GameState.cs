@@ -248,6 +248,7 @@ public partial class GameState : Node3D
             gameObject.PerTickShared(delta);
         }
         Global.ui.PerTick(delta);
+        gameModeManager.PerTick(delta);
 
         var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();
         bool continueUpdating = true;

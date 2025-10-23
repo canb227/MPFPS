@@ -68,6 +68,12 @@ public partial class GameModeManager : Node
         Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
     }
 
+    public void PerTick(double delta)
+    {
+        remainingRoundTime -= delta;
+        Global.ui.inGameUI.UpdateTimeLeftUI();
+    }
+
     public void ProcessGameModeOptionsPacketBytes(byte[] payload, ulong sender)
     {
         GameModeOptions opts = MessagePackSerializer.Deserialize<GameModeOptions>(payload);
@@ -143,7 +149,19 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEndOfGameEvacuation()
     {
+        EvacuationStarted?.Invoke();
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            EvacuationCountdown();
+        }
+    }
+    
+    private async void EvacuationCountdown()
+    {
+        await ToSignal(GetTree().CreateTimer(95), SceneTreeTimer.SignalName.Timeout);
+        Logging.Log("End Evacuation as Host", "GameModeManager");
+        EvacuationEnded?.Invoke();
     }
 
     public void EvacuationLeft(List<BasicPlayerCharacter> basicPlayerCharacters)
@@ -151,6 +169,7 @@ public partial class GameModeManager : Node
         //determine who was on board and who wins as lobby host
         if (Global.Lobby.bIsLobbyHost)
         {
+
             bool traitorOnBoard = false;
             bool anybodyOnBoard = false;
             foreach (BasicPlayerCharacter basicPlayerCharacter in basicPlayerCharacters)

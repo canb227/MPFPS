@@ -1,6 +1,7 @@
-[gd_scene load_steps=40 format=4 uid="uid://du2toamiqaivk"]
+[gd_scene load_steps=41 format=4 uid="uid://du2toamiqaivk"]
 
 [ext_resource type="Script" uid="uid://ctqdvvnvjarkk" path="res://scripts/game/other/Helicopter.cs" id="1_gybdq"]
+[ext_resource type="AudioStream" uid="uid://cag32t1rb7mug" path="res://assets/audio/environment/packingMachine/elevator_stop1.wav" id="2_f4cif"]
 [ext_resource type="AudioStream" uid="uid://dfbpkdb4r688r" path="res://assets/audio/environment/helicopter/helisound_2.mp3" id="2_ly7q5"]
 [ext_resource type="AudioStream" uid="uid://dkiry55d0aag2" path="res://assets/audio/environment/helicopter/helicopter_interior.mp3" id="3_4na8w"]
 [ext_resource type="Texture2D" uid="uid://dv62hrkawm77c" path="res://assets/models/map/helicopter_Image.png" id="3_qil56"]
@@ -69,6 +70,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_pagf7"]
 resource_name = "ramp_down"
+length = 1.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -76,14 +78,30 @@ tracks/0/path = NodePath("Ramp:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.56666666),
 "transitions": PackedFloat32Array(-2, -2),
 "update": 0,
 "values": [Vector3(1.9373155, 0, 0), Vector3(0.99959594, 0, 0)]
 }
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ramp/RampAudio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_f4cif")
+}],
+"times": PackedFloat32Array(0.23333333)
+}
+tracks/1/use_blend = true
 
 [sub_resource type="Animation" id="Animation_f4cif"]
 resource_name = "ramp_up"
+length = 2.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -91,11 +109,26 @@ tracks/0/path = NodePath("Ramp:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 1.5),
 "transitions": PackedFloat32Array(-2, -2),
 "update": 0,
 "values": [Vector3(0.99959594, 0, 0), Vector3(1.9373155, 0, 0)]
 }
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ramp/RampAudio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_f4cif")
+}],
+"times": PackedFloat32Array(1)
+}
+tracks/1/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4na8w"]
 _data = {
@@ -473,13 +506,15 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_7y34g")
 
-[node name="Helicopter" type="StaticBody3D" node_paths=PackedStringArray("helicopterRoot", "rearRotorAudio", "frontRotorAudio", "InteriorAudio", "animationPlayer", "rearRotorMesh", "frontRotorMesh")]
+[node name="Helicopter" type="StaticBody3D" node_paths=PackedStringArray("helicopterRoot", "rearRotorAudio", "frontRotorAudio", "InteriorAudio", "announcer", "insideHelicopterArea", "animationPlayer", "rearRotorMesh", "frontRotorMesh")]
 transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 script = ExtResource("1_gybdq")
 helicopterRoot = NodePath(".")
 rearRotorAudio = NodePath("RearRotorAudio")
 frontRotorAudio = NodePath("FrontRotorAudio")
 InteriorAudio = NodePath("InteriorNoise")
+announcer = NodePath("Announcer")
+insideHelicopterArea = NodePath("InsideHelicopterArea")
 animationPlayer = NodePath("AnimationPlayer")
 rearRotorMesh = NodePath("RearRotor")
 frontRotorMesh = NodePath("FrontRotor")
@@ -512,7 +547,7 @@ reflection = true
 transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 2.5455484, 15.19944)
 stream = ExtResource("3_4na8w")
 attenuation_model = 2
-unit_size = 20.0
+unit_size = 30.0
 panning_strength = 0.0
 
 [node name="Announcer" parent="." instance=ExtResource("4_pagf7")]
@@ -522,7 +557,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9173222, -4.657334)
 collision_layer = 27
 collision_mask = 27
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InsideHelicopterArea"]
+[node name="HelicopterInside" type="CollisionShape3D" parent="InsideHelicopterArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.043289185, 2.392488, 7.8728085)
 shape = SubResource("BoxShape3D_gybdq")
 debug_color = Color(0.67514056, 0.63936174, 0, 0.41960785)
@@ -577,6 +612,12 @@ transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0,
 mesh = SubResource("ArrayMesh_ari3h")
 skeleton = NodePath("")
 
+[node name="RampAudio" type="SteamAudioPlayer" parent="Ramp"]
+air_absorption = true
+transform = Transform3D(2.7818305, 0, 0, 0, 1.5039754, 2.3402224, 0, -2.3402224, 1.5039754, 0.007017531, -0.04854572, -0.21418977)
+pitch_scale = 0.5
+panning_strength = 0.0
+
 [node name="RearRotor" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.013650587, -0.3592163, 0, 0.3592163, -0.013650587, 0.040915273, 7.9741898, -1.7482331)
 mesh = SubResource("ArrayMesh_c1nup")
@@ -586,3 +627,17 @@ skeleton = NodePath("")
 transform = Transform3D(0.35947555, 0, 0, 0, -0.013650605, -0.3592163, 0, 0.3592163, -0.013650605, 0.05153317, 5.17294, 15.894762)
 mesh = SubResource("ArrayMesh_0sc2o")
 skeleton = NodePath("")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8707164, 0.49178544, 0, -0.49178544, 0.8707164, 0.51551294, 3.4579544, 14.415039)
+light_color = Color(0.7373294, 0, 0, 1)
+light_energy = 2.352
+light_indirect_energy = 1.916
+spot_range = 14.903109
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8707164, 0.49178544, 0, -0.49178544, 0.8707164, -0.5721111, 3.4740252, 14.443493)
+light_color = Color(0.7373294, 0, 0, 1)
+light_energy = 2.352
+light_indirect_energy = 1.916
+spot_range = 14.903109

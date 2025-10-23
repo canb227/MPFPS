@@ -14,15 +14,9 @@ public partial class InGameUI : Control
     [Export] public ScoreBoardUI ScoreBoard;
     [Export] public RoundReportUI RoundReport;
 
-
-    public override void _PhysicsProcess(double delta)
-    {
-        UpdateTimeLeftUI();
-    }
-
     public void UpdateTimeLeftUI()
     {
-        string timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.options.roundTime - Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
+        string timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
 
         PlayerUIManager.UpdateTimeLeftUI(timerString);
     }

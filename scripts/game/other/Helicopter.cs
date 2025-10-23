@@ -23,8 +23,8 @@ public partial class Helicopter : GOBaseStaticBody
     public override void _Ready()
     {
         base._Ready();
-        StartHelicopter();
         GameModeManager.EvacuationStarted += EvacuationStarted;
+        GameModeManager.EvacuationEnded += EvacuationEnded;
     }
 
     public override void _Notification(int what)
@@ -32,6 +32,7 @@ public partial class Helicopter : GOBaseStaticBody
         if (what == NotificationPredelete)
         {
             GameModeManager.EvacuationStarted -= EvacuationStarted;
+            GameModeManager.EvacuationEnded -= EvacuationEnded;
         }
     }
 
@@ -43,7 +44,7 @@ public partial class Helicopter : GOBaseStaticBody
     public async void EvacuationEnded()
     {
         HelicopterLeave();
-        await ToSignal(GetTree().CreateTimer(3), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
         //check who is inside
         List<BasicPlayerCharacter> basicPlayerCharacters = new();
         var overlaps = insideHelicopterArea.GetOverlappingBodies();
@@ -65,13 +66,13 @@ public partial class Helicopter : GOBaseStaticBody
             frontRotorAudio.Play();
             InteriorAudio.Play();
             isSpinning = true;
-            animationPlayer.Play("openRamp");
+            animationPlayer.Play("ramp_down");
         }
     }
     
     public void HelicopterLeave()
     {
-        animationPlayer.Play("closeRamp");
+        animationPlayer.Play("ramp_up");
     }
 
     public override string GenerateStateString()
