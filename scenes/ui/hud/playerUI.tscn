@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://doy4ka51rjtuf" path="res://assets/ui/hud/xmark.png" id="7_6g85b"]
 [ext_resource type="Texture2D" uid="uid://pbf5lbiw2g2g" path="res://assets/models/warehouse/firehazard.png" id="8_eow85"]
 
-[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole")]
+[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,6 +19,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_mr6xf")
 PlayerInfoUI = NodePath("bottomleftUI")
+deadPlayerScreen = NodePath("CenterContainer/DeadPlayerScreen")
 InventoryUI = NodePath("inventoryUI")
 targetPlayerName = NodePath("CenterContainer/SeenPlayerInfo/TargetName")
 targetPlayerHealth = NodePath("CenterContainer/SeenPlayerInfo/TargetHealth")
@@ -80,6 +81,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DeadPlayerScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("deadPlayerScreen", "playerNameLabel", "closeWindowButton", "teamIcon", "teamLabel", "deathIcon", "deathLabel", "lastSeenPlayerIcon", "lastSeenLabel", "closeWindowButton2")]
+visible = false
 custom_minimum_size = Vector2(800, 500)
 layout_mode = 2
 script = ExtResource("6_dk55q")
@@ -127,6 +129,7 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 
 [node name="TeamIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("8_eow85")
@@ -148,6 +151,7 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 
 [node name="DeathIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("8_eow85")
@@ -155,6 +159,7 @@ expand_mode = 4
 stretch_mode = 5
 
 [node name="DeathLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox"]
+visible = false
 layout_mode = 2
 text = "(Name) died (time) ago to (cause of death)"
 
@@ -169,6 +174,7 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 
 [node name="LastSeenPlayerIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox"]
+visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 texture = ExtResource("8_eow85")
@@ -176,6 +182,7 @@ expand_mode = 4
 stretch_mode = 5
 
 [node name="LastSeenLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox"]
+visible = false
 layout_mode = 2
 text = "(Name) saw (OtherName) right before they died"
 

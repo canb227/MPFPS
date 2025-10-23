@@ -16,7 +16,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 
     [Export]
     public virtual Camera3D camera { get; set; }
-
     [Export]
     public virtual Node3D firstPersonEquipmentAttachmentPoint {  get; set; }
 

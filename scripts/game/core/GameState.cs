@@ -453,7 +453,7 @@ public partial class GameState : Node3D
             }
             else
             {
-                Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
+                //TODO Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
                 //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                 //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                 //fixObj.ProcessStateUpdate(stateUpdate.data);

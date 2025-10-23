@@ -350,6 +350,7 @@ metadata/_custom_type_script = "uid://bysmyhbmio3bs"
 
 [node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
 distance_attenuation = true
+air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6726502, 0)
 attenuation_model = 3
 volume_db = -1.714287
@@ -357,6 +358,7 @@ panning_strength = 0.0
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
 distance_attenuation = true
+air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.669729, 0)
 attenuation_model = 3
 volume_db = -3.0

@@ -14,20 +14,15 @@ public partial class InGameUI : Control
     [Export] public ScoreBoardUI ScoreBoard;
     [Export] public RoundReportUI RoundReport;
 
-    float uiTimeLeftSeconds = 600;
 
     public override void _PhysicsProcess(double delta)
     {
-        uiTimeLeftSeconds -= (float)delta;
-        UpdateTimeLeftUI(uiTimeLeftSeconds);
+        UpdateTimeLeftUI();
     }
 
-    public void UpdateTimeLeftUI(float timeLeftSeconds)
+    public void UpdateTimeLeftUI()
     {
-        uiTimeLeftSeconds = timeLeftSeconds;
-        int minutes = (int)Math.Floor(uiTimeLeftSeconds / 60);
-        int seconds = (int)uiTimeLeftSeconds % 60;
-        string timerString = $"{minutes:D2}:{seconds:D2}";
+        string timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.options.roundTime - Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
 
         PlayerUIManager.UpdateTimeLeftUI(timerString);
     }
@@ -43,16 +38,12 @@ public partial class InGameUI : Control
         ScoreBoard.UpdatePlayerName(newPlayerName, playerID);
     }
 
-    public void ToggleScoreBoard()
-    {
-        ScoreBoard.Visible = !ScoreBoard.Visible;
-    }
-
     public void ShowScoreBoard()
     {
         if (!ScoreBoard.Visible)
         {
             ScoreBoard.Visible = true;
+            Input.MouseMode = Input.MouseModeEnum.Confined;
         }
     }
 
@@ -61,6 +52,7 @@ public partial class InGameUI : Control
         if (ScoreBoard.Visible)
         {
             ScoreBoard.Visible = false;
+            Input.MouseMode = Input.MouseModeEnum.Captured;
         }
     }
 

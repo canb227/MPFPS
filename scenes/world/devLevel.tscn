@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=40 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="12_k56je"]
 [ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
+[ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -594,6 +595,9 @@ orderNumber = 5
 [node name="GOOrderMonitor6" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1522408, -0.3852129, -0.1393528)
 orderNumber = 6
+
+[node name="Helicopter" parent="GameObjects" instance=ExtResource("16_q8pj7")]
+transform = Transform3D(1, 0, 0, 0, 0.9969842, 0.0776065, 0, -0.0776065, 0.9969842, -75.02698, -0.42502344, 0.014842144)
 
 [node name="statics" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_8d4x2")

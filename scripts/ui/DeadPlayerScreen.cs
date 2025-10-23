@@ -25,6 +25,8 @@ public partial class DeadPlayerScreen : PanelContainer
 
     public void OpenDeadPlayerScreen(BasicPlayerCharacter basicPlayerCharacter)
     {
+        Input.MouseMode = Input.MouseModeEnum.Confined;
+                        
         playerNameLabel.Text = "Body of " + SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
         if (basicPlayerCharacter.team == Team.Innocent)
         {
@@ -39,11 +41,26 @@ public partial class DeadPlayerScreen : PanelContainer
             //teamIcon.Texture = ;
         }
 
+        teamLabel.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority)) + " was a part of the ";
+        if (basicPlayerCharacter.team == Team.Innocent)
+        {
+            teamLabel.Text += "Innocents";
+        }
+        else if (basicPlayerCharacter.team == Team.Manager)
+        {
+            teamLabel.Text += "Managers";
+        }
+        else if (basicPlayerCharacter.team == Team.Traitor)
+        {
+            teamLabel.Text += "Traitors";
+        }
+
         deadPlayerScreen.Visible = true;
     }
 
     public void CloseDeadPlayerScreen()
     {
+        Input.MouseMode = Input.MouseModeEnum.Captured;
         deadPlayerScreen.Visible = false;
     }    
 }

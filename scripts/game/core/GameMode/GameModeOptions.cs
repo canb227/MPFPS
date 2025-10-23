@@ -38,6 +38,8 @@ public class GameModeOptions
     public int manualManagerCount = 0;
     [Key(11)]
     public int itemsPerPackage = 3;
+    [Key(12)]
+    public double roundTime = 600;
 
 
 }

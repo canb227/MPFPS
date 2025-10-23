@@ -470,9 +470,10 @@ shape = SubResource("ConvexPolygonShape3D_v4yce")
 disabled = true
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="PressArm"]
-distance_attenuation = true
+air_absorption = true
+reflection = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
-attenuation_model = 3
+attenuation_model = 2
 volume_db = 3.0
 panning_strength = 0.0
 
@@ -547,8 +548,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0010681152, -0.094035536, 0
 shape = SubResource("BoxShape3D_s3lk7")
 
 [node name="SteamAudioPlayerAlarm" type="SteamAudioPlayer" parent="."]
-distance_attenuation = true
+air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
-attenuation_model = 3
+attenuation_model = 2
 volume_db = 3.0
+unit_size = 15.0
 panning_strength = 0.0

@@ -16,6 +16,8 @@ public enum GameModeType
 public partial class GameModeManager : Node
 {
     //Events
+    public static event Action EvacuationStarted;
+    public static event Action EvacuationEnded;
     public static event Action OnPackageOrdersUpdated;
     public static event Action OnPossibleAddressesUpdated;
     public static event Action OnDeliveryQueueAppended;
@@ -50,6 +52,9 @@ public partial class GameModeManager : Node
     private int totalPlayers;
     private int numFinishedOrders;
     private int ordersNeeded;
+    public int numPlayers;
+    public int numTraitors;
+    public int numManagers;
 
     //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
     public delegate void GameModeOptionsReceived(GameModeOptions options, ulong sender);
@@ -124,13 +129,14 @@ public partial class GameModeManager : Node
     {
         Logging.Log("ForceEndRound as Peer", "GameModeManager");
         Global.ui.inGameUI.ShowRoundReport(Team.None);
-        if(Global.Lobby.bIsLobbyHost)
+        if (Global.Lobby.bIsLobbyHost)
         {
             GameStartAsHost();
         }
     }
+    
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void StartEmergencyEvacuation()
+    public void StartEmergencyEvacuation() //not used rn
     {
         Logging.Log("Start Emergency Evacuation as Peer", "GameModeManager");
     }
@@ -138,6 +144,25 @@ public partial class GameModeManager : Node
     public void StartEndOfGameEvacuation()
     {
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
+    }
+
+    public void EvacuationLeft(List<BasicPlayerCharacter> basicPlayerCharacters)
+    {
+        //determine who was on board and who wins as lobby host
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            bool traitorOnBoard = false;
+            bool anybodyOnBoard = false;
+            foreach (BasicPlayerCharacter basicPlayerCharacter in basicPlayerCharacters)
+            {
+                anybodyOnBoard = true;
+                if (basicPlayerCharacter.team == Team.Traitor)
+                {
+                    traitorOnBoard = true;
+                }
+            }
+            RPCManager.RPC(this, "InnocentsWin", []);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -164,6 +189,7 @@ public partial class GameModeManager : Node
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
         roundNumber++;
+        remainingRoundTime = options.roundTime;
         //clear the scoreboard , role assignment comes later
         Global.ui.inGameUI.RoundReport.NewRound();
         Global.ui.inGameUI.ScoreBoard.NewRound();
@@ -286,9 +312,9 @@ public partial class GameModeManager : Node
         List<ulong> traitors = new();
         List<ulong> managers = new();
 
-        int numPlayers = players.Count;
-        int numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
-        int numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
+        numPlayers = players.Count;
+        numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
+        numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
         if (options.manualOverride)
         {
             numTraitors = options.manualTraitorCount;
@@ -395,7 +421,7 @@ public partial class GameModeManager : Node
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
             {
-                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
+                //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
     }
@@ -421,7 +447,7 @@ public partial class GameModeManager : Node
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
             {
-                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
+                //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
     }
@@ -447,7 +473,7 @@ public partial class GameModeManager : Node
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
             {
-                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
+                //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
     }

@@ -28,7 +28,7 @@ shape = SubResource("SphereShape3D_5mfnq")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 
-[node name="SteamAudioListener" type="SteamAudioListener" parent="."]
+[node name="SteamAudioListener" type="SteamAudioListener" parent="Camera3D"]
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 spot_range = 6.646452
