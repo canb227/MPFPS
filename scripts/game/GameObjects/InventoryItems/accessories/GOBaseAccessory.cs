@@ -52,7 +52,7 @@ public struct GOBaseAccessoryStateUpdate
     [Key(0)]
     public ulong inInventoryOf;
     [Key(1)]
-    public ulong equippedBy;
+    public ulong equippedBySteamID;
     [Key(2)]
     public Vector3 position;
     [Key(3)]

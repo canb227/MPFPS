@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=4 uid="uid://juf5gjmljg3f"]
+[gd_scene load_steps=8 format=4 uid="uid://juf5gjmljg3f"]
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_qceyg"]
 [ext_resource type="Texture2D" uid="uid://o84j8kuu7qmb" path="res://assets/models/weapons/shotgun_1_shotgun_1.png" id="2_pmrh1"]
+[ext_resource type="AudioStream" uid="uid://bv3r20o11eaqu" path="res://assets/audio/weapons/basic/fire1.wav" id="3_bs15t"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xtq8"]
 resource_name = "shotgun_1"
@@ -44,11 +45,12 @@ shadow_mesh = SubResource("ArrayMesh_1o18v")
 [sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
 size = Vector3(1.4375, 0.171875, 0.06713867)
 
-[node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer3D", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
 continuous_cd = true
 script = ExtResource("1_qceyg")
+audioStreamPlayer3D = NodePath("SteamAudioPlayer")
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
@@ -74,3 +76,10 @@ shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("")
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+air_absorption = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
+stream = ExtResource("3_bs15t")
+max_polyphony = 4
+panning_strength = 0.0

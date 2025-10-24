@@ -128,7 +128,7 @@ public class InventoryGroup
 
     public IsInventoryItem RemoveItemAt(int index)
     {
-        return RemoveItemAt(index);
+        return RemoveItemAt(index);//????? this is an infinite loop no?
     }
 
     public bool StoreItem(IsInventoryItem item)

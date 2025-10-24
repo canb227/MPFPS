@@ -43,9 +43,9 @@ public partial class PlayerUIManager : Control
     {
         PlayerInfoUI.UpdateStunUI(newStunBarRemaning, maxStunBar);
     }
-    public void UpdateAmmoUI(int remainingAmmo, int maxAmmo)
+    public void UpdateAmmoUI(int remainingAmmo, int storedAmmo, int maxAmmo)
     {
-        PlayerInfoUI.UpdateAmmoUI(remainingAmmo, maxAmmo);
+        PlayerInfoUI.UpdateAmmoUI(remainingAmmo, storedAmmo, maxAmmo);
     }
     public void UpdateHealthUI(int newHealth, int newHealthMax)
     {

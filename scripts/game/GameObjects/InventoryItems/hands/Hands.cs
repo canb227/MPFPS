@@ -28,9 +28,9 @@ public partial class Hands : GOBaseInventoryItem
         base._Ready();
 
 
-        if (equippedBy!=0)
+        if (equippedBySteamID!=0)
         {
-            GOBasePlayerCharacter pc = (Global.gameState.GameObjects[equippedBy] as GOBasePlayerCharacter);
+            GOBasePlayerCharacter pc = Global.gameState.GameObjects[equippedBySteamID] as GOBasePlayerCharacter;
             pc.Pickup(this);
             pc.Equip(InventoryGroupCategory.Hands);
             rayCast = pc.interactRayCast;
@@ -66,8 +66,8 @@ public partial class Hands : GOBaseInventoryItem
                         Logging.Log($"Hand raycast hit holdable item: {(item as Node).ToString()}", "Hands");
                         CurrentHoldPosition.Position = HoldPosition.Position;
                         holding = item;
-                        holding.OnHold(equippedBy);
-                        item.currentlyHeldBy = equippedBy;
+                        holding.OnHold(equippedBySteamID);
+                        item.currentlyHeldBy = equippedBySteamID;
                     }
                     else
                     {
@@ -81,7 +81,7 @@ public partial class Hands : GOBaseInventoryItem
             }
             else
             {
-                holding.OnRelease(equippedBy);
+                holding.OnRelease(equippedBySteamID);
                 holding = null;
             }
         }
@@ -131,7 +131,7 @@ public partial class Hands : GOBaseInventoryItem
     public override bool InitFromData(GameObjectConstructorData data)
     {
         ulong objID = (ulong)data.paramList[0];
-        equippedBy = objID;
+        equippedBySteamID = objID;
 
         return true;
     }

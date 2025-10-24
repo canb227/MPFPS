@@ -22,8 +22,9 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
 
     public virtual InventoryGroupCategory category { get; set; }
     public virtual ulong inInventoryOf { get; set; }
-    public virtual ulong equippedBy { get; set; }
+    public virtual ulong equippedBySteamID { get; set; }
     public virtual bool droppable { get; set; }
+    public Node3D currentParent {get; set; }
 
     public abstract void HandleInput(ActionFlags actionFlags);
 
@@ -36,24 +37,28 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
         Freeze = false;
     }
 
-    public virtual void OnDropped(ulong byID)
+    public virtual void OnDropped(ulong bySteamID)
     {
-        Logging.Log(byID + " Just Dropped a " + category.ToString(), "GOBaseInventoryItem");
+        Logging.Log(bySteamID + " Just Dropped a " + category.ToString()+ $"({id})", "GOBaseInventoryItem");
         firstPersonScene.Hide();
         thirdPersonScene.Show();
         this.CollisionLayer = 1 << 3;
         Freeze = false;
-        equippedBy = 0;
+        equippedBySteamID = 0;
         inInventoryOf = 0;
+        if(currentParent != null)
+        {
+            DetachFromPlayer(currentParent);
+        }
     }
-    public virtual void OnEquipped(ulong byID)
+    public virtual void OnEquipped(ulong bySteamID)
     {
-        Logging.Log(byID + " Just Equipped a " + category.ToString(), "GOBaseInventoryItem");
+        Logging.Log(bySteamID + " Just Equipped a " + category.ToString() + $"({id})", "GOBaseInventoryItem");
         this.CollisionLayer = 0;
         Freeze = true;
-        equippedBy = byID;
+        equippedBySteamID = bySteamID;
         inInventoryOf = 0;
-        if (byID == Global.steamid)
+        if (bySteamID == Global.steamid)
         {
             firstPersonScene.Show();
         }
@@ -62,23 +67,41 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
             thirdPersonScene.Show();
         }
     }
-    public virtual void OnPickup(ulong byID)
+    public virtual void OnPickup(ulong bySteamID)
     {
-        Logging.Log(byID + " Just Picked a " + category.ToString() + " Up", "GOBaseInventoryItem");
+        Logging.Log(bySteamID + " Just Picked a " + category.ToString() + " Up" + $"({id})", "GOBaseInventoryItem");
         Freeze = true;
         this.CollisionLayer = 0;
         firstPersonScene.Hide();
         thirdPersonScene.Hide();
-        inInventoryOf = byID;
+        inInventoryOf = bySteamID;
     }
-    public virtual void OnUnequipped(ulong byID)
+    public virtual void OnUnequipped(ulong bySteamID)
     {
-        Logging.Log(byID + " Just Unequipped a " + category.ToString(), "GOBaseInventoryItem");
+        Logging.Log(bySteamID + " Just Unequipped a " + category.ToString() + $"({id})", "GOBaseInventoryItem");
         Freeze = true;
-        equippedBy = 0;
-        inInventoryOf = byID;
+        equippedBySteamID = 0;
+        inInventoryOf = bySteamID;
         firstPersonScene.Hide();
         thirdPersonScene.Hide();
+    }
+
+    public void AttachToPlayer(Node3D newParent)
+    {
+        Reparent(newParent, false);
+        // Transform3D newTransform = Transform;
+        // newTransform.Origin = new(0, 0, 0);
+        Transform = Transform3D.Identity;
+        currentParent = newParent;
+    }
+    
+    public void DetachFromPlayer(Node3D oldParent)
+    {
+        Reparent(Global.gameState.GameObjectNodeParent);
+        Transform3D newTransform = Transform;
+        newTransform.Origin = oldParent.GlobalPosition;
+        Transform = newTransform;
+        currentParent = null;
     }
 
     public override void PerFrameAuth(double delta)
@@ -113,7 +136,7 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
 
     public override string GenerateStateString()
     {
-        return $"category:{category.ToString()} | equippedBy:{equippedBy} | inInventoryOf {inInventoryOf}";
+        return $"category:{category.ToString()} | equippedBySteamID:{equippedBySteamID} | inInventoryOf {inInventoryOf}";
     }
 
     public override byte[] GenerateStateUpdate()

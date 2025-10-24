@@ -30,9 +30,9 @@ public class PlayerInputMap
             { Key.Key3, ActionFlags.InventorySlot3  },
             { Key.Key4, ActionFlags.InventorySlot4  },
             { Key.Key5, ActionFlags.InventorySlot5  },
+            
 
-            { Key.Q, ActionFlags.LeanLeft },
-            { Key.E, ActionFlags.LeanRight },
+            { Key.Q, ActionFlags.DropItem },
 
             { Key.Tab, ActionFlags.ScoreBoard },
             { Key.Escape, ActionFlags.Escape },

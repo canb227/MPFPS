@@ -4,6 +4,7 @@ using ImGuiNET;
 using MessagePack;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public enum CharacterState
@@ -43,6 +44,19 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
 
+    public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
+    {
+        {AmmoType.ShotgunAmmo, 8 },
+        {AmmoType.RifleAmmo, 30 },
+        {AmmoType.SniperAmmo, 10 },
+    };
+    public Dictionary<AmmoType, int> maxAmmoStored = new()
+    {
+        {AmmoType.ShotgunAmmo, 24 },
+        {AmmoType.RifleAmmo, 90 },
+        {AmmoType.SniperAmmo, 30 },
+    };
+
     private int currentItemSlot;
     private InventoryGroupCategory currentGroup;
 
@@ -58,6 +72,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void _Ready()
     {
         base._Ready();
+        currentGroup = InventoryGroupCategory.Hands;
+        currentItemSlot = 0;
         this.CollisionLayer = 1 << 4; //5
         this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 4);//1,2,5
         priority = 100;
@@ -263,94 +279,110 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 }
             }
         }
-
+        if (!lastTickActions.HasFlag(ActionFlags.DropItem) && input.actions.HasFlag(ActionFlags.DropItem))
+        {
+            DropEquipped();
+        }
         if (!lastTickActions.HasFlag(ActionFlags.InventorySlot1) && input.actions.HasFlag(ActionFlags.InventorySlot1))
         {
-            if (inventory.GetGroup(InventoryGroupCategory.Hands).items.Any())
-            {
-                Logging.Log("Equip Slot 1!", "BasicPlayerCharacter");
-                if (currentGroup != InventoryGroupCategory.Hands)
-                {
-                    currentItemSlot = -1;
-                }
-                currentGroup = InventoryGroupCategory.Hands;
-                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Hands);
-                if (group.items.Count - 1 > currentItemSlot)
-                {
-                    currentItemSlot++;
-                    var item = group.items[currentItemSlot];
-                    equipped.OnUnequipped(this.id);
-                    item.OnEquipped(this.id);
-                    equipped = item;
-                }
-            }
+            EquipNextFromSlot(InventoryGroupCategory.Hands);
         }
         else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot2) && input.actions.HasFlag(ActionFlags.InventorySlot2))
         {
-            if (inventory.GetGroup(InventoryGroupCategory.Weapon).items.Any())
-            {
-                Logging.Log("Equip Slot 2!", "BasicPlayerCharacter");
-                if (currentGroup != InventoryGroupCategory.Weapon)
-                {
-                    currentItemSlot = -1;
-                }
-                currentGroup = InventoryGroupCategory.Weapon;
-                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Weapon);
-                if (group.items.Count - 1 > currentItemSlot)
-                {
-                    currentItemSlot++;
-                    var item = group.items[currentItemSlot];
-                    equipped.OnUnequipped(this.id);
-                    item.OnEquipped(this.id);
-                    equipped = item;
-                }
-
-            }
+            EquipNextFromSlot(InventoryGroupCategory.Weapon);
         }
         else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot3) && input.actions.HasFlag(ActionFlags.InventorySlot3))
         {
-            if (inventory.GetGroup(InventoryGroupCategory.Tool).items.Any())
-            {
-                Logging.Log("Equip Slot 3!", "BasicPlayerCharacter");
-                if (currentGroup != InventoryGroupCategory.Tool)
-                {
-                    currentItemSlot = -1;
-                }
-                currentGroup = InventoryGroupCategory.Tool;
-                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Tool);
-                if (group.items.Count - 1 > currentItemSlot)
-                {
-                    currentItemSlot++;
-                    var item = group.items[currentItemSlot];
-                    equipped.OnUnequipped(this.id);
-                    item.OnEquipped(this.id);
-                    equipped = item;
-                }
-
-            }
+            EquipNextFromSlot(InventoryGroupCategory.Tool);
         }
         else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
         {
-            if (inventory.GetGroup(InventoryGroupCategory.Role).items.Any())
+            EquipNextFromSlot(InventoryGroupCategory.Role);
+        }
+    }
+    
+    private void EquipNextFromSlot(InventoryGroupCategory category)
+    {
+        if (inventory.GetGroup(category).items.Any())
+        {
+            Logging.Log($"Equip Next {category}!", "BasicPlayerCharacter");
+            if (currentGroup != category)
             {
-                Logging.Log("Equip Slot 4!", "BasicPlayerCharacter");
-                if (currentGroup != InventoryGroupCategory.Role)
-                {
-                    currentItemSlot = -1;
-                }
-
-                currentGroup = InventoryGroupCategory.Role;
-                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Role);
-                if (group.items.Count - 1 > currentItemSlot)
-                {
-                    currentItemSlot++;
-                    var item = group.items[currentItemSlot];
-                    equipped.OnUnequipped(this.id);
-                    item.OnEquipped(this.id);
-                    equipped = item;
-                }
-
+                currentItemSlot = -1;
             }
+            currentGroup = category;
+            InventoryGroup group = inventory.GetGroup(category);
+            if (group.items.Count - 1 > currentItemSlot)
+            {
+                currentItemSlot++;
+                Equip(category, currentItemSlot);
+            }
+        }
+    }
+
+    //Equipment Functions
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public override void Pickup(IsInventoryItem item)
+    {
+        if (item is GOBaseInventoryItem GOItem)
+        {
+            if (inventory.HasGroup(GOItem.category))
+            {
+                InventoryGroup group = inventory.GetGroup(GOItem.category);
+                if (group.CanStoreItem(item))
+                {
+                    group.StoreItem(item);
+                    if (IsMe())
+                    {
+                        GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint); 
+                    }
+                    else
+                    {
+                        GOItem.AttachToPlayer(thirdPersonEquipmentAttachmentPoint); 
+                    }
+                    GOItem.OnPickup(controllingPlayerID);
+                    //auto-equip weapons
+                    if(group.category == InventoryGroupCategory.Weapon)
+                    {
+                        Equip(group.category, group.items.Count-1);
+                    }
+                }
+            }
+        }
+
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public override void Equip(InventoryGroupCategory category, int index = 0)
+    {
+        currentGroup = category;
+        currentItemSlot = index;
+        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
+        {
+            Logging.Error($"Cannot equip item!", "BasicPlayer");
+            return;
+        }
+        if (equipped != null)
+        {
+            equipped.OnUnequipped(controllingPlayerID);
+            equipped = null;
+        }
+        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
+        if (item is GOBaseInventoryItem i)
+        {
+            equipped = i;
+            i.OnEquipped(controllingPlayerID);
+        }
+    }
+
+    public void DropEquipped()
+    {
+        if(equipped != null && equipped.droppable)
+        {
+            equipped.OnDropped(authority);
+            inventory.GetGroup(equipped.category).items.Remove(equipped);
+            Equip(InventoryGroupCategory.Hands);
         }
     }
 
@@ -565,74 +597,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
 
-    //Equipment Functions
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public override void Pickup(IsInventoryItem item)
-    {
-        if (item is GOBaseInventoryItem i)
-        {
-            if (inventory.HasGroup(i.category))
-            {
-                InventoryGroup group = inventory.GetGroup(i.category);
-                if (group.CanStoreOrReplaceItem(item))
-                {
-                    group.StoreOrReplaceItem(item, out IsInventoryItem replaced);
-                    if (replaced != null)
-                    {
-                        (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
-                        replaced.OnDropped(controllingPlayerID);
-                    }
-                }
-            }
-            if (IsMe())
-            {
-                i.Reparent(firstPersonEquipmentAttachmentPoint, false);
-            }
-            else
-            {
-                i.Reparent(thirdPersonEquipmentAttachmentPoint, false);
-            }
-            i.OnPickup(controllingPlayerID);
-        }
-
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public override void Equip(InventoryGroupCategory category, int index = 0)
-    {
-        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
-        {
-            Logging.Error($"Cannot equip item!", "BasicPlayer");
-            return;
-        }
-        if (equipped != null)
-        {
-            equipped.OnUnequipped(controllingPlayerID);
-            equipped = null;
-        }
-        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
-        if (item is GOBaseInventoryItem i)
-        {
-            equipped = i;
-            i.OnEquipped(controllingPlayerID);
-        }
-    }
-
-    public void EquipNext()
-    {
-        Equip(inventory.groups[inventory.GetNextIndex(equipped.category)].category);
-    }
-
-    public void EquipPrevious()
-    {
-
-    }
-
-    public void DropEquipped()
-    {
-
-    }
 
     //Character State Functions (Health, Stun, Death, etc) \\
 
@@ -731,7 +696,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
     }
 
-    
+
 
     public void OnFound()
     {
@@ -741,6 +706,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             Global.ui.inGameUI.ScoreBoard.PlayerFound(authority);
         }
 
+    }
+    
+    public void AddToAmmoStored(AmmoType ammoType, int ammoAmount)
+    {
+        ammoStored[ammoType] += ammoAmount;
     }
 
     public override void Assignment(Team team, Role role)
