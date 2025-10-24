@@ -46,18 +46,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public override void _Ready()
     {
         base._Ready();
-
-        //animation setup
-        animationPlayer.SpeedScale = (float)fireRate;
-        //raycast setup
-        gunRayCast = new();
-        Transform3D centerTransform = gunRayCast.Transform;
-        centerTransform.Origin = new(0, 0.27f, 0); //this is giga scuffed because I'm too lazy to grab or use the basiccharacterplayer raycast, should probably do that
-        gunRayCast.Transform = centerTransform;
-        gunRayCast.TargetPosition = new Vector3(0, 0, -20); //rn the raycast is like below the crosshair
-        gunRayCast.CollideWithBodies = true;
-        gunRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
-        AddChild(gunRayCast);
     }
 
     public override void PerTickShared(double delta)
@@ -104,6 +92,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
                     audioStreamPlayer2.Play();
                     //play reload animation
+                    animationPlayer.SpeedScale = 1.0f;
                     animationPlayer.Play("reload");
                 }
                 else
@@ -133,6 +122,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         var temp = gunRayCast.GetCollider();
                         if (gunRayCast.GetCollider() is IsDamagable target)
                         {
+                            Logging.Log($"Hit a IsDamagable object", "BasicGun");
                             target.TakeDamage(10, equippedBySteamID, PainSoundType.Bullet);
                         }
                     }
@@ -165,6 +155,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     audioStreamPlayer1.Play();
 
                     //play firing animation
+                    animationPlayer.SpeedScale = (float)fireRate;
                     animationPlayer.Play("fire");
                 }
                 else
@@ -195,8 +186,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public override void OnEquipped(ulong bySteamID)
     {
         base.OnEquipped(bySteamID);
+
         if (Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[equippedBySteamID]] is BasicPlayerCharacter basicPlayerCharacter)
         {
+            gunRayCast = basicPlayerCharacter.gunRayCast;
             Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(currentMagazineAmmo, basicPlayerCharacter.ammoStored[ammoType], magazineSize);
         }
         else
@@ -209,6 +202,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public override void OnUnequipped(ulong bySteamID)
     {
         base.OnUnequipped(bySteamID);
+        gunRayCast = null;
         //reset reload progress
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;

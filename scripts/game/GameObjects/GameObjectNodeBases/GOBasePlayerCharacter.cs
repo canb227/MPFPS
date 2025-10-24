@@ -30,6 +30,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public override bool predict { get; set; } = true;
     public RayCast3D interactRayCast { get; set; }
     public RayCast3D visualRayCast { get; set; }
+    public RayCast3D gunRayCast { get; set; }
 
     public ActionFlags lastTickActions { get; set; }
 
@@ -54,7 +55,12 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         visualRayCast.TargetPosition = new Vector3(0, 0, -8);
         visualRayCast.CollideWithBodies = true;
         visualRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
-        camera.AddChild(visualRayCast);
+        
+        gunRayCast = new();
+        gunRayCast.TargetPosition = new Vector3(0, 0, -100);
+        gunRayCast.CollideWithBodies = true;
+        gunRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
+        camera.AddChild(gunRayCast);
     }
 
     public override bool InitFromData(GameObjectConstructorData data)
