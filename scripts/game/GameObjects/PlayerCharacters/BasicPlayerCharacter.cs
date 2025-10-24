@@ -81,7 +81,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast = new();
         interactRayCast.TargetPosition = new Vector3(0, 0, -4);
         interactRayCast.CollideWithBodies = true;
-        interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, items, players
+        interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
     }
     public override void ProcessStateUpdate(byte[] _update)
@@ -293,7 +293,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot3) && input.actions.HasFlag(ActionFlags.InventorySlot3))
         {
-            EquipNextFromSlot(InventoryGroupCategory.Tool);
+            EquipNextFromSlot(InventoryGroupCategory.Accessory);
         }
         else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
         {

@@ -17,7 +17,10 @@ public enum AmmoType
 [GlobalClass]
 public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 {
-    [Export] AudioStreamPlayer3D audioStreamPlayer3D { get; set; }
+    //A note on the audio player, we have two audio players because otherwise we cant have the gun firing sound continue as we start our reload, making it very jarring.
+    //we can have multiple sounds of the same type playing on a player at the sametime, ie the gunshots overlap, but not if they are different audio files.
+    [Export] AudioStreamPlayer3D audioStreamPlayer1 { get; set; }
+    [Export] AudioStreamPlayer3D audioStreamPlayer2 { get; set; }
     [Export] public double fireRate { get; set; } = 8; //number of shots per second
     [Export] public AmmoType ammoType { get; set; } = AmmoType.RifleAmmo;
     [Export] public int currentMagazineAmmo { get; set; } = 30;
@@ -33,13 +36,30 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public float heldDrag { get; set; }
     public float heldFriction { get; set; }
     private bool reloading { get; set; }
-
+    private RayCast3D gunRayCast;
 
 
     private ActionFlags lastTickActions;
 
     private int lastFireIndex;
     private double _timeUntilFire;
+    public override void _Ready()
+    {
+        base._Ready();
+
+        //animation setup
+        animationPlayer.SpeedScale = (float)fireRate;
+        //raycast setup
+        gunRayCast = new();
+        Transform3D centerTransform = gunRayCast.Transform;
+        centerTransform.Origin = new(0, 0.27f, 0); //this is giga scuffed because I'm too lazy to grab or use the basiccharacterplayer raycast, should probably do that
+        gunRayCast.Transform = centerTransform;
+        gunRayCast.TargetPosition = new Vector3(0, 0, -20); //rn the raycast is like below the crosshair
+        gunRayCast.CollideWithBodies = true;
+        gunRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
+        AddChild(gunRayCast);
+    }
+
     public override void PerTickShared(double delta)
     {
         base.PerTickShared(delta);
@@ -81,15 +101,15 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     reloading = true;
                     reloadTimeLeft = reloadTimeSeconds;
                     //play reload sound
-                    audioStreamPlayer3D.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
-                    audioStreamPlayer3D.Play();
+                    audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
+                    audioStreamPlayer2.Play();
                     //play reload animation
-                    //animationPlayer.Play("fire");
+                    animationPlayer.Play("reload");
                 }
                 else
                 {
-                    audioStreamPlayer3D.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
-                    audioStreamPlayer3D.Play();
+                    audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
+                    audioStreamPlayer2.Play();
                 }
             }
             else
@@ -108,6 +128,14 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 {
                     //shoot the gun
                     Logging.Log($"Pew!", "BasicGun");
+                    if (gunRayCast.IsColliding())
+                    {
+                        var temp = gunRayCast.GetCollider();
+                        if (gunRayCast.GetCollider() is IsDamagable target)
+                        {
+                            target.TakeDamage(10, equippedBySteamID, PainSoundType.Bullet);
+                        }
+                    }
                     currentMagazineAmmo--;
                     if (Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[equippedBySteamID]] is BasicPlayerCharacter basicPlayerCharacter)
                     {
@@ -129,15 +157,15 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     {
                         index = rand.Next(gunSounds.Length);
                     } while (index == lastFireIndex && gunSounds.Length > 1);
-                    audioStreamPlayer3D.Stream = GD.Load<AudioStream>(gunSounds[index]);
+                    audioStreamPlayer1.Stream = GD.Load<AudioStream>(gunSounds[index]);
                     //randomize pitch ±2%
                     float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
-                    audioStreamPlayer3D.PitchScale = pitchVariation;
+                    audioStreamPlayer1.PitchScale = pitchVariation;
 
-                    audioStreamPlayer3D.Play();
+                    audioStreamPlayer1.Play();
 
                     //play firing animation
-                    //animationPlayer.Play("fire");
+                    animationPlayer.Play("fire");
                 }
                 else
                 {
@@ -154,14 +182,11 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     {
                         index = rand.Next(gunSounds.Length);
                     } while (index == lastFireIndex && gunSounds.Length > 1);
-                    audioStreamPlayer3D.Stream = GD.Load<AudioStream>(gunSounds[index]);
-                    //randomize pitch ±5%
+                    audioStreamPlayer1.Stream = GD.Load<AudioStream>(gunSounds[index]);
+                    //randomize pitch ±2%
                     float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
-                    audioStreamPlayer3D.PitchScale = pitchVariation;
-                    audioStreamPlayer3D.Play();
-
-                    //play firing animation
-                    //animationPlayer.Play("fire");
+                    audioStreamPlayer1.PitchScale = pitchVariation;
+                    audioStreamPlayer1.Play();
                 }
             }
         }
@@ -188,7 +213,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
         Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
-        audioStreamPlayer3D.Stop();
+        audioStreamPlayer1.Stop();
+        audioStreamPlayer2.Stop();
+        animationPlayer.Play("RESET");
     }
     
     public override void OnDropped(ulong bySteamID)
@@ -198,7 +225,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
         Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
-        audioStreamPlayer3D.Stop();
+        audioStreamPlayer1.Stop();
+        audioStreamPlayer2.Stop();
+        animationPlayer.Play("RESET");
     }
 
     public virtual void OnHold(ulong byID)

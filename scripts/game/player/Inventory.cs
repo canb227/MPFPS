@@ -5,7 +5,7 @@ public enum InventoryGroupCategory
     None,
     Hands,
     Weapon,
-    Tool,
+    Accessory,
     Role,
     Special,
 }
