@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://juf5gjmljg3f"]
+[gd_scene load_steps=13 format=4 uid="uid://juf5gjmljg3f"]
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_qceyg"]
 [ext_resource type="Texture2D" uid="uid://o84j8kuu7qmb" path="res://assets/models/weapons/shotgun_1_shotgun_1.png" id="2_pmrh1"]
@@ -41,6 +41,10 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_1o18v")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bs15t"]
+no_depth_test = true
+albedo_texture = ExtResource("2_pmrh1")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
 size = Vector3(1.4375, 0.171875, 0.06713867)
@@ -188,6 +192,7 @@ metadata/_custom_type_script = "uid://dl524mp8g0aei"
 transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.35749662, 1.5174299e-15, -0.020223176)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_bs15t")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="fps"]
 air_absorption = true
