@@ -43,6 +43,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
 
+    private int currentItemSlot;
+    private InventoryGroupCategory currentGroup;
+
 
 
     //this is basically our constructor
@@ -261,14 +264,93 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
 
-        if (!lastTickActions.HasFlag(ActionFlags.LeanRight) && input.actions.HasFlag(ActionFlags.LeanRight))
+        if (!lastTickActions.HasFlag(ActionFlags.InventorySlot1) && input.actions.HasFlag(ActionFlags.InventorySlot1))
         {
-            TakeStunDamage(20, 0, PainSoundType.Bullet);
+            if (inventory.GetGroup(InventoryGroupCategory.Hands).items.Any())
+            {
+                Logging.Log("Equip Slot 1!", "BasicPlayerCharacter");
+                if (currentGroup != InventoryGroupCategory.Hands)
+                {
+                    currentItemSlot = -1;
+                }
+                currentGroup = InventoryGroupCategory.Hands;
+                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Hands);
+                if (group.items.Count - 1 > currentItemSlot)
+                {
+                    currentItemSlot++;
+                    var item = group.items[currentItemSlot];
+                    equipped.OnUnequipped(this.id);
+                    item.OnEquipped(this.id);
+                    equipped = item;
+                }
+            }
         }
-
-        if (!lastTickActions.HasFlag(ActionFlags.LeanLeft) && input.actions.HasFlag(ActionFlags.LeanLeft))
+        else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot2) && input.actions.HasFlag(ActionFlags.InventorySlot2))
         {
-            TakeDamage(20, 0, PainSoundType.Generic);
+            if (inventory.GetGroup(InventoryGroupCategory.Weapon).items.Any())
+            {
+                Logging.Log("Equip Slot 2!", "BasicPlayerCharacter");
+                if (currentGroup != InventoryGroupCategory.Weapon)
+                {
+                    currentItemSlot = -1;
+                }
+                currentGroup = InventoryGroupCategory.Weapon;
+                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Weapon);
+                if (group.items.Count - 1 > currentItemSlot)
+                {
+                    currentItemSlot++;
+                    var item = group.items[currentItemSlot];
+                    equipped.OnUnequipped(this.id);
+                    item.OnEquipped(this.id);
+                    equipped = item;
+                }
+
+            }
+        }
+        else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot3) && input.actions.HasFlag(ActionFlags.InventorySlot3))
+        {
+            if (inventory.GetGroup(InventoryGroupCategory.Tool).items.Any())
+            {
+                Logging.Log("Equip Slot 3!", "BasicPlayerCharacter");
+                if (currentGroup != InventoryGroupCategory.Tool)
+                {
+                    currentItemSlot = -1;
+                }
+                currentGroup = InventoryGroupCategory.Tool;
+                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Tool);
+                if (group.items.Count - 1 > currentItemSlot)
+                {
+                    currentItemSlot++;
+                    var item = group.items[currentItemSlot];
+                    equipped.OnUnequipped(this.id);
+                    item.OnEquipped(this.id);
+                    equipped = item;
+                }
+
+            }
+        }
+        else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
+        {
+            if (inventory.GetGroup(InventoryGroupCategory.Role).items.Any())
+            {
+                Logging.Log("Equip Slot 4!", "BasicPlayerCharacter");
+                if (currentGroup != InventoryGroupCategory.Role)
+                {
+                    currentItemSlot = -1;
+                }
+
+                currentGroup = InventoryGroupCategory.Role;
+                InventoryGroup group = inventory.GetGroup(InventoryGroupCategory.Role);
+                if (group.items.Count - 1 > currentItemSlot)
+                {
+                    currentItemSlot++;
+                    var item = group.items[currentItemSlot];
+                    equipped.OnUnequipped(this.id);
+                    item.OnEquipped(this.id);
+                    equipped = item;
+                }
+
+            }
         }
     }
 
