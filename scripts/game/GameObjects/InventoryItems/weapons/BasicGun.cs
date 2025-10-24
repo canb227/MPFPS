@@ -97,8 +97,11 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 }
                 else
                 {
-                    audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
-                    audioStreamPlayer2.Play();
+                    if(!audioStreamPlayer2.Playing)
+                    {
+                        audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
+                        audioStreamPlayer2.Play();
+                    }
                 }
             }
             else
