@@ -95,9 +95,40 @@ public partial class SwarmRobot : GOBaseNPC
             default:
                 break;
         }
-
-
     }
+    
+    private double retargetTimer = 0;
+    private double retargetInterval = 3.0; // will randomize a bit
+
+    private void UpdateTarget(double delta)
+    {
+        retargetTimer -= delta;
+        if (retargetTimer <= 0)
+        {
+            retargetTimer = 3.0 + GD.RandRange(-1.0, 1.0); // 2–4 seconds
+
+            // Find closest player
+            Node3D closest = null;
+            float closestDist = float.MaxValue;
+
+            foreach (var player in GetTree().GetNodesInGroup("players")) // put your GOBasePlayer in "players" group
+            {
+                if (player is Node3D p)
+                {
+                    float dist = GlobalTransform.Origin.DistanceTo(p.GlobalTransform.Origin);
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closest = p;
+                    }
+                }
+            }
+
+            if (closest != null)
+                MovementTarget = closest;
+        }
+    }
+
 
     public override bool InitFromData(GameObjectConstructorData data)
     {

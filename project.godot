@@ -40,6 +40,7 @@ enabled=PackedStringArray("res://addons/anim_player_refactor/plugin.cfg", "res:/
 [global_group]
 
 navigation_mesh_source_group=""
+players=""
 
 [importer_defaults]
 
