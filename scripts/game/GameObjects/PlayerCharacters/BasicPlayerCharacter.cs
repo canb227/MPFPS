@@ -143,7 +143,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (input.actions.HasFlag(ActionFlags.Jump))
             {
-                Global.gameState.gameModeManager.EvacuationCountdown();
                 if (IsOnFloor())
                 {
                     characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
