@@ -147,5 +147,32 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     {
 
     }
+
+    /// <summary>
+    /// Gets the <c>GOBasePlayerCharacter</c> holding this object.
+    /// </summary>
+    /// <returns>
+    /// <c>GOBasePlayerCharacter</c> or <c>null</c> if not found
+    /// </returns>
+    public GOBasePlayerCharacter GetHeldBy()
+    {
+        if (equippedBySteamID == 0) return null;
+
+        if (!Global.gameState.PlayerIDToControlledCharacter.TryGetValue(equippedBySteamID, out ulong controlledChar))
+        {
+            return null;
+        }
+        else
+        {
+            if (!Global.gameState.GameObjects.TryGetValue(controlledChar, out GameObject gameObject))
+            {
+                return null;
+            }
+            else
+            {
+                return gameObject as GOBasePlayerCharacter; // making an assumption here
+            }
+        }
+    }
 }
 

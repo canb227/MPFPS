@@ -26,6 +26,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     [Export] public int currentMagazineAmmo { get; set; } = 30;
     [Export] public int magazineSize { get; set; } = 30;
     [Export] public float reloadTimeSeconds { get; set; } = 2;
+    [Export] public int bulletsPerShot { get; set; } = 1;
+    [Export] public float spread;
+    [Export] public float physDamagePerShot = 5;
+    [Export] public float stunDamagePerShot = 5;
     private float reloadTimeLeft { get; set; }
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
     public override bool droppable { get; set; } = true;
@@ -43,9 +47,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
     private int lastFireIndex;
     private double _timeUntilFire;
+    private string[] gunSounds;
+    private string[] emptySounds;
     public override void _Ready()
     {
         base._Ready();
+        gunSounds = ["res://assets/audio/weapons/basic/fire1.wav"];
+        emptySounds = ["res://assets/audio/weapons/basic/ar2_empty.wav"];
     }
 
     public override void PerTickShared(double delta)
@@ -75,14 +83,14 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             currentMagazineAmmo += ammoToLoad;
             basicPlayerCharacter.AddToAmmoStored(ammoType, -ammoToLoad);
             reloading = false;
-            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(currentMagazineAmmo, basicPlayerCharacter.ammoStored[ammoType], magazineSize);
+            UpdateUI(basicPlayerCharacter);
         }
     }
     public override void HandleInput(ActionFlags input)
     {
         if (currentMagazineAmmo != magazineSize && !lastTickActions.HasFlag(ActionFlags.Reload) && input.HasFlag(ActionFlags.Reload))
         {
-            if (Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[equippedBySteamID]] is BasicPlayerCharacter basicPlayerCharacter)
+            if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
             {
                 if (basicPlayerCharacter.ammoStored[ammoType] > 0)
                 {
@@ -111,8 +119,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         }
         else if (input.HasFlag(ActionFlags.Fire) && !reloading)
         {
-            double cooldown = 1.0 / fireRate;
-
             if (_timeUntilFire <= 0)
             {
                 _timeUntilFire = 1.0 / fireRate;
@@ -133,37 +139,15 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         if (current is IsDamagable target)
                         {
                             Logging.Log($"Hit a IsDamagable object", "BasicGun");
-                             //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
-                            target.TakeDamage(5, equippedBySteamID, PainSoundType.Bullet);
+                            //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
+                            target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                            target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
                         }
                     }
                     currentMagazineAmmo--;
-                    if (Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[equippedBySteamID]] is BasicPlayerCharacter basicPlayerCharacter)
-                    {
-                        Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(currentMagazineAmmo, basicPlayerCharacter.ammoStored[ammoType], magazineSize);
-                    }
-                    else
-                    {
-                        Logging.Warn("Non-BasicPlayer using a gun, undefined behavior", "BasicGun");
-                    }
+                    UpdateUI();
 
-                    //play gunshot sound
-                    string[] gunSounds =
-                    {
-                        "res://assets/audio/weapons/basic/fire1.wav",
-                    };
-                    Random rand = new();
-                    int index;
-                    do
-                    {
-                        index = rand.Next(gunSounds.Length);
-                    } while (index == lastFireIndex && gunSounds.Length > 1);
-                    audioStreamPlayer1.Stream = GD.Load<AudioStream>(gunSounds[index]);
-                    //randomize pitch ±2%
-                    float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
-                    audioStreamPlayer1.PitchScale = pitchVariation;
-
-                    audioStreamPlayer1.Play();
+                    PlayShotSound();
 
                     //play firing animation
                     animationPlayer.SpeedScale = (float)fireRate;
@@ -173,22 +157,8 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 {
                     //gun is empty
                     Logging.Log($"Gun Empty!", "BasicGun");
-                    //play gunshot sound
-                    string[] gunSounds =
-                    {
-                        "res://assets/audio/weapons/basic/ar2_empty.wav",
-                    };
-                    Random rand = new();
-                    int index;
-                    do
-                    {
-                        index = rand.Next(gunSounds.Length);
-                    } while (index == lastFireIndex && gunSounds.Length > 1);
-                    audioStreamPlayer1.Stream = GD.Load<AudioStream>(gunSounds[index]);
-                    //randomize pitch ±2%
-                    float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
-                    audioStreamPlayer1.PitchScale = pitchVariation;
-                    audioStreamPlayer1.Play();
+
+                    PlayEmptySound();
                 }
             }
         }
@@ -198,10 +168,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     {
         base.OnEquipped(bySteamID);
 
-        if (Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[equippedBySteamID]] is BasicPlayerCharacter basicPlayerCharacter)
+        if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
         {
             gunRayCast = basicPlayerCharacter.gunRayCast;
-            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(currentMagazineAmmo, basicPlayerCharacter.ammoStored[ammoType], magazineSize);
+            UpdateUI(basicPlayerCharacter);
         }
         else
         {
@@ -250,6 +220,60 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
     }
 
+    private void UpdateUI(BasicPlayerCharacter basicPlayer = null)
+    {
+        var player = basicPlayer != null ? basicPlayer : GetHeldBy();
+
+        if (player is BasicPlayerCharacter basicPlayerCharacter)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(
+                currentMagazineAmmo,
+                basicPlayerCharacter.ammoStored[ammoType],
+                magazineSize
+            );
+        }
+        else
+        {
+            Logging.Warn("Non-BasicPlayer using a gun, undefined behavior", "BasicGun");
+        }
+    }
+
+    private void PlaySound(string soundResource, float pitchVariation)
+    {
+        audioStreamPlayer1.Stream = GD.Load<AudioStream>(soundResource);
+        audioStreamPlayer1.PitchScale = pitchVariation;
+        audioStreamPlayer1.Play();
+    }
+
+    private void PlayShotSound()
+    {
+        //play gunshot sound
+        Random rand = new();
+        int index;
+        do
+        {
+            index = rand.Next(gunSounds.Length);
+        } while (index == lastFireIndex && gunSounds.Length > 1);
+
+        float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
+        
+        PlaySound(gunSounds[index], pitchVariation);
+    }
+
+    private void PlayEmptySound()
+    {
+        //play gunshot sound
+        Random rand = new();
+        int index;
+        do
+        {
+            index = rand.Next(gunSounds.Length);
+        } while (index == lastFireIndex && gunSounds.Length > 1);
+
+        float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
+        
+        PlaySound(emptySounds[index], pitchVariation);
+    }
 }
 
 [MessagePackObject]
