@@ -16,7 +16,10 @@ public partial class Helicopter : GOBaseStaticBody
     [Export] PathFollow3D pathFollow3D { get; set; }
     [Export] MeshInstance3D rearRotorMesh { get; set; }
     [Export] MeshInstance3D frontRotorMesh { get; set; }
-
+    private float currentSpeed = 0f;
+    private bool flyaway { get; set; }
+    private float targetSpeed = 5f;   // max speed
+    private float accelFactor = 0.5f;
     public bool started { get; set; }
     public bool isSpinning { get; set; }
 
@@ -33,6 +36,22 @@ public partial class Helicopter : GOBaseStaticBody
         {
             GameModeManager.EvacuationStarted -= EvacuationStarted;
             GameModeManager.EvacuationEnded -= EvacuationEnded;
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        if (flyaway)
+        {
+            float factor = 1f - Mathf.Exp(-accelFactor * (float)delta);
+            currentSpeed += (targetSpeed - currentSpeed) * factor;
+
+            Vector3 up = Transform.Basis.Y;
+            Vector3 forward = Transform.Basis.Z * 0.5f;
+            Vector3 movement = (up + forward).Normalized() * currentSpeed;
+
+            GlobalTranslate(movement * (float)delta);
         }
     }
 
@@ -73,6 +92,7 @@ public partial class Helicopter : GOBaseStaticBody
     public void HelicopterLeave()
     {
         animationPlayer.Play("ramp_up");
+        flyaway = true;
     }
 
     public override string GenerateStateString()

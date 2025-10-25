@@ -16,8 +16,6 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     [Export] public CollisionShape3D collider;
     [Export] public SwarmRobotState state = SwarmRobotState.NONE;
     [Export] private Area3D meleeArea;
-    [Export] public float knockbackForce = 30f;
-
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
     public float maxHealth { get; set; } = 50;

@@ -12,6 +12,33 @@
 [ext_resource type="Texture2D" uid="uid://mssw2knfdd5h" path="res://assets/models/map/helicopter_m240l mmg_M240L_MaskMap.png" id="7_g52l4"]
 [ext_resource type="Texture2D" uid="uid://c31h5uodd721p" path="res://assets/models/map/helicopter_m240l mmg_M240L_Normal.png" id="8_c2lt1"]
 
+[sub_resource type="Animation" id="Animation_4na8w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Ramp:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.99959594, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ramp/RampAudio:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
 [sub_resource type="Animation" id="Animation_ly7q5"]
 resource_name = "helicopter_flight"
 length = 33.33334
@@ -53,21 +80,6 @@ tracks/2/keys = {
 "values": [false, true]
 }
 
-[sub_resource type="Animation" id="Animation_4na8w"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Ramp:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0.99959594, 0, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_pagf7"]
 resource_name = "ramp_down"
 length = 1.5
@@ -78,30 +90,27 @@ tracks/0/path = NodePath("Ramp:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.56666666),
+"times": PackedFloat32Array(0, 1.0333333),
 "transitions": PackedFloat32Array(-2, -2),
 "update": 0,
 "values": [Vector3(1.9373155, 0, 0), Vector3(0.99959594, 0, 0)]
 }
-tracks/1/type = "audio"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Ramp/RampAudio")
+tracks/1/path = NodePath("Ramp/RampAudio:playing")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("2_f4cif")
-}],
-"times": PackedFloat32Array(0.23333333)
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
-tracks/1/use_blend = true
 
 [sub_resource type="Animation" id="Animation_f4cif"]
 resource_name = "ramp_up"
-length = 2.0
+length = 8.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -109,26 +118,23 @@ tracks/0/path = NodePath("Ramp:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1.5),
+"times": PackedFloat32Array(3.0333333, 6.0666666),
 "transitions": PackedFloat32Array(-2, -2),
 "update": 0,
 "values": [Vector3(0.99959594, 0, 0), Vector3(1.9373155, 0, 0)]
 }
-tracks/1/type = "audio"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Ramp/RampAudio")
+tracks/1/path = NodePath("Ramp/RampAudio:playing")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("2_f4cif")
-}],
-"times": PackedFloat32Array(1)
+"times": PackedFloat32Array(4.366667),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
-tracks/1/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4na8w"]
 _data = {
@@ -615,7 +621,8 @@ skeleton = NodePath("")
 [node name="RampAudio" type="SteamAudioPlayer" parent="Ramp"]
 air_absorption = true
 transform = Transform3D(2.7818305, 0, 0, 0, 1.5039754, 2.3402224, 0, -2.3402224, 1.5039754, 0.007017531, -0.04854572, -0.21418977)
-pitch_scale = 0.5
+stream = ExtResource("2_f4cif")
+pitch_scale = 0.33
 panning_strength = 0.0
 
 [node name="RearRotor" type="MeshInstance3D" parent="."]
@@ -641,3 +648,5 @@ light_color = Color(0.7373294, 0, 0, 1)
 light_energy = 2.352
 light_indirect_energy = 1.916
 spot_range = 14.903109
+
+[node name="Node3D" type="Node3D" parent="."]

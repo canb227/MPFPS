@@ -158,9 +158,9 @@ public partial class GameModeManager : Node
         }
     }
     
-    private async void EvacuationCountdown()
+    public async void EvacuationCountdown()
     {
-        await ToSignal(GetTree().CreateTimer(95), SceneTreeTimer.SignalName.Timeout);
+        await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
         Logging.Log("End Evacuation as Host", "GameModeManager");
         EvacuationEnded?.Invoke();
     }
