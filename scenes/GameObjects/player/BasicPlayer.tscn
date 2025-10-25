@@ -60,7 +60,7 @@ collision_mask = 4
 mesh = SubResource("CapsuleMesh_nhpn6")
 skeleton = NodePath("../../..")
 
-[node name="bodyCollider" type="CollisionShape3D" parent="thirdPersonModel/body"]
+[node name="bodyCollider" type="CollisionShape3D" parent="thirdPersonModel/body" groups=["players"]]
 shape = SubResource("ConvexPolygonShape3D_rj67t")
 
 [node name="attachment" type="Node3D" parent="thirdPersonModel"]

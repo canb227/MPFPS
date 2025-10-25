@@ -175,12 +175,20 @@ public partial class GameModeManager : Node
             foreach (BasicPlayerCharacter basicPlayerCharacter in basicPlayerCharacters)
             {
                 anybodyOnBoard = true;
+                Logging.Log(basicPlayerCharacter.Name + " " + basicPlayerCharacter.id + " is Onboard", "GameModeManager");
                 if (basicPlayerCharacter.team == Team.Traitor)
                 {
                     traitorOnBoard = true;
                 }
             }
-            RPCManager.RPC(this, "InnocentsWin", []);
+            if (anybodyOnBoard)
+            {
+                RPCManager.RPC(this, "InnocentsWin", []);
+            }
+            else
+            {
+                RPCManager.RPC(this, "TraitorsWin", []);
+            }
         }
     }
 
