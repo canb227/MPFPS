@@ -107,7 +107,12 @@ public partial class Hands : GOBaseInventoryItem
     public override void OnDropped(ulong byID)
     {
         base.OnDropped(byID);
-        Logging.Log($"Hands Dropped?", "Hands");
+        if(holding != null)
+        {
+            holding.OnRelease(equippedBySteamID);
+            holding = null; 
+        }
+        Logging.Warn($"Hands Dropped?", "Hands");
     }
 
     public override void OnEquipped(ulong byID)
@@ -124,7 +129,12 @@ public partial class Hands : GOBaseInventoryItem
 
     public override void OnUnequipped(ulong byID)
     {
-        base.OnUnequipped(byID) ;
+        base.OnUnequipped(byID);
+        if(holding != null)
+        {
+            holding.OnRelease(equippedBySteamID);
+            holding = null; 
+        }
         Logging.Log($"Hands Unequipped", "Hands");
     }
 
