@@ -400,8 +400,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if(equipped != null && equipped.droppable)
         {
+            equipped.OnUnequipped(authority);
             equipped.OnDropped(authority);
             inventory.GetGroup(equipped.category).items.Remove(equipped);
+            equipped = null;
             Equip(InventoryGroupCategory.Hands);
         }
     }
