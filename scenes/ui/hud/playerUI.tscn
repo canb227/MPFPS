@@ -55,6 +55,7 @@ layout_mode = 2
 [node name="Control" type="Control" parent="CenterContainer/SeenPlayerInfo"]
 custom_minimum_size = Vector2(0, 139.955)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="TargetName" type="Label" parent="CenterContainer/SeenPlayerInfo"]
 visible = false
