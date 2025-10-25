@@ -515,7 +515,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
     {
-        RPCManager.RPC(this, "rpc_TakeStunDamage", [damage,byID,soundType]);
+        //only the authority can tell people they took damage
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_TakeStunDamage", [damage, byID, soundType]);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -560,7 +564,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
-        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+        //only the authority can tell people they took damage
+        if(Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -590,7 +598,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void OnDeath()
     {
-        RPCManager.RPC(this, "rpc_OnDeath", []);
+        //only the authority can tell people they died
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_OnDeath", []);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]

@@ -31,6 +31,7 @@ public partial class GameModeManager : Node
     public ItemSpawnManager itemSpawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public Dictionary<ulong, PlayerRoundStats> playerStats = new();
     public List<PackageOrderInfo> packageOrders = new();
     public Queue<int> deliveryQueue = new();
     public Dictionary<GameObjectType, int> minimumItemTypeCount = new();
@@ -206,6 +207,10 @@ public partial class GameModeManager : Node
         {
             basicPlayers.Clear();
             ghostPlayers.Clear();
+            foreach(PlayerRoundStats playerStat in playerStats.Values)
+            {
+                playerStat.NewRound();
+            }
 
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
