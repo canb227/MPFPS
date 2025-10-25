@@ -363,7 +363,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                     }
                     GOItem.OnPickup(controllingPlayerID);
                     //auto-equip weapons
-                    if(group.category == InventoryGroupCategory.Weapon)
+                    if(group.category == InventoryGroupCategory.Weapon || group.category == InventoryGroupCategory.Accessory)
                     {
                         Equip(group.category, group.items.Count-1);
                     }
