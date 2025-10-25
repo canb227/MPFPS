@@ -72,6 +72,10 @@ public partial class GOStaticDestructible : GOBaseStaticBody, IsDamagable
             GlobalPosition = new Vector3(0, -100, 0);
         }
     }
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    {
+        Logging.Log("Statics Don't Currently Take Stun Damage", "GOStaticDestructible");
+    }
 }
 
 [MessagePackObject]

@@ -122,11 +122,19 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     Logging.Log($"Pew!", "BasicGun");
                     if (gunRayCast.IsColliding())
                     {
-                        var temp = gunRayCast.GetCollider();
-                        if (gunRayCast.GetCollider() is IsDamagable target)
+                        var hit = gunRayCast.GetCollider();
+
+                        //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
+                        //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
+                        Node current = (Node)hit;
+                        while (current != null && current is not IsDamagable)
+                            current = current.GetParent();
+
+                        if (current is IsDamagable target)
                         {
                             Logging.Log($"Hit a IsDamagable object", "BasicGun");
-                            target.TakeDamage(10, equippedBySteamID, PainSoundType.Bullet);
+                             //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
+                            target.TakeDamage(5, equippedBySteamID, PainSoundType.Bullet);
                         }
                     }
                     currentMagazineAmmo--;

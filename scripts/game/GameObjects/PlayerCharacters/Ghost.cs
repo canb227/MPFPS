@@ -36,6 +36,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     public override void PerTickAuth(double delta)
     {
+        base.PerTickAuth(delta);
         if (input != null)
         {
             if (Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -236,6 +237,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     protected override void OnControlReleased()
     {
+        base.OnControlReleased();
         Hide();
     }
 }

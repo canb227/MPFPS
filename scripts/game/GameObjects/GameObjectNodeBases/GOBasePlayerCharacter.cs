@@ -1,9 +1,5 @@
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Steamworks;
 
 
 public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
@@ -33,6 +29,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public RayCast3D gunRayCast { get; set; }
 
     public ActionFlags lastTickActions { get; set; }
+    public ulong currentlySeenCharacterID { get; set; }
+    public CharacterState currentlySeenCharacterState { get; set; }
+    public string currentlySeenCharacterHealthString { get; set; }
 
 
     public abstract void Assignment(Team team, Role role);
@@ -148,7 +147,16 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         QueueFree();
     }
 
-    protected abstract void OnControlReleased();
+    protected virtual void OnControlReleased()
+    {
+        if (controllingPlayerID == Global.steamid)
+        {
+            currentlySeenCharacterID = 0;
+            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = false;
+            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = false;
+            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = false;
+        }
+    }
 
     public bool IsMe()
     {
@@ -156,8 +164,111 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     }
 
     public override void PerTickAuth(double delta)
-    { 
+    {
+        if (Global.gameState.PlayerIDToControlledCharacter[Global.steamid] == id)
+        {
+            HandleVisualRayCast(delta);
+        }
+    }
     
+    public void HandleVisualRayCast(double delta)
+    {
+        if (visualRayCast.GetCollider() is CollisionObject3D collider)
+        {
+            // Collision layers are stored as a bitmask
+            uint layerMask = collider.CollisionLayer;
+
+            // Check if layer 3 bit is set
+            bool isLayer3 = (layerMask & (1 << 2)) != 0; // layer 3 → bit index 2 (since it's 1-based in the editor)
+
+            if (isLayer3)
+            {
+                // Walk up to find the BasicPlayerCharacter
+                Node current = collider;
+                while (current != null && current is not BasicPlayerCharacter)
+                    current = current.GetParent();
+
+                if (current is BasicPlayerCharacter basicPlayerCharacter)
+                {
+                    if (basicPlayerCharacter.state == CharacterState.Living)
+                    {
+                        (Color, string) healthInfo = basicPlayerCharacter.GetHealthInfo();
+                        if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState || healthInfo.Item2 != currentlySeenCharacterHealthString)
+                        {
+                            currentlySeenCharacterID = basicPlayerCharacter.id;
+                            currentlySeenCharacterState = basicPlayerCharacter.state;
+                            currentlySeenCharacterHealthString = healthInfo.Item2;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                            Logging.Log("We see a new living basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", basicPlayerCharacter.GetHealthInfo().Item1);
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = basicPlayerCharacter.GetHealthInfo().Item2;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = basicPlayerCharacter.role.ToString();
+                        }
+                    }
+                    else if (basicPlayerCharacter.state == CharacterState.Missing)
+                    {
+                        if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                        {
+                            currentlySeenCharacterID = basicPlayerCharacter.id;
+                            currentlySeenCharacterState = basicPlayerCharacter.state;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                            Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = "Unidentified Body";
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.AddThemeColorOverride("font_color", Colors.Yellow);
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search and identify";
+                        }
+                    }
+                    else if (basicPlayerCharacter.state == CharacterState.Dead)
+                    {
+                        if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                        {
+                            currentlySeenCharacterID = basicPlayerCharacter.id;
+                            currentlySeenCharacterState = basicPlayerCharacter.state;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                            Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.RemoveThemeColorOverride("font_color");
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
+                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search";
+                        }
+                    }
+                    else
+                    {
+                        Logging.Error("Invalid Player State in Visual Check", "BasicPlayerCharacter");
+                    }
+                }
+            }
+            else
+            {
+                if(currentlySeenCharacterID != 0)
+                {
+                    currentlySeenCharacterID = 0;
+                    Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = false;
+                    Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = false;
+                    Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = false;
+                }
+            }
+        }
+        else
+        {
+            if(currentlySeenCharacterID != 0)
+            {
+                currentlySeenCharacterID = 0;
+                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = false;
+                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = false;
+                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = false;
+            }
+        }
     }
 
     public override void PerFrameAuth(double delta)
