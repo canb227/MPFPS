@@ -25,7 +25,7 @@ public static class PCUtils
     /// <param name="pc"></param>
     /// <param name="globalVector"></param>
     /// <returns></returns>
-    public static Vector3 LocalizeVector(GOBasePlayerCharacter pc, Vector3 globalVector)
+    public static Vector3 LocalizeVector(Node3D pc, Vector3 globalVector)
     {
         return pc.Transform.Basis.Inverse() * globalVector;
     }
@@ -36,7 +36,7 @@ public static class PCUtils
     /// <param name="pc"></param>
     /// <param name="localVector"></param>
     /// <returns></returns>
-    public static Vector3 GlobalizeVector(GOBasePlayerCharacter pc, Vector3 localVector)
+    public static Vector3 GlobalizeVector(Node3D pc, Vector3 localVector)
     {
         return pc.Transform.Basis * localVector;
     }

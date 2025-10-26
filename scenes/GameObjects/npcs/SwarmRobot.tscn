@@ -4,6 +4,21 @@
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_1fq2r"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_a6bla"]
 
+[sub_resource type="Animation" id="Animation_3tng0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SteamAudioPlayer:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
 [sub_resource type="Animation" id="Animation_aj03a"]
 resource_name = "attack"
 tracks/0/type = "method"
@@ -52,21 +67,6 @@ tracks/2/keys = {
 "values": [0.0, -16.0]
 }
 
-[sub_resource type="Animation" id="Animation_3tng0"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SteamAudioPlayer:volume_db")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1fq2r"]
 _data = {
 &"RESET": SubResource("Animation_3tng0"),
@@ -85,7 +85,7 @@ emission_enabled = true
 radius = 1.5991211
 height = 3.1982422
 
-[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "movementSFX", "navAgent")]
+[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "navAgent")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_aj03a")
@@ -96,7 +96,6 @@ meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
 genericSFX = NodePath("SteamAudioPlayer")
-movementSFX = NodePath("")
 navAgent = NodePath("NavigationAgent3D")
 metadata/_custom_type_script = "uid://kuimq525di4f"
 
@@ -115,8 +114,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_1fq2r")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 
 [node name="AttackAoe" type="Area3D" parent="."]
-collision_layer = 20
-collision_mask = 20
+collision_layer = 16
+collision_mask = 16
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AttackAoe"]
 shape = SubResource("CapsuleShape3D_3tng0")
