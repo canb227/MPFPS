@@ -252,17 +252,17 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         this.state = message.state;
     }
 
-    public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         //only the authority can tell people they took damage (host is auth for robots)
         RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         currentHealth -= damage;
-        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType);
+        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
         Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
         if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
         {
@@ -293,10 +293,10 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
 
     }
 
-    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         Logging.Log("We Take Stun Damage as damage", "SwarmRobot");
-        TakeDamage(damage, byID, soundType);
+        TakeDamage(damage, byID, soundType, VolumeDb);
     }
 
 }

@@ -41,6 +41,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
     public bool handcuffed;
+    public float maxFallSpeed = 0f;
+    public float safeFallSpeed = 5f;
+    public float fallDamageScale = 1f;
+    public bool wasOnFloor;
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
     {
@@ -434,6 +438,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (!IsOnFloor())
         {
             globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta;
+            if (globalVelocity.Y > maxFallSpeed)
+            {
+                maxFallSpeed = globalVelocity.Y;
+            }
+        }
+        else
+        {
+            // Just landed this tick
+            if (!wasOnFloor)
+            {
+                if (maxFallSpeed > safeFallSpeed)
+                {
+                    float damage = (maxFallSpeed - safeFallSpeed) * fallDamageScale;
+                    TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
+                }
+                maxFallSpeed = 0f;
+            }
         }
 
         if (input.actions.HasFlag(ActionFlags.Jump))
@@ -444,6 +465,16 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
         return globalVelocity;
+    }
+
+    private int ScaleDamageToVolume(float damage)
+    {
+        damage = Mathf.Clamp(damage, 1f, 100f);
+
+        float inMin = 1f, inMax = 100f;
+        float outMin = -6f, outMax = 6f;
+
+        return (int)(outMin + (damage - inMin) / (inMax - inMin) * (outMax - outMin));
     }
 
     private Vector3 CalculateLocalVelocity()
@@ -581,23 +612,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //Character State Functions (Health, Stun, Death, etc) \\
 
-    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         //only the authority can tell people they took damage
         if (Global.steamid == authority)
         {
-            RPCManager.RPC(this, "rpc_TakeStunDamage", [damage, byID, soundType]);
+            RPCManager.RPC(this, "rpc_TakeStunDamage", [damage, byID, soundType, VolumeDb]);
         }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         if (state == CharacterState.Living)
         {
             currentStunBar -= damage;
             currentTimeUntilStunRegen = stunRegenDelaySeconds;
-            characterSoundManager.PlayDamageSound(characterSFX, soundType);
+            characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
             Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
@@ -630,23 +661,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //ragdoll and other stuff
     }
 
-    public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         //only the authority can tell people they took damage
         if(Global.steamid == authority)
         {
-            RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+            RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType,VolumeDb]);
         }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         TakeStunDamage(damage*4, byID, PainSoundType.None);
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
-            characterSoundManager.PlayDamageSound(characterSFX, soundType);
+            characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
             Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
