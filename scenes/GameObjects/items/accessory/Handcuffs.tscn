@@ -90,6 +90,9 @@ _data = {
 }
 
 [node name="GOHandcuffs" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
+collision_layer = 8
+collision_mask = 11
+continuous_cd = true
 script = ExtResource("1_41nkh")
 audioStreamPlayer = NodePath("SteamAudioPlayer")
 firstPersonScene = NodePath("fps")
