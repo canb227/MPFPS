@@ -47,7 +47,7 @@ public partial class Hands : GOBaseInventoryItem
         {
             if (holding is GOBaseRigidBody rb)
             {
-                rb.ApplyForce((CurrentHoldPosition.GlobalPosition - rb.GlobalPosition)*50);
+                rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass))*50f);
             }
         }
     }
