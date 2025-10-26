@@ -59,7 +59,7 @@ public partial class Hands : GOBaseInventoryItem
             if (holding == null)
             {
                 var col = rayCast.GetCollider();
-                if (col!=null)
+                if (col != null)
                 {
                     if (col is IsHoldable item)
                     {
@@ -85,6 +85,8 @@ public partial class Hands : GOBaseInventoryItem
                 holding = null;
             }
         }
+        
+        //add right click rotation
 
         if (input.HasFlag(ActionFlags.NextSlot))
         {

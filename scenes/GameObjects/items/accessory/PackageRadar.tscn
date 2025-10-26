@@ -58,6 +58,8 @@ _data = {
 [node name="GOPackageRadar" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
+center_of_mass_mode = 1
+center_of_mass = Vector3(0.37, 0.1, -0.32)
 script = ExtResource("1_xeqj4")
 audioStreamPlayer = NodePath("SteamAudioPlayer")
 firstPersonScene = NodePath("fps")
@@ -97,4 +99,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36132288, 0.13128692, -0.30
 stream = ExtResource("3_wyqfw")
 attenuation_model = 1
 volume_db = -6.0
+unit_size = 4.0
 panning_strength = 0.0

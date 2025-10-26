@@ -62,6 +62,8 @@ _data = {
 [node name="GOFlashlight" type="RigidBody3D" node_paths=PackedStringArray("spotLight3D", "omniLight3D", "audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
+center_of_mass_mode = 1
+center_of_mass = Vector3(0.33, -0.1, 0)
 continuous_cd = true
 script = ExtResource("1_tgcn5")
 spotLight3D = NodePath("SpotLight3D")
@@ -108,4 +110,5 @@ libraries = {
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3473552, 0, -0.12783986)
 stream = ExtResource("4_oybiq")
+unit_size = 3.0
 panning_strength = 0.0
