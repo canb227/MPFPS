@@ -18,9 +18,23 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     [Export] private Area3D meleeArea;
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
+    [Export] public AudioStreamPlayer3D genericSFX;
+    [Export] public AudioStreamPlayer3D movementSFX;
     public float maxHealth { get; set; } = 50;
     public float currentHealth { get; set; } = 50;
     private CharacterSoundManager characterSoundManager;
+    string[] ambientSounds =
+    {
+        "res://assets/audio/enemies/combine_button_locked.wav",
+        "res://assets/audio/enemies/combine_button1.wav",
+        "res://assets/audio/enemies/combine_button2.wav",
+        "res://assets/audio/enemies/combine_button3.wav",
+        "res://assets/audio/enemies/combine_button5.wav",
+        "res://assets/audio/enemies/combine_button7.wav",
+    };
+    private int lastAmbientIndex = -1;
+    float ambientTimer = 0;
+    Random rand = new Random();
 
     public override void _Ready()
     {
@@ -62,6 +76,12 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
             case SwarmRobotState.SIMPLECHASE:
                 UpdateTarget(delta);
                 TryAttack(delta);
+                ambientTimer -= (float)delta;
+                if (ambientTimer <= 0f)
+                {
+                    PlayRandomAmbience();
+                    ResetTimer();
+                }
                 if (MovementTarget != null)
                 {
                     Vector3 velocity = Velocity;
@@ -96,13 +116,38 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
 
                     Velocity = velocity;
                     MoveAndSlide();
-                    return;
                 }
-
                 break;
             default:
                 break;
         }
+
+    }
+
+    public override void PerTickShared(double delta)
+    {
+        base.PerTickShared(delta);
+    }
+
+    private void PlayRandomAmbience()
+    {
+        if (ambientSounds.Length == 0) return;
+
+        int index;
+        do
+        {
+            index = rand.Next(ambientSounds.Length);
+        } while (index == lastAmbientIndex && ambientSounds.Length > 1);
+
+        lastAmbientIndex = index;
+        genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
+        genericSFX.Play();
+    }
+
+    private void ResetTimer()
+    {
+        // Random interval between 5–12 seconds
+        ambientTimer = 5f + (float)rand.NextDouble() * 7f;
     }
     
     
@@ -156,7 +201,6 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         {
             if (MovementTarget is IsDamagable dmg)
             {
-                GD.Print("We are: " + id);
                 animationPlayer.Play("attack");
             }
         }
@@ -211,10 +255,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
     {
         //only the authority can tell people they took damage (host is auth for robots)
-        if(Global.steamid == authority)
-        {
-            RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
-        }
+        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -223,19 +264,19 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         currentHealth -= damage;
         characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType);
         Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
         {
             Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
-            rpc_OnDeath(byID);
+            OnDeath(byID);
         }
     }
 
-    public void OnDeath()
+    public void OnDeath(ulong byID)
     {
         //only the authority can tell people they died (host is auth for robots)
         if (Global.steamid == authority)
         {
-            RPCManager.RPC(this, "rpc_OnDeath", []);
+            RPCManager.RPC(this, "rpc_OnDeath", [byID]);
         }
     }
 

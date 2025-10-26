@@ -40,6 +40,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float finalSpeed;
     private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
+    public bool handcuffed;
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
     {
@@ -138,6 +139,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerTickShared(double delta)
     {
+        base.PerTickShared(delta);
         //use input from local and remote players to calculate footsteps
         if (input != null)
         {
@@ -153,7 +155,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
             }
         }
-        
     }
 
 
@@ -163,51 +164,70 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (interactRayCast.IsColliding())
             {
-                var temp = interactRayCast.GetCollider();
-                if (interactRayCast.GetCollider() is IsInventoryItem s)
+                var hit = interactRayCast.GetCollider();
+                if (hit is IsInventoryItem s)
                 {
                     Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
                     Pickup(s);
                 }
-                else if (interactRayCast.GetCollider() is IsInteractable i)
+                else if (hit is IsInteractable i)
                 {
                     i.Local_OnInteract(id);
                 }
-                else if (interactRayCast.GetCollider() is BasicPlayerCharacter basicPlayerCharacter)
+                else
                 {
-                    switch (basicPlayerCharacter.state)
+                    Node current = (Node)hit;
+                    while (current != null && current is not BasicPlayerCharacter)
+                        current = current.GetParent();
+
+                    if (current is BasicPlayerCharacter basicPlayerCharacter)
                     {
-                        case CharacterState.Missing:
-                            basicPlayerCharacter.OnFound();
-                            goto case CharacterState.Dead;
+                        switch (basicPlayerCharacter.state)
+                        {
+                            case CharacterState.Living:
+                                if (basicPlayerCharacter.handcuffed)
+                                {
+                                    basicPlayerCharacter.DropEquipped();
+                                }
+                                break;
 
-                        case CharacterState.Dead:
-                            Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
-                            break;
+                            case CharacterState.Missing:
+                                basicPlayerCharacter.OnFound();
+                                Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                break;
+
+                            case CharacterState.Dead:
+                                Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                break;
+                        }
+
                     }
-
                 }
+                
             }
         }
-        if (!lastTickActions.HasFlag(ActionFlags.DropItem) && input.actions.HasFlag(ActionFlags.DropItem))
+        if(!handcuffed)
         {
-            DropEquipped();
-        }
-        if (!lastTickActions.HasFlag(ActionFlags.InventorySlot1) && input.actions.HasFlag(ActionFlags.InventorySlot1))
-        {
-            EquipNextFromSlot(InventoryGroupCategory.Hands);
-        }
-        else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot2) && input.actions.HasFlag(ActionFlags.InventorySlot2))
-        {
-            EquipNextFromSlot(InventoryGroupCategory.Weapon);
-        }
-        else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot3) && input.actions.HasFlag(ActionFlags.InventorySlot3))
-        {
-            EquipNextFromSlot(InventoryGroupCategory.Accessory);
-        }
-        else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
-        {
-            EquipNextFromSlot(InventoryGroupCategory.Role);
+            if (!lastTickActions.HasFlag(ActionFlags.DropItem) && input.actions.HasFlag(ActionFlags.DropItem))
+            {
+                DropEquipped();
+            }
+            if (!lastTickActions.HasFlag(ActionFlags.InventorySlot1) && input.actions.HasFlag(ActionFlags.InventorySlot1))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Hands);
+            }
+            else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot2) && input.actions.HasFlag(ActionFlags.InventorySlot2))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Weapon);
+            }
+            else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot3) && input.actions.HasFlag(ActionFlags.InventorySlot3))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Accessory);
+            }
+            else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Role);
+            }
         }
     }
     
@@ -243,6 +263,41 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 if (group.CanStoreItem(item))
                 {
                     group.StoreItem(item);
+                    if (IsMe())
+                    {
+                        GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint);
+                    }
+                    else
+                    {
+                        GOItem.AttachToPlayer(thirdPersonEquipmentAttachmentPoint);
+                    }
+                    GOItem.OnPickup(controllingPlayerID);
+                    //auto-equip weapons and accessories
+                    if (group.category == InventoryGroupCategory.Weapon || group.category == InventoryGroupCategory.Accessory)
+                    {
+                        Equip(group.category, group.items.Count - 1);
+                    }
+                }
+            }
+        }
+
+    }
+    
+        [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PickupReplace(IsInventoryItem item)
+    {
+        if (item is GOBaseInventoryItem GOItem)
+        {
+            if (inventory.HasGroup(GOItem.category))
+            {
+                InventoryGroup group = inventory.GetGroup(GOItem.category);
+                if (group.CanStoreItem(item))
+                {
+                    group.StoreOrReplaceItem(item, out IsInventoryItem replaced);
+                    if(replaced != null)
+                    {
+                        replaced.OnDropped(authority);
+                    }
                     if (IsMe())
                     {
                         GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint); 
@@ -312,7 +367,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Velocity = HandleYAxis(Velocity, delta);
 
         Vector3 localVelocity = CalculateLocalVelocity();
-
+        if(handcuffed)
+        {
+            localVelocity.X *= 0.7f;
+            localVelocity.Z *= 0.7f;
+        }
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
         PushAwayRigidBodies();
         MoveAndSlide();
@@ -557,7 +616,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
         KnockedOut?.Invoke(authority);
         //characterSoundManager.PlayerKnockoutSound(characterSFX);
-        inventory.DropHeldItem();
+        DropEquipped();
         currentStunBar = 0;
         //ragdoll and other stuff
     }
@@ -610,7 +669,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         Killed?.Invoke(authority);
         characterSoundManager.PlayDeathSound(characterSFX);
-        inventory.DropAllItems();
+        inventory.DropAllItems(authority);
         state = CharacterState.Missing;
         currentHealth = 0;
         Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
@@ -649,6 +708,17 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
         Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
         Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
+    }
+
+    public void Handcuff(GOHandcuffs handcuffs)
+    {
+        PickupReplace(handcuffs);
+        handcuffed = true;
+    }
+
+    public void RemoveHandcuffs()
+    {
+        handcuffed = false;
     }
 
 

@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 [GlobalClass]
 public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
 {
-    public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Special;
+    public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Accessory;
+    //[Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
     public override bool droppable { get; set; } = true;
     public ulong currentlyHeldBy { get; set; }
     public bool customHeldPhysics { get; set; }
@@ -20,7 +21,8 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
     public float heldWeight { get; set; }
     public float heldDrag { get; set; }
     public float heldFriction { get; set; }
-    private ActionFlags lastTickActions;
+    protected ActionFlags lastTickActions;
+    protected RayCast3D interactRayCast;
 
     public override void HandleInput(ActionFlags input)
     {
@@ -43,6 +45,31 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
         GravityScale = 1;
         LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
         AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
+    }
+
+    public override void OnEquipped(ulong bySteamID)
+    {
+        base.OnEquipped(bySteamID);
+        if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+        {
+            interactRayCast = basicPlayerCharacter.interactRayCast;
+        }
+    }
+
+
+    public override void OnUnequipped(ulong bySteamID)
+    {
+        base.OnUnequipped(bySteamID);
+        interactRayCast = null;
+        //audioStreamPlayer.Stop();
+        //animationPlayer.Play("RESET");
+    }
+    
+    public override void OnDropped(ulong bySteamID)
+    {
+        base.OnDropped(bySteamID);
+        //audioStreamPlayer.Stop();
+        //animationPlayer.Play("RESET");
     }
 }
 

@@ -16,6 +16,8 @@ public enum GameModeType
 public partial class GameModeManager : Node
 {
     //Events
+    public static event Action SwarmIncoming;
+    public static event Action SwarmStarted;
     public static event Action EvacuationStarted;
     public static event Action EvacuationEnded;
     public static event Action OnPackageOrdersUpdated;
@@ -38,6 +40,9 @@ public partial class GameModeManager : Node
     public List<string> possibleRoundAddressNumbers = new();
     public List<string> possibleRoundAddressStreets = new();
     public List<string> possibleRoundAddressSuffixes = new();
+
+    public SwarmManager swarmManager = new();
+    public bool roundStarted;
 
 
    
@@ -71,8 +76,16 @@ public partial class GameModeManager : Node
 
     public void PerTick(double delta)
     {
-        remainingRoundTime -= delta;
-        Global.ui.inGameUI.UpdateTimeLeftUI();
+        if (roundStarted)
+        {
+            remainingRoundTime -= delta;
+            if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
+            {
+                RPCManager.RPC(this, "TraitorsWin", []);
+            }
+            Global.ui.inGameUI.UpdateTimeLeftUI();
+            swarmManager.PerTick(delta);
+        }
     }
 
     public void ProcessGameModeOptionsPacketBytes(byte[] payload, ulong sender)
@@ -150,6 +163,8 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEndOfGameEvacuation()
     {
+        remainingRoundTime = 99999;
+        //switch round timers everywhere to a 95 second countdown TDOD
         EvacuationStarted?.Invoke();
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
         if (Global.Lobby.bIsLobbyHost)
@@ -170,7 +185,6 @@ public partial class GameModeManager : Node
         //determine who was on board and who wins as lobby host
         if (Global.Lobby.bIsLobbyHost)
         {
-
             bool traitorOnBoard = false;
             bool anybodyOnBoard = false;
             foreach (BasicPlayerCharacter basicPlayerCharacter in basicPlayerCharacters)
@@ -221,6 +235,7 @@ public partial class GameModeManager : Node
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
         roundNumber++;
+        roundStarted = true;
         remainingRoundTime = options.roundTime;
         //clear the scoreboard , role assignment comes later
         Global.ui.inGameUI.RoundReport.NewRound();
@@ -334,11 +349,13 @@ public partial class GameModeManager : Node
     {
         //only assign roles to living players, in case somebody dies pre-round.
         List<ulong> players = new();
+        playerStats = new();
         foreach(var player in basicPlayers)
         {
             if(player.Value.state == CharacterState.Living)
             {
                 players.Add(player.Key);
+                playerStats[player.Key] = new PlayerRoundStats();
             }
         }
         List<ulong> traitors = new();
@@ -399,10 +416,12 @@ public partial class GameModeManager : Node
             byte[] data = MessagePackSerializer.Serialize(pa);
             RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
-        if(numPlayers == 0)
+        if (numPlayers == 0)
         {
             RPCManager.RPC(this, "ForceEndRound", []);
         }
+        //prepare the swarm manager given the roles
+        swarmManager.PrepareRound(numPlayers);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -576,6 +595,16 @@ public partial class GameModeManager : Node
                 Logging.Error($"Unknown game mode - cannot start game!", "GameModeManager");
                 break;
         }
+    }
+
+    public void TriggerSwarmIncomingEvent()
+    {
+        SwarmIncoming?.Invoke();
+    }
+
+    public void TriggerSwarmStartedEvent()
+    {
+        SwarmStarted?.Invoke();
     }
 
     public void SpawnNewLocalPlayerCharacter(GameObjectType pcType)

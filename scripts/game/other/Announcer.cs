@@ -7,21 +7,39 @@ using MessagePack;
 public partial class Announcer : GOBaseStaticBody
 {
     [Export] public AnimationPlayer animationPlayer;
+    bool evacuationStarted;
     public override void _Ready()
     {
         base._Ready();
         GameModeManager.EvacuationStarted += EvacuationStarted;
+        GameModeManager.SwarmIncoming += SwarmIncoming;
+        GameModeManager.SwarmStarted += SwarmStarted;
     }
     public override void _Notification(int what)
     {
         if (what == NotificationPredelete)
         {
             GameModeManager.EvacuationStarted -= EvacuationStarted;
+            GameModeManager.SwarmIncoming -= SwarmIncoming;
+            GameModeManager.SwarmStarted -= SwarmStarted;
+        }
+    }
+
+    public void SwarmIncoming()
+    {
+        animationPlayer.Play("swarmIncoming");
+    }
+    public void SwarmStarted()
+    {
+        if(!evacuationStarted)
+        {
+            animationPlayer.Stop();
         }
     }
 
     public void EvacuationStarted()
     {
+        evacuationStarted = true;
         animationPlayer.Play("evacuationStart");
     }
     public override string GenerateStateString()
