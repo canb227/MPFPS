@@ -36,8 +36,7 @@ public partial class SwarmManager : Node
         {
             Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
             SpawnSwarm();
-            currentSwarmCooldown = swarmCooldownMax;
-            currentSwarmCooldown = (swarmCooldownMax - swarmCooldownMin) * rand.NextDouble();
+            currentSwarmCooldown = swarmCooldownMin + (swarmCooldownMax - swarmCooldownMin) * rand.NextDouble();
             announcedSwarm = false;
         }
     }

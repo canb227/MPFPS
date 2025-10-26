@@ -40,11 +40,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float finalSpeed;
     private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
+    //item bools
     public bool handcuffed;
-    public float maxFallSpeed = 0f;
-    public float safeFallSpeed = 5f;
-    public float fallDamageScale = 1f;
-    public bool wasOnFloor;
+
+    //fall damage values
+    // private float fallTime = 0f;
+    // private float safeFallTime = 0.7f;
+    // private float fallingDamagePerSecond = 50f;
+    // private bool wasOnFloor;
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
     {
@@ -438,23 +441,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (!IsOnFloor())
         {
             globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta;
-            if (globalVelocity.Y > maxFallSpeed)
-            {
-                maxFallSpeed = globalVelocity.Y;
-            }
-        }
-        else
-        {
-            // Just landed this tick
-            if (!wasOnFloor)
-            {
-                if (maxFallSpeed > safeFallSpeed)
-                {
-                    float damage = (maxFallSpeed - safeFallSpeed) * fallDamageScale;
-                    TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
-                }
-                maxFallSpeed = 0f;
-            }
         }
 
         if (input.actions.HasFlag(ActionFlags.Jump))
@@ -464,6 +450,26 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 globalVelocity += jumpVelocity;
             }
         }
+
+        //fall damage calculation
+        // if (!IsOnFloor() && globalVelocity.Y < 0)
+        // {
+        //     GD.Print("increase falltime" + fallTime);
+        //     fallTime += (float)delta;
+        // }
+        // else if (IsOnFloor())
+        // {
+        //     if (fallTime > safeFallTime)
+        //     {
+        //         GD.Print("Take damage " + fallTime);
+        //         float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
+        //         TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
+        //     }
+        //     fallTime = 0f;
+        // }
+
+
+
         return globalVelocity;
     }
 
