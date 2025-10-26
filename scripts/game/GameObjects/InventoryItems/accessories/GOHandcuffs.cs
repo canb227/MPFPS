@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 [GlobalClass]
 public partial class GOHandcuffs : GOBaseAccessory
 {
+    [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
     public override void HandleInput(ActionFlags input)
     {
         if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
@@ -29,13 +30,15 @@ public partial class GOHandcuffs : GOBaseAccessory
                 if (current is BasicPlayerCharacter target)
                 {
                     Logging.Log($"Hit a BasicPlayerCharacter object: " + target.currentStunBar, "GOHandcuffs");
-                    if(GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+                    if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
                     {
-                        basicPlayerCharacter.DropEquipped();    
+                        basicPlayerCharacter.DropEquipped();
                     }
                     target.Handcuff(this);
+                    audioStreamPlayer.Play();
                 }
             }
         }
+        base.HandleInput(input);
     }
 }

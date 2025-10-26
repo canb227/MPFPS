@@ -14,13 +14,16 @@ public partial class GOFlashlight : GOBaseAccessory
 {
     [Export] SpotLight3D spotLight3D { get; set; }
     [Export] OmniLight3D omniLight3D { get; set; }
+    [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
     public override void HandleInput(ActionFlags input)
     {
         if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
         {
             spotLight3D.Visible = !spotLight3D.Visible;
             omniLight3D.Visible = !omniLight3D.Visible;
+            audioStreamPlayer.Play();
         }
+        base.HandleInput(input);
     }
     public override void OnDropped(ulong bySteamID)
     {

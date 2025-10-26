@@ -27,6 +27,7 @@ public partial class Announcer : GOBaseStaticBody
 
     public void SwarmIncoming()
     {
+        GD.Print("SWARM");
         animationPlayer.Play("swarmIncoming");
     }
     public void SwarmStarted()

@@ -33,7 +33,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         "res://assets/audio/enemies/combine_button7.wav",
     };
     private int lastAmbientIndex = -1;
-    float ambientTimer = 0;
+    float ambientTimer = 10;
     Random rand = new Random();
 
     public override void _Ready()
@@ -146,8 +146,8 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
 
     private void ResetTimer()
     {
-        // Random interval between 5–12 seconds
-        ambientTimer = 5f + (float)rand.NextDouble() * 7f;
+        // Random interval between 7–20 seconds
+        ambientTimer = 7f + (float)rand.NextDouble() * 13f;
     }
     
     

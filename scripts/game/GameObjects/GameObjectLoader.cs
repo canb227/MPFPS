@@ -27,8 +27,13 @@ public static class GameObjectLoader
         {"Flashlight", (GameObjectType.Flashlight,"res://scenes/GameObjects/items/accessory/Flashlight.tscn", typeof(GOBaseAccessory))},
         {"Handcuffs", (GameObjectType.Handcuffs,"res://scenes/GameObjects/items/accessory/Handcuffs.tscn", typeof(GOBaseAccessory))},
         //{"WalkieTalkie", (GameObjectType.WalkieTalkie,"res://scenes/GameObjects/items/accessory/WalkieTalkie.tscn", typeof(GOBaseAccessory))},
+
+        //RoleItems
+        {"PlayerRadar", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/PlayerRadar.tscn", typeof(GOBaseAccessory))},
+
+
         //Components
-        {"PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
+        { "PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
 
         //Package 
         {"Package", (GameObjectType.Package, "res://scenes/GameObjects/props/Package.tscn", typeof(GOPackageBox))},
@@ -157,4 +162,5 @@ public enum GameObjectType
     Flashlight,
     PackageRadar,
     WalkieTalkie,
+    PlayerRadar,
 }

@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=4 uid="uid://767avvd3gh30"]
+[gd_scene load_steps=13 format=4 uid="uid://767avvd3gh30"]
 
 [ext_resource type="Script" uid="uid://dbjtaodnro0wx" path="res://scripts/game/GameObjects/InventoryItems/accessories/GOHandcuffs.cs" id="1_41nkh"]
+[ext_resource type="AudioStream" uid="uid://wodbj2wyb4h1" path="res://assets/audio/accessories/cuffs.wav" id="2_duqox"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_41nkh"]
 radius = 0.40478516
@@ -88,8 +89,9 @@ _data = {
 &"RESET": SubResource("Animation_41nkh")
 }
 
-[node name="GOHandcuffs" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[node name="GOHandcuffs" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 script = ExtResource("1_41nkh")
+audioStreamPlayer = NodePath("SteamAudioPlayer")
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
@@ -119,4 +121,6 @@ libraries = {
 }
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+stream = ExtResource("2_duqox")
+volume_db = 6.0
 panning_strength = 0.0

@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 
 
 [GlobalClass]
-public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
+public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
 {
-    public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Accessory;
-    //[Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
+    public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Role;
     public override bool droppable { get; set; } = true;
     public ulong currentlyHeldBy { get; set; }
     public bool customHeldPhysics { get; set; }
@@ -71,7 +70,7 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
 }
 
 [MessagePackObject]
-public struct GOBaseAccessoryStateUpdate
+public struct GOBaseRoleStateUpdate
 {
     [Key(0)]
     public ulong inInventoryOf;

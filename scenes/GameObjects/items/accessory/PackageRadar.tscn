@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=4 uid="uid://ct8bxm02gdfqt"]
+[gd_scene load_steps=10 format=4 uid="uid://ct8bxm02gdfqt"]
 
-[ext_resource type="Script" uid="uid://b8ee2iuslbhdh" path="res://scripts/game/GameObjects/InventoryItems/accessories/GOBaseAccessory.cs" id="1_h02x8"]
+[ext_resource type="Script" uid="uid://bovhdpgrsomf" path="res://scripts/game/GameObjects/InventoryItems/accessories/GOPackageRadar.cs" id="1_xeqj4"]
 [ext_resource type="Texture2D" uid="uid://cjll6mqbutffi" path="res://assets/models/accessories/dosimeter_2_dosimeter_2.png" id="2_xeqj4"]
+[ext_resource type="AudioStream" uid="uid://c40nifrehf8u1" path="res://assets/audio/accessories/beep.wav" id="3_wyqfw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wyqfw"]
 size = Vector3(1.5795288, 0.75735474, 0.40405273)
@@ -54,12 +55,13 @@ _data = {
 &"RESET": SubResource("Animation_xeqj4")
 }
 
-[node name="GOBaseAccessory" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
-script = ExtResource("1_h02x8")
+[node name="GOPackageRadar" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
+script = ExtResource("1_xeqj4")
+audioStreamPlayer = NodePath("SteamAudioPlayer")
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
-metadata/_custom_type_script = "uid://b8ee2iuslbhdh"
+metadata/_custom_type_script = "uid://bovhdpgrsomf"
 
 [node name="collider" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.4, 0, 0, 0, -0.34453472, -0.20321384, 0, 0.20321384, -0.34453472, 0.36718068, 0.0992015, -0.31731078)
@@ -83,6 +85,14 @@ mesh = SubResource("ArrayMesh_ymvtx")
 skeleton = NodePath("")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("")
 libraries = {
 &"": SubResource("AnimationLibrary_wyqfw")
 }
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36132288, 0.13128692, -0.30761167)
+stream = ExtResource("3_wyqfw")
+attenuation_model = 1
+volume_db = -6.0
+panning_strength = 0.0

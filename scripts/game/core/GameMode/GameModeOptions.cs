@@ -31,7 +31,7 @@ public class GameModeOptions
     public float newRoundDelay = 3;
 
     [Key(8)]
-    public bool manualOverride = true;
+    public bool manualOverride = false;
     [Key(9)]
     public int manualTraitorCount = 0;
     [Key(10)]
@@ -39,7 +39,7 @@ public class GameModeOptions
     [Key(11)]
     public int itemsPerPackage = 3;
     [Key(12)]
-    public double roundTime = 600;
+    public double roundTime = 900;
 
 
 }

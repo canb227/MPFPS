@@ -553,6 +553,7 @@ reflection = true
 transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 2.5455484, 15.19944)
 stream = ExtResource("3_4na8w")
 attenuation_model = 2
+volume_db = 3.0
 unit_size = 30.0
 panning_strength = 0.0
 

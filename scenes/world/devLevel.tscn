@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=44 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
 [ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="3_k4evv"]
+[ext_resource type="PackedScene" uid="uid://crwk164xe65sl" path="res://scenes/GameObjects/props/Package.tscn" id="3_pgynr"]
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
 [ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
 [ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_vegv4"]
@@ -18,6 +19,9 @@
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
 [ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
 [ext_resource type="PackedScene" uid="uid://1tfhv6c0xvan" path="res://scenes/GameObjects/player/BasicPlayer.tscn" id="17_iikxh"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_mku5r"]
+viewport_path = NodePath("LabelViewport")
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -513,6 +517,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.008095, -0.13796583, 22.2
 script = ExtResource("1_12nid")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="GOPackageBox" parent="meta/itemSpawns/accessoriesItemTest" instance=ExtResource("3_pgynr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.205978, -0.093545705, 6.5902605)
+viewportTexture = SubResource("ViewportTexture_mku5r")
 
 [node name="hordeSpawns" type="Node" parent="meta"]
 
