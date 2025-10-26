@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://df04p8j6ft1s"]
+
+[ext_resource type="Script" uid="uid://hco6kv34txxq" path="res://scripts/game/particle/ParticleDespawner.cs" id="1_1oke2"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_05moy"]
+lifetime_randomness = 0.5
+angle_min = -374.8
+angle_max = 314.30002
+direction = Vector3(0, 0, 1)
+spread = 15.0
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+angular_velocity_min = -1.6093254e-05
+angular_velocity_max = 332.46997
+scale_min = 0.02
+scale_max = 0.099999994
+
+[sub_resource type="BoxMesh" id="BoxMesh_yoay6"]
+
+[node name="BulletHitParticle" type="Node3D"]
+script = ExtResource("1_1oke2")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+emitting = false
+one_shot = true
+explosiveness = 0.95
+randomness = 0.98
+process_material = SubResource("ParticleProcessMaterial_05moy")
+draw_pass_1 = SubResource("BoxMesh_yoay6")

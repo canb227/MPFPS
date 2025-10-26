@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=4 uid="uid://juf5gjmljg3f"]
+[gd_scene load_steps=14 format=4 uid="uid://juf5gjmljg3f"]
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_qceyg"]
+[ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_drkua"]
 [ext_resource type="Texture2D" uid="uid://o84j8kuu7qmb" path="res://assets/models/weapons/shotgun_1_shotgun_1.png" id="2_pmrh1"]
 [ext_resource type="AudioStream" uid="uid://bv3r20o11eaqu" path="res://assets/audio/weapons/basic/fire1.wav" id="3_bs15t"]
 
@@ -183,6 +184,9 @@ continuous_cd = true
 script = ExtResource("1_qceyg")
 audioStreamPlayer1 = NodePath("fps/AudioPlayer")
 audioStreamPlayer2 = NodePath("fps/AudioPlayer2")
+shotHitParticle = ExtResource("2_drkua")
+bulletsPerShot = 10
+spread = 0.1
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

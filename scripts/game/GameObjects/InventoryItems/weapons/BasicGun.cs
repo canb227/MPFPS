@@ -21,6 +21,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     //we can have multiple sounds of the same type playing on a player at the sametime, ie the gunshots overlap, but not if they are different audio files.
     [Export] AudioStreamPlayer3D audioStreamPlayer1 { get; set; }
     [Export] AudioStreamPlayer3D audioStreamPlayer2 { get; set; }
+    [Export] PackedScene shotHitParticle { get; set; }
     [Export] public double fireRate { get; set; } = 8; //number of shots per second
     [Export] public AmmoType ammoType { get; set; } = AmmoType.RifleAmmo;
     [Export] public int currentMagazineAmmo { get; set; } = 30;
@@ -40,7 +41,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public float heldDrag { get; set; }
     public float heldFriction { get; set; }
     private bool reloading { get; set; }
-    private RayCast3D gunRayCast;
+    private GOBasePlayerCharacter playerHeldBy;
 
 
     private ActionFlags lastTickActions;
@@ -124,24 +125,46 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 _timeUntilFire = 1.0 / fireRate;
                 if (currentMagazineAmmo > 0)
                 {
-                    //shoot the gun
-                    Logging.Log($"Pew!", "BasicGun");
-                    if (gunRayCast.IsColliding())
+                    Random rand = new();
+                    for (int i = 0; i < bulletsPerShot; i++)
                     {
-                        var hit = gunRayCast.GetCollider();
+                        // randomly modify weapon spread using temporary ray
+                        var spaceState = GetWorld3D().DirectSpaceState;
+                        PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
+                        ray.From = playerHeldBy.camera.GlobalPosition;
+                        ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
+                        ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
+                        ray.CollideWithBodies = true;
+                        var hitResult = spaceState.IntersectRay(ray);
 
-                        //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
-                        //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
-                        Node current = (Node)hit;
-                        while (current != null && current is not IsDamagable)
-                            current = current.GetParent();
-
-                        if (current is IsDamagable target)
+                        //shoot the gun
+                        Logging.Log($"Pew!", "BasicGun");
+                        if (hitResult.ContainsKey("collider"))
                         {
-                            Logging.Log($"Hit a IsDamagable object", "BasicGun");
-                            //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
-                            target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-                            target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                            //spawn hit particle
+                            if (shotHitParticle != null)
+                            {
+                                var hitParticle = shotHitParticle.Instantiate() as Node3D;
+                                GetTree().Root.AddChild(hitParticle);
+                                hitParticle.GlobalPosition = (Vector3)hitResult["position"];
+                                hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
+                            }
+
+                            var hit = (Node)hitResult["collider"];
+
+                            //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
+                            //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
+                            Node current = (Node)hit;
+                            while (current != null && current is not IsDamagable)
+                                current = current.GetParent();
+
+                            if (current is IsDamagable target)
+                            {
+                                Logging.Log($"Hit a IsDamagable object", "BasicGun");
+                                //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
+                                target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                                target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                            }
                         }
                     }
                     currentMagazineAmmo--;
@@ -170,7 +193,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
         {
-            gunRayCast = basicPlayerCharacter.gunRayCast;
+            playerHeldBy = basicPlayerCharacter;
             UpdateUI(basicPlayerCharacter);
         }
         else
@@ -183,7 +206,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public override void OnUnequipped(ulong bySteamID)
     {
         base.OnUnequipped(bySteamID);
-        gunRayCast = null;
+        playerHeldBy = null;
         //reset reload progress
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
@@ -271,8 +294,19 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         } while (index == lastFireIndex && gunSounds.Length > 1);
 
         float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
-        
+
         PlaySound(emptySounds[index], pitchVariation);
+    }
+    
+    private Vector3 GetRandomBulletDirection(Random rand)
+    {
+        double randX = spread - (rand.NextDouble() * spread * 2);
+        double randY = spread - (rand.NextDouble() * spread * 2);
+
+        //lazy way right now. currently doing a square projection we will want to switch this to circle or sphere projection instead
+        Vector2 randomPos = new Vector2((float)randX, (float)randY);
+
+        return new Vector3(randomPos.X, randomPos.Y, -1) * 100;
     }
 }
 
