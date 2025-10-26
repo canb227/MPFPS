@@ -22,6 +22,7 @@ public partial class Hands : GOBaseInventoryItem
     Node3D HoldPosition { get; set; }
 
     Node3D CurrentHoldPosition { get; set; }
+    public bool rotateMode = false;
 
     public override void _Ready()
     {
@@ -47,14 +48,20 @@ public partial class Hands : GOBaseInventoryItem
         {
             if (holding is GOBaseRigidBody rb)
             {
-                rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass))*50f);
+                rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass)) * 50f);
             }
         }
     }
 
-    public override void HandleInput(ActionFlags input)
+    public override void HandleInput(ActionFlags actionFlags)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
+        throw new NotImplementedException();
+    }
+
+
+    public void HandleHandInput(PlayerInputData input, double delta)
+    {
+        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
         {
             if (holding == null)
             {
@@ -85,10 +92,32 @@ public partial class Hands : GOBaseInventoryItem
                 holding = null;
             }
         }
-        
-        //add right click rotation
 
-        if (input.HasFlag(ActionFlags.NextSlot))
+        if (input.actions.HasFlag(ActionFlags.Aim))
+            rotateMode = true;
+        else
+            rotateMode = false;
+
+        float mouseX = input.LookInputVector.X * 5f * (float)delta;
+        float mouseY = input.LookInputVector.Y * 5f * (float)delta;
+
+        if (rotateMode && holding is GOBaseRigidBody rb)
+        {
+            // Apply torque based on mouse movement
+            float torqueStrength = 5f; // tweak sensitivity
+
+            // Mouse X → yaw around world up
+            // Mouse Y → pitch around local X
+            Vector3 torque = new Vector3(
+                mouseY * torqueStrength,
+                mouseX * torqueStrength,
+                0
+            );
+
+            rb.ApplyTorque(torque);
+        }
+
+        if (input.actions.HasFlag(ActionFlags.NextSlot))
         {
 
             Vector3 pos = CurrentHoldPosition.Position;
@@ -96,14 +125,14 @@ public partial class Hands : GOBaseInventoryItem
             CurrentHoldPosition.Position = pos;
         }
 
-        if (input.HasFlag(ActionFlags.PrevSlot))
+        if (input.actions.HasFlag(ActionFlags.PrevSlot))
         {
 
             Vector3 pos = CurrentHoldPosition.Position;
             pos.Z += 0.3f;
             CurrentHoldPosition.Position = pos;
         }
-        lastTickActions = input;
+        lastTickActions = input.actions;
     }
 
     public override void OnDropped(ulong byID)

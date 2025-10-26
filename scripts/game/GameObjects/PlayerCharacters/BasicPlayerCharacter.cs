@@ -355,7 +355,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleEquippedPassthruInput(double delta)
     {
-        if (equipped != null)
+        if (equipped != null && equipped is Hands hands)
+        {
+            hands.HandleHandInput(input, delta);
+        }
+        else if(equipped != null)
         {
             equipped.HandleInput(input.actions);
         }
@@ -501,7 +505,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleMouseLook(double delta)
     {
-        if (Input.MouseMode == Input.MouseModeEnum.Captured)
+        bool lockLook = false;
+        if(equipped is Hands hands)
+        {
+            lockLook = hands.rotateMode;
+        }
+        if (Input.MouseMode == Input.MouseModeEnum.Captured && !lockLook)
         {
             float mouseX = input.LookInputVector.X * 5 * ((float)delta);
             float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
