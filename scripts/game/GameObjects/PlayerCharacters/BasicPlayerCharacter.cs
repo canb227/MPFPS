@@ -21,6 +21,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [Export] public AudioStreamPlayer3D ourVoiceSpeaker;
     [Export] public AudioStreamPlayer3D characterSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
+    [Export] public AnimationTree animationTree;
     public CharacterSoundManager characterSoundManager = new();
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
@@ -161,6 +162,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
             }
+
+            UpdateAnimationTree();
         }
     }
 
@@ -786,6 +789,32 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             Logging.Log("Disabling Player UI " + controllingPlayerID, "BasicPlayerCharacter");
             Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
+        }
+    }
+
+    private void UpdateAnimationTree()
+    {
+        // Update Movement Animation
+        Vector3 localVel = CalculateLocalVelocity();
+        animationTree.Set("parameters/WalkRunBlend/blend_position", new Vector2(localVel.X, -1 * localVel.Z));
+
+        if (equipped is Hands hands)
+        {
+            animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 0);
+        }
+        else
+        {
+            animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 1);
+            animationTree.Set("parameters/UpperBodyTransition/transition_request", "rifle");
+        }
+
+        if (IsOnFloor())
+        {
+            animationTree.Set("parameters/GroundedTransition/transition_request", "grounded");
+        }
+        else
+        {
+            animationTree.Set("parameters/GroundedTransition/transition_request", "air");
         }
     }
 }
