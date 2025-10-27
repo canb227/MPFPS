@@ -203,7 +203,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
-                                Logging.Log("We see a new living basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", basicPlayerCharacter.GetHealthInfo().Item1);
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = basicPlayerCharacter.GetHealthInfo().Item2;
@@ -219,7 +218,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
-                                Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = "Unidentified Body";
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.AddThemeColorOverride("font_color", Colors.Yellow);
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
@@ -236,7 +234,6 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
-                                Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.RemoveThemeColorOverride("font_color");
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);

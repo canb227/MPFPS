@@ -146,8 +146,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                                 var hitParticle = shotHitParticle.Instantiate() as Node3D;
                                 GetTree().Root.AddChild(hitParticle);
                                 hitParticle.GlobalPosition = (Vector3)hitResult["position"];
-                                #pragma warning disable
-                                hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
+                                //#pragma warning disable
+                                //hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
+                                
+                                //janky solution to avoid the error using dot product
+                                Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
+                                Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
+                                hitParticle.LookAt(direction, up);
                             }
 
                             var hit = (Node)hitResult["collider"];
