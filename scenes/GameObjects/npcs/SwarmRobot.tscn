@@ -61,10 +61,10 @@ tracks/2/path = NodePath("SteamAudioPlayer:volume_db")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.6651444, 1),
-"transitions": PackedFloat32Array(1, 4.4382725),
+"times": PackedFloat32Array(0.033333335, 0.6651444, 1),
+"transitions": PackedFloat32Array(1, 1, 4.4382725),
 "update": 0,
-"values": [0.0, -16.0]
+"values": [-3.0, -3.0, -16.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1fq2r"]

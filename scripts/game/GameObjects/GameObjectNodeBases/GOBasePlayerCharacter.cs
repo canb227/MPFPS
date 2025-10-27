@@ -190,61 +190,64 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 
                 if (current is BasicPlayerCharacter basicPlayerCharacter)
                 {
-                    if (basicPlayerCharacter.state == CharacterState.Living)
+                    if(basicPlayerCharacter.id != id)
                     {
-                        (Color, string) healthInfo = basicPlayerCharacter.GetHealthInfo();
-                        if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState || healthInfo.Item2 != currentlySeenCharacterHealthString)
+                        if (basicPlayerCharacter.state == CharacterState.Living)
                         {
-                            currentlySeenCharacterID = basicPlayerCharacter.id;
-                            currentlySeenCharacterState = basicPlayerCharacter.state;
-                            currentlySeenCharacterHealthString = healthInfo.Item2;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
-                            Logging.Log("We see a new living basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", basicPlayerCharacter.GetHealthInfo().Item1);
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = basicPlayerCharacter.GetHealthInfo().Item2;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = basicPlayerCharacter.role.ToString();
+                            (Color, string) healthInfo = basicPlayerCharacter.GetHealthInfo();
+                            if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState || healthInfo.Item2 != currentlySeenCharacterHealthString)
+                            {
+                                currentlySeenCharacterID = basicPlayerCharacter.id;
+                                currentlySeenCharacterState = basicPlayerCharacter.state;
+                                currentlySeenCharacterHealthString = healthInfo.Item2;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                                Logging.Log("We see a new living basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", basicPlayerCharacter.GetHealthInfo().Item1);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = basicPlayerCharacter.GetHealthInfo().Item2;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = basicPlayerCharacter.role.ToString();
+                            }
                         }
-                    }
-                    else if (basicPlayerCharacter.state == CharacterState.Missing)
-                    {
-                        if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                        else if (basicPlayerCharacter.state == CharacterState.Missing)
                         {
-                            currentlySeenCharacterID = basicPlayerCharacter.id;
-                            currentlySeenCharacterState = basicPlayerCharacter.state;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
-                            Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = "Unidentified Body";
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.AddThemeColorOverride("font_color", Colors.Yellow);
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search and identify";
+                            if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                            {
+                                currentlySeenCharacterID = basicPlayerCharacter.id;
+                                currentlySeenCharacterState = basicPlayerCharacter.state;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                                Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = "Unidentified Body";
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.AddThemeColorOverride("font_color", Colors.Yellow);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search and identify";
+                            }
                         }
-                    }
-                    else if (basicPlayerCharacter.state == CharacterState.Dead)
-                    {
-                        if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                        else if (basicPlayerCharacter.state == CharacterState.Dead)
                         {
-                            currentlySeenCharacterID = basicPlayerCharacter.id;
-                            currentlySeenCharacterState = basicPlayerCharacter.state;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
-                            Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerName.RemoveThemeColorOverride("font_color");
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
-                            Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search";
+                            if (basicPlayerCharacter.id != currentlySeenCharacterID || basicPlayerCharacter.state != currentlySeenCharacterState)
+                            {
+                                currentlySeenCharacterID = basicPlayerCharacter.id;
+                                currentlySeenCharacterState = basicPlayerCharacter.state;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Visible = true;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
+                                Logging.Log("We see a new missing basicPlayerCharacter: " + currentlySeenCharacterID, "BasicPlayerCharacter");
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.RemoveThemeColorOverride("font_color");
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search";
+                            }
                         }
-                    }
-                    else
-                    {
-                        Logging.Error("Invalid Player State in Visual Check", "BasicPlayerCharacter");
+                        else
+                        {
+                            Logging.Error("Invalid Player State in Visual Check", "BasicPlayerCharacter");
+                        }
                     }
                 }
             }

@@ -138,7 +138,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         var hitResult = spaceState.IntersectRay(ray);
 
                         //shoot the gun
-                        Logging.Log($"Pew!", "BasicGun");
                         if (hitResult.ContainsKey("collider"))
                         {
                             //spawn hit particle
@@ -147,6 +146,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                                 var hitParticle = shotHitParticle.Instantiate() as Node3D;
                                 GetTree().Root.AddChild(hitParticle);
                                 hitParticle.GlobalPosition = (Vector3)hitResult["position"];
+                                #pragma warning disable
                                 hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
                             }
 
