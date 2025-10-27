@@ -1,0 +1,130 @@
+[gd_scene load_steps=11 format=3 uid="uid://4pw80uffkx1e"]
+
+[ext_resource type="Script" uid="uid://kuimq525di4f" path="res://scripts/game/GameObjects/NPCs/SwarmRobot.cs" id="1_to5ml"]
+[ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
+[ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_4l5s8"]
+
+[sub_resource type="Animation" id="Animation_3tng0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SteamAudioPlayer:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_aj03a"]
+resource_name = "attack"
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"Attack"
+}]
+}
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SteamAudioPlayer")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 1.3244,
+"start_offset": 0.0,
+"stream": ExtResource("2_tcwxr")
+}, {
+"end_offset": 0.6988,
+"start_offset": 0.0009619707,
+"stream": ExtResource("3_4l5s8")
+}],
+"times": PackedFloat32Array(0, 0.43333334)
+}
+tracks/1/use_blend = true
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SteamAudioPlayer:volume_db")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.033333335, 0.6651444, 1),
+"transitions": PackedFloat32Array(1, 1, 4.4382725),
+"update": 0,
+"values": [-3.0, -3.0, -16.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1fq2r"]
+_data = {
+&"RESET": SubResource("Animation_3tng0"),
+&"attack": SubResource("Animation_aj03a")
+}
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3tng0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fq2r"]
+albedo_color = Color(1, 0.3491902, 0.29748532, 1)
+emission_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3tng0"]
+radius = 1.5991211
+height = 3.1982422
+
+[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "navAgent")]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_to5ml")
+root = NodePath(".")
+collider = NodePath("collider")
+state = 3
+meleeArea = NodePath("AttackAoe")
+animationPlayer = NodePath("AnimationPlayer")
+hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
+genericSFX = NodePath("SteamAudioPlayer")
+navAgent = NodePath("NavigationAgent3D")
+metadata/_custom_type_script = "uid://kuimq525di4f"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_1fq2r")
+}
+
+[node name="collider" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_aj03a")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_3tng0")
+surface_material_override/0 = SubResource("StandardMaterial3D_1fq2r")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="AttackAoe" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackAoe"]
+shape = SubResource("CapsuleShape3D_3tng0")
+debug_color = Color(0.992019, 0, 0.26401922, 0.41960785)
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+panning_strength = 0.0
+
+[node name="HitSoundPlayer" type="SteamAudioPlayer" parent="."]
+stream = ExtResource("2_tcwxr")
+volume_db = -6.0
+panning_strength = 0.0

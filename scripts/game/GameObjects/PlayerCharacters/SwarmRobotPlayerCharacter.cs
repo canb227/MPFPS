@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 
 [GlobalClass]
-public partial class SwarmRobotPlayerCharacter : GOBaseCharacterBody3D, IsDamagable
+public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamagable
 {
     [Export] public Node3D root;
     [Export] public CollisionShape3D collider;
@@ -46,8 +46,10 @@ public partial class SwarmRobotPlayerCharacter : GOBaseCharacterBody3D, IsDamaga
 
     }
 
-    public override void _Process(double delta)
+    public override bool InitFromData(GameObjectConstructorData data)
     {
+        base.InitFromData(data);
+        return true;
     }
 
     public override void PerTickAuth(double delta)
@@ -67,100 +69,20 @@ public partial class SwarmRobotPlayerCharacter : GOBaseCharacterBody3D, IsDamaga
 
     private void HandleNonMovementInput(double delta)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
+        if(attackCooldown > 0)
         {
-            Attack(); //but actually like TryAttack
+            attackCooldown -= delta;
         }
-    }
-
-    private void PlayRandomAmbience()
-    {
-        if (ambientSounds.Length == 0) return;
-
-        int index;
-        do
+        if(attackCooldown <= 0)
         {
-            index = rand.Next(ambientSounds.Length);
-        } while (index == lastAmbientIndex && ambientSounds.Length > 1);
-
-        lastAmbientIndex = index;
-        genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
-        genericSFX.Play();
-    }
-
-    private void ResetTimer()
-    {
-        // Random interval between 7–20 seconds
-        ambientTimer = 7f + (float)rand.NextDouble() * 13f;
-    }
-
-    private double attackCooldown = 0;
-    private const float MeleeRange = 2.0f; // tweak as needed
-
-    public void Attack()
-    {
-        attackCooldown = 3.0;
-
-        // Get all overlapping bodies
-        foreach (var body in meleeArea.GetOverlappingBodies())
-        {
-            if (body is IsDamagable dmg)
+            if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
             {
-                dmg.TakeDamage(10, id, PainSoundType.Generic);
+                animationPlayer.Play("attack");
             }
         }
     }
 
-    public override bool InitFromData(GameObjectConstructorData data)
-    {
-        base.InitFromData(data);
-        return true;
-    }
 
-    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
-    {
-        //only the authority can tell people they took damage (host is auth for robots)
-        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
-    {
-        currentHealth -= damage;
-        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
-        //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobotPlayerCharacter");
-        if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
-        {
-            Logging.Log($"{id} SwarmRobotPlayerCharacter has died", "SwarmRobotPlayerCharacter");
-            OnDeath(byID);
-        }
-    }
-
-    public void OnDeath(ulong byID)
-    {
-        //only the authority can tell people they died (host is auth for robots)
-        if (Global.steamid == authority)
-        {
-            RPCManager.RPC(this, "rpc_OnDeath", [byID]);
-        }
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_OnDeath(ulong byID)
-    {
-        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, PainSoundType.Generic);
-        currentHealth = 0;
-        root.Visible = false;
-        collider.Disabled = true;
-        Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
-        //remove ourselves and add a timed ragdoll
-    }
-
-    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
-    {
-        Logging.Log("We Take Stun Damage as damage", "SwarmRobotPlayerCharacter");
-        TakeDamage(damage, byID, soundType, VolumeDb);
-    }
 
     public override void ProcessStateUpdate(byte[] _update)
     {
@@ -393,6 +315,125 @@ public partial class SwarmRobotPlayerCharacter : GOBaseCharacterBody3D, IsDamaga
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
     }
+
+    
+    private void PlayRandomAmbience()
+    {
+        if (ambientSounds.Length == 0) return;
+
+        int index;
+        do
+        {
+            index = rand.Next(ambientSounds.Length);
+        } while (index == lastAmbientIndex && ambientSounds.Length > 1);
+
+        lastAmbientIndex = index;
+        genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
+        genericSFX.Play();
+    }
+
+    private void ResetTimer()
+    {
+        // Random interval between 7–20 seconds
+        ambientTimer = 7f + (float)rand.NextDouble() * 13f;
+    }
+
+    private double attackCooldown = 0;
+    private const float MeleeRange = 2.0f; // tweak as needed
+
+    public void Attack()
+    {
+        attackCooldown = 3.0;
+
+        // Get all overlapping bodies
+        foreach (var body in meleeArea.GetOverlappingBodies())
+        {
+            if (body is IsDamagable dmg)
+            {
+                dmg.TakeDamage(10, id, PainSoundType.Generic);
+            }
+        }
+    }
+
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        //only the authority can tell people they took damage (host is auth for robots)
+        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        currentHealth -= damage;
+        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
+        //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobotPlayerCharacter");
+        if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
+        {
+            Logging.Log($"{id} SwarmRobotPlayerCharacter has died", "SwarmRobotPlayerCharacter");
+            OnDeath(byID);
+        }
+    }
+
+    public void OnDeath(ulong byID)
+    {
+        //only the authority can tell people they died (host is auth for robots)
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_OnDeath", [byID]);
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_OnDeath(ulong byID)
+    {
+        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, PainSoundType.Generic);
+        currentHealth = 0;
+        root.Visible = false;
+        collider.Disabled = true;
+        Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
+        //remove ourselves and add a timed ragdoll
+    }
+
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        Logging.Log("We Take Stun Damage as damage", "SwarmRobotPlayerCharacter");
+        TakeDamage(damage, byID, soundType, VolumeDb);
+    }
+
+    public override void HandleVisualRayCast(double delta)
+    {
+        //we dont want to have visual raycast show us player name and similar
+    }
+
+    public override void Assignment(Team team, Role role)
+    {
+        
+    }
+
+    public override Camera3D GetCamera()
+    {
+        return camera;
+    }
+
+    public override void Pickup(IsInventoryItem item)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Equip(InventoryGroupCategory category, int index = 0)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override void OnControlTaken(ulong byID)
+    {
+        if (byID == Global.steamid)
+        {
+            Logging.Log("Enabling ROBOT OVERLAY UI (we dont have one yet xd)" + byID, "SwarmRobotPlayerCharacter");
+            //Global.ui.inGameUI.PlayerUIManager.ShowPlayerUI(authority);
+        }
+    }
+
 }
 
 

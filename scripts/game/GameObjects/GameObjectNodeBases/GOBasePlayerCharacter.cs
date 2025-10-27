@@ -171,7 +171,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         }
     }
     
-    public void HandleVisualRayCast(double delta)
+    public virtual void HandleVisualRayCast(double delta)
     {
         if (visualRayCast.GetCollider() is CollisionObject3D collider)
         {
