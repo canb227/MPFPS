@@ -204,7 +204,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
-                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", basicPlayerCharacter.GetHealthInfo().Item1);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontSize = 16;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.LabelSettings.FontColor = basicPlayerCharacter.GetHealthInfo().Item1;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = basicPlayerCharacter.GetHealthInfo().Item2;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = basicPlayerCharacter.role.ToString();
                             }
@@ -219,8 +220,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = "Unidentified Body";
-                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.AddThemeColorOverride("font_color", Colors.Yellow);
-                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontColor = Colors.Yellow;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontSize = 32;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.LabelSettings.FontColor = basicPlayerCharacter.GetHealthInfo().Item1;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search and identify";
                             }
@@ -235,8 +237,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
-                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.RemoveThemeColorOverride("font_color");
-                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.AddThemeColorOverride("font_color", Colors.LightGray);
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontColor = basicPlayerCharacter.GetHealthInfo().Item1;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontSize = 16;
+                                Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.LabelSettings.FontColor = basicPlayerCharacter.GetHealthInfo().Item1;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Text = "Corpse";
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Text = "Press F to search";
                             }
