@@ -255,7 +255,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         //only the authority can tell people they took damage (host is auth for robots)
-        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType,VolumeDb]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]

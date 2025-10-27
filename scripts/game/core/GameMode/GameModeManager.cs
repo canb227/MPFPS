@@ -429,6 +429,11 @@ public partial class GameModeManager : Node
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
         basicPlayers[id].Assignment(team, role);
+        if (team == Team.Traitor || team == Team.Manager)
+        {
+            basicPlayers[id].roleCredits++;
+        }
+        
         if (team == Team.Traitor)
         {
             Global.ui.inGameUI.ScoreBoard.PlayerIsTraitor(id);

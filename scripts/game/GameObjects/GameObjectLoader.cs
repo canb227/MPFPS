@@ -29,8 +29,8 @@ public static class GameObjectLoader
         //{"WalkieTalkie", (GameObjectType.WalkieTalkie,"res://scenes/GameObjects/items/accessory/WalkieTalkie.tscn", typeof(GOBaseAccessory))},
 
         //RoleItems
-        {"PlayerRadar", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/PlayerRadar.tscn", typeof(GOBaseAccessory))},
-
+        {"PlayerRadar", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/PlayerRadar.tscn", typeof(GOBaseRoleItem))},
+        {"C4", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/C4.tscn", typeof(GOBaseRoleItem))},
 
         //Components
         { "PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
@@ -163,4 +163,5 @@ public enum GameObjectType
     PackageRadar,
     WalkieTalkie,
     PlayerRadar,
+    C4
 }

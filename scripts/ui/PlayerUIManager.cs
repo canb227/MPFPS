@@ -12,6 +12,7 @@ public partial class PlayerUIManager : Control
 {
     [Export] public PlayerInfoUI PlayerInfoUI;
     [Export] public DeadPlayerScreen deadPlayerScreen;
+    [Export] public RoleShopScreen roleShopScreen;
     [Export] public MarginContainer InventoryUI;
     [Export] public Label targetPlayerName;
     [Export] public Label targetPlayerHealth;

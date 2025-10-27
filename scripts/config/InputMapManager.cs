@@ -53,6 +53,7 @@ public enum ActionFlags : UInt64
     LastSlot = 1L << 35,
     DropItem = 1L << 36,
 
+    OpenShop = 1L << 60,
     ScoreBoard = 1L << 61,
     Escape = 1L << 62,//this is the max value
 

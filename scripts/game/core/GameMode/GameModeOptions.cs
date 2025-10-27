@@ -31,11 +31,11 @@ public class GameModeOptions
     public float newRoundDelay = 3;
 
     [Key(8)]
-    public bool manualOverride = false;
+    public bool manualOverride = true;
     [Key(9)]
     public int manualTraitorCount = 0;
     [Key(10)]
-    public int manualManagerCount = 0;
+    public int manualManagerCount = 1;
     [Key(11)]
     public int itemsPerPackage = 3;
     [Key(12)]

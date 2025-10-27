@@ -23,6 +23,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [Export] public AudioStreamPlayer3D movementSFX;
     [Export] public AnimationTree animationTree;
     public CharacterSoundManager characterSoundManager = new();
+    public int roleCredits { get; set; }
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
     public float maxStunBar { get; set; } = 100;
@@ -170,54 +171,68 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleNonMovementInput(double delta)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
-        {
-            if (interactRayCast.IsColliding())
-            {
-                var hit = interactRayCast.GetCollider();
-                if (hit is IsInventoryItem s)
-                {
-                    Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
-                    Pickup(s);
-                }
-                else if (hit is IsInteractable i)
-                {
-                    i.Local_OnInteract(id);
-                }
-                else
-                {
-                    Node current = (Node)hit;
-                    while (current != null && current is not BasicPlayerCharacter)
-                        current = current.GetParent();
-
-                    if (current is BasicPlayerCharacter basicPlayerCharacter)
-                    {
-                        switch (basicPlayerCharacter.state)
-                        {
-                            case CharacterState.Living:
-                                if (basicPlayerCharacter.handcuffed)
-                                {
-                                    basicPlayerCharacter.DropEquipped();
-                                }
-                                break;
-
-                            case CharacterState.Missing:
-                                basicPlayerCharacter.OnFound();
-                                Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
-                                break;
-
-                            case CharacterState.Dead:
-                                Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
-                                break;
-                        }
-
-                    }
-                }
-                
-            }
-        }
         if(!handcuffed)
         {
+            if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
+            {
+                if (interactRayCast.IsColliding())
+                {
+                    var hit = interactRayCast.GetCollider();
+                    if (hit is IsInventoryItem s)
+                    {
+                        Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
+                        Pickup(s);
+                    }
+                    else if (hit is IsInteractable i)
+                    {
+                        i.Local_OnInteract(id);
+                    }
+                    else
+                    {
+                        Node current = (Node)hit;
+                        while (current != null && current is not BasicPlayerCharacter)
+                            current = current.GetParent();
+
+                        if (current is BasicPlayerCharacter basicPlayerCharacter)
+                        {
+                            switch (basicPlayerCharacter.state)
+                            {
+                                case CharacterState.Living:
+                                    if (basicPlayerCharacter.handcuffed)
+                                    {
+                                        basicPlayerCharacter.DropEquipped();
+                                    }
+                                    break;
+
+                                case CharacterState.Missing:
+                                    basicPlayerCharacter.OnFound();
+                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    break;
+
+                                case CharacterState.Dead:
+                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    break;
+                            }
+
+                        }
+                    }
+                    
+                }
+            }
+            if (!lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
+            {
+                if(team == Team.Traitor || team == Team.Manager)
+                {
+                    if (!Global.ui.inGameUI.PlayerUIManager.roleShopScreen.Visible)
+                    {
+                        Global.ui.inGameUI.PlayerUIManager.roleShopScreen.OpenRoleShopScreen();
+                    }
+                    else
+                    {
+                        Global.ui.inGameUI.PlayerUIManager.roleShopScreen.CloseRoleShopScreen();
+                    }
+                }
+            }
             if (!lastTickActions.HasFlag(ActionFlags.DropItem) && input.actions.HasFlag(ActionFlags.DropItem))
             {
                 DropEquipped();

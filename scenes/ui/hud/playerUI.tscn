@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dp035d7xehaf3"]
+[gd_scene load_steps=15 format=3 uid="uid://dp035d7xehaf3"]
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
 [ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
@@ -8,6 +8,9 @@
 [ext_resource type="Script" uid="uid://btuvjqernuwv7" path="res://scripts/ui/DeadPlayerScreen.cs" id="6_dk55q"]
 [ext_resource type="Texture2D" uid="uid://doy4ka51rjtuf" path="res://assets/ui/hud/xmark.png" id="7_6g85b"]
 [ext_resource type="Texture2D" uid="uid://pbf5lbiw2g2g" path="res://assets/models/warehouse/firehazard.png" id="8_eow85"]
+[ext_resource type="Script" uid="uid://c80b8tarywtcb" path="res://scripts/ui/RoleShopScreen.cs" id="9_ak5ua"]
+[ext_resource type="Texture2D" uid="uid://cfdkd473ytihb" path="res://assets/ui/icons/radar.png" id="9_eow85"]
+[ext_resource type="Texture2D" uid="uid://b1ajbturvuone" path="res://assets/ui/icons/c4.png" id="10_ak5ua"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dk55q"]
 shadow_color = Color(0, 0, 0, 1)
@@ -15,7 +18,11 @@ shadow_color = Color(0, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_6g85b"]
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole")]
+[sub_resource type="LabelSettings" id="LabelSettings_eow85"]
+font_size = 24
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,6 +33,7 @@ mouse_filter = 1
 script = ExtResource("1_mr6xf")
 PlayerInfoUI = NodePath("bottomleftUI")
 deadPlayerScreen = NodePath("CenterContainer/DeadPlayerScreen")
+roleShopScreen = NodePath("CenterContainer/RoleShopScreen")
 InventoryUI = NodePath("inventoryUI")
 targetPlayerName = NodePath("CenterContainer/SeenPlayerInfo/TargetName")
 targetPlayerHealth = NodePath("CenterContainer/SeenPlayerInfo/TargetHealth")
@@ -203,3 +211,97 @@ alignment = 2
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 text = "Close"
+
+[node name="RoleShopScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("roleShopScreen", "creditLabel", "itemButtonContainer", "itemDescriptionLabel", "closeWindowButton", "purchaseButton", "radarButton", "c4Button")]
+visible = false
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+script = ExtResource("9_ak5ua")
+roleShopScreen = NodePath(".")
+creditLabel = NodePath("VBoxContainer/TopBar/CreditLabel")
+itemButtonContainer = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer")
+itemDescriptionLabel = NodePath("VBoxContainer/ShopItems/HBox/ItemDescriptionBox/ItemDescriptionLabel")
+closeWindowButton = NodePath("VBoxContainer/TopBar/CloseWindowButton")
+purchaseButton = NodePath("VBoxContainer/MarginContainer/HBoxContainer/PurchaseButton")
+radarButton = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/RadarButton")
+c4Button = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/C4Button")
+metadata/_custom_type_script = "uid://c80b8tarywtcb"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/RoleShopScreen"]
+layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
+layout_mode = 2
+
+[node name="RoleShopLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+layout_mode = 2
+text = "Role Shop"
+label_settings = SubResource("LabelSettings_eow85")
+
+[node name="Spacer" type="Control" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CreditLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+layout_mode = 2
+text = "You Currently Have X Credits"
+
+[node name="CloseWindowButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+icon = ExtResource("7_6g85b")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ShopItems" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems"]
+layout_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.5
+
+[node name="RadarButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+icon = ExtResource("9_eow85")
+icon_alignment = 1
+expand_icon = true
+
+[node name="C4Button" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+icon = ExtResource("10_ak5ua")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ItemDescriptionBox" type="VBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ItemDescriptionLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/ItemDescriptionBox"]
+layout_mode = 2
+text = "The radar lets you see other players"
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="PurchaseButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(128, 64)
+layout_mode = 2
+text = "Purchase"

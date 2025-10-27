@@ -34,6 +34,7 @@ public class PlayerInputMap
 
             { Key.Q, ActionFlags.DropItem },
 
+            { Key.B, ActionFlags.OpenShop },
             { Key.Tab, ActionFlags.ScoreBoard },
             { Key.Escape, ActionFlags.Escape },
         };

@@ -71,9 +71,6 @@ metadata/_custom_type_script = "uid://bovhdpgrsomf"
 transform = Transform3D(0.4, 0, 0, 0, -0.34453472, -0.20321384, 0, 0.20321384, -0.34453472, 0.36718068, 0.0992015, -0.31731078)
 shape = SubResource("BoxShape3D_wyqfw")
 
-[node name="dosimeter_22" type="Node3D" parent="."]
-transform = Transform3D(2, 0, 0, 0, 1.5320889, -1.2855752, 0, 1.2855752, 1.5320889, 0.37043992, 0.06475667, -0.37643567)
-
 [node name="fps" type="Node3D" parent="."]
 
 [node name="dosimeter_2" type="MeshInstance3D" parent="fps"]
