@@ -30,12 +30,15 @@ public partial class GOHandcuffs : GOBaseAccessory
                 if (current is BasicPlayerCharacter target)
                 {
                     Logging.Log($"Hit a BasicPlayerCharacter object: " + target.currentStunBar, "GOHandcuffs");
-                    if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+                    if(target.state == CharacterState.Living)
                     {
-                        basicPlayerCharacter.DropEquipped();
+                        if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+                        {
+                            basicPlayerCharacter.DropEquipped();
+                        }
+                        target.Handcuff(this);
+                        audioStreamPlayer.Play();
                     }
-                    target.Handcuff(this);
-                    audioStreamPlayer.Play();
                 }
             }
         }
