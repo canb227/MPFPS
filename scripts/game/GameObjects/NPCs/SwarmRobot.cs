@@ -263,7 +263,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     {
         currentHealth -= damage;
         characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
-        Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
+        //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
         if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
         {
             Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");

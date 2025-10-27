@@ -70,10 +70,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void _Ready()
     {
         base._Ready();
-        if(Global.gameState.gameModeManager != null && Global.gameState.gameModeManager.basicPlayers != null)
-        {
-            Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
-        }
+        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        Global.ui.inGameUI.ScoreBoard.AddLivingWorkerPlayerRow(authority);
+        
         currentGroup = InventoryGroupCategory.Hands;
         currentItemSlot = 0;
         this.CollisionLayer = 1 << 4; //5
@@ -85,6 +84,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast.CollideWithBodies = true;
         interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
+
     }
     public override void ProcessStateUpdate(byte[] _update)
     {
@@ -653,7 +653,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             currentStunBar -= damage;
             currentTimeUntilStunRegen = stunRegenDelaySeconds;
             characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
-            Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
+            //Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar); ;
@@ -665,7 +665,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         else
         {
-            Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
+            //Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
         }
     }
 
@@ -702,7 +702,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             currentHealth -= damage;
             characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
-            Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
+            //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
@@ -715,7 +715,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         else
         {
-            Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
+            //Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
         }
     }
 

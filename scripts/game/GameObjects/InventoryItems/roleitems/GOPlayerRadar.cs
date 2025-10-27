@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 public partial class GOPlayerRadar : GOBaseRoleItem
 {
     [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
-    [Export] double scanCooldown = 30;
+    [Export] double scanCooldown = 5;
     private double currentScanCooldown = 5;
 
     private PackedScene markerScene = ResourceLoader.Load<PackedScene>("res://scenes/ui/ingame/packageMarker.tscn");
@@ -33,11 +33,11 @@ public partial class GOPlayerRadar : GOBaseRoleItem
             {
                 foreach (var node in GetTree().GetNodesInGroup("players"))
                 {
-                    if (node is GOPackageBox box)
+                    if (node is BasicPlayerCharacter playerCharacter)
                     {
                         var marker = markerScene.Instantiate<RadarMarker>();
-                        marker.Init(this, box, new Godot.Color(0f,0.505f,0f), 5);
-                        box.AddChild(marker);
+                        marker.Init(this, playerCharacter, new Godot.Color(0f,0.505f,0f), 5);
+                        playerCharacter.AddChild(marker);
                     }
                 }
             }

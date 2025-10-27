@@ -128,7 +128,7 @@ public partial class SwarmRobotPlayerCharacter : GOBaseCharacterBody3D, IsDamaga
     {
         currentHealth -= damage;
         characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
-        Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobotPlayerCharacter");
+        //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobotPlayerCharacter");
         if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
         {
             Logging.Log($"{id} SwarmRobotPlayerCharacter has died", "SwarmRobotPlayerCharacter");

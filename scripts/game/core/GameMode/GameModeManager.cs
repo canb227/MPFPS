@@ -55,7 +55,6 @@ public partial class GameModeManager : Node
     private int numTraitorsAlive;
     private int numInnocentsAlive;
     private int numManagersAlive;
-    private int totalPlayers;
     private int numFinishedOrders;
     private int ordersNeeded;
     public int numPlayers;
@@ -219,8 +218,11 @@ public partial class GameModeManager : Node
         }
         else
         {
+            Global.ui.inGameUI.RoundReport.NewRound();
+            Global.ui.inGameUI.ScoreBoard.NewRound();
             basicPlayers.Clear();
             ghostPlayers.Clear();
+
             foreach(PlayerRoundStats playerStat in playerStats.Values)
             {
                 playerStat.NewRound();
@@ -238,8 +240,6 @@ public partial class GameModeManager : Node
         roundStarted = true;
         remainingRoundTime = options.roundTime;
         //clear the scoreboard , role assignment comes later
-        Global.ui.inGameUI.RoundReport.NewRound();
-        Global.ui.inGameUI.ScoreBoard.NewRound();
         if (Global.Lobby.bIsLobbyHost)
         {
             GenerateOrders();
@@ -475,7 +475,7 @@ public partial class GameModeManager : Node
             {
                 //do something maybe
             }
-            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
                 //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
@@ -501,7 +501,7 @@ public partial class GameModeManager : Node
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
-            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
                 //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
@@ -527,7 +527,7 @@ public partial class GameModeManager : Node
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
-            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
                 //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
@@ -594,7 +594,7 @@ public partial class GameModeManager : Node
 
                 SpawnAndControlNewLocalPlayerCharacter(GameObjectType.Ghost);
 
-                Global.ui.StopLoadingScreen();
+                //Global.ui.StopLoadingScreen();
                 break;
             default:
                 Logging.Error($"Unknown game mode - cannot start game!", "GameModeManager");

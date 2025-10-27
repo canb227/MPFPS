@@ -130,7 +130,7 @@ public partial class GameState : Node3D
     public void StartGame(string scenePath, GameModeType gameMode)
     {
         Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
-        Global.ui.StartLoadingScreen();
+        //Global.ui.StartLoadingScreen();
         MapManager.LoadMap(scenePath);
 
         GameModeManager gmm = new();

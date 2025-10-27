@@ -288,7 +288,8 @@ size_flags_horizontal = 3
 
 [node name="ItemDescriptionLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/ItemDescriptionBox"]
 layout_mode = 2
-text = "The radar lets you see other players"
+text = "The radar lets you see other players and then we took the place and we put it in to the space that is used to make apple sauce"
+autowrap_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
 layout_mode = 2
