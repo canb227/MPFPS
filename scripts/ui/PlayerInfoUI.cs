@@ -40,7 +40,7 @@ public partial class PlayerInfoUI : MarginContainer
         else
         {
             styleBox.BgColor = new Godot.Color(0.333f, 0.333f, 0.333f); //grey
-            TeamLabel.Text = "None?";
+            TeamLabel.Text = "...";
         }
     }
     public void UpdateTimeLeftUI(string timeLeftString)
@@ -52,10 +52,19 @@ public partial class PlayerInfoUI : MarginContainer
         StunBar.MaxValue = maxStunBar;
         StunBar.Value = newStunBarRemaning;
     }
-    public void UpdateAmmoUI(int remainingAmmo, int maxAmmo)
+    public void UpdateAmmoUI(int remainingAmmo, int storedAmmo, int maxAmmo)
     {
         AmmoBar.MaxValue = maxAmmo;
         AmmoBar.Value = remainingAmmo;
+        if (remainingAmmo == 0 && maxAmmo == 0)
+        {
+            AmmoLabel.Text = "";
+        }
+        else
+        {
+            AmmoLabel.Text = $"{remainingAmmo} + {storedAmmo}";
+        }
+            
     }
     public void UpdateHealthUI(int newHealth, int newHealthMax)
     {

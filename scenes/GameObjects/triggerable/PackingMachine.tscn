@@ -5,8 +5,8 @@
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_k54qh"]
 [ext_resource type="AudioStream" uid="uid://cag32t1rb7mug" path="res://assets/audio/environment/packingMachine/elevator_stop1.wav" id="3_ss1d3"]
 [ext_resource type="AudioStream" uid="uid://wxu2cshsepw2" path="res://assets/audio/environment/packingMachine/elevator_start1.wav" id="4_he4l8"]
+[ext_resource type="AudioStream" uid="uid://duyj13ci6wny5" path="res://assets/audio/environment/elevbell1.wav" id="4_pkqno"]
 [ext_resource type="AudioStream" uid="uid://8qk0ncay2plo" path="res://assets/audio/environment/packingMachine/elevator_move_loop1.wav" id="5_nfwkh"]
-[ext_resource type="AudioStream" uid="uid://thq628y3055m" path="res://assets/audio/environment/packingMachine/elevbell1.wav" id="6_7p83q"]
 [ext_resource type="AudioStream" uid="uid://blxpt2irn6rri" path="res://assets/audio/environment/klaxon1.wav" id="7_hfxq0"]
 
 [sub_resource type="Resource" id="Resource_lwmcn"]
@@ -82,7 +82,7 @@ tracks/1/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0073069036,
-"stream": ExtResource("6_7p83q")
+"stream": ExtResource("4_pkqno")
 }],
 "times": PackedFloat32Array(0.16075188)
 }
@@ -350,6 +350,7 @@ metadata/_custom_type_script = "uid://bysmyhbmio3bs"
 
 [node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
 distance_attenuation = true
+air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6726502, 0)
 attenuation_model = 3
 volume_db = -1.714287
@@ -357,6 +358,7 @@ panning_strength = 0.0
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
 distance_attenuation = true
+air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.669729, 0)
 attenuation_model = 3
 volume_db = -3.0
@@ -381,9 +383,12 @@ shape = SubResource("BoxShape3D_hfxq0")
 debug_color = Color(0, 0.7126279, 0.31517208, 0.41960785)
 
 [node name="packingMachine" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.274429, 0, 0, 0, -4.5577144e-06, -1.2744293, 0, 1.2744293, -4.5577144e-06, 0.0043058395, 0.17966385, 0.006237719)
+transform = Transform3D(1.274429, 0, 0, 0, -5.5707076e-08, -1.2744293, 0, 1.2744293, -5.5707076e-08, 0.0043058395, 0.17966385, 0.006237719)
 mesh = SubResource("ArrayMesh_uesdv")
 skeleton = NodePath("")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="packingMachine"]
+transform = Transform3D(0.78466517, 0, 0, 0, -2.8061806e-06, 0.7846649, 0, -0.7846649, -2.8061806e-06, -0.0033786423, -0.35053176, -0.78839856)
 
 [node name="machineDoor" type="StaticBody3D" parent="packingMachine"]
 transform = Transform3D(1, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.462, 0)

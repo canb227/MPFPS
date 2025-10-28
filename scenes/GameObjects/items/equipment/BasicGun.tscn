@@ -1,7 +1,12 @@
-[gd_scene load_steps=7 format=4 uid="uid://juf5gjmljg3f"]
+[gd_scene load_steps=14 format=4 uid="uid://juf5gjmljg3f"]
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_qceyg"]
+[ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_drkua"]
 [ext_resource type="Texture2D" uid="uid://o84j8kuu7qmb" path="res://assets/models/weapons/shotgun_1_shotgun_1.png" id="2_pmrh1"]
+[ext_resource type="AudioStream" uid="uid://bv3r20o11eaqu" path="res://assets/audio/weapons/basic/fire1.wav" id="3_bs15t"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
+size = Vector3(1.4375, 0.171875, 0.06713867)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xtq8"]
 resource_name = "shotgun_1"
@@ -41,18 +46,155 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_1o18v")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
-size = Vector3(1.4375, 0.171875, 0.06713867)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bs15t"]
+no_depth_test = true
+albedo_texture = ExtResource("2_pmrh1")
 
-[node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[sub_resource type="Animation" id="Animation_hq15s"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("fps:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("fps:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("tps:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("tps:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_bs15t"]
+resource_name = "fire"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("fps:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3333, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.058381263, 0, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_drkua"]
+resource_name = "reload"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("fps:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8, 1.2333333, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1.2217305, 0, 0), Vector3(1.2217305, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("fps:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.83, 1, 1.1, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, -0.09292097, 0.033820465), Vector3(0, -0.012782045, 0.004652284), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("tps:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.8, 1.2333333, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1.2217305, 0, 0), Vector3(1.2217305, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("tps:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.83, 1, 1.1, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, -0.09292097, 0.033820465), Vector3(0, -0.012782045, 0.004652284), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_a1fax"]
+_data = {
+&"RESET": SubResource("Animation_hq15s"),
+&"fire": SubResource("Animation_bs15t"),
+&"reload": SubResource("Animation_drkua")
+}
+
+[node name="BasicGun" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer1", "audioStreamPlayer2", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
+center_of_mass_mode = 1
+center_of_mass = Vector3(0.39, 0.01, 0)
 continuous_cd = true
 script = ExtResource("1_qceyg")
+audioStreamPlayer1 = NodePath("fps/AudioPlayer")
+audioStreamPlayer2 = NodePath("fps/AudioPlayer2")
+shotHitParticle = ExtResource("2_drkua")
+bulletsPerShot = 10
+spread = 0.1
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.3900894, 0.0107421875, -0.004598178)
+shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="fps" type="Node3D" parent="."]
 
@@ -60,6 +202,21 @@ metadata/_custom_type_script = "uid://dl524mp8g0aei"
 transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.35749662, 1.5174299e-15, -0.020223176)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_bs15t")
+
+[node name="AudioPlayer" type="SteamAudioPlayer" parent="fps"]
+air_absorption = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
+stream = ExtResource("3_bs15t")
+max_polyphony = 4
+panning_strength = 0.0
+
+[node name="AudioPlayer2" type="SteamAudioPlayer" parent="fps"]
+air_absorption = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
+stream = ExtResource("3_bs15t")
+max_polyphony = 4
+panning_strength = 0.0
 
 [node name="tps" type="Node3D" parent="."]
 
@@ -68,9 +225,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, 
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.3900894, 0.0107421875, -0.004598177)
-shape = SubResource("BoxShape3D_pmrh1")
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-root_node = NodePath("")
+libraries = {
+&"": SubResource("AnimationLibrary_a1fax")
+}

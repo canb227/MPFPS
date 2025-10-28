@@ -22,18 +22,19 @@ public partial class Hands : GOBaseInventoryItem
     Node3D HoldPosition { get; set; }
 
     Node3D CurrentHoldPosition { get; set; }
+    public bool rotateMode = false;
 
     public override void _Ready()
     {
         base._Ready();
 
 
-        if (equippedBy!=0)
+        if (equippedBySteamID!=0)
         {
-            GOBasePlayerCharacter pc = (Global.gameState.GameObjects[equippedBy] as GOBasePlayerCharacter);
+            GOBasePlayerCharacter pc = Global.gameState.GameObjects[equippedBySteamID] as GOBasePlayerCharacter;
             pc.Pickup(this);
             pc.Equip(InventoryGroupCategory.Hands);
-            rayCast = pc.rayCast;
+            rayCast = pc.interactRayCast;
         }
 
         CurrentHoldPosition = new();
@@ -47,27 +48,33 @@ public partial class Hands : GOBaseInventoryItem
         {
             if (holding is GOBaseRigidBody rb)
             {
-                rb.ApplyForce((CurrentHoldPosition.GlobalPosition - rb.GlobalPosition)*50);
+                rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass)) * 50f);
             }
         }
     }
 
-    public override void HandleInput(ActionFlags input)
+    public override void HandleInput(ActionFlags actionFlags)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
+        throw new NotImplementedException();
+    }
+
+
+    public void HandleHandInput(PlayerInputData input, double delta)
+    {
+        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
         {
             if (holding == null)
             {
                 var col = rayCast.GetCollider();
-                if (col!=null)
+                if (col != null)
                 {
                     if (col is IsHoldable item)
                     {
                         Logging.Log($"Hand raycast hit holdable item: {(item as Node).ToString()}", "Hands");
                         CurrentHoldPosition.Position = HoldPosition.Position;
                         holding = item;
-                        holding.OnHold(equippedBy);
-                        item.currentlyHeldBy = equippedBy;
+                        holding.OnHold(equippedBySteamID);
+                        item.currentlyHeldBy = equippedBySteamID;
                     }
                     else
                     {
@@ -81,12 +88,36 @@ public partial class Hands : GOBaseInventoryItem
             }
             else
             {
-                holding.OnRelease(equippedBy);
+                holding.OnRelease(equippedBySteamID);
                 holding = null;
             }
         }
 
-        if (input.HasFlag(ActionFlags.NextSlot))
+        if (input.actions.HasFlag(ActionFlags.Aim))
+            rotateMode = true;
+        else
+            rotateMode = false;
+
+        float mouseX = input.LookInputVector.X * 5f * (float)delta;
+        float mouseY = input.LookInputVector.Y * 5f * (float)delta;
+
+        if (rotateMode && holding is GOBaseRigidBody rb)
+        {
+            // Apply torque based on mouse movement
+            float torqueStrength = 5f; // tweak sensitivity
+
+            // Mouse X → yaw around world up
+            // Mouse Y → pitch around local X
+            Vector3 torque = new Vector3(
+                mouseY * torqueStrength,
+                mouseX * torqueStrength,
+                0
+            );
+
+            rb.ApplyTorque(torque);
+        }
+
+        if (input.actions.HasFlag(ActionFlags.NextSlot))
         {
 
             Vector3 pos = CurrentHoldPosition.Position;
@@ -94,20 +125,25 @@ public partial class Hands : GOBaseInventoryItem
             CurrentHoldPosition.Position = pos;
         }
 
-        if (input.HasFlag(ActionFlags.PrevSlot))
+        if (input.actions.HasFlag(ActionFlags.PrevSlot))
         {
 
             Vector3 pos = CurrentHoldPosition.Position;
             pos.Z += 0.3f;
             CurrentHoldPosition.Position = pos;
         }
-        lastTickActions = input;
+        lastTickActions = input.actions;
     }
 
     public override void OnDropped(ulong byID)
     {
         base.OnDropped(byID);
-        Logging.Log($"Hands Dropped?", "Hands");
+        if(holding != null)
+        {
+            holding.OnRelease(equippedBySteamID);
+            holding = null; 
+        }
+        Logging.Warn($"Hands Dropped?", "Hands");
     }
 
     public override void OnEquipped(ulong byID)
@@ -124,14 +160,19 @@ public partial class Hands : GOBaseInventoryItem
 
     public override void OnUnequipped(ulong byID)
     {
-        base.OnUnequipped(byID) ;
+        base.OnUnequipped(byID);
+        if(holding != null)
+        {
+            holding.OnRelease(equippedBySteamID);
+            holding = null; 
+        }
         Logging.Log($"Hands Unequipped", "Hands");
     }
 
     public override bool InitFromData(GameObjectConstructorData data)
     {
         ulong objID = (ulong)data.paramList[0];
-        equippedBy = objID;
+        equippedBySteamID = objID;
 
         return true;
     }

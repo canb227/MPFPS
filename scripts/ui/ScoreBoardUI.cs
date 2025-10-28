@@ -25,6 +25,8 @@ public partial class ScoreBoardUI : MarginContainer
     public void UpdateTimeLeftUI(string timeLeftString)
     {
         TimeRemainingNumber.Text = timeLeftString;
+        //Fix scoreboard text
+        //switch timer logically and visually to a new color and countdown when the evacuation starts
     }
 
     //Move Worker Section
@@ -82,6 +84,7 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void AddLivingWorkerPlayerRow(ulong playerID)
     {
+        //GD.Print("Add Worker: " + playerID);
         ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
         if (playerRow == null)
         {
@@ -142,6 +145,7 @@ public partial class ScoreBoardUI : MarginContainer
     public void SetPlayerIDAsManager(ulong playerID)
     {
         ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
+        //GD.Print("Set Manager: " + playerID);
         playerRow.SetAsManager();
     }
     
@@ -220,12 +224,8 @@ public partial class ScoreBoardUI : MarginContainer
         {
             child.Free();
         }
-        Logging.Log("Cleared the scoreboard of all rows, now adding based on basicPlayers", "ScoreBoardUI");
+        Logging.Log("Cleared the scoreboard of all rows, basicplayers add themselves", "ScoreBoardUI");
         //use the basicplayers list
-        foreach(ulong basicPlayerID in Global.gameState.gameModeManager.basicPlayers.Keys)
-        {
-            AddLivingWorkerPlayerRow(basicPlayerID);
-        }
     }
 
     

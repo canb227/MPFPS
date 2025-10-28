@@ -4,6 +4,7 @@ using ImGuiNET;
 using MessagePack;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public enum CharacterState
@@ -15,10 +16,14 @@ public enum CharacterState
 [GlobalClass]
 public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, HasInventory
 {
+    public event Action<ulong> KnockedOut;
+    public event Action<ulong> Killed;
     [Export] public AudioStreamPlayer3D ourVoiceSpeaker;
     [Export] public AudioStreamPlayer3D characterSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
+    [Export] public AnimationTree animationTree;
     public CharacterSoundManager characterSoundManager = new();
+    public int roleCredits { get; set; }
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
     public float maxStunBar { get; set; } = 100;
@@ -37,28 +42,49 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float finalSpeed;
     private Vector3 jumpVelocity = new Vector3(0, 6, 0);
     private bool airbrake = false;
+    //item bools
+    public bool handcuffed;
 
+    //fall damage values
+    // private float fallTime = 0f;
+    // private float safeFallTime = 0.7f;
+    // private float fallingDamagePerSecond = 50f;
+    // private bool wasOnFloor;
 
-
-    //this is basically our constructor
-    public override bool InitFromData(GameObjectConstructorData data)
+    public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
     {
-        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
-        base.InitFromData(data);
-        return true;
-    }
+        {AmmoType.ShotgunAmmo, 8 },
+        {AmmoType.RifleAmmo, 30 },
+        {AmmoType.SniperAmmo, 10 },
+    };
+    public Dictionary<AmmoType, int> maxAmmoStored = new()
+    {
+        {AmmoType.ShotgunAmmo, 24 },
+        {AmmoType.RifleAmmo, 90 },
+        {AmmoType.SniperAmmo, 30 },
+    };
+
+    private int currentItemSlot;
+    private InventoryGroupCategory currentGroup;
+
     public override void _Ready()
     {
         base._Ready();
+        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        Global.ui.inGameUI.ScoreBoard.AddLivingWorkerPlayerRow(authority);
+        
+        currentGroup = InventoryGroupCategory.Hands;
+        currentItemSlot = 0;
         this.CollisionLayer = 1 << 4; //5
         this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 4);//1,2,5
         priority = 100;
 
-        rayCast = new();
-        rayCast.TargetPosition = new Vector3(0, 0, -4);
-        rayCast.CollideWithBodies = true;
-        rayCast.CollisionMask = (1 << 1) | (1 << 3); //layer 2 or 4, entities and inventoryitems
-        camera.AddChild(rayCast);
+        interactRayCast = new();
+        interactRayCast.TargetPosition = new Vector3(0, 0, -4);
+        interactRayCast.CollideWithBodies = true;
+        interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
+        camera.AddChild(interactRayCast);
+
     }
     public override void ProcessStateUpdate(byte[] _update)
     {
@@ -78,6 +104,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //various input functions, PerTickAuth is the main loop
     public override void PerTickAuth(double delta)
     {
+        base.PerTickAuth(delta);
         //we wrap each one because an input could kill the character meaning the later calls have no input anymore
         if (input != null)
         {
@@ -95,7 +122,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //stun regen
         if (currentTimeUntilStunRegen <= 0)
         {
-            if(currentStunBar < maxStunBar)
+            if (currentStunBar < maxStunBar)
             {
                 currentStunBar = Math.Min(currentStunBar + (stunRegenRatePerSecond * (float)delta), maxStunBar);
                 if (controllingPlayerID == Global.steamid)
@@ -110,6 +137,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
     }
 
+
     public override void PerFrameShared(double delta)
     {
         if (input != null)
@@ -120,6 +148,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerTickShared(double delta)
     {
+        base.PerTickShared(delta);
         //use input from local and remote players to calculate footsteps
         if (input != null)
         {
@@ -134,44 +163,228 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
             }
+
+            UpdateAnimationTree();
         }
-        
     }
 
 
     private void HandleNonMovementInput(double delta)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
+        if(!handcuffed)
         {
-            if (rayCast.IsColliding())
+            if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
             {
-                var temp = rayCast.GetCollider();
-                if (rayCast.GetCollider() is IsInventoryItem s)
+                if (interactRayCast.IsColliding())
                 {
-                    Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
-                    Pickup(s);
+                    var hit = interactRayCast.GetCollider();
+                    if (hit is IsInventoryItem s)
+                    {
+                        Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
+                        Pickup(s);
+                    }
+                    else if (hit is IsInteractable i)
+                    {
+                        i.Local_OnInteract(id);
+                    }
+                    else
+                    {
+                        Node current = (Node)hit;
+                        while (current != null && current is not BasicPlayerCharacter)
+                            current = current.GetParent();
+
+                        if (current is BasicPlayerCharacter basicPlayerCharacter)
+                        {
+                            switch (basicPlayerCharacter.state)
+                            {
+                                case CharacterState.Living:
+                                    if (basicPlayerCharacter.handcuffed)
+                                    {
+                                        basicPlayerCharacter.DropEquipped();
+                                    }
+                                    break;
+
+                                case CharacterState.Missing:
+                                    basicPlayerCharacter.OnFound();
+                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    break;
+
+                                case CharacterState.Dead:
+                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    break;
+                            }
+
+                        }
+                    }
+                    
                 }
-                else if (rayCast.GetCollider() is IsInteractable i)
+            }
+            if (!lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
+            {
+                if(team == Team.Traitor || team == Team.Manager)
                 {
-                    i.Local_OnInteract(id);
+                    if (!Global.ui.inGameUI.PlayerUIManager.roleShopScreen.Visible)
+                    {
+                        Global.ui.inGameUI.PlayerUIManager.roleShopScreen.OpenRoleShopScreen();
+                    }
+                    else
+                    {
+                        Global.ui.inGameUI.PlayerUIManager.roleShopScreen.CloseRoleShopScreen();
+                    }
+                }
+            }
+            if (!lastTickActions.HasFlag(ActionFlags.DropItem) && input.actions.HasFlag(ActionFlags.DropItem))
+            {
+                DropEquipped();
+            }
+            if (!lastTickActions.HasFlag(ActionFlags.InventorySlot1) && input.actions.HasFlag(ActionFlags.InventorySlot1))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Hands);
+            }
+            else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot2) && input.actions.HasFlag(ActionFlags.InventorySlot2))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Weapon);
+            }
+            else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot3) && input.actions.HasFlag(ActionFlags.InventorySlot3))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Accessory);
+            }
+            else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
+            {
+                EquipNextFromSlot(InventoryGroupCategory.Role);
+            }
+        }
+    }
+    
+    private void EquipNextFromSlot(InventoryGroupCategory category)
+    {
+        if (inventory.GetGroup(category).items.Any())
+        {
+            Logging.Log($"Equip Next {category}!", "BasicPlayerCharacter");
+            if (currentGroup != category)
+            {
+                currentItemSlot = -1;
+            }
+            currentGroup = category;
+            InventoryGroup group = inventory.GetGroup(category);
+            if (group.items.Count - 1 > currentItemSlot)
+            {
+                currentItemSlot++;
+                Equip(category, currentItemSlot);
+            }
+        }
+    }
+
+    //Equipment Functions
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public override void Pickup(IsInventoryItem item)
+    {
+        if (item is GOBaseInventoryItem GOItem)
+        {
+            if (inventory.HasGroup(GOItem.category))
+            {
+                InventoryGroup group = inventory.GetGroup(GOItem.category);
+                if (group.CanStoreItem(item))
+                {
+                    group.StoreItem(item);
+                    if (IsMe())
+                    {
+                        GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint);
+                    }
+                    else
+                    {
+                        GOItem.AttachToPlayer(thirdPersonEquipmentAttachmentPoint);
+                    }
+                    GOItem.OnPickup(controllingPlayerID);
+                    //auto-equip weapons and accessories
+                    if (group.category == InventoryGroupCategory.Weapon || group.category == InventoryGroupCategory.Accessory)
+                    {
+                        Equip(group.category, group.items.Count - 1);
+                    }
                 }
             }
         }
 
-        if (!lastTickActions.HasFlag(ActionFlags.LeanRight) && input.actions.HasFlag(ActionFlags.LeanRight))
+    }
+    
+        [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PickupReplace(IsInventoryItem item)
+    {
+        if (item is GOBaseInventoryItem GOItem)
         {
-            TakeStunDamage(20, 0, PainSoundType.Bullet);
+            if (inventory.HasGroup(GOItem.category))
+            {
+                InventoryGroup group = inventory.GetGroup(GOItem.category);
+                if (group.CanStoreItem(item))
+                {
+                    group.StoreOrReplaceItem(item, out IsInventoryItem replaced);
+                    if(replaced != null)
+                    {
+                        replaced.OnDropped(authority);
+                    }
+                    if (IsMe())
+                    {
+                        GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint); 
+                    }
+                    else
+                    {
+                        GOItem.AttachToPlayer(thirdPersonEquipmentAttachmentPoint); 
+                    }
+                    GOItem.OnPickup(controllingPlayerID);
+                    //auto-equip weapons and accessories
+                    if(group.category == InventoryGroupCategory.Weapon || group.category == InventoryGroupCategory.Accessory)
+                    {
+                        Equip(group.category, group.items.Count-1);
+                    }
+                }
+            }
         }
 
-        if (!lastTickActions.HasFlag(ActionFlags.LeanLeft) && input.actions.HasFlag(ActionFlags.LeanLeft))
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public override void Equip(InventoryGroupCategory category, int index = 0)
+    {
+        currentGroup = category;
+        currentItemSlot = index;
+        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
         {
-            TakeDamage(20, 0, PainSoundType.Generic);
+            Logging.Error($"Cannot equip item!", "BasicPlayer");
+            return;
+        }
+        if (equipped != null)
+        {
+            equipped.OnUnequipped(controllingPlayerID);
+            equipped = null;
+        }
+        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
+        if (item is GOBaseInventoryItem i)
+        {
+            equipped = i;
+            i.OnEquipped(controllingPlayerID);
+        }
+    }
+
+    public void DropEquipped()
+    {
+        if(equipped != null && equipped.droppable)
+        {
+            equipped.OnUnequipped(authority);
+            equipped.OnDropped(authority);
+            inventory.GetGroup(equipped.category).items.Remove(equipped);
+            equipped = null;
+            Equip(InventoryGroupCategory.Hands);
         }
     }
 
     private void HandleEquippedPassthruInput(double delta)
     {
-        if (equipped != null)
+        if (equipped != null && equipped is Hands hands)
+        {
+            hands.HandleHandInput(input, delta);
+        }
+        else if(equipped != null)
         {
             equipped.HandleInput(input.actions);
         }
@@ -183,7 +396,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Velocity = HandleYAxis(Velocity, delta);
 
         Vector3 localVelocity = CalculateLocalVelocity();
-
+        if(handcuffed)
+        {
+            localVelocity.X *= 0.7f;
+            localVelocity.Z *= 0.7f;
+        }
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
         PushAwayRigidBodies();
         MoveAndSlide();
@@ -251,7 +468,37 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 globalVelocity += jumpVelocity;
             }
         }
+
+        //fall damage calculation
+        // if (!IsOnFloor() && globalVelocity.Y < 0)
+        // {
+        //     GD.Print("increase falltime" + fallTime);
+        //     fallTime += (float)delta;
+        // }
+        // else if (IsOnFloor())
+        // {
+        //     if (fallTime > safeFallTime)
+        //     {
+        //         GD.Print("Take damage " + fallTime);
+        //         float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
+        //         TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
+        //     }
+        //     fallTime = 0f;
+        // }
+
+
+
         return globalVelocity;
+    }
+
+    private int ScaleDamageToVolume(float damage)
+    {
+        damage = Mathf.Clamp(damage, 1f, 100f);
+
+        float inMin = 1f, inMax = 100f;
+        float outMin = -6f, outMax = 6f;
+
+        return (int)(outMin + (damage - inMin) / (inMax - inMin) * (outMax - outMin));
     }
 
     private Vector3 CalculateLocalVelocity()
@@ -313,7 +560,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleMouseLook(double delta)
     {
-        if (Input.MouseMode == Input.MouseModeEnum.Captured)
+        bool lockLook = false;
+        if(equipped is Hands hands)
+        {
+            lockLook = hands.rotateMode;
+        }
+        if (Input.MouseMode == Input.MouseModeEnum.Captured && !lockLook)
         {
             float mouseX = input.LookInputVector.X * 5 * ((float)delta);
             float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
@@ -347,96 +599,61 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return camera;
     }
 
+    public (Color, string) GetHealthInfo()
+    {
+        if (currentHealth == maxHealth)
+        {
+            return (Colors.Green, "Healthy");
+        }
+        else if (currentHealth / maxHealth >= 0.75f)
+        {
+            return (Colors.GreenYellow, "Hurt");
+        }
+        else if (currentHealth / maxHealth >= 0.5f)
+        {
+            return (Colors.Yellow, "Wounded");
+        }
+        else if (currentHealth / maxHealth >= 0.25f)
+        {
+            return (Colors.Orange, "Badly Wounded");
+        }
+        else if (currentHealth / maxHealth >= 0.0f)
+        {
+            return (Colors.Red, "Near Death");
+        }
+        else
+        {
+            return (Colors.DimGray, "Dead?");
+        }
+    }
+
     public override string GenerateStateString()
     {
         return MessagePackSerializer.ConvertToJson(GenerateStateUpdate());
     }
 
-    //Equipment Functions
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public override void Pickup(IsInventoryItem item)
-    {
-        if (item is GOBaseInventoryItem i)
-        {
-            if (inventory.HasGroup(i.category))
-            {
-                InventoryGroup group = inventory.GetGroup(i.category);
-                if (group.CanStoreOrReplaceItem(item))
-                {
-                    group.StoreOrReplaceItem(item, out IsInventoryItem replaced);
-                    if (replaced != null)
-                    {
-                        (replaced as Node3D).Reparent(Global.gameState.GameObjectNodeParent);
-                        replaced.OnDropped(controllingPlayerID);
-                    }
-                }
-            }
-            if (IsMe())
-            {
-                i.Reparent(firstPersonEquipmentAttachmentPoint, false);
-            }
-            else
-            {
-                i.Reparent(thirdPersonEquipmentAttachmentPoint, false);
-            }
-            i.OnPickup(controllingPlayerID);
-        }
-
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public override void Equip(InventoryGroupCategory category, int index = 0)
-    {
-        if (inventory.GetGroup(category) == null || inventory.GetGroup(category).GetItem() == null)
-        {
-            Logging.Error($"Cannot equip item!", "BasicPlayer");
-            return;
-        }
-        if (equipped != null)
-        {
-            equipped.OnUnequipped(controllingPlayerID);
-            equipped = null;
-        }
-        IsInventoryItem item = inventory.GetGroup(category).GetItemAt(index);
-        if (item is GOBaseInventoryItem i)
-        {
-            equipped = i;
-            i.OnEquipped(controllingPlayerID);
-        }
-    }
-
-    public void EquipNext()
-    {
-        Equip(inventory.groups[inventory.GetNextIndex(equipped.category)].category);
-    }
-
-    public void EquipPrevious()
-    {
-
-    }
-
-    public void DropEquipped()
-    {
-
-    }
 
     //Character State Functions (Health, Stun, Death, etc) \\
 
-    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
-        RPCManager.RPC(this, "rpc_TakeStunDamage", [damage,byID,soundType]);
+        //only the authority can tell people they took damage
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_TakeStunDamage", [damage, byID, soundType, VolumeDb]);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType)
+    public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         if (state == CharacterState.Living)
         {
             currentStunBar -= damage;
             currentTimeUntilStunRegen = stunRegenDelaySeconds;
-            characterSoundManager.PlayDamageSound(characterSFX, soundType);
-            Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
+            characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
+            //Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar); ;
@@ -448,7 +665,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         else
         {
-            Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
+            //Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
         }
     }
 
@@ -461,26 +678,31 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void rpc_OnKnockedOut()
     {
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
+        KnockedOut?.Invoke(authority);
         //characterSoundManager.PlayerKnockoutSound(characterSFX);
-        inventory.DropHeldItem();
+        DropEquipped();
         currentStunBar = 0;
         //ragdoll and other stuff
     }
 
-    public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
-        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType]);
+        //only the authority can tell people they took damage
+        if(Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType,VolumeDb]);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
-        TakeStunDamage(damage*2, byID, PainSoundType.None);
+        TakeStunDamage(damage*4, byID, PainSoundType.None);
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
-            characterSoundManager.PlayDamageSound(characterSFX, soundType);
-            Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
+            characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
+            //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
@@ -493,20 +715,25 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         else
         {
-            Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
+            //Logging.Log("Tried to deal damage to already dead character: " + authority, "BasicPlayerCharacter");
         }
     }
 
     public void OnDeath()
     {
-        RPCManager.RPC(this, "rpc_OnDeath", []);
+        //only the authority can tell people they died
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_OnDeath", []);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath()
     {
+        Killed?.Invoke(authority);
         characterSoundManager.PlayDeathSound(characterSFX);
-        inventory.DropAllItems();
+        inventory.DropAllItems(authority);
         state = CharacterState.Missing;
         currentHealth = 0;
         Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
@@ -516,7 +743,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
     }
 
-    
+
 
     public void OnFound()
     {
@@ -526,6 +753,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             Global.ui.inGameUI.ScoreBoard.PlayerFound(authority);
         }
 
+    }
+    
+    public void AddToAmmoStored(AmmoType ammoType, int ammoAmount)
+    {
+        ammoStored[ammoType] += ammoAmount;
     }
 
     public override void Assignment(Team team, Role role)
@@ -542,6 +774,17 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
     }
 
+    public void Handcuff(GOHandcuffs handcuffs)
+    {
+        PickupReplace(handcuffs);
+        handcuffed = true;
+    }
+
+    public void RemoveHandcuffs()
+    {
+        handcuffed = false;
+    }
+
 
 
     //Control
@@ -556,10 +799,37 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     protected override void OnControlReleased()
     {
+        base.OnControlReleased();
         if (controllingPlayerID == Global.steamid)
         {
             Logging.Log("Disabling Player UI " + controllingPlayerID, "BasicPlayerCharacter");
             Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
+        }
+    }
+
+    private void UpdateAnimationTree()
+    {
+        // Update Movement Animation
+        Vector3 localVel = CalculateLocalVelocity();
+        animationTree.Set("parameters/WalkRunBlend/blend_position", new Vector2(localVel.X, -1 * localVel.Z));
+
+        if (equipped is Hands hands)
+        {
+            animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 0);
+        }
+        else
+        {
+            animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 1);
+            animationTree.Set("parameters/UpperBodyTransition/transition_request", "rifle");
+        }
+
+        if (IsOnFloor())
+        {
+            animationTree.Set("parameters/GroundedTransition/transition_request", "grounded");
+        }
+        else
+        {
+            animationTree.Set("parameters/GroundedTransition/transition_request", "air");
         }
     }
 }

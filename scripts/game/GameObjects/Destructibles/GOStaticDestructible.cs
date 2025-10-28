@@ -62,7 +62,7 @@ public partial class GOStaticDestructible : GOBaseStaticBody, IsDamagable
         currentHealth = state.currentHealth;
     }
 
-    public void TakeDamage(float damage, ulong byID, PainSoundType soundType)
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         currentHealth -= damage;
         if (currentHealth < 0)
@@ -71,6 +71,10 @@ public partial class GOStaticDestructible : GOBaseStaticBody, IsDamagable
             Visible = false;
             GlobalPosition = new Vector3(0, -100, 0);
         }
+    }
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        Logging.Log("Statics Don't Currently Take Stun Damage", "GOStaticDestructible");
     }
 }
 

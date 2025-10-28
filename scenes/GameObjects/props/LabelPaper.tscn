@@ -90,14 +90,14 @@ font_color = Color(0, 0, 0, 1)
 shadow_size = 2
 shadow_color = Color(0.39308554, 0.3930855, 0.39308548, 1)
 
-[node name="GOLabelPaper" type="RigidBody3D" node_paths=PackedStringArray("viewport")]
+[node name="GOLabelPaper" type="RigidBody3D" node_paths=PackedStringArray("viewport", "collider")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 collision_layer = 2
 collision_mask = 27
 continuous_cd = true
 script = ExtResource("1_7rtpr")
 viewport = NodePath("SubViewport")
-type = 6
+collider = NodePath("CollisionShape3D")
 metadata/_custom_type_script = "uid://w4vkt6pc48p6"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

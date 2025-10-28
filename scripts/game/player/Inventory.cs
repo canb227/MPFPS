@@ -5,7 +5,7 @@ public enum InventoryGroupCategory
     None,
     Hands,
     Weapon,
-    Tool,
+    Accessory,
     Role,
     Special,
 }
@@ -68,14 +68,21 @@ public class Inventory
         }
         return index;
     }
-    public void DropAllItems()
+    public void DropAllItems(ulong bySteamID)
     {
-        //drop all items onto the ground
+        foreach (var group in groups)
+        {
+            foreach (var item in new List<IsInventoryItem>(group.items))
+            {
+                if (item != null && item.droppable)
+                {
+                    item.OnDropped(bySteamID);
+                    group.items.Remove(item);
+                }
+            }
+        }
     }
-    public void DropHeldItem()
-    {
-        //drop currently held item onto the ground
-    }
+
 }
 
 public class InventoryGroup
@@ -128,7 +135,7 @@ public class InventoryGroup
 
     public IsInventoryItem RemoveItemAt(int index)
     {
-        return RemoveItemAt(index);
+        return RemoveItemAt(index);//????? this is an infinite loop no?
     }
 
     public bool StoreItem(IsInventoryItem item)
@@ -149,7 +156,7 @@ public class InventoryGroup
     {
         if (!CanStoreOrReplaceItem(item))
         {
-            Logging.Error($"Cannot store or replace this item!", "Invetory");
+            Logging.Error($"Cannot store or replace this item!", "Inventory");
             replaced = null;
             return false;
         }

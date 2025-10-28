@@ -16,18 +16,33 @@ public enum GameModeType
 public partial class GameModeManager : Node
 {
     //Events
+    public static event Action SwarmIncoming;
+    public static event Action SwarmStarted;
+    public static event Action EvacuationStarted;
+    public static event Action EvacuationEnded;
     public static event Action OnPackageOrdersUpdated;
     public static event Action OnPossibleAddressesUpdated;
+    public static event Action OnDeliveryQueueAppended;
+    public static event Action<int> OnOrderPacked;
+    public static event Action<int> OnOrderLabelled;
+    public static event Action<int> OnOrderReadyToDeliver;
+    public static event Action<int> OnOrderFinished;
+
     //
 
     public ItemSpawnManager itemSpawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public Dictionary<ulong, PlayerRoundStats> playerStats = new();
     public List<PackageOrderInfo> packageOrders = new();
+    public Queue<int> deliveryQueue = new();
     public Dictionary<GameObjectType, int> minimumItemTypeCount = new();
     public List<string> possibleRoundAddressNumbers = new();
     public List<string> possibleRoundAddressStreets = new();
     public List<string> possibleRoundAddressSuffixes = new();
+
+    public SwarmManager swarmManager = new();
+    public bool roundStarted;
 
 
    
@@ -40,9 +55,11 @@ public partial class GameModeManager : Node
     private int numTraitorsAlive;
     private int numInnocentsAlive;
     private int numManagersAlive;
-    private int totalPlayers;
     private int numFinishedOrders;
     private int ordersNeeded;
+    public int numPlayers;
+    public int numTraitors;
+    public int numManagers;
 
     //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
     public delegate void GameModeOptionsReceived(GameModeOptions options, ulong sender);
@@ -54,6 +71,20 @@ public partial class GameModeManager : Node
     {
         Logging.Log($"Starting Game Mode manager", "GameModeManager");
         Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
+    }
+
+    public void PerTick(double delta)
+    {
+        if (roundStarted)
+        {
+            remainingRoundTime -= delta;
+            if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
+            {
+                RPCManager.RPC(this, "TraitorsWin", []);
+            }
+            Global.ui.inGameUI.UpdateTimeLeftUI();
+            swarmManager.PerTick(delta);
+        }
     }
 
     public void ProcessGameModeOptionsPacketBytes(byte[] payload, ulong sender)
@@ -117,20 +148,62 @@ public partial class GameModeManager : Node
     {
         Logging.Log("ForceEndRound as Peer", "GameModeManager");
         Global.ui.inGameUI.ShowRoundReport(Team.None);
-        if(Global.Lobby.bIsLobbyHost)
+        if (Global.Lobby.bIsLobbyHost)
         {
             GameStartAsHost();
         }
     }
+    
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void StartEmergencyEvacuation()
+    public void StartEmergencyEvacuation() //not used rn
     {
         Logging.Log("Start Emergency Evacuation as Peer", "GameModeManager");
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartEndOfGameEvacuation()
     {
+        remainingRoundTime = 99999;
+        //switch round timers everywhere to a 95 second countdown TDOD
+        EvacuationStarted?.Invoke();
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            EvacuationCountdown();
+        }
+    }
+    
+    public async void EvacuationCountdown()
+    {
+        await ToSignal(GetTree().CreateTimer(95), SceneTreeTimer.SignalName.Timeout);
+        Logging.Log("End Evacuation as Host", "GameModeManager");
+        EvacuationEnded?.Invoke();
+    }
+
+    public void EvacuationLeft(List<BasicPlayerCharacter> basicPlayerCharacters)
+    {
+        //determine who was on board and who wins as lobby host
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            bool traitorOnBoard = false;
+            bool anybodyOnBoard = false;
+            foreach (BasicPlayerCharacter basicPlayerCharacter in basicPlayerCharacters)
+            {
+                anybodyOnBoard = true;
+                Logging.Log(basicPlayerCharacter.Name + " " + basicPlayerCharacter.id + " is Onboard", "GameModeManager");
+                if (basicPlayerCharacter.team == Team.Traitor)
+                {
+                    traitorOnBoard = true;
+                }
+            }
+            if (anybodyOnBoard)
+            {
+                RPCManager.RPC(this, "InnocentsWin", []);
+            }
+            else
+            {
+                RPCManager.RPC(this, "TraitorsWin", []);
+            }
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -145,8 +218,15 @@ public partial class GameModeManager : Node
         }
         else
         {
+            Global.ui.inGameUI.RoundReport.NewRound();
+            Global.ui.inGameUI.ScoreBoard.NewRound();
             basicPlayers.Clear();
             ghostPlayers.Clear();
+
+            foreach(PlayerRoundStats playerStat in playerStats.Values)
+            {
+                playerStat.NewRound();
+            }
 
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
@@ -157,9 +237,9 @@ public partial class GameModeManager : Node
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
         roundNumber++;
+        roundStarted = true;
+        remainingRoundTime = options.roundTime;
         //clear the scoreboard , role assignment comes later
-        Global.ui.inGameUI.RoundReport.NewRound();
-        Global.ui.inGameUI.ScoreBoard.NewRound();
         if (Global.Lobby.bIsLobbyHost)
         {
             GenerateOrders();
@@ -197,11 +277,11 @@ public partial class GameModeManager : Node
             .Take(4)
             .ToList();
 
-        //RPCManager.RPC(this, "SetPossibleRoundAddresses", new List<object> {possibleRoundAddressNumbers, possibleRoundAddressStreets, possibleRoundAddressSuffixes}); //THIS NEEDS TO BE RPC'd TODO
-        OnPossibleAddressesUpdated?.Invoke(); //remove this once we fix the RPC
+        RPCManager.RPC(this, "SetPossibleRoundAddresses", [possibleRoundAddressNumbers, possibleRoundAddressStreets, possibleRoundAddressSuffixes]);
+        //OnPossibleAddressesUpdated?.Invoke(); //remove this once we fix the RPC
 
 
-        ordersNeeded = 4; //determine this dynamically or via some pre-set scale (update the Take value above too)
+        ordersNeeded = 1; //determine this dynamically or via some pre-set scale (update the Take value above too)
 
 
         // we create duplicates so we keep the possibles for other uses, monitors etc
@@ -244,14 +324,6 @@ public partial class GameModeManager : Node
             // Construct your order with the chosen values
             packageOrders.Add(new PackageOrderInfo(number, street, suffix, randomTypes));
         }
-        foreach(var order in packageOrders)
-        {
-            GD.Print(order.addressStreet);
-            foreach(var type in order.neededPackageItems)
-            {
-                GD.Print(type);
-            }
-        }
         RPCManager.RPC(this, "SetPackageOrders", [ packageOrders.ToList() ]);
     }
 
@@ -277,19 +349,21 @@ public partial class GameModeManager : Node
     {
         //only assign roles to living players, in case somebody dies pre-round.
         List<ulong> players = new();
+        playerStats = new();
         foreach(var player in basicPlayers)
         {
             if(player.Value.state == CharacterState.Living)
             {
                 players.Add(player.Key);
+                playerStats[player.Key] = new PlayerRoundStats();
             }
         }
         List<ulong> traitors = new();
         List<ulong> managers = new();
 
-        int numPlayers = players.Count;
-        int numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
-        int numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
+        numPlayers = players.Count;
+        numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
+        numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
         if (options.manualOverride)
         {
             numTraitors = options.manualTraitorCount;
@@ -320,9 +394,8 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Traitor;
-            pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, Team.Traitor, Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
 
         foreach (ulong id in managers)
@@ -330,9 +403,9 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Manager;
-            pa.role = Role.Normal;
+            pa.role = Role.Manager;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, Team.Manager, Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
 
         foreach (ulong id in players)
@@ -340,14 +413,15 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Innocent;
-            pa.role = Role.Normal;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, Team.Innocent, Role.Normal]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
-        if(numPlayers == 0)
+        if (numPlayers == 0)
         {
             RPCManager.RPC(this, "ForceEndRound", []);
         }
+        //prepare the swarm manager given the roles
+        swarmManager.PrepareRound(numPlayers);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -355,6 +429,11 @@ public partial class GameModeManager : Node
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
         basicPlayers[id].Assignment(team, role);
+        if (team == Team.Traitor || team == Team.Manager)
+        {
+            basicPlayers[id].roleCredits++;
+        }
+        
         if (team == Team.Traitor)
         {
             Global.ui.inGameUI.ScoreBoard.PlayerIsTraitor(id);
@@ -367,6 +446,7 @@ public partial class GameModeManager : Node
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
         }
+        //JEFFTODO Set the players mesh here so they match their role.
     }
 
     public int GetNumFinishedOrders()
@@ -376,7 +456,7 @@ public partial class GameModeManager : Node
     public void SetNumFinishedOrders(int numFinished)
     {
         numFinishedOrders = numFinished;
-        if (numFinishedOrders >= ordersNeeded)
+        if (numFinishedOrders >= ordersNeeded && Global.Lobby.bIsLobbyHost)
         {
             StartEndOfGameEvacuation();
         }
@@ -395,9 +475,9 @@ public partial class GameModeManager : Node
             {
                 //do something maybe
             }
-            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
-                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
+                //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
     }
@@ -421,9 +501,9 @@ public partial class GameModeManager : Node
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
-            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
-                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
+                //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
     }
@@ -447,9 +527,9 @@ public partial class GameModeManager : Node
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
-            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / totalPlayers < 0.34f)
+            else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
-                RPCManager.RPC(this, "StartEmergencyEvacuation", []);
+                //RPCManager.RPC(this, "StartEmergencyEvacuation", []);
             }
         }
     }
@@ -476,6 +556,34 @@ public partial class GameModeManager : Node
         }
     }
 
+
+
+    public void OrderPacked(int orderNumber)
+    {
+        OnOrderPacked?.Invoke(orderNumber);
+
+    }
+    public void OrderLabelled(int orderNumber)
+    {
+        OnOrderLabelled?.Invoke(orderNumber);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void OrderReadyToShip(int orderNumber)
+    {
+        packageOrders[orderNumber].waitingForDelivery = true;
+        deliveryQueue.Enqueue(orderNumber);
+        OnDeliveryQueueAppended?.Invoke();
+        OnOrderReadyToDeliver?.Invoke(orderNumber);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void OrderFinished(int orderNumber)
+    {
+        packageOrders[orderNumber].OrderFinished();
+        OnOrderFinished?.Invoke(orderNumber);
+    }
+
     internal void StartGameMode(string scenePath, GameModeType gameMode)
     {
 
@@ -486,12 +594,22 @@ public partial class GameModeManager : Node
 
                 SpawnAndControlNewLocalPlayerCharacter(GameObjectType.Ghost);
 
-                Global.ui.StopLoadingScreen();
+                //Global.ui.StopLoadingScreen();
                 break;
             default:
                 Logging.Error($"Unknown game mode - cannot start game!", "GameModeManager");
                 break;
         }
+    }
+
+    public void TriggerSwarmIncomingEvent()
+    {
+        SwarmIncoming?.Invoke();
+    }
+
+    public void TriggerSwarmStartedEvent()
+    {
+        SwarmStarted?.Invoke();
     }
 
     public void SpawnNewLocalPlayerCharacter(GameObjectType pcType)
@@ -562,7 +680,11 @@ public enum Team
 public enum Role
 {
     None,
-    Normal,
+    Security,
+    Manager,
+    OfficeWorker,
+    WarehouseWorker,
+    DeliveryWorker,
 
 }
 [MessagePackObject]

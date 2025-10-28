@@ -1,0 +1,178 @@
+[gd_scene load_steps=22 format=3 uid="uid://bqx27c5btqov2"]
+
+[ext_resource type="Script" uid="uid://c8bdsd63biy5x" path="res://scripts/game/other/Announcer.cs" id="1_hcg5s"]
+[ext_resource type="AudioStream" uid="uid://dtwokj2y663h8" path="res://assets/audio/announcer/evacuate_area.wav" id="2_aage6"]
+[ext_resource type="AudioStream" uid="uid://bk57ixx7qgut6" path="res://assets/audio/announcer/immediately.wav" id="3_go8qm"]
+[ext_resource type="AudioStream" uid="uid://3pq5ji3ewj75" path="res://assets/audio/announcer/ninety.wav" id="4_dyfw8"]
+[ext_resource type="AudioStream" uid="uid://hxinsrx8v4q8" path="res://assets/audio/announcer/eighty.wav" id="5_ovm81"]
+[ext_resource type="AudioStream" uid="uid://ctggwgabnq0nj" path="res://assets/audio/announcer/seventy.wav" id="6_onj7a"]
+[ext_resource type="AudioStream" uid="uid://cc3k3k724fnry" path="res://assets/audio/announcer/sixty.wav" id="7_he2f7"]
+[ext_resource type="AudioStream" uid="uid://clkspjy674dpg" path="res://assets/audio/announcer/fifty.wav" id="8_5l86m"]
+[ext_resource type="AudioStream" uid="uid://bedwasbulm33l" path="res://assets/audio/announcer/fourty.wav" id="9_h5jbg"]
+[ext_resource type="AudioStream" uid="uid://c8d21pxcnh4bf" path="res://assets/audio/announcer/thirty.wav" id="10_2ddil"]
+[ext_resource type="AudioStream" uid="uid://biwyu8jr5wa06" path="res://assets/audio/announcer/twenty.wav" id="11_a5kqg"]
+[ext_resource type="AudioStream" uid="uid://dtl18i0xv1c0c" path="res://assets/audio/announcer/ten.wav" id="12_wwv5q"]
+[ext_resource type="AudioStream" uid="uid://cvy6jwxpbspf1" path="res://assets/audio/environment/siren.wav" id="13_go8qm"]
+[ext_resource type="AudioStream" uid="uid://brb7yutinpg8m" path="res://assets/audio/announcer/five.wav" id="13_onj7a"]
+[ext_resource type="AudioStream" uid="uid://dntltxfayooni" path="res://assets/audio/announcer/alarm_citizen_loop1.wav" id="14_dyfw8"]
+[ext_resource type="AudioStream" uid="uid://dtxe27252t8rw" path="res://assets/audio/announcer/warning.wav" id="16_he2f7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_i7kdg"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nnfe1"]
+radius = 0.16748047
+height = 0.64538574
+
+[sub_resource type="Animation" id="Animation_hcg5s"]
+resource_name = "evacuationStart"
+length = 95.0
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SteamAudioPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_aage6")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("3_go8qm")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("4_dyfw8")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_ovm81")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("6_onj7a")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("7_he2f7")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("8_5l86m")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("9_h5jbg")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("10_2ddil")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("11_a5kqg")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("12_wwv5q")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("13_onj7a")
+}],
+"times": PackedFloat32Array(0, 2.0666666, 5.0333333, 15.033333, 25.033333, 35.033333, 45.066666, 55.033333, 65.03333, 75.03333, 85.03333, 90)
+}
+tracks/0/use_blend = true
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SteamAudioPlayer2")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("13_go8qm")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/1/use_blend = true
+
+[sub_resource type="Animation" id="Animation_ovm81"]
+resource_name = "swarmIncoming"
+length = 60.0
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SteamAudioPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("14_dyfw8")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SteamAudioPlayer2")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("16_he2f7")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/1/use_blend = true
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_084sx"]
+_data = {
+&"evacuationStart": SubResource("Animation_hcg5s"),
+&"swarmIncoming": SubResource("Animation_ovm81")
+}
+
+[node name="Announcer" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
+script = ExtResource("1_hcg5s")
+animationPlayer = NodePath("AnimationPlayer")
+metadata/_custom_type_script = "uid://c8bdsd63biy5x"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3296349, 0, 0, 0, 0.3296349, 0, 0, 0, 0.3296349, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_i7kdg")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.006286621, 0)
+shape = SubResource("CapsuleShape3D_nnfe1")
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+air_absorption = true
+attenuation_model = 1
+unit_size = 5.0
+max_db = 6.0
+max_polyphony = 2
+panning_strength = 0.0
+
+[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
+air_absorption = true
+attenuation_model = 1
+volume_db = -6.0
+unit_size = 40.0
+max_db = 0.0
+max_polyphony = 2
+panning_strength = 0.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_084sx")
+}

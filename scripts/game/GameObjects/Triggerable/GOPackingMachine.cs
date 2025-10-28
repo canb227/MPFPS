@@ -37,7 +37,7 @@ public partial class GOPackingMachine : GOTrap
             }
 
             // --- No order matched: eject everything ---
-            animationPlayer.Play("packageFailed");
+            RPCManager.RPC(this, "PlayAnimation", ["packageFailed"]);
 
             // Gather rigidbodies inside the area
             var rigidBodies = ItemsForPackingArea.GetOverlappingBodies()
@@ -53,24 +53,25 @@ public partial class GOPackingMachine : GOTrap
         return false;
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PlayAnimation(string animationName)
+    {
+        animationPlayer.Play(animationName);
+    }
+
     //we call this as lobby host
     private async void EjectAfterDelay(List<RigidBody3D> rbs, Node3D machine, float delaySeconds = 0.3f, float ejectPower = 20f)
     {
         await ToSignal(GetTree().CreateTimer(delaySeconds), SceneTreeTimer.SignalName.Timeout);
 
         Vector3 frontDir = GlobalTransform.Basis.Z;
-        // Add upward bias
         float angleUp = Mathf.DegToRad(10f);
         Vector3 ejectDir = (frontDir * Mathf.Cos(angleUp) + Vector3.Up * Mathf.Sin(angleUp)).Normalized();
 
         foreach (var rb in rbs)
         {
             if (rb == null) continue;
-            // Clear any existing velocity if you want a clean push
             rb.LinearVelocity = Vector3.Zero;
-
-            // Apply an impulse to push it out
-            //RPCManager.RPC(rb, "ApplyCentralImpulse", [ejectDir * ejectPower]);
             rb.ApplyCentralImpulse(ejectDir * ejectPower);
         }
     }
@@ -116,7 +117,7 @@ public partial class GOPackingMachine : GOTrap
                 }
             }
 
-            if (exactMatch && needed.Count == 0)
+            if (exactMatch && needed.Count == 0 && !Global.gameState.gameModeManager.packageOrders[orderNumber].isPacked)
             {
                 // ✅ Exact match found
                 var itemsToConsume = items.Select(i => i.id).ToList();
@@ -127,58 +128,12 @@ public partial class GOPackingMachine : GOTrap
                 data.paramList.Add(orderNumber);
                 data.spawnTransform = PackageOutputMarker.GlobalTransform;
                 Global.gameState.Auth_SpawnObject(GameObjectType.Package, data);
-
-                animationPlayer.Play("packageCreated");
+                Global.gameState.gameModeManager.OrderPacked(orderNumber);
+                RPCManager.RPC(this, "PlayAnimation", ["packageCreated"]);
+                
                 return true;
             }
         }
         return false;
     }
-
-    private bool CheckContents(List<GOPackageItem> items)
-    {
-        // Collect the item types present
-        var presentTypes = items.Select(i => i.itemType).ToList();
-        // Try to match against each package order
-        for (int orderNumber = 0; orderNumber < Global.gameState.gameModeManager.packageOrders.Count; orderNumber++)
-        {
-            var order = Global.gameState.gameModeManager.packageOrders[orderNumber];
-            // Check if all needed items are present
-            bool allFound = order.neededPackageItems.All(reqType =>
-                presentTypes.Contains(reqType));
-            if (allFound)
-            {
-                // --- 1. Collect the items that match this order ---
-                var itemsToConsume = new List<ulong>();
-                var needed = new List<GameObjectType>(order.neededPackageItems);
-
-                foreach (var item in items)
-                {
-                    if (needed.Contains(item.itemType))
-                    {
-                        itemsToConsume.Add(item.id);
-                        needed.Remove(item.itemType); // consume one of that type
-                    }
-                }
-
-                // --- 2. Remove consumed items from the scene ---
-                RPCManager.RPC(this, "RemovePackedItems", [itemsToConsume.ToList()]);
-
-                //auth spawn it, we are the lobby host
-                GameObjectConstructorData data = new(GameObjectType.Package);
-                data.paramList.Add(orderNumber);
-                data.spawnTransform = PackageOutputMarker.GlobalTransform;
-                Global.gameState.Auth_SpawnObject(GameObjectType.Package, data);
-
-                //return true;
-                animationPlayer.Play("packageCreated");
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
-
 }

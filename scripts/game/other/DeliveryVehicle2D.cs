@@ -8,12 +8,9 @@ public partial class DeliveryVehicle2D : CharacterBody2D
     [Export] public float MaxSpeed = 300.0f;      // pixels per second
     [Export] public float Friction = 600.0f;      // pixels per second^2
 
-    [Export] public Area2D finishArea;
-    [Export] public GODeliveryGameMonitor deliveryGameMonitor;
     public override void _Ready()
     {
         base._Ready();
-        finishArea.BodyEntered  += OnFinishBodyEntered;
     }
 
 
@@ -66,15 +63,8 @@ public partial class DeliveryVehicle2D : CharacterBody2D
         if (Velocity.Length() > MaxSpeed)
             Velocity = Velocity.Normalized() * MaxSpeed;
 
+
         // Move with physics
         MoveAndSlide();
-    }
-
-    private void OnFinishBodyEntered(Node2D body)
-    {
-        if (body == this)
-        {
-            deliveryGameMonitor.MiniGameWon();
-        }
     }
 }

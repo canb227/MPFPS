@@ -23,10 +23,17 @@ public static class GameObjectLoader
         {"BasicGun", (GameObjectType.BasicGun,"res://scenes/GameObjects/items/equipment/BasicGun.tscn", typeof(BasicGun))},
 
         //AccessoryItems
-        {"BasicAccessory", (GameObjectType.BasicAccessory,"res://scenes/GameObjects/items/accessory/BasicAccessory.tscn", typeof(GOBaseAccessory))},
+        {"PackageRadar", (GameObjectType.PackageRadar,"res://scenes/GameObjects/items/accessory/PackageRadar.tscn", typeof(GOBaseAccessory))},
+        {"Flashlight", (GameObjectType.Flashlight,"res://scenes/GameObjects/items/accessory/Flashlight.tscn", typeof(GOBaseAccessory))},
+        {"Handcuffs", (GameObjectType.Handcuffs,"res://scenes/GameObjects/items/accessory/Handcuffs.tscn", typeof(GOBaseAccessory))},
+        //{"WalkieTalkie", (GameObjectType.WalkieTalkie,"res://scenes/GameObjects/items/accessory/WalkieTalkie.tscn", typeof(GOBaseAccessory))},
+
+        //RoleItems
+        {"PlayerRadar", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/PlayerRadar.tscn", typeof(GOBaseRoleItem))},
+        {"C4", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/C4.tscn", typeof(GOBaseRoleItem))},
 
         //Components
-        {"PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
+        { "PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
 
         //Package 
         {"Package", (GameObjectType.Package, "res://scenes/GameObjects/props/Package.tscn", typeof(GOPackageBox))},
@@ -138,7 +145,7 @@ public enum GameObjectType
     Hands,
     BasicGun,
     //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL PACKAGEITEMS KEYS GET SHIFTED IN THEIR SCENE
-    BasicAccessory,
+    Handcuffs,
     PowerCell,
     Package,
     BakingSoda,
@@ -152,5 +159,9 @@ public enum GameObjectType
     Tire,
     //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL KEYS GET SHIFTED IN THEIR SCENEs
     SwarmRobot,
-
+    Flashlight,
+    PackageRadar,
+    WalkieTalkie,
+    PlayerRadar,
+    C4
 }

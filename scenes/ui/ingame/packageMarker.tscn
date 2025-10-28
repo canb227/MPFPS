@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://bkr7lnm3o1lyr"]
+
+[ext_resource type="Script" uid="uid://dv2sg8qovje7p" path="res://scripts/game/other/RadarMarker.cs" id="1_3o2gp"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vbeni"]
+orientation = 2
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_cjk0t"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lofgp"]
+resource_local_to_scene = true
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_cjk0t")
+
+[sub_resource type="LabelSettings" id="LabelSettings_vbeni"]
+font_size = 128
+outline_size = 24
+outline_color = Color(0, 0, 0, 1)
+
+[node name="RadarMarker" type="MeshInstance3D" node_paths=PackedStringArray("distanceLabel", "panelContainer")]
+transform = Transform3D(-0.99999994, -1.5099579e-07, 6.6002357e-15, 0, -4.3711385e-08, -0.99999994, 1.5099579e-07, -0.99999994, 4.3711385e-08, 0, 0, 0)
+mesh = SubResource("PlaneMesh_vbeni")
+surface_material_override/0 = SubResource("StandardMaterial3D_lofgp")
+script = ExtResource("1_3o2gp")
+distanceLabel = NodePath("SubViewport/PanelContainer/DistanceLabel")
+panelContainer = NodePath("SubViewport/PanelContainer")
+metadata/_custom_type_script = "uid://dv2sg8qovje7p"
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DistanceLabel" type="Label" parent="SubViewport/PanelContainer"]
+layout_mode = 2
+text = "999"
+label_settings = SubResource("LabelSettings_vbeni")
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -7,6 +7,7 @@ public enum PainSoundType
     Generic,
     Fire,
     Bullet,
+    Falling,
 }
 public enum MovementSoundType
 {
@@ -24,23 +25,33 @@ public partial class CharacterSoundManager : Node
     private float stepTimer;
     private int lastStepIndex;
 
-    public void PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType)
+    /// <summary>
+    /// Plays a hurt sound based on the requested damage type.
+    /// </summary>
+    /// <param name="VolumeDb">
+    /// Volume in decibels, defaults to whatever it is set to in the editor, 0 is normal volume, negatives are quieter
+    /// </param>
+    public void PlayDamageSound(AudioStreamPlayer3D audioStream, PainSoundType soundType, int VolumeDb = 0)
     {
         if (soundType == PainSoundType.None)
         {
-            
+
         }
         else if (soundType == PainSoundType.Generic)
         {
-            PlayGenericPainSound(audioStream);
+            PlayGenericPainSound(audioStream, VolumeDb);
         }
         else if (soundType == PainSoundType.Bullet)
         {
-            PlayBulletPainSound(audioStream);
+            PlayBulletPainSound(audioStream, VolumeDb);
         }
         else if (soundType == PainSoundType.Fire)
         {
-            PlayFirePainSound(audioStream);
+            PlayFirePainSound(audioStream, VolumeDb);
+        }
+        else if (soundType == PainSoundType.Falling)
+        {
+            PlayFallingPainSound(audioStream, VolumeDb);
         }
         else
         {
@@ -124,7 +135,7 @@ public partial class CharacterSoundManager : Node
         audioStream.Play();
     }
 
-    private void PlayGenericPainSound(AudioStreamPlayer3D audioStream)
+    private void PlayGenericPainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
     {
         // Put your audio file paths in an array
         string[] painSounds =
@@ -140,10 +151,11 @@ public partial class CharacterSoundManager : Node
 
         // Load and play it
         audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        audioStream.VolumeDb = VolumeDb;
         audioStream.Play();
     }
 
-    private void PlayFirePainSound(AudioStreamPlayer3D audioStream)
+    private void PlayFirePainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
     {
         if(audioStream.Playing)
         {
@@ -162,10 +174,11 @@ public partial class CharacterSoundManager : Node
 
         // Load and play it
         audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        audioStream.VolumeDb = VolumeDb;
         audioStream.Play();
     }
 
-    private void PlayBulletPainSound(AudioStreamPlayer3D audioStream)
+    private void PlayBulletPainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
     {
         // Put your audio file paths in an array
         string[] painSounds =
@@ -181,6 +194,29 @@ public partial class CharacterSoundManager : Node
 
         // Load and play it
         audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        audioStream.VolumeDb = VolumeDb;
         audioStream.Play();
     }
+
+    private void PlayFallingPainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
+    {
+        // Put your audio file paths in an array
+        string[] painSounds =
+        {
+            "res://assets/audio/character/flesh_impact_bullet1.wav",
+            "res://assets/audio/character/flesh_impact_bullet2.wav",
+            "res://assets/audio/character/flesh_impact_bullet3.wav"
+        };
+
+        // Pick one at random
+        Random rand = new();
+        int index = rand.Next(painSounds.Length);
+
+        // Load and play it
+        audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        audioStream.VolumeDb = VolumeDb;
+        audioStream.Play();
+    }
+
+    
 }

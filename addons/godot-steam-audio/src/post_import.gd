@@ -59,4 +59,3 @@ func steam_audio_geom_type(n: Node) -> GeomType:
 			return GeomType.DYNAMIC
 
 	return GeomType.NONE
-

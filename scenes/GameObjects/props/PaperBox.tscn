@@ -1,26 +1,63 @@
-[gd_scene load_steps=4 format=3 uid="uid://byqxm1bhqgmmy"]
+[gd_scene load_steps=7 format=4 uid="uid://byqxm1bhqgmmy"]
 
 [ext_resource type="Script" uid="uid://xm7xs4yetmrl" path="res://scripts/game/GameObjects/RigidBodies/GOComponent.cs" id="1_ljsgb"]
+[ext_resource type="Texture2D" uid="uid://wielyblkmr6e" path="res://assets/models/components/paperream_Paper_Ream_artwork2.jpg" id="2_c2spd"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_c2spd"]
-size = Vector3(0.667, 0.2, 0.4)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aala6"]
+resource_name = "Material"
+cull_mode = 2
+albedo_texture = ExtResource("2_c2spd")
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_f2k0k"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAACAAEAAwAEAAEABQAAAAIAAwAAAAUABAAGAAIABQACAAYAAwAHAAQAAwAFAAcABwAGAAQABwAFAAYA"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAP//AAAAAP//AAAAAAAA/////wAAAAAAAAAAAAD/////AAAAAP//AAD//wAA////////AAD//wAAAAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vs2np"]
+resource_name = "paperream_Cube_001"
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("//8Hp/zvt/X87wen//+39fzv///Kubf1/O+39cq5//+iq7f1rbgHp624t/WiqwenyrkemvzvB6fKuQen/O8emhR6v/RyrBCmcqy/9BR6EKbKubf1/O8Hp/zvt/XKuQen"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_aala6"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(1.7194543, 1.6862657, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAAAAAAD///////8AAP//AAD//wAA/////wAAAAD/////AAAAAFTV////////VNX/////AABU1f//AAD//1TV//8AAP////8AAP//////////////////AAAAAP////8AAAAAAAD/v///AAD///+///8AAAAA/78AAAAA////v/////8AAP//AAD///////8AAP//AAD/////////////VFWqqlRVqqpUVaqqVFWqqv9/////f////3////9///+qKqoqqiqqKqoqqiqqKqoq/3//f/9//3//f/9//3//fwAA/38AAP9/AAD/fwAA/3//f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_f2k0k")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ykkya"]
-size = Vector3(0.6709137, 0.20661926, 0.38763428)
+size = Vector3(0.41919136, 0.10329056, 0.55644226)
 
 [node name="GOPaperBox" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
 collision_layer = 2
 collision_mask = 27
 continuous_cd = true
 script = ExtResource("1_ljsgb")
-packageItemMesh = NodePath("MeshInstance3D")
+packageItemMesh = NodePath("Cube_001")
 packageItemCollider = NodePath("CollisionShape3D")
 itemType = 7
-type = 7
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_c2spd")
+[node name="Cube_001" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.20954143, 0, 0, 0, 0.05113068, 0, 0, 0, 0.2769138, -0.007009288, 0.055438567, 0.07365652)
+mesh = SubResource("ArrayMesh_vs2np")
+skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000831604, 0.00049591064, 0.005279541)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00710392, 0.055784225, 0.07483673)
 shape = SubResource("BoxShape3D_ykkya")

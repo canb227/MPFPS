@@ -11,7 +11,12 @@ using System.Reflection;
 public partial class PlayerUIManager : Control
 {
     [Export] public PlayerInfoUI PlayerInfoUI;
+    [Export] public DeadPlayerScreen deadPlayerScreen;
+    [Export] public RoleShopScreen roleShopScreen;
     [Export] public MarginContainer InventoryUI;
+    [Export] public Label targetPlayerName;
+    [Export] public Label targetPlayerHealth;
+    [Export] public Label targetPlayerRole;
 
     public void ShowPlayerUI(ulong characterID)
     {
@@ -39,9 +44,9 @@ public partial class PlayerUIManager : Control
     {
         PlayerInfoUI.UpdateStunUI(newStunBarRemaning, maxStunBar);
     }
-    public void UpdateAmmoUI(int remainingAmmo, int maxAmmo)
+    public void UpdateAmmoUI(int remainingAmmo, int storedAmmo, int maxAmmo)
     {
-        PlayerInfoUI.UpdateAmmoUI(remainingAmmo, maxAmmo);
+        PlayerInfoUI.UpdateAmmoUI(remainingAmmo, storedAmmo, maxAmmo);
     }
     public void UpdateHealthUI(int newHealth, int newHealthMax)
     {

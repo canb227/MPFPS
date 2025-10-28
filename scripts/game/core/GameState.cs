@@ -130,7 +130,7 @@ public partial class GameState : Node3D
     public void StartGame(string scenePath, GameModeType gameMode)
     {
         Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
-        Global.ui.StartLoadingScreen();
+        //Global.ui.StartLoadingScreen();
         MapManager.LoadMap(scenePath);
 
         GameModeManager gmm = new();
@@ -248,6 +248,7 @@ public partial class GameState : Node3D
             gameObject.PerTickShared(delta);
         }
         Global.ui.PerTick(delta);
+        gameModeManager.PerTick(delta);
 
 
 
@@ -291,6 +292,7 @@ public partial class GameState : Node3D
             {
                input.Value.actions = 0;
             }
+           // input.Value.actions = 0; this is what was in the full else in main
         }
 
     }

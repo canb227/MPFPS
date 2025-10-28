@@ -9,18 +9,38 @@ using System.Threading.Tasks;
 
 
 [GlobalClass]
-public partial class SwarmRobot : GOBaseNPC
+public partial class SwarmRobot : GOBaseNPC, IsDamagable
 {
-
-
-    [Export]
-    public SwarmRobotState state = SwarmRobotState.NONE;
+    //add robot walking sounds/ambient sounds, add robot kills to end of round screen, spawn waves of ai, etc, 
+    [Export] public Node3D root;
+    [Export] public CollisionShape3D collider;
+    [Export] public SwarmRobotState state = SwarmRobotState.NONE;
+    [Export] private Area3D meleeArea;
+    [Export] public AnimationPlayer animationPlayer;
+    [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
+    [Export] public AudioStreamPlayer3D genericSFX;
+    [Export] public AudioStreamPlayer3D movementSFX;
+    public float maxHealth { get; set; } = 50;
+    public float currentHealth { get; set; } = 50;
+    private CharacterSoundManager characterSoundManager;
+    string[] ambientSounds =
+    {
+        "res://assets/audio/enemies/combine_button_locked.wav",
+        "res://assets/audio/enemies/combine_button1.wav",
+        "res://assets/audio/enemies/combine_button2.wav",
+        "res://assets/audio/enemies/combine_button3.wav",
+        "res://assets/audio/enemies/combine_button5.wav",
+        "res://assets/audio/enemies/combine_button7.wav",
+    };
+    private int lastAmbientIndex = -1;
+    float ambientTimer = 10;
+    Random rand = new Random();
 
     public override void _Ready()
     {
         base._Ready();
 
-
+        characterSoundManager = new();
         navAgent.PathDesiredDistance = 0.5f;
         navAgent.TargetDesiredDistance = 0.5f;
         Logging.Log($"Spawned new SwarmRobot with initial state: {state} and target: {MovementTarget.Name}", "SwarmRobot");
@@ -54,6 +74,14 @@ public partial class SwarmRobot : GOBaseNPC
             case SwarmRobotState.WANDER:
                 break;
             case SwarmRobotState.SIMPLECHASE:
+                UpdateTarget(delta);
+                TryAttack(delta);
+                ambientTimer -= (float)delta;
+                if (ambientTimer <= 0f)
+                {
+                    PlayRandomAmbience();
+                    ResetTimer();
+                }
                 if (MovementTarget != null)
                 {
                     Vector3 velocity = Velocity;
@@ -88,16 +116,112 @@ public partial class SwarmRobot : GOBaseNPC
 
                     Velocity = velocity;
                     MoveAndSlide();
-                    return;
                 }
-
-                    break;
+                break;
             default:
                 break;
         }
 
-
     }
+
+    public override void PerTickShared(double delta)
+    {
+        base.PerTickShared(delta);
+    }
+
+    private void PlayRandomAmbience()
+    {
+        if (ambientSounds.Length == 0) return;
+
+        int index;
+        do
+        {
+            index = rand.Next(ambientSounds.Length);
+        } while (index == lastAmbientIndex && ambientSounds.Length > 1);
+
+        lastAmbientIndex = index;
+        genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
+        genericSFX.Play();
+    }
+
+    private void ResetTimer()
+    {
+        // Random interval between 7–20 seconds
+        ambientTimer = 7f + (float)rand.NextDouble() * 13f;
+    }
+    
+    
+    private double retargetTimer = 0;
+    private double retargetInterval = 3.0; // will randomize a bit
+
+    private void UpdateTarget(double delta)
+    {
+        retargetTimer -= delta;
+        if (retargetTimer <= 0)
+        {
+            retargetTimer = 3.0 + GD.RandRange(-1.0, 1.0); // 2–4 seconds
+
+            // Find closest player
+            Node3D closest = null;
+            float closestDist = float.MaxValue;
+
+            foreach (var player in GetTree().GetNodesInGroup("players")) // put your GOBasePlayer in "players" group
+            {
+                if (player is BasicPlayerCharacter p)
+                {
+                    if(p.state == CharacterState.Living)
+                    {
+                        float dist = GlobalTransform.Origin.DistanceTo(p.GlobalTransform.Origin);
+                        if (dist < closestDist)
+                        {
+                            closestDist = dist;
+                            closest = p;
+                        } 
+                    }
+                }
+            }
+
+            if (closest != null)
+                MovementTarget = closest;
+        }
+    }
+
+    private double attackCooldown = 0;
+    private const float MeleeRange = 2.0f; // tweak as needed
+
+
+    private void TryAttack(double delta)
+    {
+        attackCooldown -= delta;
+        if (MovementTarget == null || attackCooldown > 0)
+            return;
+
+        float dist = GlobalTransform.Origin.DistanceTo(MovementTarget.GlobalTransform.Origin);
+        if (dist <= MeleeRange)
+        {
+            if (MovementTarget is IsDamagable dmg)
+            {
+                animationPlayer.Play("attack");
+            }
+        }
+    }
+
+    public void Attack()
+    {
+        attackCooldown = 3.0;
+
+        // Get all overlapping bodies
+        foreach (var body in meleeArea.GetOverlappingBodies())
+        {
+            if (body is IsDamagable dmg)
+            {
+                dmg.TakeDamage(10, id, PainSoundType.Generic);
+            }
+        }
+    }
+
+
+
 
     public override bool InitFromData(GameObjectConstructorData data)
     {
@@ -127,6 +251,54 @@ public partial class SwarmRobot : GOBaseNPC
         this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
         this.state = message.state;
     }
+
+    public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        //only the authority can tell people they took damage (host is auth for robots)
+        RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType,VolumeDb]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        currentHealth -= damage;
+        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
+        //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
+        if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
+        {
+            Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
+            OnDeath(byID);
+        }
+    }
+
+    public void OnDeath(ulong byID)
+    {
+        //only the authority can tell people they died (host is auth for robots)
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_OnDeath", [byID]);
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_OnDeath(ulong byID)
+    {
+        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, PainSoundType.Generic);
+        currentHealth = 0;
+        root.Visible = false;
+        collider.Disabled = true;
+        state = SwarmRobotState.NONE;
+        Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
+        //remove ourselves and add a timed ragdoll
+
+    }
+
+    public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        Logging.Log("We Take Stun Damage as damage", "SwarmRobot");
+        TakeDamage(damage, byID, soundType, VolumeDb);
+    }
+
 }
 
 [MessagePackObject]

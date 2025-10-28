@@ -22,42 +22,37 @@ public partial class GOCrusher : GOTrap
 
             foreach (var body in bodies)
             {
-                GD.Print(body.GetType() + " " + body.Name);
                 if (body is GOPackageBox box)
                 {
-                    GD.Print("found a box");
                     foundBox = box;
                 }
-
-
                 if (body is GOLabelPaper label)
                 {
-                    GD.Print("found a label");
                     foundLabel = label;
                 }
-
             }
 
             // If both are present
             if (foundBox != null && foundLabel != null)
             {
-                GD.Print("Found Box is for Order: " + foundBox.orderNumber + " Found Label is for Order: " + foundLabel.orderNumber);
+                Logging.Log("Found Box is for Order: " + foundBox.orderNumber + " Found Label is for Order: " + foundLabel.orderNumber, "GOCrusher");
                 // Check if they belong to the same order
                 if (foundBox.orderNumber == foundLabel.orderNumber)
                 {
-                    GD.Print($"✅ Label {foundLabel.orderNumber} applied to Box {foundBox.orderNumber}");
+                    Logging.Log($"✅ Label {foundLabel.orderNumber} applied to Box {foundBox.orderNumber}", "GOCrusher");
 
                     // Remove the label from the scene
                     RPCManager.RPC(this, "HideAppliedLabel", [foundLabel.id]);
 
                     // Call a function on the box (e.g. ApplyLabel)
                     RPCManager.RPC(foundBox, "ApplyLabel", []);
+                    Global.gameState.gameModeManager.OrderLabelled(foundBox.orderNumber);
                     return true;
                 }
             }
 
             // No box and label matched
-            GD.Print("NOTHING APPLIED");
+            Logging.Log("NOTHING APPLIED", "GOCrusher");
             return false;
         }
         return false;

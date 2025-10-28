@@ -76,7 +76,6 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         }
     }
 
-    //NETWORKINGTODO is this okay? its called from a trigger animation
     public void OutOfPaper()
     {
         viewportLabel.Text = "Need Paper, Insert In Tray Below";
@@ -112,10 +111,8 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     {
         foreach (Node3D node in paperTrayArea.GetOverlappingBodies())
         {
-            GD.Print((node is GOComponent paperBoxer).ToString());
             if (node is GOComponent paperBox)
             {
-                GD.Print(paperBox.itemType);
                 if(paperBox.itemType == GameObjectType.PaperBox)
                 {
                     //node.Dispose();

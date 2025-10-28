@@ -8,7 +8,8 @@ public static class MapManager
 {
     private static Node3D nodeStaticLevel;
     private static PackedScene cachedLevel;
-    private static List<Marker3D> PlayerSpawnPoints = new();
+    private static List<PlayerMarker3D> PlayerSpawnPoints = new();
+    private static List<Marker3D> HorderSpawnPoints = new();
     public static List<ItemMarker3D> ItemSpawnPoints = new();
     private static ulong staticIDCounter = 1;
 
@@ -16,12 +17,18 @@ public static class MapManager
     {
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }
+
+    public static Transform3D GetHordeSpawnTransform()
+    {
+        return HorderSpawnPoints[Random.Shared.Next(HorderSpawnPoints.Count)].GlobalTransform;
+    }
     
     public static void ResetMap()
     {
         nodeStaticLevel.Free();
         nodeStaticLevel = null;
         PlayerSpawnPoints.Clear();
+        HorderSpawnPoints.Clear();
         ItemSpawnPoints.Clear();
         staticIDCounter = 1;
         nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
@@ -78,12 +85,25 @@ public static class MapManager
 
         if (meta.GetNode("playerSpawns") != null)
         {
-
-            foreach (Marker3D marker in nodeStaticLevel.GetNode("meta/playerSpawns").GetChildren())
+            foreach (PlayerMarker3D marker in nodeStaticLevel.GetNode("meta/playerSpawns").GetChildren())
             {
                 PlayerSpawnPoints.Add(marker);
             }
             Logging.Log($"Loaded {PlayerSpawnPoints.Count} player spawn points.", "GameStateLevel");
+        }
+        else
+        {
+            Logging.Warn("Static level meta has no \"playerSpawns\" node! Skipping player spawn init", "GameStateLevel");
+        }
+
+        if (meta.GetNode("hordeSpawns") != null)
+        {
+
+            foreach (Marker3D marker in nodeStaticLevel.GetNode("meta/hordeSpawns").GetChildren())
+            {
+                HorderSpawnPoints.Add(marker);
+            }
+            Logging.Log($"Loaded {HorderSpawnPoints.Count} horde spawn points.", "GameStateLevel");
         }
         else
         {
@@ -112,16 +132,6 @@ public static class MapManager
             {
                 list.Add(marker);
             }
-            //foreach (Node child in parent.GetChildren())
-            //{
-            //    if (child is ItemMarker3D marker)
-            //    {
-            //        list.Add(marker);
-            //    }
-
-            //    // Recurse into this child's children
-            //    CollectItemMarkers(child, list);
-            //}
         }
     }
 }
