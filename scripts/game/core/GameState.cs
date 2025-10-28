@@ -250,28 +250,51 @@ public partial class GameState : Node3D
         Global.ui.PerTick(delta);
         gameModeManager.PerTick(delta);
 
+
+
         var sortedDescending = topObjects.OrderByDescending(pair => pair.Value).ToList();
-        bool continueUpdating = true;
-        int numUpdates = 0;
-        while (continueUpdating && numUpdates<numUpdatesPerFrame && numUpdates<topObjects.Count)
+        if (sortedDescending.Count != 0)
         {
-            ulong objID = sortedDescending.First().Key;
-            sortedDescending.RemoveAt(0);
-            GameObjects[objID].priorityAccumulator = 0;
-            byte[] upd = GameObjects[objID].GenerateStateUpdate();
-            Global.network.BroadcastData(upd, Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
-            numUpdates++;
+            bool continueUpdating = true;
+            int numUpdates = 0;
+            while (continueUpdating && numUpdates < numUpdatesPerFrame && numUpdates < sortedDescending.Count)
+            {
+                ulong objID = sortedDescending.First().Key;
+                sortedDescending.RemoveAt(0);
+                GameObject obj = GameObjects[objID];
+                obj.priorityAccumulator = 0;
+                byte[] upd = obj.GenerateStateUpdate();
+
+                StateUpdatePacket packet = new StateUpdatePacket();
+                packet.type = obj.type;
+                packet.objectID = objID;
+                packet.sender = Global.steamid;
+                packet.data = upd;
+                packet.tick = tick;
+                Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.GameObjectState, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
+                numUpdates++;
+            }
         }
+
 
         //We're always the authority over our own input state, send that to all of our peers.
         var localInput = PlayerInputs[Global.steamid];
-        byte[] data = MessagePackSerializer.Serialize(localInput);
-        Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
-
-        foreach( var input in PlayerInputs)
+        if (localInput.LookInputVector == Vector2.Zero && localInput.MovementInputVector == Vector2.Zero && localInput.actions == 0)
         {
-           // input.Value.actions = 0;
+            return;
         }
+        else
+        {
+            byte[] data = MessagePackSerializer.Serialize(localInput);
+            Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
+
+            foreach (var input in PlayerInputs)
+            {
+               input.Value.actions = 0;
+            }
+           // input.Value.actions = 0; this is what was in the full else in main
+        }
+
     }
 
 
@@ -318,6 +341,7 @@ public partial class GameState : Node3D
                 if (newObj is Node n)
                 {
                     GameObjects[newObj.id] = newObj;
+                    n.Name = newObj.id.ToString();
                     GameObjectNodeParent.AddChild(n, true);
                 }
             }
@@ -403,6 +427,14 @@ public partial class GameState : Node3D
             ImGui.Text($"ObjectStateDump: {debugTarget.GenerateStateString()}");
             ImGui.End();
         }
+
+        ImGui.Begin("Player Inputs");
+        foreach (var entry in PlayerInputs)
+        {
+            ImGui.Text($"Player ID: {entry.Key} | MvInput: {entry.Value.MovementInputVector} | LkInput: {entry.Value.LookInputVector}");
+            ImGui.Text($"Actions: {entry.Value.actions.ToString()}");
+        }
+        ImGui.End();
     }
 
     private void HandleInputQueue()
@@ -450,11 +482,11 @@ public partial class GameState : Node3D
                     Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
                     return;
                 }
-                updateObj.ProcessStateUpdate(stateUpdate.data);
+                updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
             }
             else
             {
-                //TODO Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
+                //Logging.Error($"DESYNC! State update for unknown object {stateUpdate.objectID}! Attempting to fix!","GameState");
                 //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                 //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                 //fixObj.ProcessStateUpdate(stateUpdate.data);
@@ -474,19 +506,40 @@ public partial class GameState : Node3D
 
 
     //Incoming Network Message Processors ----------------------------------------------------------------------------------
-
+    private bool dedge = false;
 
     public void ProcessStateUpdatePacketBytes(byte[] stateUpdatePacketBytes, ulong sender)
     {
-        StateUpdatePacket stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes);
-        if (tick-stateUpdate.tick>StateFreshnessThreshold)
+        //Logging.Log($"State Packet: {MessagePackSerializer.ConvertToJson(stateUpdatePacketBytes)}", "StateUpdatePacket");
+
+
+        StateUpdatePacket stateUpdate = new();
+        try
         {
-            StateUpdatePacketBuffer.Enqueue(stateUpdate);
+            stateUpdate = MessagePackSerializer.Deserialize<StateUpdatePacket>(stateUpdatePacketBytes);
         }
-        else
+        catch(Exception e)
         {
-            Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! Discarding...", "GameState");
+            if (!dedge)
+            {
+                Logging.Error($"Exception parsing state packet (SILENCING THIS ERROR): {e.ToString()}", "GameState");
+                Logging.Error($"The broken packet came from sender {sender}, has a length of {stateUpdatePacketBytes.Length}", "GameState");
+                dedge = true;
+            }
         }
+        if (dedge)
+        {
+            return;
+        }
+        StateUpdatePacketBuffer.Enqueue(stateUpdate);
+        //if ((tick-stateUpdate.tick)<=StateFreshnessThreshold)
+        //{
+        //    StateUpdatePacketBuffer.Enqueue(stateUpdate);
+        //}
+        //else
+        //{
+        //    Logging.Log($"Got a packet that is {tick - stateUpdate.tick} ticks old! (current tick {tick}, packet tick {stateUpdate.tick}, threshold {StateFreshnessThreshold}) Discarding...", "GameState");
+        //}
     }
 
     public void ProcessPlayerInputPacketBytes(byte[] playerInputBytes, ulong sender)

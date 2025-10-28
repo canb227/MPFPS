@@ -347,6 +347,7 @@ collision_mask = 3
 script = ExtResource("1_mcndx")
 animationTree = NodePath("AnimationTree")
 interactCooldownSeconds = 0.8
+type = 4
 metadata/_custom_type_script = "uid://b7si2ee0w4q2s"
 
 [node name="ButtonBase" type="MeshInstance3D" parent="."]

@@ -1,5 +1,6 @@
 using Godot;
 using MessagePack;
+using System.Collections.Generic;
 /// <summary>
 /// Struct that defines a single network message that updates the state of a single IGameObject.
 /// </summary>

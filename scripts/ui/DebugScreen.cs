@@ -4,6 +4,7 @@ using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Reflection;
 
 
@@ -115,6 +116,7 @@ public partial class DebugScreen : Control
         {
             foreach (ulong peer in Global.Lobby.AllPeers())
             {
+                Logging.Log($"Lobby already has players in it, manually adding one of them :{peer}", "DebugScreen");
                 Lobby_NewLobbyPeerAddedEvent(peer);
             }
 
@@ -138,7 +140,7 @@ public partial class DebugScreen : Control
 
     private void RPCManager_ChatReceivedEvent(string msg, ulong sender)
     {
-        chat_text.AddText($"{SteamFriends.GetFriendPersonaName(new CSteamID(sender))}: {msg}");
+
     }
 
     private void QuitGameButton_Pressed()
@@ -201,9 +203,14 @@ public partial class DebugScreen : Control
 
     private void Chat_send_Pressed()
     {
-        RPCManager.NetCommand_Chat(chat_chatbar.Text);
+        RPCManager.RPC(this,"ChatMessage",[chat_chatbar.Text,Global.steamid]);
         chat_chatbar.Text = "";
     }
 
+    [RPCMethod(RPCMode.SendToAllPeers)]
+    public void ChatMessage(string message, ulong from)
+    {
+        chat_text.AddText($"{SteamFriends.GetFriendPersonaName(new CSteamID(from))}: {message}\n");
+    }
 
 }

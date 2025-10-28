@@ -114,11 +114,11 @@ public partial class GameModeManager : Node
     public async void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
-        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        RPCManager.RPC(this, "StartNewRound", []);
+        //await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        //RPCManager.RPC(this, "StartNewRound", []);
 
-        await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
-        AssignRoles();
+        //await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
+        //AssignRoles();
 
 
     }
@@ -614,15 +614,11 @@ public partial class GameModeManager : Node
 
     public void SpawnNewLocalPlayerCharacter(GameObjectType pcType)
     {
+        Logging.Log($"Spawning local player character of type: {pcType.ToString()} without attempting to take control", "GameModeManager");
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
-            GameObjectConstructorData data = new GameObjectConstructorData();
+            GameObjectConstructorData data = new GameObjectConstructorData(pcType);
             data.spawnTransform = MapManager.GetPlayerSpawnTransform();
-            data.id = Global.gameState.GenerateNewID();
-            data.authority = Global.steamid;
-            data.type = pcType;
-            List<Object> paramList = new List<Object>();
-            data.paramList = paramList;
             Global.gameState.Auth_SpawnObject(pcType, data);
         }
         else
@@ -633,17 +629,13 @@ public partial class GameModeManager : Node
 
     public void SpawnAndControlNewLocalPlayerCharacter(GameObjectType pcType)
     {
+        Logging.Log($"Spawning local player character of type: {pcType.ToString()} AND attempting to take control", "GameModeManager");
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
-            GameObjectConstructorData data = new GameObjectConstructorData();
+            GameObjectConstructorData data = new GameObjectConstructorData(pcType);
             data.spawnTransform = MapManager.GetPlayerSpawnTransform();
-            data.id = Global.gameState.GenerateNewID();
-            data.authority = Global.steamid;
-            data.type = pcType;
-            List<Object> paramList = new List<Object>();
-            data.paramList = paramList;
+            data.paramList.Add(true);
             Global.gameState.Auth_SpawnObject(pcType, data);
-            ((GOBasePlayerCharacter)Global.gameState.GameObjects[data.id]).TakeControl(Global.steamid);
         }
         else
         {
