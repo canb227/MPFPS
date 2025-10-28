@@ -219,9 +219,11 @@ public class SteamNetwork
     /// <param name="type">type of data you are sending</param>
     /// <param name="remoteSteamID"> User to send data to.</param>
     /// <returns>An EResult enum value indicating the result of the send. A value of k_EResultOK indicates that the message was constructed and placed into the Steam Relay Network. A value of k_EResultOK DOES NOT mean that the message was actually delivered.</returns>
-    public EResult SendData(byte[] data, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    public EResult SendData(byte[] data, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_Reliable)
     {
         EResult result;
+        if(channel == Channel.RPC)
+            GD.Print(channel);
         if (bDoLoopback && NetworkUtils.IsMe(remoteSteamID))
         {
             Logging.Warn($"Self Networking message send detected!!!!! this is bad", "NetworkDebug");
