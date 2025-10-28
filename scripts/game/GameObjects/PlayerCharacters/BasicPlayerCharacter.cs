@@ -177,6 +177,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleNonMovementInput(double delta)
     {
+        Logging.Log("HANDLE INPUT FOR: " + authority, "BasicPlayerCharacter");
         if(!handcuffed)
         {
             if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
