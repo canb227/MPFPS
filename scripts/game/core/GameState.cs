@@ -272,7 +272,7 @@ public partial class GameState : Node3D
                 packet.sender = Global.steamid;
                 packet.data = upd;
                 packet.tick = tick;
-                Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.GameObjectState, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
+                Global.network.BroadcastData(MessagePackSerializer.Serialize(packet), Channel.GameObjectState, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoNagle);
                 numUpdates++;
             }
         }
