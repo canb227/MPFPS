@@ -224,7 +224,7 @@ public static class RPCManager
         }
         try
         {
-            Logging.Log($"Invoking {method.Name}", "RPCManager");
+            //Logging.Log($"Invoking {method.Name}", "RPCManager");
             method.Invoke(node, parameters);
         }
         catch (Exception e)

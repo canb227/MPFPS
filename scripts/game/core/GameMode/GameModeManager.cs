@@ -124,7 +124,7 @@ public partial class GameModeManager : Node
             {
                 if (Time.GetTicksMsec() - start > 10000)
                 {
-                    GD.Print("Timeout waiting for clients");
+                    Logging.Log("Timeout waiting for clients", "GameModeManager");
                     break;
                 }
                 Logging.Log("Waiting...", "GameModeManager");

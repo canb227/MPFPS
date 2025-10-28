@@ -223,14 +223,12 @@ public class SteamNetwork
     public EResult SendData(byte[] data, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_Reliable)
     {
         EResult result;
-        if(channel == Channel.RPC)
-            GD.Print(channel);
         if (bDoLoopback && NetworkUtils.IsMe(remoteSteamID))
         {
-            Logging.Warn($"Self Networking message send detected!!!!! this is bad", "NetworkDebug");
-            result = EResult.k_EResultFail;
-            //Loopback(channel, data);
-            //result = EResult.k_EResultOK;
+            //Logging.Warn($"Self Networking message send detected!!!!! this is bad", "NetworkDebug");
+            //result = EResult.k_EResultFail;
+            Loopback(channel, data);
+            result = EResult.k_EResultOK;
         }
         else
         {
@@ -239,10 +237,6 @@ public class SteamNetwork
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
-            if(result != EResult.k_EResultOK)
-            {
-                GD.Print("\n" + result + "\n");
-            }
             Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         }
         return result;
