@@ -111,16 +111,41 @@ public partial class GameModeManager : Node
         Global.network.BroadcastData(payload, Channel.GameStateOptions, Global.Lobby.lobbyPeers.ToList());
     }
 
+    List<ulong> gameReadyClients = new();
+    bool firstRun = true;
     public async void GameStartAsHost()
     {
-        Logging.Log($"Starting server-side game mode init", "GameModeManager");
+        if(firstRun)
+        {
+            Logging.Log($"Waiting for all clients to be ready.", "GameModeManager");
+        
+            var start = Time.GetTicksMsec();
+            while (Global.Lobby.AllPeersExceptSelf().Except(gameReadyClients).Any())
+            {
+                if (Time.GetTicksMsec() - start > 10000)
+                {
+                    GD.Print("Timeout waiting for clients");
+                    break;
+                }
+                Logging.Log("Waiting...", "GameModeManager");
+                await ToSignal(GetTree().CreateTimer(1f), SceneTreeTimer.SignalName.Timeout);
+            }
+            firstRun = false;
+        }
+
+
+        Logging.Log($"Clients Ready Start Countdown to New Round.", "GameModeManager");
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         RPCManager.RPC(this, "StartNewRound", []);
 
         await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
         AssignRoles();
+    }
 
-
+    [RPCMethod(mode = RPCMode.OnlySendToAuth)]
+    public void ClientReady(ulong clientID)
+    {
+        gameReadyClients.Add(clientID);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -585,14 +610,13 @@ public partial class GameModeManager : Node
         OnOrderFinished?.Invoke(orderNumber);
     }
 
-    internal async void StartGameMode(string scenePath, GameModeType gameMode)
+    internal void StartGameMode(string scenePath, GameModeType gameMode)
     {
-
         switch (gameMode)
         {
             case GameModeType.TTT:
                 Global.ui.ToGameUI();
-                await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
+                //await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
                 SpawnAndControlNewLocalPlayerCharacter(GameObjectType.Ghost);
 
                 //Global.ui.StopLoadingScreen();

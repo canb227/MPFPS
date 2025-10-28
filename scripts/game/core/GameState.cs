@@ -153,6 +153,7 @@ public partial class GameState : Node3D
             aim.GameStartAsHost();
         }
         ProcessMode = ProcessModeEnum.Pausable;
+        RPCManager.RPC(gmm, "ClientReady", [Global.steamid]);
     }
 
     public void ResetGameState()

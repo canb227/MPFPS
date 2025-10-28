@@ -297,16 +297,8 @@ public class SteamNetwork
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
             int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
-            if(messageCount > 0)
-            {
-                GD.Print($"We have {messageCount} messages incoming");
-            }
             for (int k = 0; k < messageCount; k++)
             {
-                if(channel == Channel.RPC)
-                {
-                    GD.Print("Message on RPC");
-                }
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
                 byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
                 ReceiveBandwidthTracker += payload.Length;
