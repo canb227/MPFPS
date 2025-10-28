@@ -263,7 +263,7 @@ public class SteamNetwork
             }
             if (channel == Channel.RPC)
             {
-                Logging.Log($"Sending RPC to: {identity}", "RPCDebug");
+                //Logging.Log($"Sending RPC to: {identity}", "RPCDebug");
             }
             retval.Add(SendData(data, channel, identity, sendFlags));
         }
@@ -271,7 +271,7 @@ public class SteamNetwork
         {
             if (channel == Channel.RPC)
             {
-                Logging.Log($"Sending RPC to: SELF", "RPCDebug");
+                //Logging.Log($"Sending RPC to: SELF", "RPCDebug");
             }
             Loopback(channel, data);
             retval.Add(EResult.k_EResultOK);
