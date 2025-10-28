@@ -744,7 +744,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         state = CharacterState.Missing;
         currentHealth = 0;
         Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
-        Global.gameState.gameModeManager.CharacterDied(team);
+        Global.gameState.gameModeManager.CharacterDied(authority, team);
         ulong tempControllingPlayerID = controllingPlayerID;
         ReleaseControl();
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);

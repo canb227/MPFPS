@@ -16,7 +16,10 @@ public static class GameObjectLoader
         { "ball", (GameObjectType.Ball, "res://scenes/GameObjects/props/Ball.tscn", typeof(SimpleShape)) },
         {"ghost", (GameObjectType.Ghost, "res://scenes/GameObjects/player/ghost.tscn", typeof(Ghost)) },
         {"basicPlayer" ,(GameObjectType.BasicPlayer,"res://scenes/GameObjects/player/BasicPlayer.tscn",typeof(BasicPlayerCharacter)) },
-        {"swarmRobot" ,(GameObjectType.SwarmRobot,"res://scenes/GameObjects/npcs/SwarmRobot.tscn",typeof(SwarmRobot)) },
+        {"SwarmRobotPlayer" ,(GameObjectType.SwarmRobotPlayer,"res://scenes/GameObjects/player/SwarmRobotPlayerCharacter.tscn",typeof(SwarmRobotPlayerCharacter)) },
+
+        { "swarmRobot" ,(GameObjectType.SwarmRobot,"res://scenes/GameObjects/npcs/SwarmRobot.tscn",typeof(SwarmRobot)) },
+        
 
         //InventoryItems
         {"Hands", (GameObjectType.Hands,"res://scenes/GameObjects/items/equipment/Hands.tscn", typeof(Hands))},
@@ -163,5 +166,6 @@ public enum GameObjectType
     PackageRadar,
     WalkieTalkie,
     PlayerRadar,
-    C4
+    C4,
+    SwarmRobotPlayer
 }

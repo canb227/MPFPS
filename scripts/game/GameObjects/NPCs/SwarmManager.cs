@@ -47,7 +47,12 @@ public partial class SwarmManager : Node
         robotSwarmSize = robotSwarmMinSize + randomSize; //swarm is somewhere between min and max size
         Transform3D baseTransform = MapManager.GetHordeSpawnTransform();
 
-        for (int i = 0; i < robotSwarmSize; i++)
+
+        robotSwarmSize += Global.gameState.gameModeManager.deadPlayers.Count();
+
+        float radius = robotSwarmSize / 10f; // adjust based on swarm size
+        int i = 0;
+        for (i = 0; i < robotSwarmSize; i++)
         {
             GameObjectConstructorData data = new(GameObjectType.SwarmRobot);
 
@@ -66,14 +71,11 @@ public partial class SwarmManager : Node
             }
 
             data.paramList.Add(SwarmRobotState.SIMPLECHASE);
-
-            float radius = robotSwarmSize/10f; // adjust based on swarm size
-            float angle = (float)(rand.NextDouble() * Math.PI * 2);
-            float dist = (float)(rand.NextDouble() * radius);
-
+            float angle = (float)(i * (2 * Math.PI / robotSwarmSize));
+            float dist = radius; // fixed distance
             Vector3 offset = new Vector3(
                 Mathf.Cos(angle) * dist,
-                0, // keep Y the same so they’re on the ground
+                0,
                 Mathf.Sin(angle) * dist
             );
 
@@ -83,6 +85,25 @@ public partial class SwarmManager : Node
             data.spawnTransform = spawnTransform;
 
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobot, data);
+        }
+        foreach(var player in Global.gameState.gameModeManager.deadPlayers)
+        {
+            float angle = (float)(i * (2 * Math.PI / robotSwarmSize));
+            float dist = radius; // fixed distance
+            Vector3 offset = new Vector3(
+                Mathf.Cos(angle) * dist,
+                0,
+                Mathf.Sin(angle) * dist
+            );
+
+            Transform3D spawnTransform = baseTransform;
+            spawnTransform.Origin += offset;
+
+            GameObjectConstructorData data = new(GameObjectType.SwarmRobotPlayer);
+            data.spawnTransform = spawnTransform;
+            Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobot, data);
+            //spawn player as a robot
+            i++;
         }
     }
 
