@@ -1,6 +1,7 @@
 
 using Godot;
 using MessagePack;
+using MessagePack.Formatters;
 using MessagePack.Resolvers;
 using Steamworks;
 using System;
@@ -295,15 +296,20 @@ public class SteamNetwork
         foreach (Channel channel in Enum.GetValues(typeof(Channel)))
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
-            for (int k = 0; k < SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel); k++)
+            int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
+            for (int k = 0; k < messageCount; k++)
             {
-
+                GD.Print($"We have {messageCount} messages incoming");
+                if(channel == Channel.RPC)
+                {
+                    GD.Print("Message on RPC");
+                }
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
                 byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
                 ReceiveBandwidthTracker += payload.Length;
                 NumRcv[channel]++;
                 Logging.Log($" MSGRCV @ {steamMessage.m_usecTimeReceived.m_SteamNetworkingMicroseconds} | #{steamMessage.m_nMessageNumber} | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
-                
+
                 ProcessMessage(payload, channel,steamMessage.m_identityPeer.GetSteamID64());
                 SteamNetworkingMessage_t.Release(messages[k]);
             }

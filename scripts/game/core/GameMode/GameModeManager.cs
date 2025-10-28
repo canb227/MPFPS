@@ -111,12 +111,12 @@ public partial class GameModeManager : Node
         Global.network.BroadcastData(payload, Channel.GameStateOptions, Global.Lobby.lobbyPeers.ToList());
     }
 
-    public async void GameStartAsHost()
+    public void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
-        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
-        RPCManager.RPC(this, "SpawnAndControlNewLocalPlayerCharacter", [GameObjectType.BasicPlayer]);
+        //await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        //RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
+        //RPCManager.RPC(this, "SpawnAndControlNewLocalPlayerCharacter", [GameObjectType.BasicPlayer]);
         // RPCManager.RPC(this, "StartNewRound", []);
 
         // await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
@@ -628,7 +628,7 @@ public partial class GameModeManager : Node
             Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
         }
     }
-    
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void SpawnAndControlNewLocalPlayerCharacter(GameObjectType pcType)
     {
