@@ -206,17 +206,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                 case CharacterState.Living:
                                     if (basicPlayerCharacter.handcuffed)
                                     {
-                                        basicPlayerCharacter.DropEquipped();
+                                        DropEquipped();
                                     }
                                     break;
 
                                 case CharacterState.Missing:
-                                    RPCManager.RPC(basicPlayerCharacter, "OnFound", []);
-                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    if(Global.steamid == authority)
+                                    {
+                                        RPCManager.RPC(basicPlayerCharacter, "OnFound", []);
+                                        Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    }
                                     break;
 
                                 case CharacterState.Dead:
-                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    if (Global.steamid == authority)
+                                    {
+                                        Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
+                                    }
                                     break;
                             }
 
@@ -225,7 +231,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                     
                 }
             }
-            if (!lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
+            if (Global.steamid == authority && !lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
             {
                 if(team == Team.Traitor || team == Team.Manager)
                 {
@@ -314,7 +320,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     }
     
-        [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void PickupReplace(IsInventoryItem item)
     {
         if (item is GOBaseInventoryItem GOItem)
@@ -374,7 +380,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void DropEquipped()
     {
-        if(equipped != null && equipped.droppable)
+        if (equipped != null && equipped.droppable)
         {
             equipped.OnUnequipped(authority);
             equipped.OnDropped(authority);

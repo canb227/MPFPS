@@ -101,6 +101,7 @@ public partial class SwarmManager : Node
 
             GameObjectConstructorData data = new(GameObjectType.SwarmRobotPlayer);
             data.spawnTransform = spawnTransform;
+            data.paramList.Add(true);
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobotPlayer, data);
             //spawn player as a robot
             i++;
