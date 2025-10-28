@@ -1,4 +1,5 @@
 
+using Godot;
 using MessagePack;
 using MessagePack.Resolvers;
 using Steamworks;
@@ -235,6 +236,7 @@ public class SteamNetwork
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
+            GD.Print("\n\n" + result + "\n\n");
             Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         }
         return result;

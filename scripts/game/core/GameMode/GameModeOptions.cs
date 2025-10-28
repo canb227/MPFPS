@@ -25,7 +25,7 @@ public class GameModeOptions
     public float percentManagers = 0.166666f;
 
     [Key(5)]
-    public float roleAssignmentDelay = 5;
+    public float roleAssignmentDelay = 10;
 
     [Key(6)]
     public float newRoundDelay = 3;
