@@ -111,16 +111,14 @@ public partial class GameModeManager : Node
         Global.network.BroadcastData(payload, Channel.GameStateOptions, Global.Lobby.lobbyPeers.ToList());
     }
 
-    public void GameStartAsHost()
+    public async void GameStartAsHost()
     {
         Logging.Log($"Starting server-side game mode init", "GameModeManager");
-        //await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
-        //RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
-        //RPCManager.RPC(this, "SpawnAndControlNewLocalPlayerCharacter", [GameObjectType.BasicPlayer]);
-        // RPCManager.RPC(this, "StartNewRound", []);
+        await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
+        RPCManager.RPC(this, "StartNewRound", []);
 
-        // await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
-        // AssignRoles();
+        await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
+        AssignRoles();
 
 
     }
@@ -220,6 +218,7 @@ public partial class GameModeManager : Node
         }
         else
         {
+            Logging.Log("Starting New Round as Peer", "GameModeManager");
             Global.ui.inGameUI.RoundReport.NewRound();
             Global.ui.inGameUI.ScoreBoard.NewRound();
             basicPlayers.Clear();
@@ -586,14 +585,14 @@ public partial class GameModeManager : Node
         OnOrderFinished?.Invoke(orderNumber);
     }
 
-    internal void StartGameMode(string scenePath, GameModeType gameMode)
+    internal async void StartGameMode(string scenePath, GameModeType gameMode)
     {
 
         switch (gameMode)
         {
             case GameModeType.TTT:
                 Global.ui.ToGameUI();
-
+                await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
                 SpawnAndControlNewLocalPlayerCharacter(GameObjectType.Ghost);
 
                 //Global.ui.StopLoadingScreen();
