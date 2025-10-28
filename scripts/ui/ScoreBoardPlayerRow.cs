@@ -28,6 +28,14 @@ public partial class ScoreBoardPlayerRow : PanelContainer
         playerName.Text = Utils.IDToName(playerID);
         playerIcon.Texture = Utils.GetSmallSteamAvatar(playerID);
         Name = playerID.ToString();
+
+        var original = GetThemeStylebox("panel") as StyleBoxFlat;
+        if (original != null)
+        {
+            var unique = (StyleBoxFlat)original.Duplicate();
+            AddThemeStyleboxOverride("panel", unique);
+        }
+        
         ResetTeamVisual();
     }
 
