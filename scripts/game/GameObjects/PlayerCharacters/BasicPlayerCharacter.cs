@@ -177,8 +177,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleNonMovementInput(double delta)
     {
-        Logging.Log("HANDLE INPUT FOR: " + authority, "BasicPlayerCharacter");
-        if(!handcuffed)
+        if (!handcuffed)
         {
             if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
             {
@@ -212,29 +211,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                     break;
 
                                 case CharacterState.Missing:
-                                    if(Global.steamid == authority)
-                                    {
-                                        RPCManager.RPC(basicPlayerCharacter, "OnFound", []);
-                                        Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
-                                    }
+                                    RPCManager.RPC(basicPlayerCharacter, "OnFound", []);
+                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
                                     break;
 
                                 case CharacterState.Dead:
-                                    if (Global.steamid == authority)
-                                    {
-                                        Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
-                                    }
+                                    Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
                                     break;
                             }
 
                         }
                     }
-                    
+
                 }
             }
             if (Global.steamid == authority && !lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
             {
-                if(team == Team.Traitor || team == Team.Manager)
+                if (team == Team.Traitor || team == Team.Manager)
                 {
                     if (!Global.ui.inGameUI.PlayerUIManager.roleShopScreen.Visible)
                     {
@@ -268,8 +261,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
     }
-    
-    private void EquipNextFromSlot(InventoryGroupCategory category)
+
+    public void EquipNextFromSlot(InventoryGroupCategory category)
+    {
+        RPCManager.RPC(this, "rpc_EquipNextFromSlot", [category]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    private void rpc_EquipNextFromSlot(InventoryGroupCategory category)
     {
         if (inventory.GetGroup(category).items.Any())
         {
@@ -290,9 +289,22 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //Equipment Functions
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public override void Pickup(IsInventoryItem item)
     {
+        if (item is GameObject gameObject)
+        {
+            RPCManager.RPC(this, "rpc_Pickup", [gameObject.id]);
+        }
+        else
+        {
+            Logging.Error("IsInventoryItem isn't a GameObject??", "BasicPlayerCharacter");
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_Pickup(ulong itemID)
+    {
+        IsInventoryItem item = (IsInventoryItem)Global.gameState.GameObjects[itemID];
         if (item is GOBaseInventoryItem GOItem)
         {
             if (inventory.HasGroup(GOItem.category))
@@ -378,8 +390,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             i.OnEquipped(controllingPlayerID);
         }
     }
-
+    
     public void DropEquipped()
+    {
+        RPCManager.RPC(this, "rpc_DropEquipped", []);
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_DropEquipped()
     {
         if (equipped != null && equipped.droppable)
         {
