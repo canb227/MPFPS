@@ -211,7 +211,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                     break;
 
                                 case CharacterState.Missing:
-                                    basicPlayerCharacter.OnFound();
+                                    RPCManager.RPC(basicPlayerCharacter, "OnFound", []);
                                     Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
                                     break;
 
