@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://4pw80uffkx1e"]
 
-[ext_resource type="Script" uid="uid://kuimq525di4f" path="res://scripts/game/GameObjects/NPCs/SwarmRobot.cs" id="1_to5ml"]
+[ext_resource type="Script" uid="uid://citq2tpxaq5ux" path="res://scripts/game/GameObjects/PlayerCharacters/SwarmRobotPlayerCharacter.cs" id="1_n2121"]
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_4l5s8"]
 
@@ -85,19 +85,16 @@ emission_enabled = true
 radius = 1.5991211
 height = 3.1982422
 
-[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "navAgent")]
-collision_layer = 2
-collision_mask = 3
-script = ExtResource("1_to5ml")
+[node name="SwarmRobotPlayerCharacter" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "camera")]
+script = ExtResource("1_n2121")
 root = NodePath(".")
 collider = NodePath("collider")
-state = 3
 meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
 genericSFX = NodePath("SteamAudioPlayer")
-navAgent = NodePath("NavigationAgent3D")
-metadata/_custom_type_script = "uid://kuimq525di4f"
+camera = NodePath("Camera3D")
+metadata/_custom_type_script = "uid://citq2tpxaq5ux"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -109,9 +106,8 @@ shape = SubResource("CapsuleShape3D_aj03a")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_3tng0")
+skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_1fq2r")
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 
 [node name="AttackAoe" type="Area3D" parent="."]
 collision_layer = 16
@@ -128,3 +124,6 @@ panning_strength = 0.0
 stream = ExtResource("2_tcwxr")
 volume_db = -6.0
 panning_strength = 0.0
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62766343, -0.12285447)
