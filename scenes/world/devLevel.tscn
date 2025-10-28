@@ -1,7 +1,7 @@
 [gd_scene load_steps=43 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
-[ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
+[ext_resource type="Script" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
@@ -15,9 +15,9 @@
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
 [ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="12_k56je"]
-[ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
+[ext_resource type="PackedScene" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
-[ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
+[ext_resource type="PackedScene" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_mku5r"]
 viewport_path = NodePath("LabelViewport")
@@ -159,7 +159,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D2" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.043004, 1.2823963, 14.350945)
@@ -167,7 +166,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D3" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.79893, 1.2823963, 14.350945)
@@ -175,7 +173,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D4" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.454403, 1.2823963, 14.350945)
@@ -183,7 +180,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D5" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.387531, 1.2823963, 16.104607)
@@ -191,7 +187,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D6" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.043004, 1.2823963, 16.104607)
@@ -199,7 +194,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D7" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.79893, 1.2823963, 16.104607)
@@ -207,7 +201,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="PlayerMarker3D8" type="Marker3D" parent="meta/playerSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.454403, 1.2823963, 16.104607)
@@ -215,7 +208,6 @@ script = ExtResource("1_213ts")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
-metadata/_custom_type_script = "uid://l4ytmjujcole"
 
 [node name="itemSpawns" type="Node" parent="meta"]
 

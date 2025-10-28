@@ -1,6 +1,7 @@
 using Godot;
 using ImGuiNET;
 using MessagePack;
+using MessagePack.Resolvers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -276,23 +277,14 @@ public partial class GameState : Node3D
             }
         }
 
-
         //We're always the authority over our own input state, send that to all of our peers.
         var localInput = PlayerInputs[Global.steamid];
-        if (localInput.LookInputVector == Vector2.Zero && localInput.MovementInputVector == Vector2.Zero && localInput.actions == 0)
-        {
-            return;
-        }
-        else
-        {
-            byte[] data = MessagePackSerializer.Serialize(localInput);
-            Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
+        byte[] data = MessagePackSerializer.Serialize(localInput);
+        Global.network.BroadcastData(data, Channel.PlayerInput, Global.Lobby.AllPeersExceptSelf());
 
-            foreach (var input in PlayerInputs)
-            {
-               input.Value.actions = 0;
-            }
-           // input.Value.actions = 0; this is what was in the full else in main
+        foreach( var input in PlayerInputs)
+        {
+           // input.Value.actions = 0;
         }
 
     }
@@ -323,14 +315,17 @@ public partial class GameState : Node3D
             Logging.Error($"Error, cannot spawn object with type {data.type}, invalid authority provided: {data.authority}!", "GameState");
             return;
         }
+        Logging.Log($"Broadcasting RPC for Local_SpawnObject for {gameObjectType}", "GameState");
         RPCManager.RPC(this, "Local_SpawnObject", [gameObjectType, MessagePackSerializer.Serialize(data)]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void Local_SpawnObject(GameObjectType type, byte[] _data)
     {
+        
         GameObjectConstructorData data = MessagePackSerializer.Deserialize<GameObjectConstructorData>(_data);
         GameObject newObj = GameObjectLoader.LoadObjectByType(type);
+        Logging.Log($"Spawning {type} on local machine with ID: {data.id} and authority {data.authority}", "GameState");
         if (newObj != null)
         {
             newObj.id = data.id;

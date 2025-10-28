@@ -70,9 +70,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void _Ready()
     {
         base._Ready();
-        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
         Global.ui.inGameUI.ScoreBoard.AddLivingWorkerPlayerRow(authority);
-        
+
         currentGroup = InventoryGroupCategory.Hands;
         currentItemSlot = 0;
         this.CollisionLayer = 1 << 4; //5
@@ -84,8 +83,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast.CollideWithBodies = true;
         interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
-
     }
+    
+    public override bool InitFromData(GameObjectConstructorData data)
+    {
+        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        base.InitFromData(data);
+        return true;
+    }
+
     public override void ProcessStateUpdate(byte[] _update)
     {
         BasicPlayerStateUpdate update = MessagePackSerializer.Deserialize<BasicPlayerStateUpdate>(_update);
@@ -561,7 +567,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private void HandleMouseLook(double delta)
     {
         bool lockLook = false;
-        if(equipped is Hands hands)
+        if (equipped is Hands hands)
         {
             lockLook = hands.rotateMode;
         }
@@ -581,6 +587,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
     }
+    
 
     public override void PerFrameAuth(double delta)
     {

@@ -69,7 +69,7 @@ public class SteamNetwork
     /// <summary>
     /// If true, introduce artifical network conditions to loopback messages. TESTING ONLY
     /// </summary>
-    private const bool bNetworkSimulation = true;
+    private const bool bNetworkSimulation = false;
 
     /// <summary>
     /// Base miliseconds to delay all loopback messages

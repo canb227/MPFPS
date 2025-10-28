@@ -20,6 +20,11 @@ public partial class PlayerUIManager : Control
 
     public void ShowPlayerUI(ulong characterID)
     {
+        GD.Print("Players");
+        foreach(var player in Global.gameState.gameModeManager.basicPlayers)
+        {
+            GD.Print(player.Key);
+        }
         UpdateHealthUI((int)Global.gameState.gameModeManager.basicPlayers[characterID].currentHealth, (int)Global.gameState.gameModeManager.basicPlayers[characterID].maxHealth);
         Visible = true;
         PlayerInfoUI.Visible = true;

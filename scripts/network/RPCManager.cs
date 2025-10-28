@@ -155,8 +155,6 @@ public static class RPCManager
 
     public static void RPC(Node context, string methodName, object[] parameters)
     {
-
-
         MethodInfo method = context.GetType().GetMethod(methodName);
         if (method == null)
         {
@@ -196,12 +194,12 @@ public static class RPCManager
             packet.parameters = parameters;
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
-            Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
+            //Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
             foreach (var obj in parameters)
             {
                 if (obj is byte[] arr)
                 {
-                    Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
+                    //Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
                 }
             }
             Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
@@ -211,9 +209,6 @@ public static class RPCManager
 
     public static void ProcessRPC(NodePath path, string methodName, object[] parameters, bool paramsValueTypeOnly = false)
     {
-
-
-
         Node node = Global.instance.GetNode(path);
         if (node == null)
         {
@@ -229,7 +224,7 @@ public static class RPCManager
         }
         try
         {
-
+            Logging.Log($"Invoking {method.Name}", "RPCManager");
             method.Invoke(node, parameters);
         }
         catch (Exception e)
