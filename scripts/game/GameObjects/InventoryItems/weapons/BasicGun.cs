@@ -51,11 +51,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     private double _timeUntilReload;
     private string[] gunSounds;
     private string[] emptySounds;
+    private PhysicsDirectSpaceState3D directSpaceStateCache;
     public override void _Ready()
     {
         base._Ready();
         gunSounds = ["res://assets/audio/weapons/basic/fire1.wav"];
         emptySounds = ["res://assets/audio/weapons/basic/ar2_empty.wav"];
+        directSpaceStateCache = GetWorld3D().DirectSpaceState;
     }
 
     public override void PerTickShared(double delta)
@@ -165,7 +167,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         for (int i = 0; i < bulletsPerShot; i++)
         {
             // randomly modify weapon spread using temporary ray
-            var spaceState = GetWorld3D().DirectSpaceState;
+            var spaceState = directSpaceStateCache;
             if(spaceState == null)
             {
                 GD.Print("spaceState is null");
