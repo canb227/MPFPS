@@ -36,12 +36,13 @@ public partial class GOShippingTube : GOTrap
             // --- Invalid Contents: eject everything ---
             RPCManager.RPC(this, "PlayAnimation", ["shipmentFail"]);
             // Gather rigidbodies inside the area
-            
+
             // Kick them out after half a second
             RPCManager.RPC(this, "EjectAfterDelay", []);
         }
     }
     
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void PackageShipped(ulong itemID)
     {
         var obj = Global.gameState.GameObjects[itemID];
