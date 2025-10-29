@@ -268,7 +268,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    private void rpc_EquipNextFromSlot(InventoryGroupCategory category)
+    public void rpc_EquipNextFromSlot(InventoryGroupCategory category)
     {
         if (inventory.GetGroup(category).items.Any())
         {
