@@ -73,7 +73,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             Reload();
         }
     }
-    private async void Reload()
+    private void Reload()
     {
         if (reloading && Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[equippedBySteamID]] is BasicPlayerCharacter basicPlayerCharacter)
         {
@@ -87,6 +87,25 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             UpdateUI(basicPlayerCharacter);
         }
     }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void ReloadAnimation()
+    {
+        //play reload sound
+        audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
+        audioStreamPlayer2.Play();
+        //play reload animation
+        animationPlayer.SpeedScale = 1.0f;
+        animationPlayer.Play("reload");
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void EmptyAudio()
+    {
+        audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
+        audioStreamPlayer2.Play();
+    }
+
     public override void HandleInput(ActionFlags input)
     {
         if (currentMagazineAmmo != magazineSize && !lastTickActions.HasFlag(ActionFlags.Reload) && input.HasFlag(ActionFlags.Reload))
@@ -97,19 +116,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 {
                     reloading = true;
                     reloadTimeLeft = reloadTimeSeconds;
-                    //play reload sound
-                    audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
-                    audioStreamPlayer2.Play();
-                    //play reload animation
-                    animationPlayer.SpeedScale = 1.0f;
-                    animationPlayer.Play("reload");
+                    RPCManager.RPC(this, "ReloadAnimation", []);
                 }
                 else
                 {
-                    if(!audioStreamPlayer2.Playing)
+                    if (!audioStreamPlayer2.Playing)
                     {
-                        audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
-                        audioStreamPlayer2.Play();
+                        RPCManager.RPC(this, "EmptyAudio", []);
                     }
                 }
             }
@@ -125,71 +138,75 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 _timeUntilFire = 1.0 / fireRate;
                 if (currentMagazineAmmo > 0)
                 {
-                    Random rand = new();
-                    for (int i = 0; i < bulletsPerShot; i++)
-                    {
-                        // randomly modify weapon spread using temporary ray
-                        var spaceState = GetWorld3D().DirectSpaceState;
-                        PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
-                        ray.From = playerHeldBy.camera.GlobalPosition;
-                        ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
-                        ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
-                        ray.CollideWithBodies = true;
-                        var hitResult = spaceState.IntersectRay(ray);
-
-                        //shoot the gun
-                        if (hitResult.ContainsKey("collider"))
-                        {
-                            //spawn hit particle
-                            if (shotHitParticle != null)
-                            {
-                                var hitParticle = shotHitParticle.Instantiate() as Node3D;
-                                GetTree().Root.AddChild(hitParticle);
-                                hitParticle.GlobalPosition = (Vector3)hitResult["position"];
-                                //#pragma warning disable
-                                //hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
-                                
-                                //janky solution to avoid the error using dot product
-                                Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
-                                Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
-                                hitParticle.LookAt(direction, up);
-                            }
-
-                            var hit = (Node)hitResult["collider"];
-
-                            //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
-                            //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
-                            Node current = (Node)hit;
-                            while (current != null && current is not IsDamagable)
-                                current = current.GetParent();
-
-                            if (current is IsDamagable target)
-                            {
-                                Logging.Log($"Hit a IsDamagable object", "BasicGun");
-                                //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
-                                target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-                                target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-                            }
-                        }
-                    }
-                    currentMagazineAmmo--;
-                    UpdateUI();
-
-                    PlayShotSound();
-
-                    //play firing animation
-                    animationPlayer.SpeedScale = (float)fireRate;
-                    animationPlayer.Play("fire");
+                    RPCManager.RPC(this, "FireGun", []);
                 }
                 else
                 {
                     //gun is empty
-                    Logging.Log($"Gun Empty!", "BasicGun");
-
-                    PlayEmptySound();
+                    RPCManager.RPC(this, "PlayEmptySound" ,[]);
                 }
             }
         }
+    }
+        
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void FireGun()
+    {
+        Random rand = new();
+        for (int i = 0; i < bulletsPerShot; i++)
+        {
+            // randomly modify weapon spread using temporary ray
+            var spaceState = GetWorld3D().DirectSpaceState;
+            PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
+            ray.From = playerHeldBy.camera.GlobalPosition;
+            ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
+            ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
+            ray.CollideWithBodies = true;
+            var hitResult = spaceState.IntersectRay(ray);
+
+            //shoot the gun
+            if (hitResult.ContainsKey("collider"))
+            {
+                //spawn hit particle
+                if (shotHitParticle != null)
+                {
+                    var hitParticle = shotHitParticle.Instantiate() as Node3D;
+                    GetTree().Root.AddChild(hitParticle);
+                    hitParticle.GlobalPosition = (Vector3)hitResult["position"];
+                    //#pragma warning disable
+                    //hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
+
+                    //janky solution to avoid the error using dot product
+                    Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
+                    Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
+                    hitParticle.LookAt(direction, up);
+                }
+
+                var hit = (Node)hitResult["collider"];
+
+                //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
+                //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
+                Node current = (Node)hit;
+                while (current != null && current is not IsDamagable)
+                    current = current.GetParent();
+
+                if (current is IsDamagable target)
+                {
+                    Logging.Log($"Hit a IsDamagable object", "BasicGun");
+                    //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
+                    target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                    target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                }
+            }
+        }
+        currentMagazineAmmo--;
+        UpdateUI();
+
+        PlayShotSound();
+
+        //play firing animation
+        animationPlayer.SpeedScale = (float)fireRate;
+        animationPlayer.Play("fire");
     }
 
     public override void OnEquipped(ulong bySteamID)
@@ -284,11 +301,12 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         } while (index == lastFireIndex && gunSounds.Length > 1);
 
         float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
-        
+
         PlaySound(gunSounds[index], pitchVariation);
     }
-
-    private void PlayEmptySound()
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PlayEmptySound()
     {
         //play gunshot sound
         Random rand = new();
