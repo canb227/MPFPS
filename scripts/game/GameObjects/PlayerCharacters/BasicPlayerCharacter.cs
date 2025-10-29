@@ -319,7 +319,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                     }
                     else
                     {
-                        GOItem.AttachToPlayer(thirdPersonEquipmentAttachmentPoint);
+                        GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint);
                     }
                     GOItem.OnPickup(controllingPlayerID);
                     //auto-equip weapons and accessories
