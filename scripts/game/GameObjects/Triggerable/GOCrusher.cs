@@ -25,10 +25,12 @@ public partial class GOCrusher : GOTrap
                 if (body is GOPackageBox box)
                 {
                     foundBox = box;
+                    Logging.Log("Found Box" + foundBox.orderNumber, "GOCrusher");
                 }
                 if (body is GOLabelPaper label)
                 {
                     foundLabel = label;
+                    Logging.Log("Found Label" + foundLabel.orderNumber, "GOCrusher");
                 }
             }
 

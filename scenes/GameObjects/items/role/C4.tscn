@@ -140,7 +140,6 @@ mesh = SubResource("ArrayMesh_gf6i3")
 skeleton = NodePath("")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-root_node = NodePath("")
 libraries = {
 &"": SubResource("AnimationLibrary_wyqfw")
 }
@@ -149,8 +148,6 @@ libraries = {
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36132288, 0.13128692, -0.30761167)
 stream = ExtResource("3_layu3")
 attenuation_model = 1
-volume_db = -6.0
-unit_size = 4.0
 panning_strength = 0.0
 
 [node name="ExplosionRadius" type="Area3D" parent="."]
