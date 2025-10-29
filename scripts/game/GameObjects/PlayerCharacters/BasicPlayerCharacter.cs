@@ -97,6 +97,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         BasicPlayerStateUpdate update = MessagePackSerializer.Deserialize<BasicPlayerStateUpdate>(_update);
         GlobalRotation = update.Rotation;
         GlobalPosition = update.Position;
+        camera.Rotation = update.CameraRotation;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -104,6 +105,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         BasicPlayerStateUpdate update = new BasicPlayerStateUpdate();
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;
+        update.CameraRotation = camera.Rotation;
         return MessagePackSerializer.Serialize(update);
     }
 
@@ -875,5 +877,7 @@ public struct BasicPlayerStateUpdate
 
     [Key(1)]
     public Vector3 Rotation;
+    [Key(2)]
+    public Vector3 CameraRotation;
 
 }
