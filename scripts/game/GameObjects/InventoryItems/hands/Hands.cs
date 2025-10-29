@@ -17,6 +17,7 @@ public partial class Hands : GOBaseInventoryItem
 
     private ActionFlags lastTickActions;
     private RayCast3D rayCast;
+    private ulong authCache = 0;
 
     [Export]
     Node3D HoldPosition { get; set; }
@@ -73,7 +74,18 @@ public partial class Hands : GOBaseInventoryItem
                         Logging.Log($"Hand raycast hit holdable item: {(item as Node).ToString()}", "Hands");
                         if(item is GameObject obj)
                         {
-                            RPCManager.RPC(this, "Hold" ,[obj.id]);
+                            if (obj is IsHoldable ih)
+                            {
+                                if (ih.currentlyHeldBy == 0)
+                                {
+                                    RPCManager.RPC(this, "Hold", [obj.id]);
+                                }
+                                else
+                                {
+                                    Logging.Warn($"Cannot hold item, it is already held by: {ih.currentlyHeldBy}", "Hands");
+                                }
+                            }
+
                         }
                     }
                     else
@@ -112,7 +124,8 @@ public partial class Hands : GOBaseInventoryItem
                 mouseX * torqueStrength,
                 0
             );
-            RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
+            rb.ApplyTorque(torque);
+            //RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
         }
         lastTickActions = input.actions;
     }
@@ -123,6 +136,8 @@ public partial class Hands : GOBaseInventoryItem
         var obj = Global.gameState.GameObjects[itemID];
         if (obj is IsHoldable item)
         {
+            authCache = obj.authority;
+            obj.authority = equippedBySteamID;
             CurrentHoldPosition.Position = HoldPosition.Position;
             holding = item;
             holding.OnHold(equippedBySteamID);
@@ -133,7 +148,10 @@ public partial class Hands : GOBaseInventoryItem
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void ReleaseHeld()
     {
+        (holding as GameObject).authority = authCache;
+        authCache = 0;
         holding.OnRelease(equippedBySteamID);
+        holding.currentlyHeldBy = 0;
         holding = null;
     }
 
