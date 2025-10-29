@@ -171,15 +171,15 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 
     public override void PerFrameShared(double delta)
     {
-
-    }
-
-    public override void PerTickAuth(double delta)
-    {
         if (locked)
         {
             vehicle2D.PerTick(input, delta);
         }
+    }
+
+    public override void PerTickAuth(double delta)
+    {
+
     }
 
     public override void PerTickLocal(double delta)
