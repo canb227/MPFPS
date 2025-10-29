@@ -52,7 +52,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
         //get player controller by ID
         if (!locked && orderID != -1)
         {
-            RPCManager.RPC(this, "LockPlayer", [byID, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
+            RPCManager.RPC(this, "LockPlayer", [Global.gameState.GetCharacterControlledBy(byID).id, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
         }
     }
 
@@ -73,10 +73,10 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void LockPlayer(ulong playerID, Transform3D cameraPosition, Transform3D playerPosition)
+    public void LockPlayer(ulong characterID, Transform3D cameraPosition, Transform3D playerPosition)
     {
         Logging.Log("Locking Player, and passing input to the machine", "GODeliveryGameMonitor");
-        GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[playerID];
+        GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[characterID];
         if (playerCharacter is BasicPlayerCharacter basicPlayerCharacter)
         {
             basicPlayerCharacter.KnockedOut += UnlockPlayer;
@@ -86,17 +86,17 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
         playerCameraBackUp = playerCharacter.camera.GlobalTransform;
         playerCharacter.camera.GlobalTransform = cameraPosition;
         locked = true;
-        activeCharacterID = playerID;
+        activeCharacterID = characterID;
         input = Global.gameState.PlayerInputs[playerCharacter.authority];
         
         rpc_MiniGameStart();
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void UnlockPlayer(ulong playerID)
+    public void UnlockPlayer(ulong characterID)
     {
         if (locked)
         {
-            GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[playerID];
+            GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[characterID];
             if (playerCharacter is BasicPlayerCharacter basicPlayerCharacter)
             {
                 basicPlayerCharacter.KnockedOut -= UnlockPlayer;
