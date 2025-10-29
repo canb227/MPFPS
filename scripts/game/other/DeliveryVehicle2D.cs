@@ -17,8 +17,8 @@ public partial class DeliveryVehicle2D : CharacterBody2D
 
 
 
-    //called from GODeliveryGameMonitor PerTickAuth
-    public void PerTick(PlayerInputData input, double delta)
+    //called from GODeliveryGameMonitor PerFrameShared
+    public void PerFrameShared(PlayerInputData input, double delta)
     {
         float dt = (float)delta;
 

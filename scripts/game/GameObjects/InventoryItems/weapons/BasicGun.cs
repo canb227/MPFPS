@@ -241,7 +241,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
         {
             playerHeldBy = basicPlayerCharacter;
-            UpdateUI(basicPlayerCharacter);
+            if(basicPlayerCharacter.authority == Global.steamid)
+            {
+                UpdateUI(basicPlayerCharacter);
+            }
         }
         else
         {

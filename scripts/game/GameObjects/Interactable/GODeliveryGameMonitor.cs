@@ -169,11 +169,18 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 
     }
 
+    public override void PerTickShared(double delta)
+    {
+
+    }
+
+
     public override void PerFrameShared(double delta)
     {
         if (locked)
         {
-            vehicle2D.PerTick(input, delta);
+            GD.Print("Machine Locked and taking input");
+            vehicle2D.PerFrameShared(input, delta);
         }
     }
 
