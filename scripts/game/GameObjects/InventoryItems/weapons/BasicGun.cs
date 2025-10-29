@@ -166,11 +166,23 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         {
             // randomly modify weapon spread using temporary ray
             var spaceState = GetWorld3D().DirectSpaceState;
+            if(spaceState == null)
+            {
+                GD.Print("spaceState is null");
+            }
             PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
             ray.From = playerHeldBy.camera.GlobalPosition;
             ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
             ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
             ray.CollideWithBodies = true;
+            if (ray == null)
+            {
+                GD.Print("ray is null");
+            }
+            if(spaceState.IntersectRay(ray) == null)
+            {
+                GD.Print("spaceStateIntersectRay is null because of playerHeldBy: " + playerHeldBy);
+            }
             var hitResult = spaceState.IntersectRay(ray);
 
             //shoot the gun

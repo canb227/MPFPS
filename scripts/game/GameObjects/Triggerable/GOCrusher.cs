@@ -48,7 +48,7 @@ public partial class GOCrusher : GOTrap
 
                     // Call a function on the box (e.g. ApplyLabel)
                     RPCManager.RPC(foundBox, "ApplyLabel", []);
-                    Global.gameState.gameModeManager.OrderLabelled(foundBox.orderNumber);
+                    RPCManager.RPC(Global.gameState.gameModeManager, "OrderLabelled", [foundBox.orderNumber]);
                     return true;
                 }
             }

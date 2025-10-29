@@ -126,35 +126,38 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public void PrintLabel()
     {
-        if (paperLoadedCount <= 0 && !waitingForPaper)
+        if(Global.Lobby.bIsLobbyHost)
         {
-            OutOfPaper();
-        }
-        else if (waitingForPaper)
-        {
-            CheckForPaperTray();
-        }
-        else
-        {
-            paperLoadedCount--;
-            if (paperLoadedCount <= 0)
+            if (paperLoadedCount <= 0 && !waitingForPaper)
             {
                 OutOfPaper();
             }
+            else if (waitingForPaper)
+            {
+                CheckForPaperTray();
+            }
             else
             {
-                viewportLabel.Text = "Preparing...";
-            }
-            GameObjectConstructorData data = new(GameObjectType.LabelPaper);
-            data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
-            data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
-            //CALCULATE WHAT ORDER THIS ADDRESS RELATES TO, -1 IF NONE
-            int orderNum = FindOrderNumber(monitor1.addressTextOptions[monitor1.textOptionsIndex], monitor2.addressTextOptions[monitor2.textOptionsIndex], monitor3.addressTextOptions[monitor3.textOptionsIndex]);
-            data.paramList.Add(orderNum);
-            Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
+                paperLoadedCount--;
+                if (paperLoadedCount <= 0)
+                {
+                    OutOfPaper();
+                }
+                else
+                {
+                    viewportLabel.Text = "Preparing...";
+                }
+                GameObjectConstructorData data = new(GameObjectType.LabelPaper);
+                data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
+                data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
+                //CALCULATE WHAT ORDER THIS ADDRESS RELATES TO, -1 IF NONE
+                int orderNum = FindOrderNumber(monitor1.addressTextOptions[monitor1.textOptionsIndex], monitor2.addressTextOptions[monitor2.textOptionsIndex], monitor3.addressTextOptions[monitor3.textOptionsIndex]);
+                data.paramList.Add(orderNum);
+                Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
 
-            // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
-            // paperLabel.Position = paperPrintLocation.Position;
+                // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
+                // paperLabel.Position = paperPrintLocation.Position;
+            }
         }
     }
 

@@ -580,12 +580,14 @@ public partial class GameModeManager : Node
     }
 
 
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OrderPacked(int orderNumber)
     {
         OnOrderPacked?.Invoke(orderNumber);
 
     }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OrderLabelled(int orderNumber)
     {
         OnOrderLabelled?.Invoke(orderNumber);
