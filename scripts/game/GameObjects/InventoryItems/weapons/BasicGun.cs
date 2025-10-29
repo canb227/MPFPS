@@ -48,6 +48,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
     private int lastFireIndex;
     private double _timeUntilFire;
+    private double _timeUntilReload;
     private string[] gunSounds;
     private string[] emptySounds;
     public override void _Ready()
@@ -63,6 +64,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         if (_timeUntilFire > 0)
         {
             _timeUntilFire -= delta;
+        }
+        if (_timeUntilReload > 0)
+        {
+            _timeUntilReload -= delta;
         }
         if (reloadTimeLeft > 0 && reloading)
         {
@@ -120,9 +125,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 }
                 else
                 {
-                    if (!audioStreamPlayer2.Playing)
+                    if (_timeUntilReload <= 0)
                     {
-                        RPCManager.RPC(this, "EmptyAudio", []);
+                        _timeUntilReload = 1.0 / 8;
+                        if (!audioStreamPlayer2.Playing)
+                        {
+                            RPCManager.RPC(this, "EmptyAudio", []);
+                        }
                     }
                 }
             }
