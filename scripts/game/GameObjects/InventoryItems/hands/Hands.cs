@@ -71,10 +71,10 @@ public partial class Hands : GOBaseInventoryItem
                     if (col is IsHoldable item)
                     {
                         Logging.Log($"Hand raycast hit holdable item: {(item as Node).ToString()}", "Hands");
-                        CurrentHoldPosition.Position = HoldPosition.Position;
-                        holding = item;
-                        holding.OnHold(equippedBySteamID);
-                        item.currentlyHeldBy = equippedBySteamID;
+                        if(item is GameObject obj)
+                        {
+                            RPCManager.RPC(this, "Hold" ,[obj.id]);
+                        }
                     }
                     else
                     {
@@ -88,8 +88,7 @@ public partial class Hands : GOBaseInventoryItem
             }
             else
             {
-                holding.OnRelease(equippedBySteamID);
-                holding = null;
+                RPCManager.RPC(this, "ReleaseHeld", []);
             }
         }
 
@@ -113,26 +112,39 @@ public partial class Hands : GOBaseInventoryItem
                 mouseX * torqueStrength,
                 0
             );
-
-            rb.ApplyTorque(torque);
-        }
-
-        if (input.actions.HasFlag(ActionFlags.NextSlot))
-        {
-
-            Vector3 pos = CurrentHoldPosition.Position;
-            pos.Z -= 0.3f;
-            CurrentHoldPosition.Position = pos;
-        }
-
-        if (input.actions.HasFlag(ActionFlags.PrevSlot))
-        {
-
-            Vector3 pos = CurrentHoldPosition.Position;
-            pos.Z += 0.3f;
-            CurrentHoldPosition.Position = pos;
+            RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
         }
         lastTickActions = input.actions;
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void Hold(ulong itemID)
+    {
+        var obj = Global.gameState.GameObjects[itemID];
+        if (obj is IsHoldable item)
+        {
+            CurrentHoldPosition.Position = HoldPosition.Position;
+            holding = item;
+            holding.OnHold(equippedBySteamID);
+            item.currentlyHeldBy = equippedBySteamID;
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void ReleaseHeld()
+    {
+        holding.OnRelease(equippedBySteamID);
+        holding = null;
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void ApplyRotation(ulong rbID, Vector3 torque)
+    {
+        var obj = Global.gameState.GameObjects[rbID];
+        if (obj is GOBaseRigidBody rb)
+        {
+            rb.ApplyTorque(torque);
+        }
     }
 
     public override void OnDropped(ulong byID)
