@@ -714,7 +714,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void rpc_OnKnockedOut()
     {
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
-        KnockedOut?.Invoke(authority);
+        KnockedOut?.Invoke(id);
         //characterSoundManager.PlayerKnockoutSound(characterSFX);
         DropEquipped();
         currentStunBar = 0;
@@ -767,7 +767,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath()
     {
-        Killed?.Invoke(authority);
+        Killed?.Invoke(id);
         characterSoundManager.PlayDeathSound(characterSFX);
         inventory.DropAllItems(authority);
         state = CharacterState.Missing;

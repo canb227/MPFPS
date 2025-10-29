@@ -47,12 +47,12 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     }
 
 
-    public override void Auth_HandleInteractionRequest(ulong byID, ulong onTick)
+    public override void Auth_HandleInteractionRequest(ulong byCharacterID, ulong onTick)
     {
         //get player controller by ID
         if (!locked && orderID != -1)
         {
-            RPCManager.RPC(this, "LockPlayer", [Global.gameState.GetCharacterControlledBy(byID).id, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
+            RPCManager.RPC(this, "LockPlayer", [byCharacterID, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
         }
     }
 
