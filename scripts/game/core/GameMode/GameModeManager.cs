@@ -249,11 +249,8 @@ public partial class GameModeManager : Node
             Global.ui.inGameUI.ScoreBoard.NewRound();
             basicPlayers.Clear();
             ghostPlayers.Clear();
-
-            foreach(PlayerRoundStats playerStat in playerStats.Values)
-            {
-                playerStat.NewRound();
-            }
+            playerStats.Clear();
+            
 
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
@@ -376,13 +373,11 @@ public partial class GameModeManager : Node
     {
         //only assign roles to living players, in case somebody dies pre-round.
         List<ulong> players = new();
-        playerStats = new();
         foreach(var player in basicPlayers)
         {
             if(player.Value.state == CharacterState.Living)
             {
                 players.Add(player.Key);
-                playerStats[player.Key] = new PlayerRoundStats();
             }
         }
         List<ulong> traitors = new();

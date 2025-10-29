@@ -49,8 +49,8 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        Position = Position.Lerp(desiredPosition, (float)(0.9f * delta));
-        Rotation = Rotation.Lerp(desiredRotation, (float)(1.0f * delta));
+        Position = Position.Lerp(desiredPosition, (float)(delta/0.1f)); //lerp over .1 seconds
+        Rotation = Rotation.Lerp(desiredRotation, (float)(delta/0.1f)); //lerp over .1 seconds
     }
 
     public override void PerFrameLocal(double delta)

@@ -300,7 +300,6 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
 
     public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
-        Logging.Log("We Take Stun Damage as damage", "SwarmRobot");
         TakeDamage(damage, byID, soundType, VolumeDb);
     }
 

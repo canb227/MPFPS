@@ -19,11 +19,17 @@ public partial class GOFlashlight : GOBaseAccessory
     {
         if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
         {
-            spotLight3D.Visible = !spotLight3D.Visible;
-            omniLight3D.Visible = !omniLight3D.Visible;
-            audioStreamPlayer.Play();
+            RPCManager.RPC(this, "ToggleFlashLight", []);
         }
         base.HandleInput(input);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void ToggleFlashLight()
+    {
+        spotLight3D.Visible = !spotLight3D.Visible;
+        omniLight3D.Visible = !omniLight3D.Visible;
+        audioStreamPlayer.Play();
     }
     public override void OnDropped(ulong bySteamID)
     {

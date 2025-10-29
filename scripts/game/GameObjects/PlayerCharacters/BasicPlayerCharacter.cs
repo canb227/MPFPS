@@ -88,6 +88,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override bool InitFromData(GameObjectConstructorData data)
     {
         Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        Global.gameState.gameModeManager.playerStats[authority] = new PlayerRoundStats();
+
         base.InitFromData(data);
         return true;
     }
