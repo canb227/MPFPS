@@ -126,27 +126,27 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public void PrintLabel()
     {
-        if(Global.Lobby.bIsLobbyHost)
+        if (paperLoadedCount <= 0 && !waitingForPaper)
         {
-            if (paperLoadedCount <= 0 && !waitingForPaper)
+            OutOfPaper();
+        }
+        else if (waitingForPaper)
+        {
+            CheckForPaperTray();
+        }
+        else
+        {
+            paperLoadedCount--;
+            if (paperLoadedCount <= 0)
             {
                 OutOfPaper();
             }
-            else if (waitingForPaper)
-            {
-                CheckForPaperTray();
-            }
             else
             {
-                paperLoadedCount--;
-                if (paperLoadedCount <= 0)
-                {
-                    OutOfPaper();
-                }
-                else
-                {
-                    viewportLabel.Text = "Preparing...";
-                }
+                viewportLabel.Text = "Preparing...";
+            }
+            if (Global.Lobby.bIsLobbyHost)
+            {
                 GameObjectConstructorData data = new(GameObjectType.LabelPaper);
                 data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
                 data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
@@ -154,10 +154,9 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
                 int orderNum = FindOrderNumber(monitor1.addressTextOptions[monitor1.textOptionsIndex], monitor2.addressTextOptions[monitor2.textOptionsIndex], monitor3.addressTextOptions[monitor3.textOptionsIndex]);
                 data.paramList.Add(orderNum);
                 Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
-
-                // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
-                // paperLabel.Position = paperPrintLocation.Position;
             }
+            // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
+            // paperLabel.Position = paperPrintLocation.Position;
         }
     }
 

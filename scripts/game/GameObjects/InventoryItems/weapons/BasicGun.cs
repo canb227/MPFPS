@@ -51,13 +51,11 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     private double _timeUntilReload;
     private string[] gunSounds;
     private string[] emptySounds;
-    private World3D world3DCache;
     public override void _Ready()
     {
         base._Ready();
         gunSounds = ["res://assets/audio/weapons/basic/fire1.wav"];
         emptySounds = ["res://assets/audio/weapons/basic/ar2_empty.wav"];
-        world3DCache = GetWorld3D();
     }
 
     public override void PerTickShared(double delta)
@@ -167,24 +165,28 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         for (int i = 0; i < bulletsPerShot; i++)
         {
             // randomly modify weapon spread using temporary ray
-            var spaceState = world3DCache.DirectSpaceState;
-            if(spaceState == null)
-            {
-                GD.Print("spaceState is null");
-            }
+            // if(GetWorld3D() == null)
+            // {
+            //     GD.Print("WORLD3D is null");
+            // }
+            var spaceState = GetWorld3D().DirectSpaceState;
+            // if(spaceState == null)
+            // {
+            //     GD.Print("spaceState is null");
+            // }
             PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
             ray.From = playerHeldBy.camera.GlobalPosition;
             ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
             ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
             ray.CollideWithBodies = true;
-            if (ray == null)
-            {
-                GD.Print("ray is null");
-            }
-            if(spaceState.IntersectRay(ray) == null)
-            {
-                GD.Print("spaceStateIntersectRay is null because of playerHeldBy: " + playerHeldBy);
-            }
+            // if (ray == null)
+            // {
+            //     GD.Print("ray is null");
+            // }
+            // if(spaceState.IntersectRay(ray) == null)
+            // {
+            //     GD.Print("spaceStateIntersectRay is null because of playerHeldBy: " + playerHeldBy);
+            // }
             var hitResult = spaceState.IntersectRay(ray);
 
             //shoot the gun

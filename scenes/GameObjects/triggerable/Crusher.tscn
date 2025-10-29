@@ -238,6 +238,52 @@ _data = {
 &"press_down": SubResource("Animation_vvntr")
 }
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pi4a3"]
+resource_name = "Anti-slip metal"
+cull_mode = 2
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+metallic = 1.0
+normal_enabled = true
+normal_texture = ExtResource("5_8hvrf")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_pytuy"]
+_surfaces = [{
+"aabb": AABB(-1.0255814, -0.22077818, -0.27217484, 2, 0.36178234, 2),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMAAAAEAAEAAgAFAAMAAgABAAUAAAADAAYABAAAAAYABgADAAUAAQAEAAcABAAGAAcAAQAHAAUABgAFAAcA"),
+"name": "Anti-slip metal",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAD/////AAD/////AAAAAP///////wAA//8AAP//AAAAAP//AAAAAP//AAAAAAAAAAAAAP//AAAAAAAAAAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_kxmu2"]
+resource_name = "press_PressBase"
+_surfaces = [{
+"aabb": AABB(-1.0255814, -0.22077818, -0.27217484, 2, 0.36178234, 2),
+"attribute_data": PackedByteArray("ul7G4fKutzryrsbhul63OjhQxuEAALc6OFC3OgAAxuHyrrc6ul5+HPKufhy6Xrc6ul7G4fKu//+6Xv//8q7G4fKuxuF1vbc6db3G4fKutzq6Xrc6OFDG4ThQtzq6Xsbh"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_pi4a3"),
+"name": "Anti-slip metal",
+"primitive": 3,
+"uv_scale": Vector4(18.709106, 8.983716, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAD//////7//////AAD/v/////////+/AAD//wAA/78AAAAA////////AAAAAP//AAAAAAAA/////wAA//////////8AAP//AAAAAAAA/////wAAAAD//wAA//8AAP//AAD/////AID//wAA//8AgAAAAAD//wCA////////AID///////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//8AAFTVAAAAAP//VNUAAAAAAABU1QAA/////1TV////f////3////9/////f/9//z//f/8//3//P/9//z////9/////f////3////9//3////9/////f////3///6qqVFWqqlRVqqpUVaqqVFVU1VTVVNVU1VTVVNVU1VTV")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_pytuy")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bc21h"]
+points = PackedVector3Array(-1.0255814, -0.22077818, -0.27217484, -1.0255814, 0.14100416, -0.27217484, 0.97441864, -0.22077818, -0.27217484, -1.0255814, -0.22077818, 1.7278252, -1.0255814, 0.14100416, 1.7278252, 0.97441864, 0.14100416, -0.27217484, 0.97441864, -0.22077818, 1.7278252, 0.97441864, 0.14100416, 1.7278252)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w3e0y"]
+size = Vector3(0.99684143, 2.6740112, 1.1464958)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b4wmj"]
 resource_name = "Rough metal/silver.002"
 cull_mode = 2
@@ -289,52 +335,6 @@ points = PackedVector3Array(1.34513, 5.0069, 1.7627486, -1.5083866, 5.0069, -1.7
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_pytuy"]
 points = PackedVector3Array(0.38988578, 11.074476, -0.024034012, -0.39731732, 6.2538, -0.12816726, -0.39731732, 6.2538, 0.074200675, 0.4126698, 6.2538, 0.074200675, -0.08787614, 11.074476, 0.35812873, -0.18342853, 11.074476, -0.3107379, 0.108924635, 6.2538, -0.33067393, 0.108924635, 6.2538, 0.37806475, -0.3745333, 11.074476, 0.07135936, 0.10322863, 11.074476, 0.35812873, 0.10322863, 11.074476, -0.3107379, -0.09357215, 6.2538, 0.37806475, -0.19482054, 6.2538, -0.33067393, -0.3745333, 11.074476, -0.119623795, 0.4126698, 6.2538, -0.026879229, 0.38988578, 11.074476, 0.07135936)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pi4a3"]
-resource_name = "Anti-slip metal"
-cull_mode = 2
-albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
-metallic = 1.0
-normal_enabled = true
-normal_texture = ExtResource("5_8hvrf")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_pytuy"]
-_surfaces = [{
-"aabb": AABB(-1.0255814, -0.22077818, -0.27217484, 2, 0.36178234, 2),
-"format": 34896613377,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAACAAMAAAAEAAEAAgAFAAMAAgABAAUAAAADAAYABAAAAAYABgADAAUAAQAEAAcABAAGAAcAAQAHAAUABgAFAAcA"),
-"name": "Anti-slip metal",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("AAD/////AAD/////AAAAAP///////wAA//8AAP//AAAAAP//AAAAAP//AAAAAAAAAAAAAP//AAAAAAAAAAAAAA==")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_kxmu2"]
-resource_name = "press_PressBase"
-_surfaces = [{
-"aabb": AABB(-1.0255814, -0.22077818, -0.27217484, 2, 0.36178234, 2),
-"attribute_data": PackedByteArray("ul7G4fKutzryrsbhul63OjhQxuEAALc6OFC3OgAAxuHyrrc6ul5+HPKufhy6Xrc6ul7G4fKu//+6Xv//8q7G4fKuxuF1vbc6db3G4fKutzq6Xrc6OFDG4ThQtzq6Xsbh"),
-"format": 34896613399,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
-"material": SubResource("StandardMaterial3D_pi4a3"),
-"name": "Anti-slip metal",
-"primitive": 3,
-"uv_scale": Vector4(18.709106, 8.983716, 0, 0),
-"vertex_count": 24,
-"vertex_data": PackedByteArray("AAD//////7//////AAD/v/////////+/AAD//wAA/78AAAAA////////AAAAAP//AAAAAAAA/////wAA//////////8AAP//AAAAAAAA/////wAAAAD//wAA//8AAP//AAD/////AID//wAA//8AgAAAAAD//wCA////////AID///////9U1f//AAAAAFTV//8AAP//VNX/////AABU1QAA//8AAFTVAAAAAP//VNUAAAAAAABU1QAA/////1TV////f////3////9/////f/9//z//f/8//3//P/9//z////9/////f////3////9//3////9/////f////3///6qqVFWqqlRVqqpUVaqqVFVU1VTVVNVU1VTVVNVU1VTV")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_pytuy")
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bc21h"]
-points = PackedVector3Array(-1.0255814, -0.22077818, -0.27217484, -1.0255814, 0.14100416, -0.27217484, 0.97441864, -0.22077818, -0.27217484, -1.0255814, -0.22077818, 1.7278252, -1.0255814, 0.14100416, 1.7278252, 0.97441864, 0.14100416, -0.27217484, 0.97441864, -0.22077818, 1.7278252, 0.97441864, 0.14100416, 1.7278252)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_w3e0y"]
-size = Vector3(0.99684143, 2.6740112, 1.1464958)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_bc21h"]
 _surfaces = [{
@@ -424,8 +424,8 @@ size = Vector3(4.496155, 0.20327759, 5.9790344)
 
 [node name="GOCrusher" type="StaticBody3D" node_paths=PackedStringArray("PackagePressArea", "PackageOutputMarker", "animationPlayer")]
 script = ExtResource("1_v4yce")
-PackagePressArea = NodePath("PressArm/PressBase/StaticBody3D/PackagePressArea")
-PackageOutputMarker = NodePath("PressArm/PressBase/StaticBody3D/PackageSpawnSpot")
+PackagePressArea = NodePath("PressBase/StaticBody3D/PackagePressArea")
+PackageOutputMarker = NodePath("PressBase/StaticBody3D/PackageSpawnSpot")
 animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_pytuy")])
 metadata/_custom_type_script = "uid://bbo5ubvo8lkaw"
@@ -434,6 +434,29 @@ metadata/_custom_type_script = "uid://bbo5ubvo8lkaw"
 libraries = {
 &"": SubResource("AnimationLibrary_dnnl5")
 }
+
+[node name="PressBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.9495, 0, -0.068397045, 0.87466246)
+mesh = SubResource("ArrayMesh_kxmu2")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="PressBase"]
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="PressBase/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_bc21h")
+
+[node name="PackagePressArea" type="Area3D" parent="PressBase/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03566283, 0, 0.81530654)
+collision_layer = 26
+collision_mask = 26
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PressBase/StaticBody3D/PackagePressArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013877869, 1.2188416, -0.07055473)
+shape = SubResource("BoxShape3D_w3e0y")
+debug_color = Color(0.81687033, 0.001924075, 0.9740954, 0.41960785)
+
+[node name="PackageSpawnSpot" type="Marker3D" parent="PressBase/StaticBody3D"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0.8406015, 0.57316)
 
 [node name="PressArm" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, 0, 0)
@@ -477,29 +500,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
 attenuation_model = 2
 volume_db = 3.0
 panning_strength = 0.0
-
-[node name="PressBase" type="MeshInstance3D" parent="PressArm"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.633, 0, -0.068397045, 0.5831083)
-mesh = SubResource("ArrayMesh_kxmu2")
-skeleton = NodePath("")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="PressArm/PressBase"]
-
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="PressArm/PressBase/StaticBody3D"]
-shape = SubResource("ConvexPolygonShape3D_bc21h")
-
-[node name="PackagePressArea" type="Area3D" parent="PressArm/PressBase/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03566283, 0, 0.81530654)
-collision_layer = 26
-collision_mask = 26
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/PressBase/StaticBody3D/PackagePressArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013877869, 1.2188416, -0.07055473)
-shape = SubResource("BoxShape3D_w3e0y")
-debug_color = Color(0.81687033, 0.001924075, 0.9740954, 0.41960785)
-
-[node name="PackageSpawnSpot" type="Marker3D" parent="PressArm/PressBase/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84060156, 0.18780756)
 
 [node name="PressFrame" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, 0, 0)
