@@ -778,7 +778,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     }
 
 
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OnFound()
     {
         if (state != CharacterState.Dead)
