@@ -84,7 +84,10 @@ public partial class GameModeManager : Node
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
             Global.ui.inGameUI.UpdateTimeLeftUI();
-            swarmManager.PerTick(delta);
+            if(Global.Lobby.bIsLobbyHost)
+            {
+                swarmManager.PerTick(delta);
+            }
         }
     }
 
