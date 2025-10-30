@@ -145,18 +145,11 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 
     private void OnBodyEntered(Node body)
     {
-        if (Global.Lobby.bIsLobbyHost)
+        if (Global.steamid == activeSteamID)
         {
             if (body is DeliveryVehicle2D)
             {
                 RPCManager.RPC(this, "MiniGameWon", []);
-            }
-        }
-        else
-        {
-            if (body is DeliveryVehicle2D)
-            {
-                Logging.Log("We are a client and won the delivery game, hopefully the host agrees", "GODeliveryGameMonitor");
             }
         }
     }
@@ -181,7 +174,6 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     {
         if (locked)
         {
-            GD.Print("Machine Locked and taking input:" + Global.gameState.PlayerInputs[activeSteamID].playerID + " " + Global.gameState.PlayerInputs[activeSteamID].actions);
             vehicle2D.PerFrameShared(Global.gameState.PlayerInputs[activeSteamID], delta);
         }
     }

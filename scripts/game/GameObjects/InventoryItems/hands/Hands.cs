@@ -137,7 +137,7 @@ public partial class Hands : GOBaseInventoryItem
         if (obj is IsHoldable item)
         {
             authCache = obj.authority;
-            obj.authority = equippedBySteamID;
+            //obj.authority = equippedBySteamID;
             CurrentHoldPosition.Position = HoldPosition.Position;
             holding = item;
             holding.OnHold(equippedBySteamID);
@@ -148,7 +148,7 @@ public partial class Hands : GOBaseInventoryItem
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void ReleaseHeld()
     {
-        (holding as GameObject).authority = authCache;
+        //(holding as GameObject).authority = authCache;
         authCache = 0;
         holding.OnRelease(equippedBySteamID);
         holding.currentlyHeldBy = 0;
