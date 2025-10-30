@@ -179,7 +179,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     {
         if (locked)
         {
-            GD.Print("Machine Locked and taking input");
+            GD.Print("Machine Locked and taking input:" + input.playerID + " " + input.actions);
             vehicle2D.PerFrameShared(input, delta);
         }
     }
