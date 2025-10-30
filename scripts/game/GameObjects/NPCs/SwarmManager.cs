@@ -86,26 +86,26 @@ public partial class SwarmManager : Node
 
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobot, data);
         }
-        foreach(var player in Global.gameState.gameModeManager.deadPlayers)
-        {
-            float angle = (float)(i * (2 * Math.PI / robotSwarmSize));
-            float dist = radius; // fixed distance
-            Vector3 offset = new Vector3(
-                Mathf.Cos(angle) * dist,
-                0,
-                Mathf.Sin(angle) * dist
-            );
+        // foreach(var player in Global.gameState.gameModeManager.deadPlayers)
+        // {
+        //     float angle = (float)(i * (2 * Math.PI / robotSwarmSize));
+        //     float dist = radius; // fixed distance
+        //     Vector3 offset = new Vector3(
+        //         Mathf.Cos(angle) * dist,
+        //         0,
+        //         Mathf.Sin(angle) * dist
+        //     );
 
-            Transform3D spawnTransform = baseTransform;
-            spawnTransform.Origin += offset;
+        //     Transform3D spawnTransform = baseTransform;
+        //     spawnTransform.Origin += offset;
 
-            GameObjectConstructorData data = new(GameObjectType.SwarmRobotPlayer);
-            data.spawnTransform = spawnTransform;
-            data.paramList.Add(true);
-            Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobotPlayer, data);
-            //spawn player as a robot
-            i++;
-        }
+        //     GameObjectConstructorData data = new(GameObjectType.SwarmRobotPlayer);
+        //     data.spawnTransform = spawnTransform;
+        //     data.paramList.Add(true);
+        //     Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobotPlayer, data);
+        //     //spawn player as a robot
+        //     i++;
+        // }
     }
 
 }

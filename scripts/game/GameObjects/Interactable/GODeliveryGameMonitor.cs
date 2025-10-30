@@ -24,6 +24,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     private PlayerInputData input;
     public bool activeDelivery;
     private ulong activeCharacterID;
+    private ulong activeSteamID;
 
     private Transform3D playerCameraBackUp { get; set; }
     private Transform3D playerPositionBackUp { get; set; }
@@ -87,6 +88,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
         playerCharacter.camera.GlobalTransform = cameraPosition;
         locked = true;
         activeCharacterID = characterID;
+        activeSteamID = playerCharacter.authority;
         input = Global.gameState.PlayerInputs[playerCharacter.authority];
         
         rpc_MiniGameStart();
@@ -179,8 +181,8 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     {
         if (locked)
         {
-            GD.Print("Machine Locked and taking input:" + input.playerID + " " + input.actions);
-            vehicle2D.PerFrameShared(input, delta);
+            GD.Print("Machine Locked and taking input:" + Global.gameState.PlayerInputs[activeSteamID].playerID + " " + Global.gameState.PlayerInputs[activeSteamID].actions);
+            vehicle2D.PerFrameShared(Global.gameState.PlayerInputs[activeSteamID], delta);
         }
     }
 
