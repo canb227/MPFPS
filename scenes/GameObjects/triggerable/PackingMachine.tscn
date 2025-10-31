@@ -389,6 +389,7 @@ skeleton = NodePath("")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="packingMachine"]
 transform = Transform3D(0.78466517, 0, 0, 0, -2.8061806e-06, 0.7846649, 0, -0.7846649, -2.8061806e-06, -0.0033786423, -0.35053176, -0.78839856)
+omni_range = 1.625
 
 [node name="machineDoor" type="StaticBody3D" parent="packingMachine"]
 transform = Transform3D(1, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.462, 0)

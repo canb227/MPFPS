@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://bxbuyv8mx3qil"]
+[gd_scene load_steps=17 format=3 uid="uid://bxbuyv8mx3qil"]
 
 [ext_resource type="Script" uid="uid://cno377a7j6wr4" path="res://scripts/game/GameObjects/Triggerable/GOTrap.cs" id="1_d4mm2"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_ijmoh"]
 [ext_resource type="AudioStream" uid="uid://df1tkgwl3botl" path="res://assets/audio/environment/hall_elev_stop.wav" id="2_pgnvn"]
+[ext_resource type="Texture2D" uid="uid://da5cwxpaomtr0" path="res://assets/materials/hazardstrip.webp" id="3_5g06f"]
 [ext_resource type="AudioStream" uid="uid://cf0w6tu7k7xc0" path="res://assets/audio/environment/hall_elev_move.wav" id="3_d4mm2"]
 [ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/Hurtbox.cs" id="5_ijmoh"]
 
@@ -48,6 +49,11 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_losqi")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oasmb"]
+albedo_texture = ExtResource("3_5g06f")
+uv1_scale = Vector3(2.63, 1, 1)
+uv1_offset = Vector3(-0.06, 0, 0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_d4mm2"]
 size = Vector3(2.2983398, 0.2996807, 3.2713623)
@@ -158,9 +164,10 @@ triggerables = Array[Object]([SubResource("Resource_5g06f")])
 metadata/_custom_type_script = "uid://cno377a7j6wr4"
 
 [node name="FallTrap2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01849027, 0)
+transform = Transform3D(-0.99999994, 8.742277e-08, 0, -8.742277e-08, -0.99999994, 0, 0, 0, 1, 0, -0.01849027, 0)
 mesh = SubResource("ArrayMesh_juug1")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_oasmb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0031738281, -0.15888931, -0.006652832)

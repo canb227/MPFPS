@@ -436,7 +436,7 @@ libraries = {
 }
 
 [node name="PressBase" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.9495, 0, -0.068397045, 0.87466246)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.75971967, 0, -0.068397045, 1.1434829)
 mesh = SubResource("ArrayMesh_kxmu2")
 skeleton = NodePath("")
 

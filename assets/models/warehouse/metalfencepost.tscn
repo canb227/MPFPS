@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccgevd88n4b3w"]
+
+[ext_resource type="PackedScene" uid="uid://bixnj6e6tr4ve" path="res://assets/models/warehouse/metal_fence_hr_1_pillar_1.glb" id="1_limgj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y7xj3"]
+size = Vector3(0.40374756, 5.027649, 0.22070313)
+
+[node name="metal_fence_hr_1_pillar_12" instance=ExtResource("1_limgj")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.004058838, 2.5099182, 0.005859375)
+shape = SubResource("BoxShape3D_y7xj3")
