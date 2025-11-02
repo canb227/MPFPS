@@ -28,6 +28,7 @@ public partial class GameModeManager : Node
     public static event Action<int> OnOrderReadyToDeliver;
     public static event Action<int> OnOrderFinished;
 
+
     //
 
     public ItemSpawnManager itemSpawnManager = new();
@@ -44,6 +45,7 @@ public partial class GameModeManager : Node
 
     public SwarmManager swarmManager = new();
     public bool roundStarted;
+    public bool evacuationStarted;
 
 
    
@@ -67,6 +69,7 @@ public partial class GameModeManager : Node
     public static event GameModeOptionsReceived GameModeOptionsReceivedEvent;
 
     public int roundNumber = 0;
+    public double evacuationTimeLeft = 95;
 
     public override void _Ready()
     {
@@ -79,16 +82,21 @@ public partial class GameModeManager : Node
         if (roundStarted)
         {
             remainingRoundTime -= delta;
+            if (evacuationStarted)
+            {
+                evacuationTimeLeft -= delta;
+            }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
             Global.ui.inGameUI.UpdateTimeLeftUI();
-            if(Global.Lobby.bIsLobbyHost)
+            if (Global.Lobby.bIsLobbyHost)
             {
                 swarmManager.PerTick(delta);
             }
         }
+
     }
 
     public void ProcessGameModeOptionsPacketBytes(byte[] payload, ulong sender)
@@ -193,17 +201,16 @@ public partial class GameModeManager : Node
     {
         remainingRoundTime = 99999;
         //switch round timers everywhere to a 95 second countdown TDOD
+        evacuationStarted = true;
+        evacuationTimeLeft = 95;
         EvacuationStarted?.Invoke();
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
-        if (Global.Lobby.bIsLobbyHost)
-        {
-            EvacuationCountdown();
-        }
+        evacuationTimeLeft = 95;
     }
-    
-    public async void EvacuationCountdown()
+
+
+    public void EvacuationEnding()
     {
-        await ToSignal(GetTree().CreateTimer(95), SceneTreeTimer.SignalName.Timeout);
         Logging.Log("End Evacuation as Host", "GameModeManager");
         EvacuationEnded?.Invoke();
     }
@@ -286,6 +293,14 @@ public partial class GameModeManager : Node
     public void GenerateOrders()
     {
         packageOrders.Clear();
+        if (options.usePackageOverride)
+        {
+            ordersNeeded = options.numPackages;
+        }
+        else
+        {
+            ordersNeeded = Mathf.CeilToInt(options.packagePerPlayer * Global.Lobby.AllPeers().Count); //this is likely inaccurate to actual player count?
+        }
 
         //determine our possible address details
         Random rand = new();
@@ -308,7 +323,6 @@ public partial class GameModeManager : Node
         //OnPossibleAddressesUpdated?.Invoke(); //remove this once we fix the RPC
 
 
-        ordersNeeded = 1; //determine this dynamically or via some pre-set scale (update the Take value above too)
 
 
         // we create duplicates so we keep the possibles for other uses, monitors etc

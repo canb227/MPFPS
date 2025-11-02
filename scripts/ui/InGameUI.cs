@@ -16,8 +16,15 @@ public partial class InGameUI : Control
 
     public void UpdateTimeLeftUI()
     {
-        string timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
-
+        string timerString = "";
+        if (Global.gameState.gameModeManager.evacuationStarted)
+        {
+            timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.evacuationTimeLeft):mm\\:ss}";
+        }
+        else
+        {
+            timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
+        }        
         PlayerUIManager.UpdateTimeLeftUI(timerString);
     }
 

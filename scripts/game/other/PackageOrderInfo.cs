@@ -37,6 +37,7 @@ public class PackageOrderInfo
     {
         isFinished = true;
         Global.gameState.gameModeManager.SetNumFinishedOrders(Global.gameState.gameModeManager.GetNumFinishedOrders() + 1);
+        Global.gameState.gameModeManager.remainingRoundTime += Global.gameState.gameModeManager.options.timeAddedPerPackage;
     }
 
     public bool OrderIsFinished()
