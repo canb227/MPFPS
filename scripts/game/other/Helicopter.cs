@@ -16,6 +16,9 @@ public partial class Helicopter : GOBaseStaticBody
     [Export] PathFollow3D pathFollow3D { get; set; }
     [Export] MeshInstance3D rearRotorMesh { get; set; }
     [Export] MeshInstance3D frontRotorMesh { get; set; }
+    [Export] Hurtbox frontRotorHurtbox { get; set; }
+    [Export] Hurtbox rearRotorHurtbox { get; set; }
+
     private float currentSpeed = 0f;
     private bool flyaway { get; set; }
     private float targetSpeed = 5f;   // max speed
@@ -85,6 +88,8 @@ public partial class Helicopter : GOBaseStaticBody
             frontRotorAudio.Play();
             InteriorAudio.Play();
             isSpinning = true;
+            frontRotorHurtbox.active = true;
+            rearRotorHurtbox.active = true;
             animationPlayer.Play("ramp_down");
         }
     }

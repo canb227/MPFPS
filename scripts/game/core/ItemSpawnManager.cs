@@ -144,7 +144,7 @@ public partial class ItemSpawnManager : Node
     {
         //spawn the provided object type
         GameObjectConstructorData data = new(type);
-        data.spawnTransform = marker.Transform;
+        data.spawnTransform = marker.GlobalTransform;
         Global.gameState.Auth_SpawnObject(type, data);
     }
 
