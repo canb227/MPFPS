@@ -241,7 +241,12 @@ public partial class GameState : Node3D
                 //If we're the authority, process the next tick of the object then increment its priority
                 gameObject.PerTickAuth(delta);
                 gameObject.priorityAccumulator += gameObject.priority;
-                topObjects.Add(gameObject.id, gameObject.priorityAccumulator);
+
+                if (!gameObject.sleeping)
+                {
+                    topObjects.Add(gameObject.id, gameObject.priorityAccumulator);
+                }
+
             }
             else
             {
@@ -477,6 +482,11 @@ public partial class GameState : Node3D
                 if (updateObj.type != updateObj.type)
                 {
                     Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
+                    return;
+                }
+                if (updateObj.sleeping)
+                {
+                    Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
                     return;
                 }
                 updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());

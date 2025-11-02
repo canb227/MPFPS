@@ -46,4 +46,4 @@ shape = SubResource("BoxShape3D_flpyn")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
 [node name="holdPos" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16601455, -2.399157)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16601455, -1.1925181)

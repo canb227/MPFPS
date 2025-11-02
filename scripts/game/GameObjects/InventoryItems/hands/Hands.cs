@@ -18,6 +18,8 @@ public partial class Hands : GOBaseInventoryItem
     private ActionFlags lastTickActions;
     private RayCast3D rayCast;
     private ulong authCache = 0;
+    private bool charging = false;
+    private float chargeAmount = 0;
 
     [Export]
     Node3D HoldPosition { get; set; }
@@ -49,20 +51,41 @@ public partial class Hands : GOBaseInventoryItem
         {
             if (holding is GOBaseRigidBody rb)
             {
-                rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass)) * 50f);
+                //rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass)) * 50f);
+
+                if (charging)
+                {
+                    if (chargeAmount<3)
+                    {
+                        chargeAmount += (float)delta;
+                        CurrentHoldPosition.Translate(new Vector3(0, 0, .001f));
+                    }
+
+                }
+                rb.GlobalPosition = CurrentHoldPosition.GlobalPosition;
+                rb.GlobalRotation = CurrentHoldPosition.GlobalRotation;
             }
         }
     }
 
+
     public override void HandleInput(ActionFlags actionFlags)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
 
     public void HandleHandInput(PlayerInputData input, double delta)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
+        if (charging && lastTickActions.HasFlag(ActionFlags.Fire) && !input.actions.HasFlag(ActionFlags.Fire))
+        {
+            //mouse released while charging
+
+            RPCManager.RPC(this, "ReleaseHeld", [(holding as Node3D).GlobalPosition, (holding as Node3D).GlobalRotation, new Vector3(0, 0, chargeAmount*100)]);
+            charging = false;
+            chargeAmount = 0;
+        }
+        else if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
         {
             if (holding == null)
             {
@@ -100,33 +123,33 @@ public partial class Hands : GOBaseInventoryItem
             }
             else
             {
-                RPCManager.RPC(this, "ReleaseHeld", []);
+                charging = true;
             }
         }
 
-        if (input.actions.HasFlag(ActionFlags.Aim))
-            rotateMode = true;
-        else
-            rotateMode = false;
+        //if (input.actions.HasFlag(ActionFlags.Aim))
+        //    rotateMode = true;
+        //else
+        //    rotateMode = false;
 
-        float mouseX = input.LookInputVector.X * 5f * (float)delta;
-        float mouseY = input.LookInputVector.Y * 5f * (float)delta;
+        //float mouseX = input.LookInputVector.X * 5f * (float)delta;
+        //float mouseY = input.LookInputVector.Y * 5f * (float)delta;
 
-        if (rotateMode && holding is GOBaseRigidBody rb)
-        {
-            // Apply torque based on mouse movement
-            float torqueStrength = 5f; // tweak sensitivity
+        //if (rotateMode && holding is GOBaseRigidBody rb)
+        //{
+        //    // Apply torque based on mouse movement
+        //    float torqueStrength = 5f; // tweak sensitivity
 
-            // Mouse X → yaw around world up
-            // Mouse Y → pitch around local X
-            Vector3 torque = new Vector3(
-                mouseY * torqueStrength,
-                mouseX * torqueStrength,
-                0
-            );
-            rb.ApplyTorque(torque);
-            //RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
-        }
+        //    // Mouse X → yaw around world up
+        //    // Mouse Y → pitch around local X
+        //    Vector3 torque = new Vector3(
+        //        mouseY * torqueStrength,
+        //        mouseX * torqueStrength,
+        //        0
+        //    );
+        //    rb.ApplyTorque(torque);
+        //    //RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
+        //}
         lastTickActions = input.actions;
     }
 
@@ -136,34 +159,45 @@ public partial class Hands : GOBaseInventoryItem
         var obj = Global.gameState.GameObjects[itemID];
         if (obj is IsHoldable item)
         {
-            authCache = obj.authority;
-            //obj.authority = equippedBySteamID;
             CurrentHoldPosition.Position = HoldPosition.Position;
             holding = item;
             holding.OnHold(equippedBySteamID);
             item.currentlyHeldBy = equippedBySteamID;
+            (holding as GameObject).sleeping = true;
+            if (holding is GOBaseRigidBody rb)
+            {
+                rb.DisableMode = DisableModeEnum.Remove;
+                rb.ProcessMode = ProcessModeEnum.Disabled;
+            }
         }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void ReleaseHeld()
+    public void ReleaseHeld(Vector3 position, Vector3 rotation, Vector3 impulse)
     {
-        //(holding as GameObject).authority = authCache;
-        authCache = 0;
+        if (holding is GOBaseRigidBody rb)
+        {
+            Logging.Log($"Releasing object with force: {impulse}", "Hands");
+            rb.GlobalPosition = position;
+            rb.GlobalRotation = rotation;
+            rb.ProcessMode = ProcessModeEnum.Pausable;
+            rb.ApplyCentralImpulse((CurrentHoldPosition.GlobalPosition - (HoldPosition.GlobalPosition)) * -20f);
+        }
+        (holding as GameObject).sleeping = false;
         holding.OnRelease(equippedBySteamID);
         holding.currentlyHeldBy = 0;
         holding = null;
     }
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void ApplyRotation(ulong rbID, Vector3 torque)
-    {
-        var obj = Global.gameState.GameObjects[rbID];
-        if (obj is GOBaseRigidBody rb)
-        {
-            rb.ApplyTorque(torque);
-        }
-    }
+    //[RPCMethod(mode = RPCMode.SendToAllPeers)]
+    //public void ApplyRotation(ulong rbID, Vector3 torque)
+    //{
+    //    var obj = Global.gameState.GameObjects[rbID];
+    //    if (obj is GOBaseRigidBody rb)
+    //    {
+    //        rb.ApplyTorque(torque);
+    //    }
+    //}
 
     public override void OnDropped(ulong byID)
     {

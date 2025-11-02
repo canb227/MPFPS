@@ -280,17 +280,17 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
     public virtual void OnHold(ulong byID)
     {
-        GravityScale = 0.1f;
-        LinearDamp = 20;
-        AngularDamp = 5;
+       // GravityScale = 0.1f;
+        //LinearDamp = 20;
+       // AngularDamp = 5;
     }
 
     public virtual void OnRelease(ulong byID)
     {
-        LinearVelocity = LinearVelocity.Clamp(0, 5);
-        GravityScale = 1;
-        LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
-        AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
+       // LinearVelocity = LinearVelocity.Clamp(0, 5);
+      //  GravityScale = 1;
+       // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
+       // AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
     }
 
     private void UpdateUI(BasicPlayerCharacter basicPlayer = null)
