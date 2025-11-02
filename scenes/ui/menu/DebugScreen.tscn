@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d01yl1nr74x5n"]
+[gd_scene load_steps=4 format=3 uid="uid://d01yl1nr74x5n"]
 
 [ext_resource type="Script" uid="uid://d246elj3h2lkq" path="res://scripts/ui/DebugScreen.cs" id="1_gwmwt"]
 
@@ -118,106 +118,176 @@ metadata/_edit_use_anchors_ = true
 [node name="lbl_options" type="Label" parent="sessionOptions"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.04292929
-anchor_top = 0.030444965
-anchor_right = 0.64141417
-anchor_bottom = 0.08430913
+anchor_left = 0.017676767
+anchor_top = 0.011709602
+anchor_right = 0.61616164
+anchor_bottom = 0.06557377
 offset_right = -1.5258789e-05
 grow_horizontal = 2
 grow_vertical = 2
 text = "Game Session Options/Control"
 metadata/_edit_use_anchors_ = true
 
-[node name="opt1List" type="OptionButton" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.3611111
-anchor_top = 0.13114753
-anchor_right = 0.7702028
-anchor_bottom = 0.21311475
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="lbl_opt1" type="Label" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.07575758
-anchor_top = 0.14519906
-anchor_right = 0.35606068
-anchor_bottom = 0.19906323
-grow_horizontal = 2
-grow_vertical = 2
-text = "option1List"
-metadata/_edit_use_anchors_ = true
-
-[node name="opt2List" type="OptionButton" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.36868685
-anchor_top = 0.29508197
-anchor_right = 0.77777827
-anchor_bottom = 0.37704918
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="lbl_opt2" type="Label" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.08838384
-anchor_top = 0.30444965
-anchor_right = 0.36868685
-anchor_bottom = 0.35831383
-grow_horizontal = 2
-grow_vertical = 2
-text = "option2List"
-metadata/_edit_use_anchors_ = true
-
-[node name="lbl_opt3" type="Label" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.07323232
-anchor_top = 0.49882904
-anchor_right = 0.35353535
-anchor_bottom = 0.5526932
-offset_bottom = 1.5258789e-05
-grow_horizontal = 2
-grow_vertical = 2
-text = "option3Bool"
-metadata/_edit_use_anchors_ = true
-
-[node name="lbl_opt4" type="Label" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.078282826
-anchor_top = 0.6229508
-anchor_right = 0.35858586
-anchor_bottom = 0.676815
-grow_horizontal = 2
-grow_vertical = 2
-text = "option4Bool"
-metadata/_edit_use_anchors_ = true
-
-[node name="CheckButton" type="CheckButton" parent="sessionOptions"]
+[node name="ItemsPerPackageLabel" type="Label" parent="sessionOptions"]
 layout_mode = 0
-anchor_left = 0.35353535
-anchor_top = 0.4964871
-anchor_right = 0.46464646
-anchor_bottom = 0.5526932
-offset_bottom = 1.5258789e-05
-metadata/_edit_use_anchors_ = true
+offset_left = 26.0
+offset_top = 42.0
+offset_right = 172.0
+offset_bottom = 65.0
+text = "Items Per Package:"
 
-[node name="CheckButton2" type="CheckButton" parent="sessionOptions"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.36363637
-anchor_top = 0.6252927
-anchor_right = 0.47474748
-anchor_bottom = 0.6814988
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
+[node name="ItemsPerPackageEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 185.0
+offset_top = 40.0
+offset_right = 209.0
+offset_bottom = 69.0
+text = "3"
+
+[node name="NumberOfPackagesLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 83.0
+offset_right = 168.0
+offset_bottom = 106.0
+text = "Number of Packages:"
+
+[node name="NumberOfPackagesEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 81.0
+offset_right = 224.0
+offset_bottom = 110.0
+text = "4"
+
+[node name="PackagesPerPlayerLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 124.0
+offset_right = 192.0
+offset_bottom = 147.0
+text = "Packages Per Player:"
+
+[node name="PackagesPerPlayerEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 195.0
+offset_top = 121.0
+offset_right = 229.0
+offset_bottom = 150.0
+text = "0.5"
+
+[node name="UsePackageOverrideLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 158.0
+offset_right = 205.0
+offset_bottom = 181.0
+text = "Use Package Override?:"
+
+[node name="UsePackageOverrideCheck" type="CheckBox" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 210.0
+offset_top = 151.0
+offset_right = 234.0
+offset_bottom = 175.0
+scale = Vector2(1.58, 1.58)
+
+[node name="PercentTraitorsLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 213.0
+offset_right = 205.0
+offset_bottom = 236.0
+text = "Percent Traitors:"
+
+[node name="PercentTraitorsEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 162.0
+offset_top = 209.0
+offset_right = 218.0
+offset_bottom = 238.0
+text = "0.33"
+
+[node name="MaxTraitorsLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 245.0
+offset_right = 211.0
+offset_bottom = 268.0
+text = "Max Traitors:"
+
+[node name="MaxTraitorsEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 163.0
+offset_top = 241.0
+offset_right = 197.0
+offset_bottom = 270.0
+text = "8"
+
+[node name="PercentManagersLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 280.0
+offset_right = 204.0
+offset_bottom = 303.0
+text = "Percent Managers:"
+
+[node name="PercentManagersEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 278.0
+offset_right = 232.0
+offset_bottom = 307.0
+text = "0.16"
+
+[node name="ManualTeamOverrideLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 330.0
+offset_right = 199.0
+offset_bottom = 353.0
+text = "Manual Team Override?:"
+
+[node name="ManualTeamOverrideCheck" type="CheckBox" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 204.0
+offset_top = 323.0
+offset_right = 228.0
+offset_bottom = 347.0
+scale = Vector2(1.58, 1.58)
+button_pressed = true
+
+[node name="ManualTraitorCountLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 359.0
+offset_right = 165.0
+offset_bottom = 382.0
+text = "Manual Traitor Count:"
+
+[node name="ManualTraitorCountEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 198.0
+offset_top = 357.0
+offset_right = 222.0
+offset_bottom = 386.0
+text = "0"
+
+[node name="ManualManagerCountLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 395.0
+offset_right = 208.0
+offset_bottom = 418.0
+text = "Manual Manager Count:"
+
+[node name="ManualManagerCountEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 392.0
+offset_right = 240.0
+offset_bottom = 421.0
+text = "1"
 
 [node name="chat" type="Control" parent="."]
 layout_mode = 1

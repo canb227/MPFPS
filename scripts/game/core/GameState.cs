@@ -125,6 +125,10 @@ public partial class GameState : Node3D
         Lobby.JoinedToLobbyEvent += OnJoinedToLobby;
         Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
 
+        GameModeManager gmm = new();
+        gmm.Name = "Game Mode Manager";
+        AddChild(gmm);
+        gameModeManager = gmm;
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -134,26 +138,23 @@ public partial class GameState : Node3D
         //Global.ui.StartLoadingScreen();
         MapManager.LoadMap(scenePath);
 
-        GameModeManager gmm = new();
-        gmm.Name = "Game Mode Manager";
-        AddChild(gmm);
-        gameModeManager = gmm;
+
 
         AIManager aim = new();
         aim.Name = "AI Manager";
         AddChild(aim);
         AIManager = aim;
 
-        gmm.StartGameMode(scenePath, gameMode);
+        gameModeManager.StartGameMode(scenePath, gameMode);
         gameStarted = true;
 
         if (Global.Lobby.bIsLobbyHost)
         {
-            gmm.GameStartAsHost();
+            gameModeManager.GameStartAsHost();
             aim.GameStartAsHost();
         }
         ProcessMode = ProcessModeEnum.Pausable;
-        RPCManager.RPC(gmm, "ClientReady", [Global.steamid]);
+        RPCManager.RPC(gameModeManager, "ClientReady", [Global.steamid]);
     }
 
     public void ResetGameState()

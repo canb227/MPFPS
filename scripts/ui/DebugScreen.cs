@@ -123,9 +123,77 @@ public partial class DebugScreen : Control
         }
         DirectLoadMap_mapList_ItemSelected(0);
 
+        //options
+        optNode = GetNode<Control>("sessionOptions");
+
+        ItemsPerPackage = optNode.GetNode<TextEdit>("ItemsPerPackageEdit");
+        ItemsPerPackage.TextChanged += GameOptionChanged;
+
+        NumberOfPackages = optNode.GetNode<TextEdit>("NumberOfPackagesEdit");
+        NumberOfPackages.TextChanged += GameOptionChanged;
+
+        PackagesPerPlayer = optNode.GetNode<TextEdit>("PackagesPerPlayerEdit");
+        PackagesPerPlayer.TextChanged += GameOptionChanged;
+
+        UsePackageOverride = optNode.GetNode<CheckBox>("UsePackageOverrideCheck");
+        UsePackageOverride.Pressed += GameOptionChanged;
+
+        PercentTraitors = optNode.GetNode<TextEdit>("PercentTraitorsEdit");
+        PercentTraitors.TextChanged += GameOptionChanged;
+
+        MaxTraitors = optNode.GetNode<TextEdit>("MaxTraitorsEdit");
+        MaxTraitors.TextChanged += GameOptionChanged;
+
+        PercentManagers = optNode.GetNode<TextEdit>("PercentManagersEdit");
+        PercentManagers.TextChanged += GameOptionChanged;
+
+        ManualTeamOverride = optNode.GetNode<CheckBox>("ManualTeamOverrideCheck");
+        ManualTeamOverride.Pressed += GameOptionChanged;
+
+        ManualTraitorCount = optNode.GetNode<TextEdit>("ManualTraitorCountEdit");
+        ManualTraitorCount.TextChanged += GameOptionChanged;
+
+        ManualManagerCount = optNode.GetNode<TextEdit>("ManualManagerCountEdit");
+        ManualManagerCount.TextChanged += GameOptionChanged;
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
+    }
+
+    private Control optNode;
+    private TextEdit ItemsPerPackage;
+    private TextEdit NumberOfPackages;
+    private TextEdit PackagesPerPlayer;
+    private CheckBox UsePackageOverride;
+
+    private TextEdit PercentTraitors;
+    private TextEdit MaxTraitors;
+    private TextEdit PercentManagers;
+
+    private CheckBox ManualTeamOverride;
+    private TextEdit ManualTraitorCount;
+    private TextEdit ManualManagerCount;
+
+
+    private void GameOptionChanged()
+    {
+        var optNode = GetNode<Control>("sessionOptions");
+        var opts = Global.gameState.gameModeManager.options;
+
+        opts.itemsPerPackage = int.Parse(ItemsPerPackage.Text);
+        opts.numPackages = int.Parse(NumberOfPackages.Text);
+        opts.packagePerPlayer = float.Parse(PackagesPerPlayer.Text);
+        opts.usePackageOverride = UsePackageOverride.ButtonPressed;
+
+        opts.percentTraitors = float.Parse(PercentTraitors.Text);
+        //opts.maxTraitors = int.Parse(MaxTraitors.Text);
+        opts.percentManagers = float.Parse(PercentManagers.Text);
+
+        opts.manualTeamOverride = ManualTeamOverride.ButtonPressed;
+        opts.manualTraitorCount = int.Parse(ManualTraitorCount.Text);
+        opts.manualManagerCount = int.Parse(ManualManagerCount.Text);
+
+        Global.gameState.gameModeManager.PushGameStateOptions();
     }
 
     private void DirectLoadMap_mapList_ItemSelected(long v)
