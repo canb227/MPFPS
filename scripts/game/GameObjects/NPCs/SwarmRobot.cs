@@ -267,7 +267,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         currentHealth -= damage;
-        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
+        //characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, soundType, VolumeDb);
         //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
         if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
         {
@@ -288,7 +288,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath(ulong byID)
     {
-        characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, PainSoundType.Generic);
+        //characterSoundManager.PlayDamageSound(hitSoundAudioStreamPlayer, PainSoundType.Generic);
         currentHealth = 0;
         root.Visible = false;
         collider.Disabled = true;

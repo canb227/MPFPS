@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,6 +18,43 @@ public static class MapManager
     {
         return PlayerSpawnPoints[Random.Shared.Next(PlayerSpawnPoints.Count)].GlobalTransform;
     }
+
+    public static Transform3D GetSecuritySpawnTransform()
+    {
+        var valid = PlayerSpawnPoints
+            .Where(p => p.canSpawnSecurity)
+            .ToList();
+
+        if (valid.Count == 0)
+            throw new InvalidOperationException("No valid security spawn points!");
+
+        return valid[Random.Shared.Next(valid.Count)].GlobalTransform;
+    }
+    public static Transform3D GetOfficeWorkerSpawnTransform()
+    {
+        var valid = PlayerSpawnPoints
+            .Where(p => p.canSpawnOfficeWorker)
+            .ToList();
+
+        if (valid.Count == 0)
+            throw new InvalidOperationException("No valid office worker spawn points!");
+
+        return valid[Random.Shared.Next(valid.Count)].GlobalTransform;
+    }
+
+    public static Transform3D GetWarehouseWorkerSpawnTransform()
+    {
+        var valid = PlayerSpawnPoints
+            .Where(p => p.canSpawnWarehouseWorker)
+            .ToList();
+
+        if (valid.Count == 0)
+            throw new InvalidOperationException("No valid warehouse worker spawn points!");
+
+        return valid[Random.Shared.Next(valid.Count)].GlobalTransform;
+    }
+
+
 
     public static Transform3D GetHordeSpawnTransform()
     {

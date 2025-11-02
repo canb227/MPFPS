@@ -442,7 +442,6 @@ public partial class GameModeManager : Node
             PlayerAssignment pa = new();
             pa.id = id;
             pa.team = Team.Manager;
-            pa.role = Role.Manager;
             byte[] data = MessagePackSerializer.Serialize(pa);
             RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
         }
@@ -675,7 +674,25 @@ public partial class GameModeManager : Node
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
             GameObjectConstructorData data = new GameObjectConstructorData(pcType);
-            data.spawnTransform = MapManager.GetPlayerSpawnTransform();
+            if(sd is BasicPlayerCharacter basicPlayerCharacter)
+            {
+                if (basicPlayerCharacter.role == Role.OfficeWorker)
+                {
+                    data.spawnTransform = MapManager.GetOfficeWorkerSpawnTransform();
+                }
+                else if (basicPlayerCharacter.role == Role.WarehouseWorker)
+                {
+                    data.spawnTransform = MapManager.GetWarehouseWorkerSpawnTransform();
+                }
+                else if (basicPlayerCharacter.role == Role.Security)
+                {
+                    data.spawnTransform = MapManager.GetSecuritySpawnTransform();
+                }
+                else
+                {
+                    data.spawnTransform = MapManager.GetPlayerSpawnTransform();
+                }
+            }
             data.paramList.Add(true);
             Global.gameState.Auth_SpawnObject(pcType, data);
         }
@@ -721,13 +738,9 @@ public enum Team
 
 public enum Role
 {
-    None,
     Security,
-    Manager,
     OfficeWorker,
     WarehouseWorker,
-    DeliveryWorker,
-
 }
 [MessagePackObject]
 public struct PlayerAssignment

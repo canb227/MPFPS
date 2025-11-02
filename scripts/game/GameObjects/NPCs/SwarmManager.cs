@@ -13,7 +13,7 @@ public partial class SwarmManager : Node
     public int robotSwarmMaxSize;
     public int swarmCooldownMax = 30; //300
     public int swarmCooldownMin = 30; //240
-    public double currentSwarmCooldown;
+    public double currentSwarmCooldown = 999;
     Random rand = new Random();
     public bool announcedSwarm = false;
 
@@ -21,7 +21,7 @@ public partial class SwarmManager : Node
     {
         robotSwarmMaxSize = numPlayers * 10;
         robotSwarmMinSize = numPlayers;
-        currentSwarmCooldown = 30; // 120
+        currentSwarmCooldown = 120; // 120
     }
 
     public void PerTick(double delta)
