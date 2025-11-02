@@ -59,10 +59,6 @@ public static class RPCManager
     public static void DiscoverRPCMethods()
     {
 
-        resolver = MessagePack.Resolvers.CompositeResolver.Create(
-        new[] { MessagePack.Formatters.TypelessFormatter.Instance },
-        new[] { MessagePack.Resolvers.StandardResolver.Instance, GodotResolver.Instance });
-
         Logging.Log($"Searching for RPC methods!", "RPCManager");
         Assembly assembly = Assembly.GetExecutingAssembly();
         foreach (Type type in assembly.GetTypes())
@@ -105,7 +101,7 @@ public static class RPCManager
                 break;
             case RPCType.Chat:
                 Logging.Log($"Network chat from {sender}!", "RPCManager");
-                ChatReceivedEvent?.Invoke(packet.stringParams[0], sender);
+
                 break;
             default:
                 break;
@@ -139,22 +135,26 @@ public static class RPCManager
 
     public static void HandleRPCBytes(byte[] message, ulong sender)
     {
-        Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message)}", "RPCManagerWire");
-        
+        bool log = sender != Global.steamid;
+
+        if (log) Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message).Substr(0,50)}", "RPCManagerWire");
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
 
-        Logging.Log($"Successfully parsed payload. Parameter list has {packet.parameters.Length} values:", "RPCManagerWire");
+        //if (log) Logging.Log($"Successfully parsed payload. Parameter list has {packet.parameters.Length} values:", "RPCManagerWire");
         foreach (var obj in packet.parameters)
         {
-            Logging.Log($"parameter type: {obj.GetType()} | parameter to string {obj.ToString()}", "RPCManagerWire");
+            //if (log) Logging.Log($"parameter type: {obj.GetType()} | parameter to string {obj.ToString()}", "RPCManagerWire");
+            if (obj is byte[] arr)
+            {
+                //if (log) Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire");
+            }
         }
+        //if(!log) Logging.Log($"Got RPC sent over loopback.", "RPCManagerWire");
         ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
     }
 
     public static void RPC(Node context, string methodName, object[] parameters)
     {
-
-
         MethodInfo method = context.GetType().GetMethod(methodName);
         if (method == null)
         {
@@ -184,7 +184,7 @@ public static class RPCManager
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
             Logging.Log($"Sending to auth RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
-            Global.network.SendData(bytes, Channel.RPC, authority);
+            Global.network.SendData(bytes, Channel.RPC, authority, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         }
         else if(attribute.mode == RPCMode.SendToAllPeers)
         {
@@ -194,17 +194,21 @@ public static class RPCManager
             packet.parameters = parameters;
 
             byte[] bytes = MessagePackSerializer.Serialize(packet);
-            Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
-            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers());
+            //Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
+            foreach (var obj in parameters)
+            {
+                if (obj is byte[] arr)
+                {
+                    //Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
+                }
+            }
+            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         
         }
     }
 
     public static void ProcessRPC(NodePath path, string methodName, object[] parameters, bool paramsValueTypeOnly = false)
     {
-
-
-
         Node node = Global.instance.GetNode(path);
         if (node == null)
         {
@@ -220,7 +224,7 @@ public static class RPCManager
         }
         try
         {
-
+            //Logging.Log($"Invoking {method.Name}", "RPCManager");
             method.Invoke(node, parameters);
         }
         catch (Exception e)

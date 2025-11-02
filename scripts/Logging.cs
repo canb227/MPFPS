@@ -18,7 +18,7 @@ public static class Logging
     /// <summary>
     /// List of Log Prefixes (categories) to silence. Add logging categories to this to silence them - can also use the relevant console commands while the game is running to add or remove values
     /// </summary>
-    public static List<string> DefaultSilencedPrefixes = ["FirstTimeSetup", "RPCManagerWire", "LoggingMeta", "NetworkRelay", "NetworkSession", "GameSessionWire", "NetworkWire"];
+    public static List<string> DefaultSilencedPrefixes = ["FirstTimeSetup", "LoggingMeta", "NetworkRelay", "NetworkSession", "GameSessionWire", "NetworkWire", "NetworkBandwidthTracker"];
 
     public static Dictionary<string, (bool silenced, int timesPrinted, int timesSilenced)> categories = new();
 
@@ -95,7 +95,7 @@ public static class Logging
 
         string finalMessage = customPrefix + ts + message + trace;
 
-        LimboConsole.Info(finalMessage);
+        //LimboConsole.Info(finalMessage);
         GD.Print(finalMessage);
         if (writeToFile)
         {

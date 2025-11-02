@@ -331,7 +331,7 @@ public class Lobby
                         LeaveLobby(false);
                     }
                     Logging.Log($"Successfully joined to host {fromSteamID}. Sending request for other peers.", "Lobby");
-                    LobbyJoinedInternal(LobbyHostSteamID,false);
+                    LobbyJoinedInternal(fromSteamID,false);
                     SendLobbyMessage([(byte)LobbyHostFlag.FromNonHost], LobbyMessageType.PeerListRequest, fromSteamID);
                     break;
                 }
@@ -355,7 +355,11 @@ public class Lobby
                 Logging.Log($"Request for peers from {fromSteamID}. Sending peer data.", "Lobby");
                 foreach (ulong peerID in lobbyPeers)
                 {
-                    if (peerID == fromSteamID) continue;
+                    if (peerID == fromSteamID || peerID == Global.steamid) continue;
+                    if (peerID==0)
+                    {
+                        Logging.Warn($"Malformed peer in local peer List. What happened?", "Lobby");
+                    }
                     SendLobbyMessage(BitConverter.GetBytes(peerID), LobbyMessageType.PeerListResponse, fromSteamID);
                 }
                 break;
@@ -423,7 +427,7 @@ public class Lobby
 
     public List<ulong> AllPeers()
     {
-        return lobbyPeers.ToList();
+        return lobbyPeers.Reverse().ToList();
     }
 
     public List<ulong> AllPeersExceptSelf()
@@ -449,6 +453,7 @@ public class Lobby
     /// <param name="fromSteamID"></param>
     private void AddNewPeer(ulong fromSteamID)
     {
+        Logging.Log($"Adding new peer :{fromSteamID}", "Lobby");
         lobbyPeers.Add(fromSteamID);
         NewLobbyPeerAddedEvent?.Invoke(fromSteamID);
     }

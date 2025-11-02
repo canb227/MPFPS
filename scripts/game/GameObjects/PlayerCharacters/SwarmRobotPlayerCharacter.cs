@@ -43,12 +43,12 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
 
         characterSoundManager = new();
         Logging.Log($"Spawned new SwarmRobotPlayerCharacter Controlled by: {authority}", "SwarmRobotPlayerCharacter");
-
     }
 
     public override bool InitFromData(GameObjectConstructorData data)
     {
         base.InitFromData(data);
+        //base player calls take control
         return true;
     }
 

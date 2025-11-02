@@ -128,7 +128,7 @@ public partial class GOPackingMachine : GOTrap
                 data.paramList.Add(orderNumber);
                 data.spawnTransform = PackageOutputMarker.GlobalTransform;
                 Global.gameState.Auth_SpawnObject(GameObjectType.Package, data);
-                Global.gameState.gameModeManager.OrderPacked(orderNumber);
+                RPCManager.RPC(Global.gameState.gameModeManager, "OrderPacked", [orderNumber]);
                 RPCManager.RPC(this, "PlayAnimation", ["packageCreated"]);
                 
                 return true;

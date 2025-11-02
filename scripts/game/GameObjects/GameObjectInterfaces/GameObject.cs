@@ -1,3 +1,4 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using static GameState;
@@ -5,9 +6,17 @@ using static GameState;
 public interface GameObject
 {
     ulong id { get; set; }
+
+    [Export]
     float priority { get; set; }
+
+    [Export]
     float priorityAccumulator { get; set; }
+
+    [Export]
     ulong authority { get; set; }
+
+    [Export]
     GameObjectType type { get; set; }
     bool dirty { get; set; }
     bool sleeping { get; set; }

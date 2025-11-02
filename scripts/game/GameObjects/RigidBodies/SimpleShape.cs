@@ -1,3 +1,4 @@
+using System.Numerics;
 using Godot;
 using MessagePack;
 
@@ -5,7 +6,8 @@ using MessagePack;
 public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 {
 
-    Vector3 desiredPosition;
+    Godot.Vector3 desiredPosition;
+    Godot.Quaternion desiredQuaternion;
 
     public ulong currentlyHeldBy { get; set; }
     public bool customHeldPhysics { get; set; }
@@ -28,6 +30,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         SimpleShapeStateUpdate sssu = MessagePackSerializer.Deserialize<SimpleShapeStateUpdate>(update);
         LinearVelocity = sssu.velocity;
         desiredPosition = sssu.position;
+        desiredQuaternion = sssu.quaternion;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -35,6 +38,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         SimpleShapeStateUpdate sssu = new();
         sssu.velocity = LinearVelocity;
         sssu.position = GlobalPosition;
+        sssu.quaternion = Quaternion;
         return MessagePackSerializer.Serialize(sssu);
     }
 
@@ -45,7 +49,8 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        Position = Position.Lerp(desiredPosition, (float)(0.1f * delta));
+        Position = Position.Lerp(desiredPosition, (float)(delta/0.01f));
+        Quaternion = Quaternion.Slerp(desiredQuaternion, (float)(delta/0.01f));
     }
 
     public override void PerFrameLocal(double delta)
@@ -89,7 +94,9 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 public struct SimpleShapeStateUpdate
 {
     [Key(0)]
-    public Vector3 position;
+    public Godot.Vector3 position;
     [Key(1)]
-    public Vector3 velocity;
+    public Godot.Vector3 velocity;
+    [Key(2)]
+    public Godot.Quaternion quaternion;
 }

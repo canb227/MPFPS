@@ -26,11 +26,9 @@ public partial class GOShippingTube : GOTrap
                 //check if its a good package
                 GOPackageBox item = items[0];
                 PackageOrderInfo info = Global.gameState.gameModeManager.packageOrders[item.orderNumber];
-                if(item.labelApplied && !info.waitingForDelivery && !info.isFinished)
+                if (item.labelApplied && !info.waitingForDelivery && !info.isFinished)
                 {
-                    Global.gameState.gameModeManager.OrderReadyToShip(item.orderNumber);
-                    RemoveShippedItems(item.id);
-                    PlayAnimation("shipmentSuccess");
+                    RPCManager.RPC(this, "PackageShipped", [item.id]);
                     return;
                 }
             }
@@ -38,11 +36,21 @@ public partial class GOShippingTube : GOTrap
             // --- Invalid Contents: eject everything ---
             RPCManager.RPC(this, "PlayAnimation", ["shipmentFail"]);
             // Gather rigidbodies inside the area
-            var rigidBodies = ItemsForShipping.GetOverlappingBodies()
-                                                .OfType<RigidBody3D>()
-                                                .ToList();
+
             // Kick them out after half a second
-            EjectAfterDelay(rigidBodies, this, delaySeconds: 0.5f, ejectPower: 20f);
+            RPCManager.RPC(this, "EjectAfterDelay", []);
+        }
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PackageShipped(ulong itemID)
+    {
+        var obj = Global.gameState.GameObjects[itemID];
+        if(obj is GOPackageBox item)
+        {
+            Global.gameState.gameModeManager.OrderReadyToShip(item.orderNumber);
+            RemoveShippedItems(item.id);
+            PlayAnimation("shipmentSuccess");
         }
     }
 
@@ -52,9 +60,15 @@ public partial class GOShippingTube : GOTrap
         animationPlayer.Play(animationName);
     }
     
-    //we call this as lobby host
-    private async void EjectAfterDelay(List<RigidBody3D> rbs, Node3D machine, float delaySeconds = 0.3f, float ejectPower = 20f)
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    private async void EjectAfterDelay()
     {
+        float delaySeconds = 0.3f;
+        float ejectPower = 20f;
+        var rbs = ItemsForShipping.GetOverlappingBodies()
+                                                .OfType<RigidBody3D>()
+                                                .ToList();
+
         await ToSignal(GetTree().CreateTimer(delaySeconds), SceneTreeTimer.SignalName.Timeout);
 
         Vector3 frontDir = GlobalTransform.Basis.Z;

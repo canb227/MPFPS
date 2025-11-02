@@ -33,6 +33,7 @@ public partial class GameModeManager : Node
     public ItemSpawnManager itemSpawnManager = new();
     public Dictionary<ulong, BasicPlayerCharacter> basicPlayers = new(); //added to when the object is created, so only make a player character once per player
     public Dictionary<ulong, Ghost> ghostPlayers = new(); //added to when the object is created, so only make a player character once per player
+    public List<ulong> deadPlayers = new();
     public Dictionary<ulong, PlayerRoundStats> playerStats = new();
     public List<PackageOrderInfo> packageOrders = new();
     public Queue<int> deliveryQueue = new();
@@ -83,7 +84,10 @@ public partial class GameModeManager : Node
                 RPCManager.RPC(this, "TraitorsWin", []);
             }
             Global.ui.inGameUI.UpdateTimeLeftUI();
-            swarmManager.PerTick(delta);
+            if(Global.Lobby.bIsLobbyHost)
+            {
+                swarmManager.PerTick(delta);
+            }
         }
     }
 
@@ -111,16 +115,41 @@ public partial class GameModeManager : Node
         Global.network.BroadcastData(payload, Channel.GameStateOptions, Global.Lobby.lobbyPeers.ToList());
     }
 
+    List<ulong> gameReadyClients = new();
+    bool firstRun = true;
     public async void GameStartAsHost()
     {
-        Logging.Log($"Starting server-side game mode init", "GameModeManager");
+        if(firstRun)
+        {
+            Logging.Log($"Waiting for all clients to be ready.", "GameModeManager");
+        
+            var start = Time.GetTicksMsec();
+            while (Global.Lobby.AllPeersExceptSelf().Except(gameReadyClients).Any())
+            {
+                if (Time.GetTicksMsec() - start > 10000)
+                {
+                    Logging.Log("Timeout waiting for clients", "GameModeManager");
+                    break;
+                }
+                Logging.Log("Waiting...", "GameModeManager");
+                await ToSignal(GetTree().CreateTimer(1f), SceneTreeTimer.SignalName.Timeout);
+            }
+            firstRun = false;
+        }
+
+
+        Logging.Log($"Clients Ready Start Countdown to New Round.", "GameModeManager");
         await ToSignal(GetTree().CreateTimer(options.newRoundDelay), SceneTreeTimer.SignalName.Timeout);
         RPCManager.RPC(this, "StartNewRound", []);
 
         await ToSignal(GetTree().CreateTimer(options.roleAssignmentDelay), SceneTreeTimer.SignalName.Timeout);
         AssignRoles();
+    }
 
-
+    [RPCMethod(mode = RPCMode.OnlySendToAuth)]
+    public void ClientReady(ulong clientID)
+    {
+        gameReadyClients.Add(clientID);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -218,15 +247,13 @@ public partial class GameModeManager : Node
         }
         else
         {
+            Logging.Log("Starting New Round as Peer", "GameModeManager");
             Global.ui.inGameUI.RoundReport.NewRound();
             Global.ui.inGameUI.ScoreBoard.NewRound();
             basicPlayers.Clear();
             ghostPlayers.Clear();
-
-            foreach(PlayerRoundStats playerStat in playerStats.Values)
-            {
-                playerStat.NewRound();
-            }
+            playerStats.Clear();
+            
 
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
@@ -349,13 +376,11 @@ public partial class GameModeManager : Node
     {
         //only assign roles to living players, in case somebody dies pre-round.
         List<ulong> players = new();
-        playerStats = new();
         foreach(var player in basicPlayers)
         {
             if(player.Value.state == CharacterState.Living)
             {
                 players.Add(player.Key);
-                playerStats[player.Key] = new PlayerRoundStats();
             }
         }
         List<ulong> traitors = new();
@@ -364,7 +389,7 @@ public partial class GameModeManager : Node
         numPlayers = players.Count;
         numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
         numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
-        if (options.manualOverride)
+        if (options.manualTeamOverride)
         {
             numTraitors = options.manualTraitorCount;
             numManagers = options.manualManagerCount;
@@ -539,9 +564,10 @@ public partial class GameModeManager : Node
         SetNumManagersAlive(numManagersAlive - 1);
     }
 
-    public void CharacterDied(Team team)
+    public void CharacterDied(ulong steamID, Team team)
     {
         Logging.Log("A Character has died", "GameModeManager");
+        deadPlayers.Add(steamID);
         if (team == Team.Innocent)
         {
             DecreaseNumInnocentsAlive();
@@ -557,12 +583,14 @@ public partial class GameModeManager : Node
     }
 
 
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OrderPacked(int orderNumber)
     {
         OnOrderPacked?.Invoke(orderNumber);
 
     }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OrderLabelled(int orderNumber)
     {
         OnOrderLabelled?.Invoke(orderNumber);
@@ -586,12 +614,11 @@ public partial class GameModeManager : Node
 
     internal void StartGameMode(string scenePath, GameModeType gameMode)
     {
-
         switch (gameMode)
         {
             case GameModeType.TTT:
                 Global.ui.ToGameUI();
-
+                //await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
                 SpawnAndControlNewLocalPlayerCharacter(GameObjectType.Ghost);
 
                 //Global.ui.StopLoadingScreen();
@@ -614,15 +641,11 @@ public partial class GameModeManager : Node
 
     public void SpawnNewLocalPlayerCharacter(GameObjectType pcType)
     {
+        Logging.Log($"Spawning local player character of type: {pcType.ToString()} without attempting to take control", "GameModeManager");
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
-            GameObjectConstructorData data = new GameObjectConstructorData();
+            GameObjectConstructorData data = new GameObjectConstructorData(pcType);
             data.spawnTransform = MapManager.GetPlayerSpawnTransform();
-            data.id = Global.gameState.GenerateNewID();
-            data.authority = Global.steamid;
-            data.type = pcType;
-            List<Object> paramList = new List<Object>();
-            data.paramList = paramList;
             Global.gameState.Auth_SpawnObject(pcType, data);
         }
         else
@@ -631,19 +654,16 @@ public partial class GameModeManager : Node
         }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void SpawnAndControlNewLocalPlayerCharacter(GameObjectType pcType)
     {
+        Logging.Log($"Spawning local player character of type: {pcType.ToString()} AND attempting to take control", "GameModeManager");
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
-            GameObjectConstructorData data = new GameObjectConstructorData();
+            GameObjectConstructorData data = new GameObjectConstructorData(pcType);
             data.spawnTransform = MapManager.GetPlayerSpawnTransform();
-            data.id = Global.gameState.GenerateNewID();
-            data.authority = Global.steamid;
-            data.type = pcType;
-            List<Object> paramList = new List<Object>();
-            data.paramList = paramList;
+            data.paramList.Add(true);
             Global.gameState.Auth_SpawnObject(pcType, data);
-            ((GOBasePlayerCharacter)Global.gameState.GameObjects[data.id]).TakeControl(Global.steamid);
         }
         else
         {

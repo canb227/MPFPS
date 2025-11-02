@@ -25,10 +25,12 @@ public partial class GOCrusher : GOTrap
                 if (body is GOPackageBox box)
                 {
                     foundBox = box;
+                    Logging.Log("Found Box" + foundBox.orderNumber, "GOCrusher");
                 }
                 if (body is GOLabelPaper label)
                 {
                     foundLabel = label;
+                    Logging.Log("Found Label" + foundLabel.orderNumber, "GOCrusher");
                 }
             }
 
@@ -46,7 +48,7 @@ public partial class GOCrusher : GOTrap
 
                     // Call a function on the box (e.g. ApplyLabel)
                     RPCManager.RPC(foundBox, "ApplyLabel", []);
-                    Global.gameState.gameModeManager.OrderLabelled(foundBox.orderNumber);
+                    RPCManager.RPC(Global.gameState.gameModeManager, "OrderLabelled", [foundBox.orderNumber]);
                     return true;
                 }
             }

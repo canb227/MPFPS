@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://dofbyt8v0sdur"]
+
+[ext_resource type="PackedScene" uid="uid://b6280t361khxo" path="res://assets/models/map/computerdesk.glb" id="1_4qrg3"]
+[ext_resource type="Texture2D" uid="uid://bf07qkr3dg166" path="res://assets/models/map/computerdesk_Monitor5a_Diffuse.jpg" id="2_vw5n0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a5s85"]
+albedo_texture = ExtResource("2_vw5n0")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w6obt"]
+size = Vector3(0.48999023, 0.47021484, 0.50183105)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rjd7d"]
+size = Vector3(1.8081055, 0.9302063, 0.6454468)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1tefc"]
+size = Vector3(0.09136963, 1.8367615, 2.0231934)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u2bsk"]
+size = Vector3(2.4623413, 1.8137207, 0.100250244)
+
+[node name="computerdesk" instance=ExtResource("1_4qrg3")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+
+[node name="Generic Large CRT Monitor Dirty Mesh" parent="Large CRT Monitor Dirty/Generic Large CRT Monitor Dirty Armeture/Skeleton3D" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_a5s85")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Large CRT Monitor Dirty/Generic Large CRT Monitor Dirty Armeture/Skeleton3D/Generic Large CRT Monitor Dirty Mesh" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Large CRT Monitor Dirty/Generic Large CRT Monitor Dirty Armeture/Skeleton3D/Generic Large CRT Monitor Dirty Mesh/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005493164, 0.26489258, 0.005065918)
+shape = SubResource("BoxShape3D_w6obt")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Table Desk" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Table Desk/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045654297, 0.47154236, 0.001373291)
+shape = SubResource("BoxShape3D_rjd7d")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Office Table Desk/StaticBody3D" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1872218, 0.9411143, 0.44467467)
+shape = SubResource("BoxShape3D_1tefc")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Office Table Desk/StaticBody3D" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1824315, 0.9411143, 0.44467467)
+shape = SubResource("BoxShape3D_1tefc")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Office Table Desk/StaticBody3D" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0019803047, 0.9458746, -0.52218753)
+shape = SubResource("BoxShape3D_u2bsk")

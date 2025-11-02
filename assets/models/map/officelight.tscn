@@ -1,0 +1,89 @@
+[gd_scene load_steps=8 format=4 uid="uid://bgy8jgsvf4un3"]
+
+[ext_resource type="Texture2D" uid="uid://dsp1jy1pdmjnd" path="res://assets/models/warehouse/officelight_plastic-generic_diffuse.jpg" id="1_q5sn1"]
+[ext_resource type="Texture2D" uid="uid://cnmid6g5s0i0t" path="res://assets/models/warehouse/officelight_plastic-texture-normal-3.jpg" id="2_nqcwo"]
+[ext_resource type="Texture2D" uid="uid://ceprbosdqmr6b" path="res://assets/models/warehouse/officelight_plastic-smudge-smoothness copy.png" id="3_nrv3f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b6hqh"]
+resource_name = "Plastic White 13"
+albedo_texture = ExtResource("1_q5sn1")
+metallic = 0.37272727
+normal_enabled = true
+normal_texture = ExtResource("2_nqcwo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0vrkq"]
+resource_name = "Plastic White Light"
+albedo_texture = ExtResource("1_q5sn1")
+metallic = 0.37272727
+metallic_texture = ExtResource("3_nrv3f")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("3_nrv3f")
+roughness_texture_channel = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 2.0
+normal_enabled = true
+normal_texture = ExtResource("2_nqcwo")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ynoiu"]
+_surfaces = [{
+"aabb": AABB(-0.9502616, -0.0300575, -0.34902558, 1.9005232, 0.060115002, 0.69805115),
+"format": 34896613377,
+"index_count": 96,
+"index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEABQAEAAAABgABAAQABgAHAAEABAAIAAYACQABAAcAAwABAAkACQAHAAoACwADAAkACgALAAkACwAMAAMACgANAAsADgAMAAsADQAOAAsADgAPAAwADQAQAA4ADwAOABEAEAARAA4ADwARABIAEAATABEAEQAUABIAFQARABMAEQAVABQAFQATABYAFwAUABUAFgAXABUAFwAFABQAFgAIABcABQAXAAQABAAXAAgA"),
+"name": "Plastic White 13",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("/////4CxAABe9o5j//8AAF72/v///wAAoAn+////AAD//45jgLEAAP////9+TgAAif0AADKpAABa9QAA8esAAIn9AADMVgAAoAmOY///AACkCgAA8esAAAAAjmOAsQAAAAD+/4CxAAB1AgAAMqkAAAAAjmN+TgAAAAD+/35OAAB1AgAAzFYAAKAJjmMAAAAAoAn+/wAAAACkCgAADRQAAF72/v8AAAAAXvaOYwAAAABa9QAADRQAAP//jmN+TgAA")
+}, {
+"aabb": AABB(-0.93200594, -0.0300575, -0.29434597, 1.8640119, 1e-05, 0.58869195),
+"format": 34896613377,
+"index_count": 18,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAQADAAQAAwAAAAUABQAAAAYAAwAFAAcA"),
+"name": "Plastic White Light",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("WAgkAP//AAAAAAAAJU8AAAAAAADZsAAApvd7AwAAAABYCCQAAAAAAP//nwPZsAAApvd7A///AAD//58DJU8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_dxnp7"]
+resource_name = "officelight_Cube"
+_surfaces = [{
+"aabb": AABB(-0.9502616, -0.0300575, -0.34902558, 1.9005232, 0.060115002, 0.69805115),
+"attribute_data": PackedByteArray("a7m4F2u5uBfT89kn0/PZJ///SiT//0okBrfgHAa34BwgXP//IFz//2Yjj/BmI4/wGhnt8xoZ7fNoXgz7aF4M+0T3zfRE98300/PZJ9Pz2ScQ7TPxEO0z8f//SiT//0okxmPRHMZj0Ry5F0wjuRdMI9EjICfRIyAni2G4F4thuBdmI4/wZiOP8LkXTCO5F0wjGhnt8xoZ7fPRIyAn0SMgJ2heDPtoXgz7GLH+/xix/v/yrhn78q4Z+yBc//8gXP//i2G4F4thuBcGt+AcBrfgHGu5uBdrubgXxmPRHMZj0RzXZUn312VJ92Yjj/BmI4/waF4M+2heDPswM/buMDP27rQ1/Ci0NfwoxmPRHMZj0RzRIyAn0SMgJ1pryyBaa8sgg9tb74PbW+/yrhn78q4Z+xDtM/EQ7TPxoqdD96KnQ/dQr8YgUK/GINPz2SfT89knBrfgHAa34By443MpuONzKaKnQ/eip0P3aF4M+2heDPvyrhn78q4Z+9dlSffXZUn3EO0z8RDtM/G443MpuONzKYPbW++D21vv0/PZJ9Pz2ScGt+AcBrfgHFpryyBaa8sgUK/GIFCvxiDGY9EcxmPRHNEjICfRIyAnMDP27jAz9u60NfwotDX8KGYjj/BmI4/w8q4Z+/KuGftE9830RPfN9BDtM/EQ7TPxGLH+/xix/v8="),
+"format": 34896613431,
+"index_count": 96,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0A"),
+"material": SubResource("StandardMaterial3D_b6hqh"),
+"name": "Plastic White 13",
+"primitive": 3,
+"uv_scale": Vector4(4.628416, 10.791855, 4.628416, 10.791855),
+"vertex_count": 64,
+"vertex_data": PackedByteArray("/////4Cxowte9o5j//+NEF72/v///y4R//+OY4CxAQsAAP7/fk72MaAJjmMAAAAxoAn+/wAA2jAAAI5jfk4QMqAJ/v///0xcXvaOY///oySgCY5j///WXF72/v///xkk//+OY35Oiwhe9v7/AAClCV72jmMAAMkJ/////35OZwigCY5jAAAAAF72/v8AAAAAoAn+/wAAAABe9o5jAAAAAAAAjmN+Tv8/AAD+/4Cx/z8AAI5jgLH/PwAA/v9+Tv8//////35OCgD//45jgLEAAP////+AsQAA//+OY35OCwB1AgAAzFbMMqAJjmMAABAzAACOY35OvzKkCgAADRQoM1r1AAANFAQS//+OY35OLhNe9o5jAADpEYn9AADMVlATpAoAAPHrjj4AAI5jgLFtP6AJjmP//3k+dQIAADKphj+J/QAAMqmEHV72jmP//0we//+OY4CxXh1a9QAA8euUHnUCAAAyqbE7AACOY35OqzsAAI5jgLGxO3UCAADMVqo7oAmOY///gDda9QAA8etaMKQKAADx66s3XvaOY///MzD//45jgLHpEon9AADMVvYSif0AADKp5hL//45jfk73El72jmMAAPYipAoAAA0U0R5a9QAADRQOI6AJjmMAALoeAACOY4CxTEugCf7////CSqAJjmP//69KAAD+/4CxXUvjCOAxbAxlMN4MNTBsCBEyjG754QdpethhaF3XVG9S4/////////////////////9Hw8BzbsJKclLCGnJkw/FzXlVd1UPYRFjXVdbVv9jAWP5//P/rf9b/6X/S/wGA/v8LAPk/AAD/v/+//38MAPk/AkZ03L1FiNsPRqDcpUUz2/0bwMnpGqLIFhzayckagchtQLHnS0Ae5nBA1edHQPDl8hI3zmsSqc0ME1LOOhJ2zc1L2eXQS+3lzUvY5dBL8OXtItjXcyUx3t0irteAJVHezRJnycISXMnPEmjJwRJcyYMtjsvuMePSZy1eywUyCdP/pqrvwqoX7jmr5e19puDv")
+}, {
+"aabb": AABB(-0.93200594, -0.0300575, -0.29434597, 1.8640119, 1e-05, 0.58869195),
+"attribute_data": PackedByteArray("d/V893f1fPdsXv//bF7//9+y+P/fsvj/oyCiIqMgoiJoHRD3aB0Q97q80hm6vNIZ//8hI///ISN/ZdgZf2XYGQ=="),
+"format": 34896613431,
+"index_count": 18,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAQADAAQAAwAAAAUABQAAAAYAAwAFAAcA"),
+"material": SubResource("StandardMaterial3D_0vrkq"),
+"name": "Plastic White Light",
+"primitive": 3,
+"uv_scale": Vector4(3.6059375, 10.057648, 3.6059375, 10.057648),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("WAgkAP//VioAAAAAJU8OKwAAAADZsKUqpvd7AwAAPCpYCCQAAABCLP//nwPZsCUrpvd7A///piz//58DJU+mKtwqudVtKtrUrSpa1ewq2dWtKVvTXyq+1G4p3NKtKlnV")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_ynoiu")
+
+[node name="officelight" type="Node3D"]
+
+[node name="case" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_dxnp7")
+skeleton = NodePath("")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)

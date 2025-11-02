@@ -145,14 +145,16 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
             {
                 viewportLabel.Text = "Preparing...";
             }
-            GameObjectConstructorData data = new(GameObjectType.LabelPaper);
-            data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
-            data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
-            //CALCULATE WHAT ORDER THIS ADDRESS RELATES TO, -1 IF NONE
-            int orderNum = FindOrderNumber(monitor1.addressTextOptions[monitor1.textOptionsIndex], monitor2.addressTextOptions[monitor2.textOptionsIndex], monitor3.addressTextOptions[monitor3.textOptionsIndex]);
-            data.paramList.Add(orderNum);
-            Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
-
+            if (Global.Lobby.bIsLobbyHost)
+            {
+                GameObjectConstructorData data = new(GameObjectType.LabelPaper);
+                data.spawnTransform.Origin = paperPrintLocation.GlobalPosition;
+                data.paramList.Add(monitor1.addressTextOptions[monitor1.textOptionsIndex] + " " + monitor2.addressTextOptions[monitor2.textOptionsIndex] + " " + monitor3.addressTextOptions[monitor3.textOptionsIndex]);
+                //CALCULATE WHAT ORDER THIS ADDRESS RELATES TO, -1 IF NONE
+                int orderNum = FindOrderNumber(monitor1.addressTextOptions[monitor1.textOptionsIndex], monitor2.addressTextOptions[monitor2.textOptionsIndex], monitor3.addressTextOptions[monitor3.textOptionsIndex]);
+                data.paramList.Add(orderNum);
+                Global.gameState.Auth_SpawnObject(GameObjectType.LabelPaper, data);
+            }
             // Node3D paperLabel = PaperLabelScene.Instantiate<Node3D>();
             // paperLabel.Position = paperPrintLocation.Position;
         }

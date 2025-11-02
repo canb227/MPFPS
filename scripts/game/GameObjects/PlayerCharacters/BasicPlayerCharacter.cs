@@ -70,9 +70,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void _Ready()
     {
         base._Ready();
-        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
         Global.ui.inGameUI.ScoreBoard.AddLivingWorkerPlayerRow(authority);
-        
+
         currentGroup = InventoryGroupCategory.Hands;
         currentItemSlot = 0;
         this.CollisionLayer = 1 << 4; //5
@@ -84,13 +83,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast.CollideWithBodies = true;
         interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
-
     }
+    
+    public override bool InitFromData(GameObjectConstructorData data)
+    {
+        Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
+        Global.gameState.gameModeManager.playerStats[authority] = new PlayerRoundStats();
+
+        base.InitFromData(data);
+        return true;
+    }
+
     public override void ProcessStateUpdate(byte[] _update)
     {
         BasicPlayerStateUpdate update = MessagePackSerializer.Deserialize<BasicPlayerStateUpdate>(_update);
         GlobalRotation = update.Rotation;
         GlobalPosition = update.Position;
+        camera.Rotation = update.CameraRotation;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -98,6 +107,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         BasicPlayerStateUpdate update = new BasicPlayerStateUpdate();
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;
+        update.CameraRotation = camera.Rotation;
         return MessagePackSerializer.Serialize(update);
     }
 
@@ -171,7 +181,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void HandleNonMovementInput(double delta)
     {
-        if(!handcuffed)
+        if (!handcuffed)
         {
             if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
             {
@@ -200,12 +210,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                 case CharacterState.Living:
                                     if (basicPlayerCharacter.handcuffed)
                                     {
-                                        basicPlayerCharacter.DropEquipped();
+                                        DropEquipped();
                                     }
                                     break;
 
                                 case CharacterState.Missing:
-                                    basicPlayerCharacter.OnFound();
+                                    RPCManager.RPC(basicPlayerCharacter, "OnFound", []);
                                     Global.ui.inGameUI.PlayerUIManager.deadPlayerScreen.OpenDeadPlayerScreen(basicPlayerCharacter); //show dead player ui stuff
                                     break;
 
@@ -216,12 +226,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
                         }
                     }
-                    
+
                 }
             }
-            if (!lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
+            if (Global.steamid == authority && !lastTickActions.HasFlag(ActionFlags.OpenShop) && input.actions.HasFlag(ActionFlags.OpenShop))
             {
-                if(team == Team.Traitor || team == Team.Manager)
+                if (team == Team.Traitor || team == Team.Manager)
                 {
                     if (!Global.ui.inGameUI.PlayerUIManager.roleShopScreen.Visible)
                     {
@@ -255,8 +265,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
     }
-    
-    private void EquipNextFromSlot(InventoryGroupCategory category)
+
+    public void EquipNextFromSlot(InventoryGroupCategory category)
+    {
+        RPCManager.RPC(this, "rpc_EquipNextFromSlot", [category]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_EquipNextFromSlot(InventoryGroupCategory category)
     {
         if (inventory.GetGroup(category).items.Any())
         {
@@ -277,9 +293,22 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //Equipment Functions
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public override void Pickup(IsInventoryItem item)
     {
+        if (item is GameObject gameObject)
+        {
+            RPCManager.RPC(this, "rpc_Pickup", [gameObject.id]);
+        }
+        else
+        {
+            Logging.Error("IsInventoryItem isn't a GameObject??", "BasicPlayerCharacter");
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_Pickup(ulong itemID)
+    {
+        IsInventoryItem item = (IsInventoryItem)Global.gameState.GameObjects[itemID];
         if (item is GOBaseInventoryItem GOItem)
         {
             if (inventory.HasGroup(GOItem.category))
@@ -294,7 +323,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                     }
                     else
                     {
-                        GOItem.AttachToPlayer(thirdPersonEquipmentAttachmentPoint);
+                        GOItem.AttachToPlayer(firstPersonEquipmentAttachmentPoint);
                     }
                     GOItem.OnPickup(controllingPlayerID);
                     //auto-equip weapons and accessories
@@ -308,7 +337,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     }
     
-        [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void PickupReplace(IsInventoryItem item)
     {
         if (item is GOBaseInventoryItem GOItem)
@@ -365,10 +394,16 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             i.OnEquipped(controllingPlayerID);
         }
     }
-
+    
     public void DropEquipped()
     {
-        if(equipped != null && equipped.droppable)
+        RPCManager.RPC(this, "rpc_DropEquipped", []);
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_DropEquipped()
+    {
+        if (equipped != null && equipped.droppable)
         {
             equipped.OnUnequipped(authority);
             equipped.OnDropped(authority);
@@ -561,7 +596,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private void HandleMouseLook(double delta)
     {
         bool lockLook = false;
-        if(equipped is Hands hands)
+        if (equipped is Hands hands)
         {
             lockLook = hands.rotateMode;
         }
@@ -581,6 +616,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
     }
+    
 
     public override void PerFrameAuth(double delta)
     {
@@ -678,7 +714,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void rpc_OnKnockedOut()
     {
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
-        KnockedOut?.Invoke(authority);
+        KnockedOut?.Invoke(id);
         //characterSoundManager.PlayerKnockoutSound(characterSFX);
         DropEquipped();
         currentStunBar = 0;
@@ -731,20 +767,20 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath()
     {
-        Killed?.Invoke(authority);
+        Killed?.Invoke(id);
         characterSoundManager.PlayDeathSound(characterSFX);
         inventory.DropAllItems(authority);
         state = CharacterState.Missing;
         currentHealth = 0;
         Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
-        Global.gameState.gameModeManager.CharacterDied(team);
+        Global.gameState.gameModeManager.CharacterDied(authority, team);
         ulong tempControllingPlayerID = controllingPlayerID;
         ReleaseControl();
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
     }
 
 
-
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OnFound()
     {
         if (state != CharacterState.Dead)
@@ -843,5 +879,7 @@ public struct BasicPlayerStateUpdate
 
     [Key(1)]
     public Vector3 Rotation;
+    [Key(2)]
+    public Vector3 CameraRotation;
 
 }

@@ -60,14 +60,18 @@ public partial class UI : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("ScoreBoard"))
+        if(Global.gameState!=null && Global.gameState.gameStarted)
         {
-            inGameUI.ShowScoreBoard();
+            if (@event.IsActionPressed("ScoreBoard"))
+            {
+                inGameUI.ShowScoreBoard();
+            }
+            else if (@event.IsActionReleased("ScoreBoard"))
+            {
+                inGameUI.HideScoreBoard();
+            }
         }
-        else if (@event.IsActionReleased("ScoreBoard"))
-        {
-            inGameUI.HideScoreBoard();
-        }
+
     }
 
     public Control SwitchFullScreenUI(string sceneName)

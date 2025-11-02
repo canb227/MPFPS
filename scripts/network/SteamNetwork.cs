@@ -1,14 +1,18 @@
 
+using Godot;
 using MessagePack;
+using MessagePack.Formatters;
 using MessagePack.Resolvers;
 using Steamworks;
 using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Collections.Specialized;
+
 using System.Dynamic;
+using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 public enum Channel
 {
@@ -50,7 +54,7 @@ public class SteamNetwork
     /// <summary>
     /// Max number of messages to attempt to process per frame. If we get frame delays because of spiky network traffic this needs turned down
     /// </summary>
-    private int maxMessagePerFramePerChannel = 100;
+    private int maxMessagePerFramePerChannel = 1000;
 
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
@@ -62,7 +66,7 @@ public class SteamNetwork
     /// <summary>
     /// If true, pack and unpack loopback messages as if they were being sent across the network. Negatively impacts performance but can help test for issues.
     /// </summary>
-    private const bool bLoopbackMemoryAllocation = false;
+    private const bool bLoopbackMemoryAllocation = true;
 
     /// <summary>
     /// If true, introduce artifical network conditions to loopback messages. TESTING ONLY
@@ -72,12 +76,12 @@ public class SteamNetwork
     /// <summary>
     /// Base miliseconds to delay all loopback messages
     /// </summary>
-    private const int iNetworkSimulationDelayMS = 50;
+    private const int iNetworkSimulationDelayMS = 5;
 
     /// <summary>
     /// Randomly add between 0 and this value number of miliseconds to the base delay
     /// </summary>
-    private const int iNetworkSimulationDelayVarianceMS = 100;
+    private const int iNetworkSimulationDelayVarianceMS = 1;
 
     public bool BandwidthTrackerEnabled = true;
     public bool BandwidthTrackerCountLoopbackSend = true;
@@ -88,6 +92,8 @@ public class SteamNetwork
     private int ReceiveBandwidthTracker = 0;
     private bool UltraDetailWireLogging = true;
 
+    private Dictionary<Channel,int> NumSent = new();
+    private Dictionary<Channel,int> NumRcv = new();
     public delegate void SteamNetworkingMessageReceived(Channel channel, byte[] payload, ulong sender);
     public static event SteamNetworkingMessageReceived SteamNetworkingMessageReceivedEvent;
 
@@ -99,7 +105,11 @@ public class SteamNetwork
 
         //Uncomment this if steam relay network is being stupid
         //SteamNetworkHealthManager();
-
+        foreach (Channel ch in Enum.GetValues(typeof(Channel)))
+        {
+            NumRcv[ch] = 0;
+            NumSent[ch] = 0;
+        }
         var resolver = MessagePack.Resolvers.CompositeResolver.Create([MessagePack.Formatters.TypelessFormatter.Instance],[GodotResolver.Instance, MessagePack.Resolvers.StandardResolver.Instance]);
         var options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
         MessagePackSerializer.DefaultOptions = options;
@@ -166,41 +176,41 @@ public class SteamNetwork
         }
     }
 
-    public EResult SendStruct<T>(T structure, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        byte[] data = NetworkUtils.StructToBytes(structure);
-        return SendData(data, channel, remoteSteamID, sendFlags);
-    }
+    //public EResult SendStruct<T>(T structure, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    byte[] data = NetworkUtils.StructToBytes(structure);
+    //    return SendData(data, channel, remoteSteamID, sendFlags);
+    //}
 
-    public List<EResult> BroadcastStruct<T>(T structure, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (ulong identity in remoteSteamIDs)
-        {
-            retval.Add(SendStruct(structure, channel, identity, sendFlags));
-        }
-        return retval;
-    }
+    //public List<EResult> BroadcastStruct<T>(T structure, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    List<EResult> retval = new List<EResult>();
+    //    foreach (ulong identity in remoteSteamIDs)
+    //    {
+    //        retval.Add(SendStruct(structure, channel, identity, sendFlags));
+    //    }
+    //    return retval;
+    //}
 
-    public EResult SendExpando(ExpandoObject obj, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        byte[] data = MessagePackSerializer.Serialize(obj, ContractlessStandardResolver.Options);
-        if (UltraDetailWireLogging)
-        {
-            Logging.Log(MessagePackSerializer.ConvertToJson(data, ContractlessStandardResolver.Options),"UltraDetailWireLogging");
-        }
-        return SendData(data, channel, remoteSteamID, sendFlags);
-    }
+    //public EResult SendExpando(ExpandoObject obj, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    byte[] data = MessagePackSerializer.Serialize(obj, ContractlessStandardResolver.Options);
+    //    if (UltraDetailWireLogging)
+    //    {
+    //        Logging.Log(MessagePackSerializer.ConvertToJson(data, ContractlessStandardResolver.Options),"UltraDetailWireLogging");
+    //    }
+    //    return SendData(data, channel, remoteSteamID, sendFlags);
+    //}
 
-    public List<EResult> BroadcastExpando(ExpandoObject obj, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
-    {
-        List<EResult> retval = new List<EResult>();
-        foreach (ulong identity in remoteSteamIDs)
-        {
-            retval.Add(SendExpando(obj, channel, identity, sendFlags));
-        }
-        return retval;
-    }
+    //public List<EResult> BroadcastExpando(ExpandoObject obj, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    //{
+    //    List<EResult> retval = new List<EResult>();
+    //    foreach (ulong identity in remoteSteamIDs)
+    //    {
+    //        retval.Add(SendExpando(obj, channel, identity, sendFlags));
+    //    }
+    //    return retval;
+    //}
 
 
     /// <summary>
@@ -210,17 +220,20 @@ public class SteamNetwork
     /// <param name="type">type of data you are sending</param>
     /// <param name="remoteSteamID"> User to send data to.</param>
     /// <returns>An EResult enum value indicating the result of the send. A value of k_EResultOK indicates that the message was constructed and placed into the Steam Relay Network. A value of k_EResultOK DOES NOT mean that the message was actually delivered.</returns>
-    public EResult SendData(byte[] data, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    public EResult SendData(byte[] data, Channel channel, ulong remoteSteamID, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_Reliable)
     {
         EResult result;
         if (bDoLoopback && NetworkUtils.IsMe(remoteSteamID))
         {
+            //Logging.Warn($"Self Networking message send detected!!!!! this is bad", "NetworkDebug");
+            //result = EResult.k_EResultFail;
             Loopback(channel, data);
             result = EResult.k_EResultOK;
         }
         else
         {
             SendBandwidthTracker += data.Length;
+            NumSent[channel]++;
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
@@ -241,9 +254,29 @@ public class SteamNetwork
     public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
         List<EResult> retval = new List<EResult>();
+        bool loopbackCheck = false;
         foreach (ulong identity in remoteSteamIDs)
         {
-            retval.Add(SendData(data, channel, identity));
+
+            if (identity==Global.steamid)
+            {
+                loopbackCheck = true;
+                continue;
+            }
+            if (channel == Channel.RPC)
+            {
+                //Logging.Log($"Sending RPC to: {identity}", "RPCDebug");
+            }
+            retval.Add(SendData(data, channel, identity, sendFlags));
+        }
+        if (loopbackCheck && bDoLoopback)
+        {
+            if (channel == Channel.RPC)
+            {
+                //Logging.Log($"Sending RPC to: SELF", "RPCDebug");
+            }
+            Loopback(channel, data);
+            retval.Add(EResult.k_EResultOK);
         }
         return retval;
     }
@@ -257,12 +290,15 @@ public class SteamNetwork
         foreach (Channel channel in Enum.GetValues(typeof(Channel)))
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
-            for (int k = 0; k < SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel); k++)
+            int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
+            for (int k = 0; k < messageCount; k++)
             {
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
                 byte[] payload = NetworkUtils.PtrToBytes(steamMessage.m_pData, steamMessage.m_cbSize);
                 ReceiveBandwidthTracker += payload.Length;
-                Logging.Log($" MSGRCV | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
+                NumRcv[channel]++;
+                Logging.Log($" MSGRCV @ {steamMessage.m_usecTimeReceived.m_SteamNetworkingMicroseconds} | #{steamMessage.m_nMessageNumber} | FROM: {steamMessage.m_identityPeer.GetSteamID64()}| CHANNEL: {channel} | SIZE: {payload.Length} | Tracker: {ReceiveBandwidthTracker}", "NetworkWire");
+
                 ProcessMessage(payload, channel,steamMessage.m_identityPeer.GetSteamID64());
                 SteamNetworkingMessage_t.Release(messages[k]);
             }
@@ -314,6 +350,7 @@ public class SteamNetwork
         if (BandwidthTrackerCountLoopbackSend)
         {
             SendBandwidthTracker += data.Length;
+            NumSent[channel]++;
         }
 
         Logging.Log($" MSGSND | TO: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
@@ -332,11 +369,13 @@ public class SteamNetwork
         if (BandwidthTrackerCountLoopbackReceive)
         {
             ReceiveBandwidthTracker += data.Length;
+            NumRcv[channel]++;
         }
 
         Logging.Log($" MSGRCV | FROM: LOOPBACK | CH: {channel} | SIZE: {data.Length}", "NetworkWire");
         ProcessMessage(data, channel, Global.steamid);
     }
+
 
     public void Tick(double delta)
     {
@@ -347,14 +386,22 @@ public class SteamNetwork
             {
                 if (SendBandwidthTracker>0 || ReceiveBandwidthTracker >0)
                 {
-                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker}", "NetworkBandwidthTracker");
+                    Logging.Log($"Window: {BandwidthTrackerWindow} | send: {SendBandwidthTracker} | receive: {ReceiveBandwidthTracker} | num sent: {NumSent.Sum(x=>x.Value)} | num rcv: {NumRcv.Sum(x => x.Value)}", "NetworkBandwidthTracker");
                 }
 
                 SendBandwidthTracker = 0;
                 ReceiveBandwidthTracker = 0;
                 BandwidthTrackerTimer = 0;
+
+                foreach (Channel ch in Enum.GetValues(typeof(Channel)))
+                {
+                    NumRcv[ch] = 0;
+                    NumSent[ch] = 0;
+                }
+
             }
         }
     }
+
 }
 

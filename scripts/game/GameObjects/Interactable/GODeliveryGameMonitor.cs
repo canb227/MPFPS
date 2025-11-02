@@ -24,6 +24,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     private PlayerInputData input;
     public bool activeDelivery;
     private ulong activeCharacterID;
+    private ulong activeSteamID;
 
     private Transform3D playerCameraBackUp { get; set; }
     private Transform3D playerPositionBackUp { get; set; }
@@ -47,12 +48,12 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     }
 
 
-    public override void Auth_HandleInteractionRequest(ulong byID, ulong onTick)
+    public override void Auth_HandleInteractionRequest(ulong byCharacterID, ulong onTick)
     {
         //get player controller by ID
         if (!locked && orderID != -1)
         {
-            RPCManager.RPC(this, "LockPlayer", [byID, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
+            RPCManager.RPC(this, "LockPlayer", [byCharacterID, lockCameraPosition.GlobalTransform, lockPlayerPosition.Transform]);
         }
     }
 
@@ -73,10 +74,10 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void LockPlayer(ulong playerID, Transform3D cameraPosition, Transform3D playerPosition)
+    public void LockPlayer(ulong characterID, Transform3D cameraPosition, Transform3D playerPosition)
     {
         Logging.Log("Locking Player, and passing input to the machine", "GODeliveryGameMonitor");
-        GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[playerID];
+        GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[characterID];
         if (playerCharacter is BasicPlayerCharacter basicPlayerCharacter)
         {
             basicPlayerCharacter.KnockedOut += UnlockPlayer;
@@ -86,17 +87,18 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
         playerCameraBackUp = playerCharacter.camera.GlobalTransform;
         playerCharacter.camera.GlobalTransform = cameraPosition;
         locked = true;
-        activeCharacterID = playerID;
+        activeCharacterID = characterID;
+        activeSteamID = playerCharacter.authority;
         input = Global.gameState.PlayerInputs[playerCharacter.authority];
         
         rpc_MiniGameStart();
     }
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void UnlockPlayer(ulong playerID)
+    public void UnlockPlayer(ulong characterID)
     {
         if (locked)
         {
-            GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[playerID];
+            GOBasePlayerCharacter playerCharacter = (GOBasePlayerCharacter)Global.gameState.GameObjects[characterID];
             if (playerCharacter is BasicPlayerCharacter basicPlayerCharacter)
             {
                 basicPlayerCharacter.KnockedOut -= UnlockPlayer;
@@ -143,18 +145,11 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 
     private void OnBodyEntered(Node body)
     {
-        if (Global.Lobby.bIsLobbyHost)
+        if (Global.steamid == activeSteamID)
         {
             if (body is DeliveryVehicle2D)
             {
                 RPCManager.RPC(this, "MiniGameWon", []);
-            }
-        }
-        else
-        {
-            if (body is DeliveryVehicle2D)
-            {
-                Logging.Log("We are a client and won the delivery game, hopefully the host agrees", "GODeliveryGameMonitor");
             }
         }
     }
@@ -169,17 +164,23 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 
     }
 
-    public override void PerFrameShared(double delta)
+    public override void PerTickShared(double delta)
     {
 
     }
 
-    public override void PerTickAuth(double delta)
+
+    public override void PerFrameShared(double delta)
     {
         if (locked)
         {
-            vehicle2D.PerTick(input, delta);
+            vehicle2D.PerFrameShared(Global.gameState.PlayerInputs[activeSteamID], delta);
         }
+    }
+
+    public override void PerTickAuth(double delta)
+    {
+
     }
 
     public override void PerTickLocal(double delta)

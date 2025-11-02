@@ -189,7 +189,6 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     private double attackCooldown = 0;
     private const float MeleeRange = 2.0f; // tweak as needed
 
-
     private void TryAttack(double delta)
     {
         attackCooldown -= delta;
@@ -201,9 +200,15 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         {
             if (MovementTarget is IsDamagable dmg)
             {
-                animationPlayer.Play("attack");
+                RPCManager.RPC(this, "AttackWindup", []);
             }
         }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void AttackWindup()
+    {
+        animationPlayer.Play("attack");
     }
 
     public void Attack()
@@ -295,7 +300,6 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
 
     public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
-        Logging.Log("We Take Stun Damage as damage", "SwarmRobot");
         TakeDamage(damage, byID, soundType, VolumeDb);
     }
 

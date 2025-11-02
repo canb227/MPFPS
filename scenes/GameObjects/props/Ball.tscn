@@ -8,6 +8,7 @@
 
 [node name="Ball" type="RigidBody3D"]
 script = ExtResource("1_id8x1")
+type = 1
 metadata/_custom_type_script = "uid://cu607lg0ximjf"
 
 [node name="mesh" type="MeshInstance3D" parent="."]

@@ -30,18 +30,33 @@ public partial class GOHandcuffs : GOBaseAccessory
                 if (current is BasicPlayerCharacter target)
                 {
                     Logging.Log($"Hit a BasicPlayerCharacter object: " + target.currentStunBar, "GOHandcuffs");
-                    if(target.state == CharacterState.Living)
+                    if (target.state == CharacterState.Living)
                     {
-                        if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
-                        {
-                            basicPlayerCharacter.DropEquipped();
-                        }
-                        target.Handcuff(this);
-                        audioStreamPlayer.Play();
+                        RPCManager.RPC(this, "Handcuff", [target.id]);
                     }
                 }
             }
         }
         base.HandleInput(input);
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void Handcuff(ulong targetID)
+    {
+        var obj = Global.gameState.GameObjects[targetID];
+        if (obj is BasicPlayerCharacter target)
+        {
+            if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+            {
+                basicPlayerCharacter.DropEquipped();
+            }
+            target.Handcuff(this);
+            audioStreamPlayer.Play();
+        }
+        else
+        {
+            Logging.Error("Handcuff target isnt a basicPlayerCharacter?", "GOHandcuffs");
+        }
+
     }
 }
