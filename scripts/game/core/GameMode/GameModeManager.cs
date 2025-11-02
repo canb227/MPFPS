@@ -389,7 +389,7 @@ public partial class GameModeManager : Node
         numPlayers = players.Count;
         numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
         numManagers = Mathf.FloorToInt(numPlayers * options.percentManagers);
-        if (options.manualOverride)
+        if (options.manualTeamOverride)
         {
             numTraitors = options.manualTraitorCount;
             numManagers = options.manualManagerCount;
