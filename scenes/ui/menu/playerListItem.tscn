@@ -95,7 +95,7 @@ grow_vertical = 2
 text = "Color"
 metadata/_edit_use_anchors_ = true
 
-[node name="lbl_char" type="Label" parent="."]
+[node name="lbl_role" type="Label" parent="."]
 custom_minimum_size = Vector2(0, 4.835)
 layout_mode = 1
 anchors_preset = -1
@@ -108,10 +108,10 @@ offset_right = 152.8
 offset_bottom = 27.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "character"
+text = "Role:"
 metadata/_edit_use_anchors_ = true
 
-[node name="charSelect" type="OptionButton" parent="."]
+[node name="roleSelect" type="OptionButton" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.7008674

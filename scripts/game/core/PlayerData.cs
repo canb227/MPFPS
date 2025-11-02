@@ -13,6 +13,9 @@ public class PlayerData
     public string selectedCharacter = "ghost";
 
     [Key(2)]
+    public Role role = Role.OfficeWorker;
+
+    [Key(3)]
     public Color color = Colors.CadetBlue;
 
 }
