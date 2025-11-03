@@ -1,7 +1,7 @@
-[gd_scene load_steps=27 format=4 uid="uid://cergi4lpkn7h0"]
+[gd_scene load_steps=29 format=4 uid="uid://cergi4lpkn7h0"]
 
 [ext_resource type="Script" uid="uid://bl0741xk0s7iw" path="res://scripts/game/GameObjects/Interactable/GODeliveryGameMonitor.cs" id="1_4hkts"]
-[ext_resource type="Shader" path="res://assets/materials/8BitShader.gdshader" id="2_4hkts"]
+[ext_resource type="Shader" uid="uid://cyd4agfsye7jb" path="res://assets/materials/8BitShader.gdshader" id="2_4hkts"]
 [ext_resource type="Script" uid="uid://d0mgvdrwiponf" path="res://scripts/game/other/DeliveryVehicle2D.cs" id="2_qh3yw"]
 
 [sub_resource type="Animation" id="Animation_qh3yw"]
@@ -443,6 +443,12 @@ rings = 3
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s2k1w"]
 size = Vector2(26, 26)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4hkts"]
+size = Vector2(59, 982.5)
+
+[sub_resource type="QuadMesh" id="QuadMesh_qh3yw"]
+size = Vector2(60.515, 993.48)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qh3yw"]
 shader = ExtResource("2_4hkts")
 shader_parameter/pixel_size = 4
@@ -462,8 +468,8 @@ script = ExtResource("1_4hkts")
 lockCameraPosition = NodePath("CameraPosition")
 lockPlayerPosition = NodePath("PlayerPosition")
 animationPlayer = NodePath("AnimationPlayer")
-vehicle2D = NodePath("SubViewport/Node2D/2DDeliveryVehicle")
-finishArea = NodePath("SubViewport/Node2D/FinishArea")
+vehicle2D = NodePath("Node2D/2DDeliveryVehicle")
+finishArea = NodePath("Node2D/FinishArea")
 metadata/_custom_type_script = "uid://bl0741xk0s7iw"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -487,36 +493,148 @@ transform = Transform3D(1, 0, 0, 0, 0.8649674, 0.5018278, 0, -0.5018278, 0.86496
 [node name="PlayerPosition" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0152231455, 0.79270214)
 
-[node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(1024, 1024)
-size_2d_override = Vector2i(1024, 1024)
-size_2d_override_stretch = true
-
-[node name="Node2D" type="Node2D" parent="SubViewport"]
+[node name="Node2D" type="Node2D" parent="."]
 position = Vector2(138, 317)
 
-[node name="2DDeliveryVehicle" type="CharacterBody2D" parent="SubViewport/Node2D"]
-position = Vector2(500, 500)
+[node name="2DDeliveryVehicle" type="CharacterBody2D" parent="Node2D"]
+position = Vector2(716, 575)
+rotation = -1.5707964
 script = ExtResource("2_qh3yw")
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="SubViewport/Node2D/2DDeliveryVehicle"]
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Node2D/2DDeliveryVehicle"]
 position = Vector2(1.7881393e-07, 1.9073486e-06)
+rotation = 1.5707964
 scale = Vector2(19.999998, 15.000001)
 mesh = SubResource("CapsuleMesh_niev0")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/2DDeliveryVehicle"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/2DDeliveryVehicle"]
+rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_a4tbi")
 
-[node name="FinishArea" type="Area2D" parent="SubViewport/Node2D"]
+[node name="FinishArea" type="Area2D" parent="Node2D"]
 
-[node name="MeshInstance2D5" type="MeshInstance2D" parent="SubViewport/Node2D/FinishArea"]
+[node name="MeshInstance2D5" type="MeshInstance2D" parent="Node2D/FinishArea"]
 position = Vector2(0, -200)
 scale = Vector2(25, 25)
 mesh = SubResource("BoxMesh_qym7b")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/FinishArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/FinishArea"]
 position = Vector2(0, -200)
 shape = SubResource("RectangleShape2D_s2k1w")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Node2D"]
+position = Vector2(-14, -10)
+scale = Vector2(1.065, 1.025)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+position = Vector2(-83.5, 245.75)
+shape = SubResource("RectangleShape2D_4hkts")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+position = Vector2(838, 246)
+shape = SubResource("RectangleShape2D_4hkts")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+position = Vector2(378, -274)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_4hkts")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Node2D/StaticBody2D"]
+position = Vector2(376, 708)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_4hkts")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Node2D/StaticBody2D"]
+position = Vector2(-85, 220)
+mesh = SubResource("QuadMesh_qh3yw")
+
+[node name="MeshInstance2D2" type="MeshInstance2D" parent="Node2D/StaticBody2D"]
+position = Vector2(837, 217)
+mesh = SubResource("QuadMesh_qh3yw")
+
+[node name="MeshInstance2D3" type="MeshInstance2D" parent="Node2D/StaticBody2D"]
+position = Vector2(372, -276)
+rotation = 1.5707964
+mesh = SubResource("QuadMesh_qh3yw")
+
+[node name="MeshInstance2D4" type="MeshInstance2D" parent="Node2D/StaticBody2D"]
+position = Vector2(375, 707)
+rotation = 1.5707964
+mesh = SubResource("QuadMesh_qh3yw")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Node2D"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/StaticBody2D2"]
+position = Vector2(851, 684)
+polygon = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
+uv = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Node2D/StaticBody2D2"]
+position = Vector2(850, 684)
+polygon = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Node2D"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/StaticBody2D3"]
+position = Vector2(714, 24)
+polygon = PackedVector2Array(22.999481, -5.7184906, -44.68094, 57.61548, -117.328735, -16.274147, -234.56909, -48.21286, -324.9187, 49.223022, -319.60413, 187.40482, -302.95667, 338.51846, -285.41663, 508.05695, -343.87805, 560.6723, -423.7755, 515.8518, -454.95496, 332.67233, -466.97894, 106.32146, -421.08386, -18.000336, -321.69693, -87.83722, -169.44286, -139.48987, -98.67824, -140.07016, -30.237587, -98.14021)
+uv = PackedVector2Array(22.999481, -5.7184906, -44.68094, 57.61548, -117.328735, -16.274147, -234.56909, -48.21286, -324.9187, 49.223022, -319.60413, 187.40482, -302.95667, 338.51846, -285.41663, 508.05695, -343.87805, 560.6723, -423.7755, 515.8518, -454.95496, 332.67233, -480.28894, 172.87146, -488.08386, -22.000336, -404.28894, -195.43622, -184.08386, -170.10287, -57.417236, -92.15416, 28.326416, -119.43622)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Node2D/StaticBody2D3"]
+position = Vector2(714, 24)
+polygon = PackedVector2Array(22.999481, -5.7184906, -44.68094, 57.61548, -117.328735, -16.274147, -234.56909, -48.21286, -324.9187, 49.223022, -319.60413, 187.40482, -302.95667, 338.51846, -285.41663, 508.05695, -343.87805, 560.6723, -423.7755, 515.8518, -454.95496, 332.67233, -466.97894, 106.32146, -421.08386, -18.000336, -321.69693, -87.83722, -169.44286, -139.48987, -98.67824, -140.07016, -30.237587, -98.14021)
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="Node2D"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/StaticBody2D4"]
+position = Vector2(577, 683)
+polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Node2D/StaticBody2D4"]
+position = Vector2(578, 684)
+polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="Node2D"]
+
+[node name="Polygon2D2" type="Polygon2D" parent="Node2D/StaticBody2D5"]
+position = Vector2(66, 687)
+scale = Vector2(-1.28, 1)
+polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="Polygon2D3" type="Polygon2D" parent="Node2D/StaticBody2D5"]
+position = Vector2(99.99999, -93)
+rotation = 4.7996554
+scale = Vector2(-1.28, 1)
+polygon = PackedVector2Array(-96.97888, 271.8548, 73.21213, 88.50778, 121.79713, -168.62021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Node2D/StaticBody2D5"]
+position = Vector2(66, 687)
+scale = Vector2(-1.28, 1)
+polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="Node2D/StaticBody2D5"]
+position = Vector2(99.99999, -93)
+rotation = 4.7996554
+scale = Vector2(-1.28, 1)
+polygon = PackedVector2Array(-96.97888, 271.8548, 73.21213, 88.50778, 121.79713, -168.62021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="StaticBody2D6" type="StaticBody2D" parent="Node2D"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/StaticBody2D6"]
+position = Vector2(82, -117)
+uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Node2D/StaticBody2D6"]
+position = Vector2(850, 684)
+polygon = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1024, 1024)
+size_2d_override = Vector2i(1024, 1024)
+size_2d_override_stretch = true
 
 [node name="ColorRect" type="ColorRect" parent="SubViewport"]
 material = SubResource("ShaderMaterial_qh3yw")
