@@ -131,6 +131,9 @@ public static class RPCManager
         [Key(2)]
         public dynamic[] parameters;
 
+        [Key(3)]
+        public ulong goid;
+
     }
 
     public static void HandleRPCBytes(byte[] message, ulong sender)
@@ -150,10 +153,42 @@ public static class RPCManager
             }
         }
         //if(!log) Logging.Log($"Got RPC sent over loopback.", "RPCManagerWire");
-        ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
+
+        if (packet.goid != 0)
+        {
+            if (Global.gameState.GameObjects.TryGetValue(packet.goid, out var obj))
+            {
+                NodePath path = Global.instance.GetPathTo((obj as Node));
+                ProcessRPC(path, packet.methodName, packet.parameters);
+            }
+            else
+            {
+                Logging.Error($"Invalid RPC Received! GameObject ID Target ({packet.goid}) not found in GameObject Dictionary!", "RPCManager");
+                return;
+            }
+        }
+        else
+        {
+            ProcessRPC(packet.nodePath, packet.methodName, packet.parameters);
+        }
+
     }
 
-    public static void RPC(Node context, string methodName, object[] parameters)
+
+    public static void RPCID(ulong GOID, string methodName, object[] parameters)
+    {
+        if (Global.gameState.GameObjects.TryGetValue(GOID, out var obj))
+        {
+            RPC(obj as Node, methodName, parameters, true);
+        }
+        else
+        {
+            Logging.Error($"RPC Failed! GameObject ID Target ({GOID}) not found in GameObject Dictionary!", "RPCManager");
+        }
+    }
+
+
+    public static void RPC(Node context, string methodName, object[] parameters, bool byID = false)
     {
         MethodInfo method = context.GetType().GetMethod(methodName);
         if (method == null)
@@ -166,6 +201,19 @@ public static class RPCManager
             Logging.Error($"RPC on target type: {context.GetType().ToString()} targets method missing RPC annotation!!!:{methodName}", "RPCManager");
         }
 
+        RPCMessage packet = new();
+        if (byID)
+        {
+            packet.goid = (context as GameObject).id;
+        }
+        else
+        {
+            packet.nodePath = Global.instance.GetPathTo(context);
+        }
+        packet.methodName = methodName;
+        packet.parameters = parameters;
+        byte[] bytes = MessagePackSerializer.Serialize(packet);
+
         if (attribute.mode == RPCMode.OnlySendToAuth)
         {
             ulong authority = 0;
@@ -177,35 +225,23 @@ public static class RPCManager
             {
                 authority = Global.gameState.defaultAuth;
             }
-            RPCMessage packet = new();
-            packet.nodePath = Global.instance.GetPathTo(context);
-            packet.methodName = methodName;
-            packet.parameters = parameters;
-
-            byte[] bytes = MessagePackSerializer.Serialize(packet);
-            Logging.Log($"Sending to auth RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
+            //Logging.Log($"Sending to auth RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
             Global.network.SendData(bytes, Channel.RPC, authority, NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
         }
-        else if(attribute.mode == RPCMode.SendToAllPeers)
+        else if (attribute.mode == RPCMode.SendToAllPeers)
         {
-            RPCMessage packet = new();
-            packet.nodePath = Global.instance.GetPathTo(context);
-            packet.methodName = methodName;
-            packet.parameters = parameters;
-
-            byte[] bytes = MessagePackSerializer.Serialize(packet);
             //Logging.Log($"Broadcasting RPC with payload: {MessagePackSerializer.ConvertToJson(bytes)}", "RPCManagerWire");
-            foreach (var obj in parameters)
-            {
-                if (obj is byte[] arr)
-                {
-                    //Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
-                }
-            }
+            //foreach (var obj in parameters)
+            //{
+            //    if (obj is byte[] arr)
+            //    {
+            //        Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
+            //    }
+            //}
             Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
-        
         }
     }
+
 
     public static void ProcessRPC(NodePath path, string methodName, object[] parameters, bool paramsValueTypeOnly = false)
     {
