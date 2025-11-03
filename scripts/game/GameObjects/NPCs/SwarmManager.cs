@@ -19,8 +19,8 @@ public partial class SwarmManager : Node
 
     public void PrepareRound(int numPlayers)
     {
-        robotSwarmMaxSize = numPlayers * 100;
-        robotSwarmMinSize = numPlayers * 80;
+        robotSwarmMaxSize = numPlayers * 10;
+        robotSwarmMinSize = numPlayers * 2;
         currentSwarmCooldown = 120;
     }
 
