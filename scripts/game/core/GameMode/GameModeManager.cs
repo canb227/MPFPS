@@ -75,6 +75,7 @@ public partial class GameModeManager : Node
     {
         Logging.Log($"Starting Game Mode manager", "GameModeManager");
         Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
+        Lobby.LobbyPeerRemovedEvent += OnLobbyPeerRemoved;
     }
 
     public void PerTick(double delta)
@@ -114,6 +115,15 @@ public partial class GameModeManager : Node
             {
                 PushGameStateOptions();
             }
+        }
+    }
+
+    private void OnLobbyPeerRemoved(ulong playerSteamID)
+    {
+        if(basicPlayers.Keys.Contains(playerSteamID))
+        {
+            Logging.Log("Force Killing Disconnected Peers Basic Player Character", "GameModeManager");
+            basicPlayers[playerSteamID].KillSelf();
         }
     }
 

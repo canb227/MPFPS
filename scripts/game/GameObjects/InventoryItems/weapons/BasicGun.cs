@@ -210,7 +210,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
                     hitParticle.LookAt(direction, up);
                 }
-                
+
                 if (playerHeldBy.authority == Global.steamid)
                 {
                     var hit = (Node)hitResult["collider"];
@@ -274,7 +274,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         //reset reload progress
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
-        Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
+        if(equippedBySteamID == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
+        }
         audioStreamPlayer1.Stop();
         audioStreamPlayer2.Stop();
         animationPlayer.Play("RESET");
@@ -286,7 +289,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         //reset reload progress
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
-        Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
+        if (equippedBySteamID == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
+        }
         audioStreamPlayer1.Stop();
         audioStreamPlayer2.Stop();
         animationPlayer.Play("RESET");
@@ -313,11 +319,14 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         if (player is BasicPlayerCharacter basicPlayerCharacter)
         {
-            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(
-                currentMagazineAmmo,
-                basicPlayerCharacter.ammoStored[ammoType],
-                magazineSize
-            );
+            if (equippedBySteamID == Global.steamid)
+            {
+                Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(
+                    currentMagazineAmmo,
+                    basicPlayerCharacter.ammoStored[ammoType],
+                    magazineSize
+                );
+            }
         }
         else
         {

@@ -813,6 +813,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
     }
 
+    public void KillSelf()
+    {
+        currentHealth = 0;
+        RPCManager.RPC(this, "rpc_OnDeath", []);
+    }
+
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void OnFound()
