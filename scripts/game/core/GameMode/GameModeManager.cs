@@ -600,7 +600,7 @@ public partial class GameModeManager : Node
     public void OrderPacked(int orderNumber)
     {
         OnOrderPacked?.Invoke(orderNumber);
-
+        packageOrders[orderNumber].isPacked = true;
     }
     
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
