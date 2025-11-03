@@ -82,7 +82,9 @@ public partial class Hands : GOBaseInventoryItem
             //mouse released while charging
             if(holding is RigidBody3D rb)
             {
-                RPCManager.RPC(this, "ReleaseHeld", [rb.GlobalPosition, rb.GlobalRotation, new Vector3(chargeAmount*20*(rb.Mass*0.5f), chargeAmount*20*(rb.Mass*0.5f), chargeAmount*12*(rb.Mass*0.5f))]);
+                var impulse = new Vector3(chargeAmount * 20 * (rb.Mass * 0.5f), chargeAmount * 20 * (rb.Mass * 0.5f), chargeAmount * 12 * (rb.Mass * 0.5f));
+                var vectoredImpulse = (CurrentHoldPosition.GlobalPosition - HoldPosition.GlobalPosition) * -impulse;
+                RPCManager.RPC(this, "ReleaseHeld", [rb.GlobalPosition, rb.GlobalRotation, vectoredImpulse]);
             }
             charging = false;
             chargeAmount = 0;
@@ -183,7 +185,7 @@ public partial class Hands : GOBaseInventoryItem
             rb.GlobalPosition = position;
             rb.GlobalRotation = rotation;
             rb.ProcessMode = ProcessModeEnum.Pausable;
-            rb.ApplyCentralImpulse((CurrentHoldPosition.GlobalPosition - HoldPosition.GlobalPosition) * -impulse);
+            rb.ApplyCentralImpulse(impulse);
         }
         (holding as GameObject).sleeping = false;
         holding.OnRelease(equippedBySteamID);
