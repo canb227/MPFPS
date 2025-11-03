@@ -101,10 +101,11 @@ collider = NodePath("CollisionShape3D")
 metadata/_custom_type_script = "uid://w4vkt6pc48p6"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2850456e-05, 0.00032806396, 0.0005931854)
+transform = Transform3D(1, -6.592472e-08, 3.0006117e-08, 6.592472e-08, 0.65677005, -0.7540909, 3.0006117e-08, 0.7540909, 0.65677005, 8.2850456e-05, 0.00032806396, 0.0005931854)
 shape = SubResource("BoxShape3D_5kuwd")
 
 [node name="Cube2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.9999998, -6.599582e-08, 0.00059330626, 0.0004478461, 0.6558351, 0.7549041, -0.0003891609, 0.7549042, -0.655835, 0, 0, 0)
 mesh = SubResource("ArrayMesh_31isd")
 skeleton = NodePath("")
 surface_material_override/1 = SubResource("StandardMaterial3D_1yp6g")

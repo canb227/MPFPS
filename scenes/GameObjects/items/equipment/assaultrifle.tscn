@@ -316,6 +316,7 @@ _data = {
 [node name="Rifle" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer1", "audioStreamPlayer2", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
+mass = 9.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0.39, 0.01, 0)
 continuous_cd = true
@@ -331,6 +332,7 @@ stunDamagePerShot = 20.0
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
+type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

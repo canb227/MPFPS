@@ -92,6 +92,7 @@ _data = {
 [node name="GOHandcuffs" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
+mass = 2.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.1, -0.29)
 continuous_cd = true

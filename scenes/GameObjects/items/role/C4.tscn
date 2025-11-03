@@ -110,6 +110,7 @@ _data = {
 radius = 80.0
 
 [node name="GOC4" type="RigidBody3D" node_paths=PackedStringArray("fps", "tps", "collider", "audioStreamPlayer", "explosionRadius", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
+mass = 7.0
 script = ExtResource("1_mjxm0")
 fps = NodePath("fps")
 tps = NodePath("tps")

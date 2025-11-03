@@ -71,6 +71,7 @@ size = Vector3(0.37098694, 0.23568726, 0.2581787)
 [node name="GOPackageItem" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
 collision_layer = 2
 collision_mask = 27
+mass = 2.0
 script = ExtResource("1_ywos6")
 packageItemMesh = NodePath("car_battery_1")
 packageItemCollider = NodePath("CollisionShape3D")

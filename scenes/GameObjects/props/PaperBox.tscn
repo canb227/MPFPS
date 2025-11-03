@@ -47,6 +47,7 @@ size = Vector3(0.41919136, 0.10329056, 0.55644226)
 [node name="GOPaperBox" type="RigidBody3D" node_paths=PackedStringArray("packageItemMesh", "packageItemCollider")]
 collision_layer = 2
 collision_mask = 27
+mass = 2.0
 continuous_cd = true
 script = ExtResource("1_ljsgb")
 packageItemMesh = NodePath("Cube_001")

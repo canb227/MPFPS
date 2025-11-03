@@ -58,6 +58,7 @@ _data = {
 [node name="GOPackageRadar" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
+mass = 2.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0.37, 0.1, -0.32)
 script = ExtResource("1_xeqj4")
