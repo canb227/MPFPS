@@ -22,6 +22,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     [Export] public AudioStreamPlayer3D movementSFX;
     public float maxHealth { get; set; } = 50;
     public float currentHealth { get; set; } = 50;
+    private float currentSpeed = 10;
     private CharacterSoundManager characterSoundManager;
     string[] ambientSounds =
     {
@@ -97,7 +98,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
                         {
                             if (IsOnFloor())
                             {
-                                velocity.Y = 10;
+                                velocity.Y = currentSpeed;
                             }
                             Vector3 currentAgentPosition = GlobalTransform.Origin;
                             Vector3 newVel = currentAgentPosition.DirectionTo(MovementTarget.GlobalPosition) * 2;
@@ -169,20 +170,24 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
             {
                 if (player is BasicPlayerCharacter p)
                 {
-                    if(p.state == CharacterState.Living)
+                    if (p.state == CharacterState.Living)
                     {
                         float dist = GlobalTransform.Origin.DistanceTo(p.GlobalTransform.Origin);
                         if (dist < closestDist)
                         {
                             closestDist = dist;
                             closest = p;
-                        } 
+                        }
                     }
                 }
             }
 
             if (closest != null)
+            {
                 MovementTarget = closest;
+                currentSpeed = 10f + (float)rand.NextDouble() * 5f;
+            }
+                
         }
     }
 

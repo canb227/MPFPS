@@ -57,8 +57,8 @@ public partial class Hands : GOBaseInventoryItem
                 {
                     if (chargeAmount<3)
                     {
-                        chargeAmount += (float)delta;
-                        CurrentHoldPosition.Translate(new Vector3(0, 0, .001f));
+                        chargeAmount += (float)delta * 3;
+                        CurrentHoldPosition.Translate(new Vector3(0, 0, .0005f));
                     }
 
                 }

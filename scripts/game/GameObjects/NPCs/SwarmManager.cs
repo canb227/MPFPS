@@ -19,8 +19,8 @@ public partial class SwarmManager : Node
 
     public void PrepareRound(int numPlayers)
     {
-        robotSwarmMaxSize = numPlayers * 10;
-        robotSwarmMinSize = numPlayers;
+        robotSwarmMaxSize = numPlayers * 100;
+        robotSwarmMinSize = numPlayers * 80;
         currentSwarmCooldown = 120;
     }
 
@@ -86,6 +86,7 @@ public partial class SwarmManager : Node
 
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobot, data);
         }
+        GD.Print("DONE SPAWNING ROBOTS");
         // foreach(var player in Global.gameState.gameModeManager.deadPlayers)
         // {
         //     float angle = (float)(i * (2 * Math.PI / robotSwarmSize));

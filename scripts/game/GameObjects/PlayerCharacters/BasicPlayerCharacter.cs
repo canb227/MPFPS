@@ -570,10 +570,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
-        if (input.actions.HasFlag(ActionFlags.Sprint))
-        {
-            finalSpeed = baseSpeed * 2;
-        }
+        // if (input.actions.HasFlag(ActionFlags.Sprint))
+        // {
+        //     finalSpeed = baseSpeed * 2;
+        // }
 
         //get input vectors
         Vector2 normalizedInput = input.MovementInputVector.Normalized();
