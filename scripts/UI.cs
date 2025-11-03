@@ -41,7 +41,8 @@ public partial class UI : Node
         { "UI_LoadingScreen","res://scenes/ui/menu/LoadingScreen.tscn" },
         { "UI_MainMenu", "res://scenes/ui/menu/MainMenu.tscn" },
         { "BasePlayerHUD", "res://scenes/ui/hud/BasePlayerHUD.tscn" },
-        { "InGameUI", "res://scenes/ui/hud/InGameUI.tscn"}
+        { "InGameUI", "res://scenes/ui/hud/InGameUI.tscn"},
+        { "UI_OptionsScreen", "res://scenes/ui/menu/OptionsScreen.tscn" },
     };
 
     public void ToLobbyUI()
@@ -52,6 +53,8 @@ public partial class UI : Node
     {
         SwitchFullScreenUI("UI_MainMenu");
     }
+
+
 
     public void ToGameUI()
     {

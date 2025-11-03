@@ -19,7 +19,7 @@ public partial class MainMenu : Control
 
     private void OnOptionsPressed()
     {
-        throw new NotImplementedException();
+        Global.ui.SwitchFullScreenUI("UI_OptionsScreen");
     }
 
     private void OnStartPressed()

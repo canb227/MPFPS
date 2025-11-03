@@ -326,7 +326,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if (item is GameObject gameObject)
         {
-            RPCManager.RPC(this, "rpc_Pickup", [gameObject.id]);
+            RPCManager.RPCID(this.id, "rpc_Pickup", [gameObject.id]);
         }
         else
         {
@@ -631,8 +631,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         if (Input.MouseMode == Input.MouseModeEnum.Captured && !lockLook)
         {
-            float mouseX = input.LookInputVector.X * 5 * ((float)delta);
-            float mouseY = input.LookInputVector.Y * 5 * ((float)delta);
+            float mouseX = input.LookInputVector.X * Global.Config.loadedPlayerConfig.mouseSensX * ((float)delta);
+            float mouseY = input.LookInputVector.Y * Global.Config.loadedPlayerConfig.mouseSensY * ((float)delta);
 
             float newXRot = camera.RotationDegrees.X - mouseY;
             float newYRot = RotationDegrees.Y - mouseX;
