@@ -333,7 +333,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if (item is GameObject gameObject)
         {
-            RPCManager.RPCID(this.id, "rpc_Pickup", [gameObject.id]);
+            RPCManager.RPC(this, "rpc_Pickup", [gameObject.id]);
         }
         else
         {
