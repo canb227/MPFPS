@@ -252,7 +252,7 @@ public partial class DebugScreen : Control
         }
         else
         {
-            playerListItem.GetNode<OptionButton>("charSelect").Disabled = true;
+            playerListItem.GetNode<OptionButton>("roleSelect").Disabled = true;
             playerListItem.GetNode<ColorPickerButton>("colorSelect").Disabled = true;
         }
 
