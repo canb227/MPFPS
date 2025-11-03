@@ -69,16 +69,3 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
         //animationPlayer.Play("RESET");
     }
 }
-
-[MessagePackObject]
-public struct GOBaseAccessoryStateUpdate
-{
-    [Key(0)]
-    public ulong inInventoryOf;
-    [Key(1)]
-    public ulong equippedBySteamID;
-    [Key(2)]
-    public Vector3 position;
-    [Key(3)]
-    public Vector3 rotation;
-}

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventoryItem
+public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
 {
     [Export]
     public virtual Node3D firstPersonScene { get; set; }
