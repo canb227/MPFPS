@@ -51,6 +51,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     private double _timeUntilReload;
     private string[] gunSounds;
     private string[] emptySounds;
+    private bool waitingToFire;
     public override void _Ready()
     {
         base._Ready();
@@ -87,6 +88,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         else if (reloading)
         {
             Reload();
+        }
+        if(waitingToFire)
+        {
+            FireGun();
         }
     }
     private void Reload()
@@ -158,46 +163,36 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 _timeUntilFire = 1.0 / fireRate;
                 if (currentMagazineAmmo > 0)
                 {
-                    RPCManager.RPC(this, "FireGun", []);
+                    RPCManager.RPC(this, "TryFireGun", []);
                 }
                 else
                 {
                     //gun is empty
-                    RPCManager.RPC(this, "PlayEmptySound" ,[]);
+                    RPCManager.RPC(this, "PlayEmptySound", []);
                 }
             }
         }
     }
-        
+    
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void TryFireGun()
+    {
+        waitingToFire = true;
+    }
+
     public void FireGun()
     {
         Random rand = new();
+        waitingToFire = false;
         for (int i = 0; i < bulletsPerShot; i++)
         {
             // randomly modify weapon spread using temporary ray
-            // if(GetWorld3D() == null)
-            // {
-            //     GD.Print("WORLD3D is null");
-            // }
             var spaceState = GetWorld3D().DirectSpaceState;
-            // if(spaceState == null)
-            // {
-            //     GD.Print("spaceState is null");
-            // }
             PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
             ray.From = playerHeldBy.camera.GlobalPosition;
             ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
             ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
             ray.CollideWithBodies = true;
-            // if (ray == null)
-            // {
-            //     GD.Print("ray is null");
-            // }
-            // if(spaceState.IntersectRay(ray) == null)
-            // {
-            //     GD.Print("spaceStateIntersectRay is null because of playerHeldBy: " + playerHeldBy);
-            // }
             var hitResult = spaceState.IntersectRay(ray);
 
             //shoot the gun
@@ -209,30 +204,30 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     var hitParticle = shotHitParticle.Instantiate() as Node3D;
                     GetTree().Root.AddChild(hitParticle);
                     hitParticle.GlobalPosition = (Vector3)hitResult["position"];
-                    //#pragma warning disable
-                    //hitParticle.LookAt(hitParticle.GlobalPosition - (Vector3)hitResult["normal"]);
 
                     //janky solution to avoid the error using dot product
                     Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
                     Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
                     hitParticle.LookAt(direction, up);
                 }
-
-                var hit = (Node)hitResult["collider"];
-
-                //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
-                //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
-                Node current = (Node)hit;
-                while (current != null && current is not IsDamagable)
-                    current = current.GetParent();
-
-                if (current is IsDamagable target)
+                
+                if (playerHeldBy.authority == Global.steamid)
                 {
-                    Logging.Log($"Hit a IsDamagable object", "BasicGun");
-                    if(playerHeldBy.authority == Global.steamid)
+                    var hit = (Node)hitResult["collider"];
+
+                    //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
+                    //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
+                    Node current = (Node)hit;
+                    while (current != null && current is not IsDamagable)
+                        current = current.GetParent();
+
+                    if (current is IsDamagable target)
                     {
+                        Logging.Log($"Hit a IsDamagable object", "BasicGun");
+
                         target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
                         target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+
                     }
                 }
             }
@@ -245,6 +240,12 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         //play firing animation
         animationPlayer.SpeedScale = 7.5f;
         animationPlayer.Play("fire");
+    }
+        
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void SpawnParticles()
+    {
+
     }
 
     public override void OnEquipped(ulong bySteamID)
