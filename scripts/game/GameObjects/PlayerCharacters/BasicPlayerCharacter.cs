@@ -180,7 +180,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         base.PerTickShared(delta);
         //use input from local and remote players to calculate footsteps
-        if (input != null)
+        if (input != null && !knockedOut)
         {
             if (input.actions.HasFlag(ActionFlags.Jump))
             {
@@ -648,7 +648,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             if (newXRot < camXRotMin) { newXRot = camXRotMin; }
 
             camera.RotationDegrees = new Vector3(newXRot, camera.RotationDegrees.Y, camera.RotationDegrees.Z);
-            RotationDegrees = new Vector3(RotationDegrees.X, newYRot, RotationDegrees.Z);
+            if(!knockedOut)
+            {
+                RotationDegrees = new Vector3(RotationDegrees.X, newYRot, RotationDegrees.Z);
+            }
         }
         input.LookInputVector = Vector2.Zero; // Reset the mouse relative accumulator after applying it to the rotation
     }
@@ -754,11 +757,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         knockedOut = true;
         DropEquipped();
         currentStunBar = 0;
+        
         //ragdoll and other stuff
-        collider.Disabled = true;
-        animationTree.Active = false;
-        skeletonModifier.Active = true;
-        skeleton3D.PhysicalBonesStartSimulation();
         knockedOut = true;
     }
 
@@ -766,10 +766,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void WakeUp()
     {
         //stop ragdoll here
-        collider.Disabled = false;
-        skeletonModifier.Active = false;
-        skeleton3D.PhysicalBonesStopSimulation();
-        animationTree.Active = true;
         knockedOut = false;
     }
 
