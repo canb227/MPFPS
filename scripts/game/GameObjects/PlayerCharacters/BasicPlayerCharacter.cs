@@ -23,6 +23,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [Export] public AudioStreamPlayer3D movementSFX;
     [Export] public AnimationTree animationTree;
     [Export] public Skeleton3D skeleton3D;
+    [Export] public SkeletonModifier3D skeletonModifier;
+    [Export] public CollisionShape3D collider;
+
     public CharacterSoundManager characterSoundManager = new();
     public int roleCredits { get; set; }
     public float maxHealth { get; set; } = 100;
@@ -117,24 +120,28 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void PerTickAuth(double delta)
     {
         base.PerTickAuth(delta);
-        if(currentStunBar <= 0)
+        if (currentStunBar <= 0)
         {
-            
+
         }
-        //we wrap each one because an input could kill the character meaning the later calls have no input anymore
-        if (input != null)
+        if(!knockedOut)
         {
-            HandleNonMovementInput(delta);
+            //we wrap each one because an input could kill the character meaning the later calls have no input anymore
+            if (input != null)
+            {
+                HandleNonMovementInput(delta);
+            }
+            if (input != null)
+            {
+                HandleEquippedPassthruInput(delta);
+            }
+            if (input != null)
+            {
+                HandleMovementInputAndPhysics(delta);
+                lastTickActions = input.actions;
+            }
         }
-        if (input != null)
-        {
-            HandleEquippedPassthruInput(delta);
-        }
-        if (input != null)
-        {
-            HandleMovementInputAndPhysics(delta);
-            lastTickActions = input.actions;
-        }
+
         //stun regen
         if (currentTimeUntilStunRegen <= 0)
         {
@@ -748,12 +755,22 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         DropEquipped();
         currentStunBar = 0;
         //ragdoll and other stuff
+        collider.Disabled = true;
+        animationTree.Active = false;
+        skeletonModifier.Active = true;
+        skeleton3D.PhysicalBonesStartSimulation();
+        knockedOut = true;
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void WakeUp()
     {
         //stop ragdoll here
+        collider.Disabled = false;
+        skeletonModifier.Active = false;
+        skeleton3D.PhysicalBonesStopSimulation();
+        animationTree.Active = true;
+        knockedOut = false;
     }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)

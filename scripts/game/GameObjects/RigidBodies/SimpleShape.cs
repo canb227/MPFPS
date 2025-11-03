@@ -50,7 +50,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
     public override void PerTickLocal(double delta)
     {
         Position = Position.Lerp(desiredPosition, (float)(delta/0.01f));
-        Quaternion = Quaternion.Slerp(desiredQuaternion, (float)(delta/0.01f));
+        Quaternion = Quaternion.Slerp(desiredQuaternion.Normalized(), (float)(delta/0.01f));
     }
 
     public override void PerFrameLocal(double delta)

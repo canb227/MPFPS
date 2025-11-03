@@ -225,6 +225,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         {
             if (body is IsDamagable dmg)
             {
+                dmg.TakeStunDamage(20, id, PainSoundType.None);
                 dmg.TakeDamage(10, id, PainSoundType.Generic);
             }
         }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=4 uid="uid://1tfhv6c0xvan"]
+[gd_scene load_steps=70 format=4 uid="uid://1tfhv6c0xvan"]
 
 [ext_resource type="Script" uid="uid://dlgw61h0fjdvg" path="res://scripts/game/GameObjects/PlayerCharacters/BasicPlayerCharacter.cs" id="1_dt3qt"]
 [ext_resource type="AudioStream" uid="uid://dn5rx0u0gk0uf" path="res://assets/audio/character/footsteps/concrete1.wav" id="3_bcbfx"]
@@ -193,6 +193,86 @@ bind/50/pose = Transform3D(0.63567734, -0.030713059, 0.7713435, -0.67428124, -0.
 bind/51/name = &"mixamorig8RightHandThumb3"
 bind/51/bone = -1
 bind/51/pose = Transform3D(0.63567716, -0.030712577, 0.7713437, -0.69627, -0.45429605, 0.55571896, 0.33335078, -0.89032114, -0.31016982, 0.75152016, 0.09869025, 2.2326725)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_evul3"]
+radius = 0.1171875
+height = 0.3935547
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pu85p"]
+radius = 0.01636298
+height = 0.1636298
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6pekc"]
+radius = 0.11279297
+height = 0.7316112
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nhpn6"]
+radius = 0.09863281
+height = 0.58687294
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rj67t"]
+radius = 0.08642578
+height = 0.31915957
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wuvde"]
+radius = 0.13330078
+height = 0.42907715
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kvkvi"]
+radius = 0.13427734
+height = 0.34399414
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgcff"]
+radius = 0.1348114
+height = 0.3794403
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6ynph"]
+radius = 0.05859375
+height = 0.20043945
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p27wf"]
+radius = 0.06982422
+height = 0.256013
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_61f4l"]
+radius = 0.06591797
+height = 0.3861511
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_n3yc4"]
+radius = 0.046875
+height = 0.33422524
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4iffa"]
+radius = 0.057617188
+height = 0.19178872
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bgie3"]
+radius = 0.056640625
+height = 0.28791863
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rmxgt"]
+radius = 0.06347656
+height = 0.40113962
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ns8pa"]
+radius = 0.059570313
+height = 0.35121843
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bbt66"]
+radius = 0.05517578
+height = 0.19778308
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jvo65"]
+radius = 0.11279297
+height = 0.7561581
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3xynj"]
+radius = 0.08544922
+height = 0.5713583
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mtmu1"]
+radius = 0.0859375
+height = 0.30649772
 
 [sub_resource type="Animation" id="Animation_nhpn6"]
 resource_name = "AirAnimation"
@@ -7854,7 +7934,7 @@ node_connections = [&"output", 0, &"UpperBodyBlend2", &"JumpOneShot", 0, &"Groun
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
 height = 2.4057617
 
-[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "movementSFX", "animationTree", "skeleton3D", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint") groups=["players"]]
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "movementSFX", "animationTree", "skeleton3D", "skeletonModifier", "collider", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint") groups=["players"]]
 collision_layer = 16
 collision_mask = 19
 platform_on_leave = 2
@@ -7862,33 +7942,30 @@ script = ExtResource("1_dt3qt")
 ourVoiceSpeaker = NodePath("firstPersonModel/SteamAudioVoice")
 characterSFX = NodePath("SteamAudioCharacterSFX")
 movementSFX = NodePath("SteamAudioMovementSFX")
-animationTree = NodePath("thirdPersonModel/CharacterModel/AnimationTree")
-skeleton3D = NodePath("thirdPersonModel/CharacterModel/Node/Skeleton3D")
+animationTree = NodePath("CharacterModel/AnimationTree")
+skeleton3D = NodePath("CharacterModel/Node/Skeleton3D")
+skeletonModifier = NodePath("CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D")
+collider = NodePath("collider")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("thirdPersonModel")
 camera = NodePath("firstPersonModel/Camera3D")
 firstPersonEquipmentAttachmentPoint = NodePath("firstPersonModel/Camera3D/attachment")
 thirdPersonEquipmentAttachmentPoint = NodePath("thirdPersonModel/attachment")
 
-[node name="thirdPersonModel" type="Node3D" parent="."]
-
-[node name="attachment" type="Node3D" parent="thirdPersonModel"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49932957, -0.43160284)
-
-[node name="CharacterModel" type="Node3D" parent="thirdPersonModel"]
+[node name="CharacterModel" type="Node3D" parent="."]
 transform = Transform3D(-0.88, 0, -1.3287631e-07, 0, 0.88, 0, 1.3287631e-07, 0, -0.88, 0, 0.49934947, 0)
 metadata/run = false
 
-[node name="Node" type="Node3D" parent="thirdPersonModel/CharacterModel"]
+[node name="Node" type="Node3D" parent="CharacterModel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3198375, -0.052657712)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="thirdPersonModel/CharacterModel/Node"]
+[node name="Skeleton3D" type="Skeleton3D" parent="CharacterModel/Node"]
 bones/0/name = "mixamorig8Hips"
 bones/0/parent = -1
 bones/0/rest = Transform3D(0.9878424, -0.050007887, 0.14719607, 0.0687027, 0.9898009, -0.12479675, -0.13945396, 0.13339227, 0.9812029, -0.0044627455, 1.3289943, 0.0026339197)
 bones/0/enabled = true
-bones/0/position = Vector3(-0.007292289, 1.4255602, 0.018339094)
-bones/0/rotation = Quaternion(-0.03656007, -0.044919312, -0.02488843, 0.9980112)
+bones/0/position = Vector3(-0.0044459864, 1.4268326, 0.016965002)
+bones/0/rotation = Quaternion(-0.03452669, -0.04495795, -0.023858272, 0.99810696)
 bones/0/scale = Vector3(1, 1, 1)
 bones/0/bone_meta/extras = {
 "transformData": {
@@ -7905,7 +7982,7 @@ bones/1/parent = 0
 bones/1/rest = Transform3D(-0.98735774, -0.057267677, -0.14780204, 0.049994577, -0.9973706, 0.052465916, -0.150418, 0.04441332, 0.98762435, -0.13825692, -0.08684063, -0.0108829625)
 bones/1/enabled = true
 bones/1/position = Vector3(-0.13825692, -0.08684063, -0.0108829625)
-bones/1/rotation = Quaternion(-0.089891806, -0.03372519, 0.9951066, -0.023345029)
+bones/1/rotation = Quaternion(-0.08969207, -0.036879074, 0.99504566, -0.021899179)
 bones/1/scale = Vector3(1.0000001, 1.0000001, 1)
 bones/1/bone_meta/extras = {
 "transformData": {
@@ -7924,7 +8001,7 @@ bones/2/parent = 1
 bones/2/rest = Transform3D(0.99456066, -0.060129736, 0.08505027, -0.103604175, -0.65526843, 0.7482577, 0.01073822, -0.75299925, -0.65793383, 1.1917554e-09, 0.64681613, -1.1599139e-09)
 bones/2/enabled = true
 bones/2/position = Vector3(1.1917554e-09, 0.64681613, -1.1599139e-09)
-bones/2/rotation = Quaternion(0.06761258, -0.08512863, 0.021081833, -0.9938497)
+bones/2/rotation = Quaternion(0.05517374, -0.08535629, 0.01985162, -0.9946236)
 bones/2/scale = Vector3(1, 1, 1)
 bones/2/bone_meta/extras = {
 "transformData": {
@@ -7944,7 +8021,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(0.9872816, 0.09173168, -0.1298473, -0.15841164, 0.49854457, -0.8522671, -0.013445228, 0.86199695, 0.50673527, 1.3378908e-10, 0.5526521, -1.5712568e-09)
 bones/3/enabled = true
 bones/3/position = Vector3(1.3378908e-10, 0.5526521, -1.5712568e-09)
-bones/3/rotation = Quaternion(0.53932405, 0.0149698965, -0.018151442, 0.84176964)
+bones/3/rotation = Quaternion(0.5325405, 0.014923691, -0.01875078, 0.8460652)
 bones/3/scale = Vector3(1, 1, 1)
 bones/3/bone_meta/extras = {
 "transformData": {
@@ -7963,7 +8040,7 @@ bones/4/parent = 3
 bones/4/rest = Transform3D(0.97856146, 0.11486837, 0.17094654, -0.00081887096, 0.83218235, -0.55450153, -0.20595337, 0.5424738, 0.8144356, -3.1909478e-10, 0.24636483, -5.2640345e-09)
 bones/4/enabled = true
 bones/4/position = Vector3(-3.1909478e-10, 0.24636483, -5.2640345e-09)
-bones/4/rotation = Quaternion(0.34918523, 0.10259895, -0.027655661, 0.9310094)
+bones/4/rotation = Quaternion(0.348019, 0.102533124, -0.027709436, 0.93145156)
 bones/4/scale = Vector3(1, 1, 1)
 bones/4/bone_meta/extras = {
 "transformData": {
@@ -7982,7 +8059,7 @@ bones/5/parent = 0
 bones/5/rest = Transform3D(0.9927251, 0.11844384, -0.021632308, -0.12033922, 0.98190385, -0.14623013, 0.003920788, 0.14776954, 0.989014, 0, 0.15633933, -0.01591976)
 bones/5/enabled = true
 bones/5/position = Vector3(0, 0.15633933, -0.01591976)
-bones/5/rotation = Quaternion(-0.013438807, 0.016588174, 0.026186306, 0.99942917)
+bones/5/rotation = Quaternion(-0.024905302, 0.013024447, 0.022851145, 0.99934375)
 bones/5/scale = Vector3(1, 1, 0.99999994)
 bones/5/bone_meta/extras = {
 "transformData": {
@@ -8000,7 +8077,7 @@ bones/6/parent = 5
 bones/6/rest = Transform3D(0.99822557, -0.058689304, -0.0100650415, 0.05914706, 0.9968047, 0.05368442, 0.0068821795, -0.05418448, 0.9985072, 0, 0.18333901, 4.0268738e-10)
 bones/6/enabled = true
 bones/6/position = Vector3(0, 0.18333901, 4.0268738e-10)
-bones/6/rotation = Quaternion(0.01208263, 0.0033897655, 0.015273871, 0.9998047)
+bones/6/rotation = Quaternion(0.009726067, 0.002221618, 0.014537747, 0.9998446)
 bones/6/scale = Vector3(1, 1, 0.99999994)
 bones/6/bone_meta/extras = {
 "transformData": {
@@ -8018,7 +8095,7 @@ bones/7/parent = 6
 bones/7/rest = Transform3D(0.9982265, -0.058675706, -0.010046415, 0.059134193, 0.996792, 0.053933978, 0.006849572, -0.054432414, 0.99849397, 0, 0.20953025, -2.9624775e-10)
 bones/7/enabled = true
 bones/7/position = Vector3(0, 0.20953025, -2.9624775e-10)
-bones/7/rotation = Quaternion(0.011743609, 0.0035152559, 0.015216191, 0.99980915)
+bones/7/rotation = Quaternion(0.009083037, 0.0020902872, 0.014303097, 0.99985427)
 bones/7/scale = Vector3(0.99999994, 1, 1)
 bones/7/bone_meta/extras = {
 "transformData": {
@@ -8037,7 +8114,7 @@ bones/8/parent = 7
 bones/8/rest = Transform3D(0.9954837, 0.08937485, -0.032006063, -0.0932162, 0.9840791, -0.1513242, 0.01797192, 0.15362425, 0.9879659, 0, 0.23572156, 1.724889e-08)
 bones/8/enabled = true
 bones/8/position = Vector3(0, 0.23572156, 1.724889e-08)
-bones/8/rotation = Quaternion(0.1056528, -0.0019691396, 0.0024226434, 0.9943983)
+bones/8/rotation = Quaternion(0.09612753, -0.0016505637, 0.0045923055, 0.9953571)
 bones/8/scale = Vector3(1, 1, 1)
 bones/8/bone_meta/extras = {
 "transformData": {
@@ -8055,7 +8132,7 @@ bones/9/parent = 8
 bones/9/rest = Transform3D(0.9983962, 0.04752422, -0.030764125, -0.04754536, 0.99886906, 4.4469314e-05, 0.030731447, 0.0014182935, 0.9995267, 0, 0.10461777, 0.03716949)
 bones/9/enabled = true
 bones/9/position = Vector3(0, 0.10461777, 0.03716949)
-bones/9/rotation = Quaternion(0.055218935, -0.0020392868, 0.0028585636, 0.9984681)
+bones/9/rotation = Quaternion(0.04539897, -0.001586227, 0.005024635, 0.99895513)
 bones/9/scale = Vector3(1, 0.99999994, 1)
 bones/9/bone_meta/extras = {
 "transformData": {
@@ -8072,7 +8149,7 @@ bones/10/parent = 7
 bones/10/rest = Transform3D(0.16059965, 0.89984894, -0.40556097, 0.06477171, -0.41961718, -0.9053873, -0.98489213, 0.11913599, -0.12567513, 0.109557375, 0.20912367, -0.0027265537)
 bones/10/enabled = true
 bones/10/position = Vector3(0.109557375, 0.20912367, -0.0027265537)
-bones/10/rotation = Quaternion(0.685805, 0.3172942, -0.51754314, 0.40142873)
+bones/10/rotation = Quaternion(0.6773502, 0.32830557, -0.5201926, 0.40349954)
 bones/10/scale = Vector3(1, 1, 1)
 bones/10/bone_meta/extras = {
 "transformData": {
@@ -8091,7 +8168,7 @@ bones/11/parent = 10
 bones/11/rest = Transform3D(0.92995465, 0.35595146, 0.092102736, -0.1726659, 0.6439577, -0.7453221, -0.32460874, 0.6772128, 0.66031206, 2.2821344e-11, 0.22491662, 2.162298e-10)
 bones/11/enabled = true
 bones/11/position = Vector3(2.2821344e-11, 0.22491662, 2.162298e-10)
-bones/11/rotation = Quaternion(0.47415525, 0.13766226, 0.06745577, 0.86699235)
+bones/11/rotation = Quaternion(0.48314604, 0.14286612, 0.05917339, 0.8617759)
 bones/11/scale = Vector3(1, 1, 1)
 bones/11/bone_meta/extras = {
 "transformData": {
@@ -8110,7 +8187,7 @@ bones/12/parent = 11
 bones/12/rest = Transform3D(-0.11615479, -0.98724824, 0.10885307, 0.9868371, -0.1271275, -0.099956356, 0.11251996, 0.09580983, 0.9890196, 2.0443218e-10, 0.3861511, -5.4294275e-10)
 bones/12/enabled = true
 bones/12/position = Vector3(2.0443218e-10, 0.3861511, -5.4294275e-10)
-bones/12/rotation = Quaternion(0.0015505269, -0.0020997939, 0.01563206, 0.9998745)
+bones/12/rotation = Quaternion(0.00136938, -0.0020997752, 0.013805067, 0.99990165)
 bones/12/scale = Vector3(1, 1, 1)
 bones/12/bone_meta/extras = {
 "transformData": {
@@ -8119,7 +8196,7 @@ bones/12/bone_meta/extras = {
 "parentMatrixWorld": {
 "elements": [0.92995466196674, -0.1726658883169081, -0.3246087102613077, 0.0, 0.3559514107755235, 0.6439577268611445, 0.6772126876672575, 0.0, 0.09210275203646778, -0.7453220258266419, 0.6603121585444638, 0.0, 1.521423e-09, 14.994442195368867, 1.4415320492844332e-08, 1.0]
 },
-"preRotation": [-4.709757464749423, -5.8966579226710164e-08, 5.846673269123587],
+"preRotation": [-4.709757464749423, -5.896657922671016e-08, 5.846673269123587],
 "scale": [1.0, 0.9999999999999998, 0.9999999999999996],
 "translation": [1.3628812e-08, 25.743408555041157, -3.6196183827996726e-08]
 }
@@ -8129,7 +8206,7 @@ bones/13/parent = 12
 bones/13/rest = Transform3D(0.95535105, 0.27233636, -0.11461829, -0.24688715, 0.9488676, 0.19671577, 0.16233043, -0.15963483, 0.97373796, 1.6523281e-10, 0.33422524, 1.0585964e-10)
 bones/13/enabled = true
 bones/13/position = Vector3(1.6523281e-10, 0.33422524, 1.0585964e-10)
-bones/13/rotation = Quaternion(0.06556631, -0.2476882, -0.015896412, 0.966488)
+bones/13/rotation = Quaternion(0.07391265, -0.23477742, -0.025499757, 0.96889955)
 bones/13/scale = Vector3(1, 1, 1)
 bones/13/bone_meta/extras = {
 "transformData": {
@@ -8433,7 +8510,7 @@ bones/29/parent = 7
 bones/29/rest = Transform3D(0.07061213, -0.9475734, 0.31163853, -0.028671622, -0.31421733, -0.948918, 0.99709177, 0.058069937, -0.049356014, -0.109557375, 0.20912, -0.0026906298)
 bones/29/enabled = true
 bones/29/position = Vector3(-0.109557375, 0.20912, -0.0026906298)
-bones/29/rotation = Quaternion(0.6843049, -0.3165416, 0.53359246, 0.38315445)
+bones/29/rotation = Quaternion(0.6786515, -0.32313955, 0.5388763, 0.3802964)
 bones/29/scale = Vector3(1, 1, 0.99999994)
 bones/29/bone_meta/extras = {
 "transformData": {
@@ -8443,7 +8520,7 @@ bones/29/bone_meta/extras = {
 "elements": [0.998226542671662, 0.05913419391475252, 0.00684957220669429, 0.0, -0.05867571100735026, 0.9967919909675946, -0.05443241427034252, 0.0, -0.0100464156366432, 0.05393397719034559, 0.9984939637560726, 0.0, 0.0, 13.968683304006008, -1.9749849755612562e-08, 1.0]
 },
 "preRotation": [-76.38229455494371, -88.59072034729913, -179.94823537121644],
-"rotation": [1.0985959e-14, -1.5902773e-15, 1.9878467e-16],
+"rotation": [1.0985959e-14, -1.5902773e-15, 1.9878467000000002e-16],
 "scale": [1.0000000000000002, 1.0, 1.0],
 "translation": [-7.3038254, 13.941333598632012, -0.1793753278630046]
 }
@@ -8453,7 +8530,7 @@ bones/30/parent = 29
 bones/30/rest = Transform3D(0.8270187, -0.5273975, -0.1946589, 0.18029113, 0.57679117, -0.79674786, 0.53248036, 0.6238301, 0.57210207, -2.2505917e-11, 0.22491662, 2.1626263e-10)
 bones/30/enabled = true
 bones/30/position = Vector3(-2.2505917e-11, 0.22491662, 2.1626263e-10)
-bones/30/rotation = Quaternion(0.4037938, -0.23025572, -0.080010116, 0.88177735)
+bones/30/rotation = Quaternion(0.4024977, -0.2374573, -0.08391761, 0.88009524)
 bones/30/scale = Vector3(1, 1.0000001, 1)
 bones/30/bone_meta/extras = {
 "transformData": {
@@ -8473,7 +8550,7 @@ bones/31/parent = 30
 bones/31/rest = Transform3D(0.0812986, 0.9928429, -0.08748433, -0.99240357, 0.0725049, -0.09938956, -0.09233519, 0.0949, 0.9911953, 3.291319e-10, 0.38626358, -3.5853814e-10)
 bones/31/enabled = true
 bones/31/position = Vector3(3.291319e-10, 0.38626358, -3.5853814e-10)
-bones/31/rotation = Quaternion(0.005669111, 0.0022575557, -0.057926163, 0.9983022)
+bones/31/rotation = Quaternion(0.0056031304, 0.0022575597, -0.05725202, 0.99834156)
 bones/31/scale = Vector3(1, 1, 1)
 bones/31/bone_meta/extras = {
 "transformData": {
@@ -8492,7 +8569,7 @@ bones/32/parent = 31
 bones/32/rest = Transform3D(0.9182523, -0.11869609, -0.37778834, 0.22693321, 0.93955666, 0.25638756, 0.32452133, -0.32116118, 0.8896861, -3.2124461e-10, 0.3342728, 4.2577142e-10)
 bones/32/enabled = true
 bones/32/position = Vector3(-3.2124461e-10, 0.3342728, 4.2577142e-10)
-bones/32/rotation = Quaternion(0.070409015, 0.1407884, 0.046653096, 0.98643035)
+bones/32/rotation = Quaternion(0.07397782, 0.13581121, 0.04842772, 0.98678136)
 bones/32/scale = Vector3(1, 1, 1)
 bones/32/bone_meta/extras = {
 "transformData": {
@@ -8795,7 +8872,7 @@ bones/48/parent = 0
 bones/48/rest = Transform3D(-0.9940072, -0.10573732, 0.027736744, 0.10354744, -0.829425, 0.5489374, -0.035037614, 0.54851973, 0.8354032, 0.13825692, -0.08684063, -0.0065858993)
 bones/48/enabled = true
 bones/48/position = Vector3(0.13825692, -0.08684063, -0.0065858993)
-bones/48/rotation = Quaternion(0.13870655, 0.056239948, 0.9855441, -0.07937521)
+bones/48/rotation = Quaternion(0.13340195, 0.053923316, 0.9866482, -0.07630016)
 bones/48/scale = Vector3(1, 1, 1)
 bones/48/bone_meta/extras = {
 "transformData": {
@@ -8814,7 +8891,7 @@ bones/49/parent = 48
 bones/49/rest = Transform3D(0.99216294, 0.124454, 0.0111329965, -0.102353565, 0.75839245, 0.64371157, 0.0716693, -0.6398063, 0.7651872, 5.4648475e-10, 0.6470819, 6.0424743e-10)
 bones/49/enabled = true
 bones/49/position = Vector3(5.4648475e-10, 0.6470819, 6.0424743e-10)
-bones/49/rotation = Quaternion(-0.12227691, -0.008942508, 0.029775409, 0.99200904)
+bones/49/rotation = Quaternion(-0.11389899, -0.015820814, 0.030137263, 0.99290913)
 bones/49/scale = Vector3(1, 1, 1)
 bones/49/bone_meta/extras = {
 "transformData": {
@@ -8833,7 +8910,7 @@ bones/50/parent = 49
 bones/50/rest = Transform3D(0.9743691, -0.115723066, 0.19290686, 0.21869896, 0.2864676, -0.93279535, 0.052684374, 0.9510755, 0.30443373, -1.1777744e-09, 0.5528729, -2.0541118e-09)
 bones/50/enabled = true
 bones/50/position = Vector3(-1.1777744e-09, 0.5528729, -2.0541118e-09)
-bones/50/rotation = Quaternion(0.50601846, -0.02670743, -0.021835882, 0.86183244)
+bones/50/rotation = Quaternion(0.50144774, -0.026297245, -0.021883823, 0.86451125)
 bones/50/scale = Vector3(1, 1, 1)
 bones/50/bone_meta/extras = {
 "transformData": {
@@ -8879,445 +8956,8 @@ metadata/extras = {
 }
 }
 
-[node name="mixamorig8RightToeBase" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(-0.83282685, -0.5532664, -0.017205656, -0.1276795, 0.161764, 0.978535, -0.5386071, 0.8171467, -0.20536211, -0.24259304, 0.021191448, 0.12076613)
-bone_name = "mixamorig8RightToeBase"
-bone_idx = 4
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9872816142883944, -0.15841161491899636, -0.01344522343668101, 0.0, 0.09173167350628088, 0.4985446005093689, 0.8619968497705677, 0.0, -0.12984727124681425, -0.8522669940795552, 0.5067352807827801, 0.0, 8.919272e-09, 36.84347461863772, -1.0475045364444213e-07, 1.0]
-},
-"preRotation": [33.96640371883875, 11.8985351821459, -7.309631762632134e-07],
-"scale": [1.0000000000000002, 1.0, 1.0000000000000002],
-"translation": [-2.1272985e-08, 16.424322624767235, -3.509356263364794e-07]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00000002127299, 16.4243226247672, -0.00000035093563], \"preRotation\": [33.9664037188387, 11.8985351821459, -0.00000073096318], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.98728161428839, -0.158411614919, -0.01344522343668, 0.0, 0.09173167350628, 0.49854460050937, 0.86199684977057, 0.0, -0.12984727124681, -0.85226699407956, 0.50673528078278, 0.0, 0.00000000891927, 36.8434746186377, -0.00000010475045, 1.0] } }"
-
-[node name="mixamorig8RightToe_End" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8RightToeBase"]
-transform = Transform3D(1, 1.3877788e-17, 8.9338266e-17, -1.3877788e-17, 1, 2.8210834e-09, -8.9338266e-17, -2.8210834e-09, 1, 6.275416e-10, 0.11067709, 2.0471373e-10)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9785614691608308, -0.00081887482803613, -0.2059533458692042, 0.0, 0.11486834535229068, 0.832182368366405, 0.5424737507422408, 0.0, 0.17094652516717296, -0.5545014305232623, 0.8144356637814063, 0.0, -2.1272985e-08, 16.424322624767235, -3.509356263364794e-07, 1.0]
-},
-"preRotation": [-1.6163616683928e-07, 5.1187054147173124e-15, -7.951387051988058e-16],
-"scale": [0.9999999999999996, 1.0, 1.0],
-"translation": [4.183610613495149e-08, 7.378472793205901, 1.3647583e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00000004183611, 7.3784727932059, 0.00000001364758], \"preRotation\": [-0.00000016163617, 0.00000000000001, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.97856146916083, -0.00081887482804, -0.2059533458692, 0.0, 0.11486834535229, 0.83218236836641, 0.54247375074224, 0.0, 0.17094652516717, -0.55450143052326, 0.81443566378141, 0.0, -0.00000002127299, 16.4243226247672, -0.00000035093563, 1.0] } }"
-
-[node name="mixamorig8Head" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.99640816, -0.081133306, -0.024246063, 0.0718685, 0.9616877, -0.26455933, 0.044781704, 0.26186654, 0.96406454, -0.026126951, 2.3034575, -0.0040928423)
-bone_name = "mixamorig8Head"
-bone_idx = 9
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.99548367588838, -0.09321620662001102, 0.01797192112238484, 0.0, 0.08937484595684901, 0.9840791258031424, 0.15362425384945683, 0.0, -0.03200606248265034, -0.15132419926762625, 0.987965889547159, 0.0, 0.0, 15.714771427296457, 1.14992595534e-06, 1.0]
-},
-"translation": [0.0, 6.974517822265597, 2.4779660701751736]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.0, 6.9745178222656, 2.47796607017517], \"parentMatrixWorld\": { \"elements\": [0.99548367588838, -0.09321620662001, 0.01797192112238, 0.0, 0.08937484595685, 0.98407912580314, 0.15362425384946, 0.0, -0.03200606248265, -0.15132419926763, 0.98796588954716, 0.0, 0.0, 15.7147714272965, 0.00000114992596, 1.0] } }"
-
-[node name="mixamorig8HeadTop_End" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8Head"]
-transform = Transform3D(1, 0, 0, 0, 1, -1.3877788e-17, 0, 1.3877788e-17, 1, 0, 0.30742562, 0.10922477)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9983962223579336, -0.04754535963830617, 0.03073144834426609, 0.0, 0.04752422165945712, 0.9988690788939631, 0.00141829345418387, 0.0, -0.03076412677348336, 4.446935484491e-05, 0.9995266712370712, 0.0, 0.0, 6.974517822265597, 2.4779660701751736, 1.0]
-},
-"rotation": [7.951386700000001e-16, 0.0, 0.0],
-"translation": [0.0, 20.49504, 7.281651258468627]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.0, 20.4950408935547, 7.28165125846863], \"rotation\": [0.0, 0.0, 0.0], \"parentMatrixWorld\": { \"elements\": [0.99839622235793, -0.04754535963831, 0.03073144834427, 0.0, 0.04752422165946, 0.99886907889396, 0.00141829345418, 0.0, -0.03076412677348, 0.00004446935484, 0.99952667123707, 0.0, 0.0, 6.9745178222656, 2.47796607017517, 1.0] } }"
-
-[node name="mixamorig8LeftHandThumb3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.28803915, 0.091497496, -0.95323724, -0.24722573, -0.9545754, -0.16632989, -0.9251556, 0.28357428, -0.25233468, 0.33379784, 1.2453065, 0.11855827)
-bone_name = "mixamorig8LeftHandThumb3"
-bone_idx = 16
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9974311898615728, 0.07139265741725248, 0.00584036220568936, 0.0, -0.07147815668233594, 0.997313101127878, 0.01604528910899914, 0.0, -0.00467915388572069, -0.01642153014182162, 0.999854208802202, 0.0, -0.6203647507214995, 3.4639806249143197, 1.3233102e-07, 1.0]
-},
-"preRotation": [-10.664470494689631, 0.0, 0.0],
-"scale": [1.0000000000000002, 0.9999999999999998, 1.0000000000000002],
-"translation": [0.1650282448923761, 3.34923247109168, -5.8627364e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.16502824489238, 3.34923247109168, -0.00000005862736], \"preRotation\": [-10.6644704946896, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99743118986157, 0.07139265741725, 0.00584036220569, 0.0, -0.07147815668234, 0.99731310112788, 0.016045289109, 0.0, -0.00467915388572, -0.01642153014182, 0.9998542088022, 0.0, -0.6203647507215, 3.46398062491432, 0.00000013233102, 1.0] } }"
-
-[node name="mixamorig8LeftHandThumb4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8LeftHandThumb3"]
-transform = Transform3D(1, -1.110223e-16, 1.7478572e-24, 1.110223e-16, 1, -1.5743298e-08, 0, 1.5743298e-08, 1, 0.00683004, 0.039063357, 1.1098906e-09)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9954227170125356, 0.09460857543350934, 0.01352153503949092, 0.0, -0.09388371047257336, 0.9944831214634944, -0.04678856732286112, 0.0, -0.01787353807404169, 0.04530495092885404, 0.9988132948945216, 0.0, 0.1650282448923761, 3.34923247109168, -5.8627364e-08, 1.0]
-},
-"preRotation": [9.02024529212938e-07, 0.0, 6.361109561539447e-15],
-"scale": [1.0, 0.9999999999999996, 1.0],
-"translation": [0.4553360117114949, 2.604223938492403, 7.399271e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.45533601171149, 2.6042239384924, 0.00000007399271], \"preRotation\": [0.00000090202453, 0.0, 0.00000000000001], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99542271701254, 0.09460857543351, 0.01352153503949, 0.0, -0.09388371047257, 0.99448312146349, -0.04678856732286, 0.0, -0.01787353807404, 0.04530495092885, 0.99881329489452, 0.0, 0.16502824489238, 3.34923247109168, -0.00000005862736, 1.0] } }"
-
-[node name="mixamorig8LeftHandIndex3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.12555319, -0.51914847, -0.84541166, -0.05786479, -0.85453635, 0.5161582, -0.990398, -0.015885876, -0.13733031, 0.3532269, 1.1485589, 0.107839085)
-bone_name = "mixamorig8LeftHandIndex3"
-bone_idx = 19
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9995601883382036, -0.02956954700844829, -0.00225206263363521, 0.0, 0.02956433323889896, 0.9876805333675296, 0.15366559278422703, 0.0, -0.00231950350937065, -0.15366458959468743, 0.9881203438852104, 0.0, 0.02252119436575128, 3.3341934615269224, -1.8905382e-08, 1.0]
-},
-"preRotation": [4.942967982766135, 0.0, 0.0],
-"scale": [1.0000000000000002, 0.9999999999999998, 1.0000000000000002],
-"translation": [-0.00470420790415815, 3.182262428909567, -1.1825551382571577e-07]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00470420790416, 3.18226242890957, -0.00000011825551], \"preRotation\": [4.94296798276613, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.9995601883382, -0.02956954700845, -0.00225206263364, 0.0, 0.0295643332389, 0.98768053336753, 0.15366559278423, 0.0, -0.00231950350937, -0.15366458959469, 0.98812034388521, 0.0, 0.02252119436575, 3.33419346152692, -0.00000001890538, 1.0] } }"
-
-[node name="mixamorig8LeftHandIndex4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8LeftHandIndex3"]
-transform = Transform3D(1, 8.326673e-17, -5.5511148e-17, -8.326673e-17, 1, 4.9040892e-08, 5.551115e-17, -4.9040892e-08, 1, -0.00026725492, 0.04097795, 1.880181e-09)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9999666120898988, -0.00816995046956457, 0.00016313733913477, 0.0, 0.00816421815342361, 0.9997139167911242, 0.02248177278734618, 0.0, -0.00034676564112749, -0.02247969027908109, 0.9997472396916628, 0.0, -0.00470420790415815, 3.182262428909567, -1.1825551382571577e-07, 1.0]
-},
-"preRotation": [-2.80983616463e-06, -3.1805547194158693e-15, -4.770832079123804e-15],
-"scale": [0.9999999999999996, 1.0, 0.9999999999999998],
-"translation": [-0.01781699378700807, 2.7318635312337065, 1.253454e-07]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.01781699378701, 2.73186353123371, 0.00000012534539], \"preRotation\": [-0.00000280983616, -0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.9999666120899, -0.00816995046956, 0.00016313733913, 0.0, 0.00816421815342, 0.99971391679112, 0.02248177278735, 0.0, -0.00034676564113, -0.02247969027908, 0.99974723969166, 0.0, -0.00470420790416, 3.18226242890957, -0.00000011825551, 1.0] } }"
-
-[node name="mixamorig8LeftHandMiddle3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.14147256, -0.75295025, -0.64269054, 0.014468998, -0.6475783, 0.76186156, -0.9898364, -0.11708175, -0.08072019, 0.34860843, 1.140491, 0.06413717)
-bone_name = "mixamorig8LeftHandMiddle3"
-bone_idx = 22
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.999577488131243, -0.02897963003560216, -0.00224192903884421, 0.0, 0.02897922644787677, 0.9876537170362072, 0.1539491445925935, 0.0, -0.00224713980389886, -0.15394906862111318, 0.9880762288981344, 0.0, 0.01255624760316109, 3.424775564948078, -2.6718936e-08, 1.0]
-},
-"preRotation": [-5.492517505961075, 0.0, 7.951386703658792e-16],
-"scale": [0.9999999999999998, 1.0, 1.0],
-"translation": [-0.0134105515530436, 3.36927095857611, 4.270347631063488e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.01341055155304, 3.36927095857611, 0.00000004270348], \"preRotation\": [-5.49251750596108, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99957748813124, -0.0289796300356, -0.00224192903884, 0.0, 0.02897922644788, 0.98765371703621, 0.15394914459259, 0.0, -0.0022471398039, -0.15394906862111, 0.98807622889813, 0.0, 0.01255624760316, 3.42477556494808, -0.00000002671894, 1.0] } }"
-
-[node name="mixamorig8LeftHandMiddle4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8LeftHandMiddle3"]
-transform = Transform3D(1, 2.7755576e-17, 1.3877786e-17, -2.7755576e-17, 1, -4.696344e-08, -1.3877788e-17, 4.696344e-08, 1, 1.2814815e-05, 0.0441432, 4.661888e-10)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9999992995475464, 0.00116580788032214, -0.00020444163764396, 0.0, -0.00116091722462385, 0.99974659669936, 0.02248098423607993, 0.0, 0.00023059834040039, -0.02248073114939729, 0.9997472498308712, 0.0, -0.0134105515530436, 3.36927095857611, 4.270347631063488e-08, 1.0]
-},
-"preRotation": [2.6908069061e-06, 7.951386511716742e-16, -1.5902773023433484e-15],
-"scale": [1.0, 0.9999999999999998, 1.0],
-"translation": [0.00085432098061488, 2.9428801464492196, 3.1079253e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00085432098061, 2.94288014644922, 0.00000003107925], \"preRotation\": [0.00000269080691, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99999929954755, 0.00116580788032, -0.00020444163764, 0.0, -0.00116091722462, 0.99974659669936, 0.02248098423608, 0.0, 0.0002305983404, -0.0224807311494, 0.99974724983087, 0.0, -0.01341055155304, 3.36927095857611, 0.00000004270348, 1.0] } }"
-
-[node name="mixamorig8LeftHandRing3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.15015344, -0.8355936, -0.5284288, 0.037486047, -0.52929246, 0.84761107, -0.98795176, -0.14708059, -0.04815203, 0.35086223, 1.1580414, 0.02807978)
-bone_name = "mixamorig8LeftHandRing3"
-bone_idx = 25
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9996912787607696, -0.02476488747260111, -0.00201184720125718, 0.0, 0.02478011184697389, 0.9878335724409644, 0.15352778136294307, 0.0, -0.00181472795296331, -0.1535302378746466, 0.9881422839067412, 0.0, 0.00028224587828162, 2.7913392364803045, -5.885576e-08, 1.0]
-},
-"preRotation": [-7.48771995123588, 0.0, 1.9878466759146982e-16],
-"scale": [1.0000000000000002, 0.9999999999999996, 0.9999999999999998],
-"translation": [-0.00610107321702102, 2.658589466199423, 5.4080004e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00610107321702, 2.65858946619942, 0.00000005408], \"preRotation\": [-7.48771995123588, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99969127876077, -0.0247648874726, -0.00201184720126, 0.0, 0.02478011184697, 0.98783357244096, 0.15352778136294, 0.0, -0.00181472795296, -0.15353023787465, 0.98814228390674, 0.0, 0.00028224587828, 2.7913392364803, -0.00000005885576, 1.0] } }"
-
-[node name="mixamorig8LeftHandRing4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8LeftHandRing3"]
-transform = Transform3D(1, -2.0816682e-17, 6.938894e-17, 2.0816682e-17, 1, -3.9671515e-09, -6.938894e-17, 3.9671515e-09, 1, 8.728216e-05, 0.033541273, 5.2337867e-11)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9998975335317918, -0.01428660327830965, -0.00090299808802074, 0.0, 0.01428146978297562, 0.9912388570053255, 0.13130715187035735, 0.0, -0.00098084637774277, -0.13130659343016762, 0.9913413219517788, 0.0, -0.00610107321702102, 2.658589466199423, 5.4080004e-08, 1.0]
-},
-"preRotation": [2.273010412817593e-07, 3.975693464483661e-15, 1.1927080393450985e-15],
-"scale": [1.0000000000000002, 1.0, 1.0000000000000004],
-"translation": [0.00581881062100819, 2.2360849005945553, 3.4891912e-09]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00581881062101, 2.23608490059456, 0.00000000348919], \"preRotation\": [0.00000022730104, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99989753353179, -0.01428660327831, -0.00090299808802, 0.0, 0.01428146978298, 0.99123885700533, 0.13130715187036, 0.0, -0.00098084637774, -0.13130659343017, 0.99134132195178, 0.0, -0.00610107321702, 2.65858946619942, 0.00000005408, 1.0] } }"
-
-[node name="mixamorig8LeftHandPinky3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.16610444, -0.84103024, -0.51485634, 0.06336391, -0.51192737, 0.85668874, -0.9840704, -0.1749233, -0.031742502, 0.35060024, 1.1855206, -0.006310113)
-bone_name = "mixamorig8LeftHandPinky3"
-bone_idx = 28
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9991576002631414, 0.04097845223369959, -0.00220369940558904, 0.0, -0.04006319554909679, 0.9856572781574744, 0.16393495787664625, 0.0, 0.00888989319028212, -0.16370857187133897, 0.9864686884687598, 0.0, 0.01213005396752819, 2.687734839752842, -2.2626409190706912e-08, 1.0]
-},
-"preRotation": [-1.2527693619647733, 7.951386703658792e-16, -1.987846675914698e-16],
-"scale": [1.0000000000000002, 0.9999999999999998, 1.0],
-"translation": [-0.00701075988583355, 2.275519244111951, -6.5826953e-09]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00701075988583, 2.27551924411195, -0.0000000065827], \"preRotation\": [-1.25276936196477, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99915760026314, 0.0409784522337, -0.00220369940559, 0.0, -0.0400631955491, 0.98565727815747, 0.16393495787665, 0.0, 0.00888989319028, -0.16370857187134, 0.98646868846876, 0.0, 0.01213005396753, 2.68773483975284, -0.00000002262641, 1.0] } }"
-
-[node name="mixamorig8LeftHandPinky4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8LeftHandPinky3"]
-transform = Transform3D(1, -6.938894e-18, 2.247121e-25, 6.938894e-18, 1, -3.2384428e-08, -1.2325952e-32, 3.2384428e-08, 1, -7.678912e-05, 0.029221421, 9.854513e-10)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.999830182481784, -0.01835451081921058, -0.00164867780858211, 0.0, 0.01841203382081607, 0.9911656512982536, 0.1313455331807849, 0.0, -0.00077667014243769, -0.13135358391970517, 0.9913352778736948, 0.0, -0.00701075988583355, 2.275519244111951, -6.5826953e-09, 1.0]
-},
-"preRotation": [1.85549112307e-06, 0.0, 3.9756934488287244e-16],
-"scale": [0.9999999999999998, 1.0, 1.0],
-"translation": [-0.00511927492533459, 1.94809469536753, 6.569675e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00511927492533, 1.94809469536753, 0.00000006569675], \"preRotation\": [0.00000185549112, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99983018248178, -0.01835451081921, -0.00164867780858, 0.0, 0.01841203382082, 0.99116565129825, 0.13134553318078, 0.0, -0.00077667014244, -0.13135358391971, 0.99133527787369, 0.0, -0.00701075988583, 2.27551924411195, -0.0000000065827, 1.0] } }"
-
-[node name="mixamorig8RightHandThumb3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.55106324, -0.088617295, 0.8297446, 0.11218522, -0.97745085, -0.17889847, 0.82688797, 0.19166946, -0.5286958, -0.31173277, 1.1998203, 0.06961113)
-bone_name = "mixamorig8RightHandThumb3"
-bone_idx = 35
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9965854208035394, -0.07970203714322564, 0.02156581699956324, 0.0, 0.08071676044176754, 0.995421554708482, -0.05119309720108893, 0.0, -0.01738688504088888, 0.05275901716743501, 0.9984558990771876, 0.0, 0.6132745812791214, 3.447916014942673, 7.296623039110274e-08, 1.0]
-},
-"preRotation": [-3.5517817115578905, 0.0, 0.0],
-"scale": [1.0, 1.0000000000000002, 1.0000000000000002],
-"translation": [-0.30420586583225884, 3.4052616305725714, -2.961903e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.30420586583226, 3.40526163057257, -0.00000002961903], \"preRotation\": [-3.55178171155789, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99658542080354, -0.07970203714323, 0.02156581699956, 0.0, 0.08071676044177, 0.99542155470848, -0.05119309720109, 0.0, -0.01738688504089, 0.05275901716744, 0.99845589907719, 0.0, 0.61327458127912, 3.44791601494267, 0.00000007296623, 1.0] } }"
-
-[node name="mixamorig8RightHandThumb4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8RightHandThumb3"]
-transform = Transform3D(1, 5.551115e-17, -2.7755574e-17, -5.551115e-17, 1, 3.4007304e-08, 2.7755576e-17, -3.4007304e-08, 1, -0.004636032, 0.042250574, -2.6769928e-09)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.99979959278804, -0.01562340614096906, 0.01251732576249095, 0.0, 0.01659679823961374, 0.996505699978826, -0.0818592465582989, 0.0, -0.01119466622474935, 0.08205058890375588, 0.9965652915674984, 0.0, -0.30420586583225884, 3.4052616305725714, -2.961903e-08, 1.0]
-},
-"preRotation": [-1.948475014e-06, -1.5902773344602337e-15, -3.180554668920467e-15],
-"scale": [1.0, 1.0, 1.0000000000000002],
-"translation": [-0.30906878473927435, 2.8167050068579673, -1.784662e-07]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.30906878473927, 2.81670500685797, -0.00000017846619], \"preRotation\": [-0.00000194847501, -0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99979959278804, -0.01562340614097, 0.01251732576249, 0.0, 0.01659679823961, 0.99650569997883, -0.0818592465583, 0.0, -0.01119466622475, 0.08205058890376, 0.9965652915675, 0.0, -0.30420586583226, 3.40526163057257, -0.00000002961903, 1.0] } }"
-
-[node name="mixamorig8RightHandIndex3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.4020887, 0.50482947, 0.7638532, 0.037184045, -0.84257984, 0.5372865, 0.91484535, -0.18763381, -0.35756359, -0.33320302, 1.0986546, 0.06491353)
-bone_name = "mixamorig8RightHandIndex3"
-bone_idx = 38
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.998757800542552, 0.04935047593911825, 0.00688377197181925, 0.0, -0.04927404873180562, 0.9576315378313452, 0.2837497201920009, 0.0, 0.0074110669645563, -0.28373643775878643, 0.9588736662744024, 0.0, -0.01556772178775389, 3.173056580271073, -2.7192044e-08, 1.0]
-},
-"preRotation": [2.237206627913033, 0.0, 7.951386703658792e-16],
-"scale": [1.0000000000000002, 1.0000000000000002, 1.0000000000000002],
-"translation": [0.00547513462573689, 3.0648074593659302, -1.6748629150242775e-09]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00547513462574, 3.06480745936593, -0.00000000167486], \"preRotation\": [2.23720662791303, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99875780054255, 0.04935047593912, 0.00688377197182, 0.0, -0.04927404873181, 0.95763153783135, 0.283749720192, 0.0, 0.00741106696456, -0.28373643775879, 0.9588736662744, 0.0, -0.01556772178775, 3.17305658027107, -0.00000002719204, 1.0] } }"
-
-[node name="mixamorig8RightHandIndex4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8RightHandIndex3"]
-transform = Transform3D(1, -1.3877786e-17, 2.7755576e-17, 1.3877788e-17, 1, -4.6021686e-08, -2.7755576e-17, 4.6021686e-08, 1, 0.00015139046, 0.03782501, -1.2224095e-09)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9999796995281548, 0.00637161562385082, 5.51898842341e-05, 0.0, -0.00637070812116958, 0.999597960259492, 0.0276284621920651, 0.0, 0.00012087024565856, -0.02762825291988993, 0.999618259652643, 0.0, 0.00547513462573689, 3.0648074593659302, -1.6748629150242775e-09, 1.0]
-},
-"preRotation": [2.6368484606e-06, 1.590277372333955e-15, 7.951386861669775e-16],
-"scale": [0.9999999999999998, 0.9999999999999998, 1.0],
-"translation": [0.01009269756942643, 2.521667524701421, -8.149396535372946e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.01009269756943, 2.52166752470142, -0.00000008149397], \"preRotation\": [0.00000263684846, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99997969952815, 0.00637161562385, 0.00005518988423, 0.0, -0.00637070812117, 0.99959796025949, 0.02762846219207, 0.0, 0.00012087024566, -0.02762825291989, 0.99961825965264, 0.0, 0.00547513462574, 3.06480745936593, -0.00000000167486, 1.0] } }"
-
-[node name="mixamorig8RightHandMiddle3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.41702, 0.6980652, 0.5820644, -0.034553304, -0.62776816, 0.77763337, 0.90824026, -0.34440097, -0.23767145, -0.3401169, 1.0953315, 0.018881839)
-bone_name = "mixamorig8RightHandMiddle3"
-bone_idx = 41
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9986832106286738, 0.05076745557932771, 0.00738310578763586, 0.0, -0.05077441676994736, 0.9575557067211432, 0.283741126314387, 0.0, 0.00733508000925175, -0.28374237190537155, 0.9588724955033476, 0.0, -0.01367540018676294, 3.4919331978927417, -4.183559e-08, 1.0]
-},
-"preRotation": [-5.223828223779197, 0.0, -7.951386703658792e-16],
-"scale": [1.0, 1.0000000000000002, 1.0],
-"translation": [0.01471073302993986, 3.416664448475885, -7.603568974445808e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.01471073302994, 3.41666444847588, -0.00000007603569], \"preRotation\": [-5.2238282237792, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99868321062867, 0.05076745557933, 0.00738310578764, 0.0, -0.05077441676995, 0.95755570672114, 0.28374112631439, 0.0, 0.00733508000925, -0.28374237190537, 0.95887249550335, 0.0, -0.01367540018676, 3.49193319789274, -0.00000004183559, 1.0] } }"
-
-[node name="mixamorig8RightHandMiddle4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8RightHandMiddle3"]
-transform = Transform3D(1, 2.7755576e-17, -2.7755576e-17, -2.7755576e-17, 1, -5.7813376e-09, 2.7755576e-17, 5.7813376e-09, 1, -1.5530151e-05, 0.04266683, -3.8420678e-10)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9999998496463264, -0.00049869764916586, 0.00022805257050985, 0.0, 0.00049220671850129, 0.9996181594124212, 0.02762775947601334, 0.0, -0.00024174338969637, -0.02762764307306902, 0.9996182545784956, 0.0, 0.01471073302993986, 3.416664448475885, -7.603568974445808e-08, 1.0]
-},
-"preRotation": [3.312462572369232e-07, -1.5902773271614317e-15, -1.5902773271614317e-15],
-"scale": [1.0, 1.0, 0.9999999999999998],
-"translation": [-0.00103534349578282, 2.844455595769702, -2.5613787e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00103534349578, 2.8444555957697, -0.00000002561379], \"preRotation\": [0.00000033124626, -0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99999984964633, -0.00049869764917, 0.00022805257051, 0.0, 0.0004922067185, 0.99961815941242, 0.02762775947601, 0.0, -0.0002417433897, -0.02762764307307, 0.9996182545785, 0.0, 0.01471073302994, 3.41666444847588, -0.00000007603569, 1.0] } }"
-
-[node name="mixamorig8RightHandRing3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.41971424, 0.76764035, 0.4843222, -0.06483566, -0.5068773, 0.8595767, 0.9053377, -0.39217806, -0.1629732, -0.35323334, 1.1137147, -0.01313111)
-bone_name = "mixamorig8RightHandRing3"
-bone_idx = 44
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9988885030378508, 0.04661113237723196, 0.0070114784963262, 0.0, -0.04668862148261792, 0.9579746753060696, 0.28302772628561246, 0.0, 0.00647542402048813, -0.2830404980932285, 0.9590860988876966, 0.0, 0.00346215760754375, 2.807277895593572, -1.5747644965813382e-08, 1.0]
-},
-"preRotation": [-4.638760250224526, 7.951386703658792e-16, 0.0],
-"scale": [1.0, 1.0, 1.0],
-"translation": [0.0013928841287587, 2.700953212269212, 1.4013835425430445e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00139288412876, 2.70095321226921, 0.00000001401384], \"preRotation\": [-4.63876025022453, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99888850303785, 0.04661113237723, 0.00701147849633, 0.0, -0.04668862148262, 0.95797467530607, 0.28302772628561, 0.0, 0.00647542402049, -0.28304049809323, 0.9590860988877, 0.0, 0.00346215760754, 2.80727789559357, -0.00000001574764, 1.0] } }"
-
-[node name="mixamorig8RightHandRing4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8RightHandRing3"]
-transform = Transform3D(1, 1.7347235e-17, 1.110223e-16, -1.7347236e-17, 1, 1.9519614e-08, -1.110223e-16, -1.9519614e-08, 1, -7.2825336e-05, 0.032461457, 1.2133995e-10)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9999983206074056, 0.00183138158459057, -6.945399222763e-05, 0.0, -0.00182877213135322, 0.9996185562582848, 0.02755716923048673, 0.0, 0.00011989519172853, -0.02755699593565527, 0.9996202266858908, 0.0, 0.0013928841287587, 2.700953212269212, 1.4013835425430445e-08, 1.0]
-},
-"preRotation": [-1.11839147639e-06, 6.3611096304687165e-15, -9.939233797607369e-16],
-"translation": [-0.00485502299417461, 2.164097005955732, 8.08933e-09]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00485502299417, 2.16409700595573, 0.00000000808933], \"preRotation\": [-0.00000111839148, 0.00000000000001, -0.0], \"parentMatrixWorld\": { \"elements\": [0.99999832060741, 0.00183138158459, -0.00006945399223, 0.0, -0.00182877213135, 0.99961855625828, 0.02755716923049, 0.0, 0.00011989519173, -0.02755699593566, 0.99962022668589, 0.0, 0.00139288412876, 2.70095321226921, 0.00000001401384, 1.0] } }"
-
-[node name="mixamorig8RightHandPinky3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(0.43043864, 0.7678338, 0.4745034, -0.0844777, -0.4891184, 0.86811686, 0.89865804, -0.41375607, -0.14567071, -0.3673205, 1.1415659, -0.04639148)
-bone_name = "mixamorig8RightHandPinky3"
-bone_idx = 47
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.998683897135285, 0.05071981851719151, 0.00761404046896761, 0.0, -0.05079787062095968, 0.9576988770392402, 0.28325330935075527, 0.0, 0.00707459843780259, -0.28326729590152416, 0.9590149055825896, 0.0, -0.00224624784971894, 2.6331157767246367, 1.2757482e-08, 1.0]
-},
-"preRotation": [-12.018107128205289, 0.0, 1.9878466759146982e-16],
-"scale": [1.0, 1.0, 0.9999999999999996],
-"translation": [0.00884832529519386, 2.1176732624699532, -1.0626593e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00884832529519, 2.11767326246995, -0.00000001062659], \"preRotation\": [-12.0181071282053, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99868389713529, 0.05071981851719, 0.00761404046897, 0.0, -0.05079787062096, 0.95769887703924, 0.28325330935076, 0.0, 0.0070745984378, -0.28326729590152, 0.95901490558259, 0.0, -0.00224624784972, 2.63311577672464, 0.00000001275748, 1.0] } }"
-
-[node name="mixamorig8RightHandPinky4" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8RightHandPinky3"]
-transform = Transform3D(1, 7.806256e-18, 2.7755576e-17, -7.806256e-18, 1, 7.699748e-09, -2.7755576e-17, -7.699748e-09, 1, -9.903134e-05, 0.02623466, 7.435767e-10)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9999915290263548, -0.00411604931497219, -3.69468895675e-06, 0.0, 0.0041149968381628, 0.9997147110938772, 0.02352792439280454, 0.0, -9.314846171405e-05, -0.02352774029201133, 0.9997231800667424, 0.0, 0.00884832529519386, 2.1176732624699532, -1.0626593e-08, 1.0]
-},
-"preRotation": [-4.4116310525607537e-07, 1.5902773607214969e-15, -4.472655077029209e-16],
-"scale": [1.0, 1.0000000000000002, 1.0],
-"translation": [-0.00660208998814226, 1.7489774016559425, 4.9571781346458024e-08]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00660208998814, 1.74897740165594, 0.00000004957178], \"preRotation\": [-0.00000044116311, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99999152902635, -0.00411604931497, -0.00000369468896, 0.0, 0.00411499683816, 0.99971471109388, 0.0235279243928, 0.0, -0.00009314846171, -0.02352774029201, 0.99972318006674, 0.0, 0.00884832529519, 2.11767326246995, -0.00000001062659, 1.0] } }"
-
-[node name="mixamorig8LeftToeBase" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
-transform = Transform3D(-0.9304138, 0.3598783, 0.06940983, 0.120086886, 0.12040636, 0.9854348, 0.3462792, 0.9251973, -0.15524426, 0.3251942, 0.021966502, 0.30004156)
-bone_name = "mixamorig8LeftToeBase"
-bone_idx = 51
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9743690893446044, 0.218698959719563, 0.05268436956933042, 0.0, -0.11572305942591272, 0.28646758000488837, 0.9510754441700394, 0.0, 0.19290684616271003, -0.9327953108821414, 0.3044336677259691, 0.0, -7.851830119420813e-08, 36.8581919188727, -1.3694078848658364e-07, 1.0]
-},
-"preRotation": [33.998699567729446, -12.124778653470194, 1.0617367753297744e-07],
-"scale": [1.0, 1.0, 0.9999999999999998],
-"translation": [8.019553e-09, 16.43324861929346, -5.536626819235835e-07]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00000000801955, 16.4332486192935, -0.00000055366268], \"preRotation\": [33.9986995677294, -12.1247786534702, 0.00000010617368], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.9743690893446, 0.21869895971956, 0.05268436956933, 0.0, -0.11572305942591, 0.28646758000489, 0.95107544417004, 0.0, 0.19290684616271, -0.93279531088214, 0.30443366772597, 0.0, -0.0000000785183, 36.8581919188727, -0.00000013694079, 1.0] } }"
-
-[node name="mixamorig8LeftToe_End" type="Node3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D/mixamorig8LeftToeBase"]
-transform = Transform3D(1, 1.387779e-17, 1.5265568e-16, -1.387779e-17, 1, -2.3441138e-09, -1.5265568e-16, 2.3441138e-09, 1, 8.2403545e-10, 0.10881562, -9.0570836e-11)
-metadata/extras = {
-"transformData": {
-"eulerOrder": "ZYX",
-"inheritType": 1.0,
-"parentMatrixWorld": {
-"elements": [0.9775424632157698, -0.0026407520334857, 0.2107219930962352, 0.0, -0.11847438141787116, 0.8200589702410968, 0.5598813275615768, 0.0, -0.17428296788098632, -0.5722729300195482, 0.8013296043431636, 0.0, 8.019553e-09, 16.43324861929346, -5.536626819235835e-07, 1.0]
-},
-"preRotation": [1.3430782574126285e-07, 8.746525866271977e-15, -7.95138715115635e-16],
-"scale": [1.0, 1.0000000000000009, 1.0000000000000004],
-"translation": [5.4935696880420464e-08, 7.254374565327224, -6.038056e-09]
-}
-}
-metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.0000000549357, 7.25437456532722, -0.00000000603806], \"preRotation\": [0.00000013430783, 0.00000000000001, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.97754246321577, -0.00264075203349, 0.21072199309624, 0.0, -0.11847438141787, 0.8200589702411, 0.55988132756158, 0.0, -0.17428296788099, -0.57227293001955, 0.80132960434316, 0.0, 0.00000000801955, 16.4332486192935, -0.00000055366268, 1.0] } }"
-
-[node name="Ch32" type="MeshInstance3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D"]
+[node name="Ch32" type="MeshInstance3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(1, 0, -1.4210855e-14, 0, 1, 0, 1.4210855e-14, 0, 1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_r66hh")
 skin = SubResource("Skin_o6vfn")
 metadata/extras = {
@@ -9334,12 +8974,1708 @@ metadata/extras = {
 }
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.0, 0.0, 0.0], \"rotation\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, -87.9891697838902, -3.51051425933838, 1.0] } }"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="thirdPersonModel/CharacterModel"]
+[node name="mixamorig8RightToeBase" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(-0.83191407, -0.5546032, -0.018289357, -0.1269214, 0.15809166, 0.97923374, -0.54019463, 0.8169592, -0.20190966, -0.24263506, 0.020957723, 0.119242564)
+bone_name = "mixamorig8RightToeBase"
+bone_idx = 4
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9872816142883944, -0.15841161491899636, -0.01344522343668101, 0.0, 0.09173167350628088, 0.4985446005093689, 0.8619968497705677, 0.0, -0.12984727124681425, -0.8522669940795552, 0.5067352807827801, 0.0, 8.919272e-09, 36.84347461863772, -1.0475045364444213e-07, 1.0]
+},
+"preRotation": [33.96640371883875, 11.8985351821459, -7.309631762632134e-07],
+"scale": [1.0000000000000002, 1.0, 1.0000000000000002],
+"translation": [-2.1272985e-08, 16.424322624767235, -3.509356263364794e-07]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00000002127299, 16.4243226247672, -0.00000035093563], \"preRotation\": [33.9664037188387, 11.8985351821459, -0.00000073096318], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.98728161428839, -0.158411614919, -0.01344522343668, 0.0, 0.09173167350628, 0.49854460050937, 0.86199684977057, 0.0, -0.12984727124681, -0.85226699407956, 0.50673528078278, 0.0, 0.00000000891927, 36.8434746186377, -0.00000010475045, 1.0] } }"
+
+[node name="mixamorig8Head" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.995787, -0.082876764, -0.039235145, 0.073495656, 0.97725177, -0.19894022, 0.054830153, 0.19521847, 0.9792258, -0.018756036, 2.3061593, -0.024766542)
+bone_name = "mixamorig8Head"
+bone_idx = 9
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.99548367588838, -0.09321620662001102, 0.01797192112238484, 0.0, 0.08937484595684901, 0.9840791258031424, 0.15362425384945683, 0.0, -0.03200606248265034, -0.15132419926762625, 0.987965889547159, 0.0, 0.0, 15.714771427296457, 1.14992595534e-06, 1.0]
+},
+"translation": [0.0, 6.974517822265597, 2.4779660701751736]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.0, 6.9745178222656, 2.47796607017517], \"parentMatrixWorld\": { \"elements\": [0.99548367588838, -0.09321620662001, 0.01797192112238, 0.0, 0.08937484595685, 0.98407912580314, 0.15362425384946, 0.0, -0.03200606248265, -0.15132419926763, 0.98796588954716, 0.0, 0.0, 15.7147714272965, 0.00000114992596, 1.0] } }"
+
+[node name="Area3D" type="Area3D" parent="CharacterModel/Node/Skeleton3D/mixamorig8Head"]
+transform = Transform3D(0.99999994, -4.656613e-09, 0, -9.313226e-10, 1, 1.4901161e-08, 1.4901161e-08, 2.9802322e-08, 1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/mixamorig8Head/Area3D"]
+transform = Transform3D(0.99727815, 0.020093873, 0.07101686, -0.059168074, 0.79284006, 0.60655314, -0.044116996, -0.6091001, 0.7918667, 0.0023425072, 0.13859868, 0.054460406)
+shape = SubResource("CapsuleShape3D_evul3")
+
+[node name="mixamorig8LeftHandThumb3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.29980576, 0.08193895, -0.95047486, -0.2261814, -0.96179324, -0.15425849, -0.9268001, 0.26122728, -0.2698181, 0.34203592, 1.2474822, 0.10246073)
+bone_name = "mixamorig8LeftHandThumb3"
+bone_idx = 16
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9974311898615728, 0.07139265741725248, 0.00584036220568936, 0.0, -0.07147815668233594, 0.997313101127878, 0.01604528910899914, 0.0, -0.00467915388572069, -0.01642153014182162, 0.999854208802202, 0.0, -0.6203647507214995, 3.4639806249143197, 1.3233102e-07, 1.0]
+},
+"preRotation": [-10.664470494689631, 0.0, 0.0],
+"scale": [1.0000000000000002, 0.9999999999999998, 1.0000000000000002],
+"translation": [0.1650282448923761, 3.34923247109168, -5.8627364e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.16502824489238, 3.34923247109168, -0.00000005862736], \"preRotation\": [-10.6644704946896, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99743118986157, 0.07139265741725, 0.00584036220569, 0.0, -0.07147815668234, 0.99731310112788, 0.016045289109, 0.0, -0.00467915388572, -0.01642153014182, 0.9998542088022, 0.0, -0.6203647507215, 3.46398062491432, 0.00000013233102, 1.0] } }"
+
+[node name="mixamorig8LeftHandIndex3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.13936162, -0.5237784, -0.84037757, -0.03428658, -0.8507027, 0.52452785, -0.9896478, -0.04428534, -0.13651383, 0.36105907, 1.15091, 0.089636244)
+bone_name = "mixamorig8LeftHandIndex3"
+bone_idx = 19
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9995601883382036, -0.02956954700844829, -0.00225206263363521, 0.0, 0.02956433323889896, 0.9876805333675296, 0.15366559278422703, 0.0, -0.00231950350937065, -0.15366458959468743, 0.9881203438852104, 0.0, 0.02252119436575128, 3.3341934615269224, -1.8905382e-08, 1.0]
+},
+"preRotation": [4.942967982766135, 0.0, 0.0],
+"scale": [1.0000000000000002, 0.9999999999999998, 1.0000000000000002],
+"translation": [-0.00470420790415815, 3.182262428909567, -1.1825551382571577e-07]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00470420790416, 3.18226242890957, -0.00000011825551], \"preRotation\": [4.94296798276613, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.9995601883382, -0.02956954700845, -0.00225206263364, 0.0, 0.0295643332389, 0.98768053336753, 0.15366559278423, 0.0, -0.00231950350937, -0.15366458959469, 0.98812034388521, 0.0, 0.02252119436575, 3.33419346152692, -0.00000001890538, 1.0] } }"
+
+[node name="mixamorig8LeftHandMiddle3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.15568739, -0.75491476, -0.63707536, 0.03791303, -0.63989764, 0.76752424, -0.98707837, -0.14364728, -0.0710029, 0.35701934, 1.1439465, 0.04568782)
+bone_name = "mixamorig8LeftHandMiddle3"
+bone_idx = 22
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.999577488131243, -0.02897963003560216, -0.00224192903884421, 0.0, 0.02897922644787677, 0.9876537170362072, 0.1539491445925935, 0.0, -0.00224713980389886, -0.15394906862111318, 0.9880762288981344, 0.0, 0.01255624760316109, 3.424775564948078, -2.6718936e-08, 1.0]
+},
+"preRotation": [-5.492517505961075, 0.0, 7.951386703658792e-16],
+"scale": [0.9999999999999998, 1.0, 1.0],
+"translation": [-0.0134105515530436, 3.36927095857611, 4.270347631063488e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.01341055155304, 3.36927095857611, 0.00000004270348], \"preRotation\": [-5.49251750596108, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99957748813124, -0.0289796300356, -0.00224192903884, 0.0, 0.02897922644788, 0.98765371703621, 0.15394914459259, 0.0, -0.0022471398039, -0.15394906862111, 0.98807622889813, 0.0, 0.01255624760316, 3.42477556494808, -0.00000002671894, 1.0] } }"
+
+[node name="mixamorig8LeftHandRing3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.1644728, -0.8364387, -0.52279913, 0.060823403, -0.5204083, 0.8517486, -0.98450446, -0.17188787, -0.034717966, 0.35988924, 1.162363, 0.010109435)
+bone_name = "mixamorig8LeftHandRing3"
+bone_idx = 25
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9996912787607696, -0.02476488747260111, -0.00201184720125718, 0.0, 0.02478011184697389, 0.9878335724409644, 0.15352778136294307, 0.0, -0.00181472795296331, -0.1535302378746466, 0.9881422839067412, 0.0, 0.00028224587828162, 2.7913392364803045, -5.885576e-08, 1.0]
+},
+"preRotation": [-7.48771995123588, 0.0, 1.9878466759146982e-16],
+"scale": [1.0000000000000002, 0.9999999999999996, 0.9999999999999998],
+"translation": [-0.00610107321702102, 2.658589466199423, 5.4080004e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00610107321702, 2.65858946619942, 0.00000005408], \"preRotation\": [-7.48771995123588, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99969127876077, -0.0247648874726, -0.00201184720126, 0.0, 0.02478011184697, 0.98783357244096, 0.15352778136294, 0.0, -0.00181472795296, -0.15353023787465, 0.98814228390674, 0.0, 0.00028224587828, 2.7913392364803, -0.00000005885576, 1.0] } }"
+
+[node name="mixamorig8LeftHandPinky3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.18051536, -0.84137684, -0.50941056, 0.08650026, -0.5023318, 0.8603375, -0.97976106, -0.19936825, -0.01789932, 0.36027703, 1.1906799, -0.023592997)
+bone_name = "mixamorig8LeftHandPinky3"
+bone_idx = 28
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9991576002631414, 0.04097845223369959, -0.00220369940558904, 0.0, -0.04006319554909679, 0.9856572781574744, 0.16393495787664625, 0.0, 0.00888989319028212, -0.16370857187133897, 0.9864686884687598, 0.0, 0.01213005396752819, 2.687734839752842, -2.2626409190706912e-08, 1.0]
+},
+"preRotation": [-1.2527693619647733, 7.951386703658792e-16, -1.987846675914698e-16],
+"scale": [1.0000000000000002, 0.9999999999999998, 1.0],
+"translation": [-0.00701075988583355, 2.275519244111951, -6.5826953e-09]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00701075988583, 2.27551924411195, -0.0000000065827], \"preRotation\": [-1.25276936196477, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99915760026314, 0.0409784522337, -0.00220369940559, 0.0, -0.0400631955491, 0.98565727815747, 0.16393495787665, 0.0, 0.00888989319028, -0.16370857187134, 0.98646868846876, 0.0, 0.01213005396753, 2.68773483975284, -0.00000002262641, 1.0] } }"
+
+[node name="mixamorig8RightHandThumb3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.54679227, -0.1007268, 0.83118725, 0.11834109, -0.9734733, -0.19581953, 0.8288628, 0.20543617, -0.5203675, -0.32029444, 1.2063718, 0.06704664)
+bone_name = "mixamorig8RightHandThumb3"
+bone_idx = 35
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9965854208035394, -0.07970203714322564, 0.02156581699956324, 0.0, 0.08071676044176754, 0.995421554708482, -0.05119309720108893, 0.0, -0.01738688504088888, 0.05275901716743501, 0.9984558990771876, 0.0, 0.6132745812791214, 3.447916014942673, 7.296623039110274e-08, 1.0]
+},
+"preRotation": [-3.5517817115578905, 0.0, 0.0],
+"scale": [1.0, 1.0000000000000002, 1.0000000000000002],
+"translation": [-0.30420586583225884, 3.4052616305725714, -2.961903e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.30420586583226, 3.40526163057257, -0.00000002961903], \"preRotation\": [-3.55178171155789, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99658542080354, -0.07970203714323, 0.02156581699956, 0.0, 0.08071676044177, 0.99542155470848, -0.05119309720109, 0.0, -0.01738688504089, 0.05275901716744, 0.99845589907719, 0.0, 0.61327458127912, 3.44791601494267, 0.00000007296623, 1.0] } }"
+
+[node name="mixamorig8RightHandIndex3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.39641586, 0.49667662, 0.7721182, 0.04629306, -0.8507666, 0.5235009, 0.9169031, -0.17178035, -0.36025003, -0.34285468, 1.1053901, 0.06369375)
+bone_name = "mixamorig8RightHandIndex3"
+bone_idx = 38
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.998757800542552, 0.04935047593911825, 0.00688377197181925, 0.0, -0.04927404873180562, 0.9576315378313452, 0.2837497201920009, 0.0, 0.0074110669645563, -0.28373643775878643, 0.9588736662744024, 0.0, -0.01556772178775389, 3.173056580271073, -2.7192044e-08, 1.0]
+},
+"preRotation": [2.237206627913033, 0.0, 7.951386703658792e-16],
+"scale": [1.0000000000000002, 1.0000000000000002, 1.0000000000000002],
+"translation": [0.00547513462573689, 3.0648074593659302, -1.6748629150242775e-09]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00547513462574, 3.06480745936593, -0.00000000167486], \"preRotation\": [2.23720662791303, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99875780054255, 0.04935047593912, 0.00688377197182, 0.0, -0.04927404873181, 0.95763153783135, 0.283749720192, 0.0, 0.00741106696456, -0.28373643775879, 0.9588736662744, 0.0, -0.01556772178775, 3.17305658027107, -0.00000002719204, 1.0] } }"
+
+[node name="mixamorig8RightHandMiddle3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.41059333, 0.69331753, 0.5922192, -0.02569408, -0.64043707, 0.76758087, 0.9114564, -0.33038008, -0.24514502, -0.34950036, 1.1014625, 0.017670173)
+bone_name = "mixamorig8RightHandMiddle3"
+bone_idx = 41
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9986832106286738, 0.05076745557932771, 0.00738310578763586, 0.0, -0.05077441676994736, 0.9575557067211432, 0.283741126314387, 0.0, 0.00733508000925175, -0.28374237190537155, 0.9588724955033476, 0.0, -0.01367540018676294, 3.4919331978927417, -4.183559e-08, 1.0]
+},
+"preRotation": [-5.223828223779197, 0.0, -7.951386703658792e-16],
+"scale": [1.0, 1.0000000000000002, 1.0],
+"translation": [0.01471073302993986, 3.416664448475885, -7.603568974445808e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.01471073302994, 3.41666444847588, -0.00000007603569], \"preRotation\": [-5.2238282237792, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99868321062867, 0.05076745557933, 0.00738310578764, 0.0, -0.05077441676995, 0.95755570672114, 0.28374112631439, 0.0, 0.00733508000925, -0.28374237190537, 0.95887249550335, 0.0, -0.01367540018676, 3.49193319789274, -0.00000004183559, 1.0] } }"
+
+[node name="mixamorig8RightHandRing3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.4129704, 0.7645447, 0.49490055, -0.05604388, -0.52103925, 0.851691, 0.90901834, -0.3794593, -0.17232564, -0.3621999, 1.1195129, -0.014698162)
+bone_name = "mixamorig8RightHandRing3"
+bone_idx = 44
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9988885030378508, 0.04661113237723196, 0.0070114784963262, 0.0, -0.04668862148261792, 0.9579746753060696, 0.28302772628561246, 0.0, 0.00647542402048813, -0.2830404980932285, 0.9590860988876966, 0.0, 0.00346215760754375, 2.807277895593572, -1.5747644965813382e-08, 1.0]
+},
+"preRotation": [-4.638760250224526, 7.951386703658792e-16, 0.0],
+"scale": [1.0, 1.0, 1.0],
+"translation": [0.0013928841287587, 2.700953212269212, 1.4013835425430445e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00139288412876, 2.70095321226921, 0.00000001401384], \"preRotation\": [-4.63876025022453, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99888850303785, 0.04661113237723, 0.00701147849633, 0.0, -0.04668862148262, 0.95797467530607, 0.28302772628561, 0.0, 0.00647542402049, -0.28304049809323, 0.9590860988877, 0.0, 0.00346215760754, 2.80727789559357, -0.00000001574764, 1.0] } }"
+
+[node name="mixamorig8RightHandPinky3" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(0.42352, 0.765078, 0.48506284, -0.07589941, -0.5036048, 0.8605938, 0.9027014, -0.40129462, -0.15521774, -0.3757567, 1.1470221, -0.04845975)
+bone_name = "mixamorig8RightHandPinky3"
+bone_idx = 47
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.998683897135285, 0.05071981851719151, 0.00761404046896761, 0.0, -0.05079787062095968, 0.9576988770392402, 0.28325330935075527, 0.0, 0.00707459843780259, -0.28326729590152416, 0.9590149055825896, 0.0, -0.00224624784971894, 2.6331157767246367, 1.2757482e-08, 1.0]
+},
+"preRotation": [-12.018107128205289, 0.0, 1.9878466759146982e-16],
+"scale": [1.0, 1.0, 0.9999999999999996],
+"translation": [0.00884832529519386, 2.1176732624699532, -1.0626593e-08]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00884832529519, 2.11767326246995, -0.00000001062659], \"preRotation\": [-12.0181071282053, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99868389713529, 0.05071981851719, 0.00761404046897, 0.0, -0.05079787062096, 0.95769887703924, 0.28325330935076, 0.0, 0.0070745984378, -0.28326729590152, 0.95901490558259, 0.0, -0.00224624784972, 2.63311577672464, 0.00000001275748, 1.0] } }"
+
+[node name="mixamorig8LeftToeBase" type="BoneAttachment3D" parent="CharacterModel/Node/Skeleton3D"]
+transform = Transform3D(-0.9299609, 0.36078745, 0.07074648, 0.121056005, 0.11878404, 0.985513, 0.34715724, 0.92505276, -0.15414003, 0.32556763, 0.021694526, 0.29845965)
+bone_name = "mixamorig8LeftToeBase"
+bone_idx = 51
+metadata/extras = {
+"transformData": {
+"eulerOrder": "ZYX",
+"inheritType": 1.0,
+"parentMatrixWorld": {
+"elements": [0.9743690893446044, 0.218698959719563, 0.05268436956933042, 0.0, -0.11572305942591272, 0.28646758000488837, 0.9510754441700394, 0.0, 0.19290684616271003, -0.9327953108821414, 0.3044336677259691, 0.0, -7.851830119420813e-08, 36.8581919188727, -1.3694078848658364e-07, 1.0]
+},
+"preRotation": [33.998699567729446, -12.124778653470194, 1.0617367753297744e-07],
+"scale": [1.0, 1.0, 0.9999999999999998],
+"translation": [8.019553e-09, 16.43324861929346, -5.536626819235835e-07]
+}
+}
+metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00000000801955, 16.4332486192935, -0.00000055366268], \"preRotation\": [33.9986995677294, -12.1247786534702, 0.00000010617368], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.9743690893446, 0.21869895971956, 0.05268436956933, 0.0, -0.11572305942591, 0.28646758000489, 0.95107544417004, 0.0, 0.19290684616271, -0.93279531088214, 0.30443366772597, 0.0, -0.0000000785183, 36.8581919188727, -0.00000013694079, 1.0] } }"
+
+[node name="PhysicalBoneSimulator3D" type="PhysicalBoneSimulator3D" parent="CharacterModel/Node/Skeleton3D"]
+active = false
+
+[node name="Physical Bone mixamorig8Hips" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.20109494, -0.5367037, 0.98124015, -0.07426978, 0.98836637, 0.5558222, -1.1159602, -0.16249159, 0.13982725, -0.07033846, 1.386234, 0.0024181455)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.7305514e-05, 0.00020556338, 0.072252154)
+body_offset = Transform3D(0.089026265, -0.60226196, 0.95951927, -7.004291e-05, 0.96247464, 0.60412353, -1.132871, -0.047388032, 0.07536617, -0.06919487, -0.043847084, -0.005545862)
+bone_name = "mixamorig8Hips"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Hips"]
+transform = Transform3D(1.01, 0, 0, 0, -4.4148504e-08, 1.01, 0, -1.01, -4.4148504e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_pu85p")
+debug_color = Color(3.0322374e-06, 0.45448166, 0.5337904, 0.41960785)
+
+[node name="Physical Bone mixamorig8RightUpLeg" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.0933957, -0.30949163, -0.004816175, -0.0038792766, -0.0039783823, 1.13635, -0.3095048, 1.093399, 0.0027714216, -0.13910986, 1.0234149, -0.008472417)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00036916079, 0.00019369836, 0.28451455)
+body_offset = Transform3D(1.1363634, -3.8653612e-05, -1.3654993e-05, -1.3653655e-05, 1.21772755e-05, -1.1363633, 3.8594007e-05, 1.1363639, 1.2181699e-05, -0.0004156083, 0.3233119, -0.00022359192)
+bone_name = "mixamorig8RightUpLeg"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightUpLeg"]
+transform = Transform3D(1, -4.02797e-08, -2.5331974e-07, 1.4901161e-08, -8.381903e-09, 0.9999989, 0, -0.99998856, 3.7252903e-09, 0, 0, 0.042397365)
+shape = SubResource("CapsuleShape3D_6pekc")
+
+[node name="Physical Bone mixamorig8RightLeg" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.0247059, -0.49122095, -0.0014287435, 0.04737033, -0.10210527, 1.1307753, -0.48893365, 1.0196072, 0.11254951, -0.1377514, 0.4251398, -0.036504924)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.757797e-05, 3.808572e-05, 0.24299487)
+body_offset = Transform3D(1.1363631, 5.5283308e-05, -0.000105980784, -0.00010599196, 0.0002515018, -1.1363631, -5.5223703e-05, 1.1363634, 0.00025155395, -6.240606e-05, 0.27613044, -0.00010440126)
+bone_name = "mixamorig8RightLeg"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightLeg"]
+transform = Transform3D(1.0000038, -1.8626451e-08, 5.662441e-07, -1.2218952e-06, 2.2351742e-08, 1.0000002, 1.4901161e-08, -1.0000021, -8.940697e-08, 0, -1.4901161e-08, 0.017110497)
+shape = SubResource("CapsuleShape3D_nhpn6")
+
+[node name="Physical Bone mixamorig8RightFoot" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.0044945, -0.22254029, 0.4824818, 0.072310515, 0.9650315, 0.59565747, -0.5263878, 0.5572364, -0.83888376, -0.18946445, 0.0855943, 0.027190918)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0002635318, -9.614501e-05, 0.10818949)
+body_offset = Transform3D(1.1363602, 0.0013184249, -0.0023027956, -0.00230214, -0.0007915497, -1.1363608, -0.0013201237, 1.1363623, -0.0007890165, -5.0202012e-05, 0.122942835, 0.0001949668)
+bone_name = "mixamorig8RightFoot"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightFoot"]
+transform = Transform3D(1.0000008, 4.7683716e-07, 2.0861626e-07, 6.2584877e-07, 8.34465e-07, 0.9999994, 1.1026859e-06, -1.0000005, 5.662441e-07, 7.450581e-09, 0, -0.0030178726)
+shape = SubResource("CapsuleShape3D_rj67t")
+
+[node name="Physical Bone mixamorig8Spine" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(1.1331936, -0.081803076, -0.02242649, -0.0140180215, 0.11570611, -1.1303707, 0.08365516, 1.127494, 0.11437423, 0.013031137, 1.6719868, -0.021239653)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4065178e-05, 0.00014515326, 0.08010799)
+body_offset = Transform3D(1.1363637, -6.210059e-05, -4.541129e-06, -4.5290217e-06, -2.1606684e-06, -1.1363636, 6.210804e-05, 1.1363636, -2.130866e-06, -1.5610363e-05, 0.09103179, -0.00016477704)
+bone_name = "mixamorig8Spine"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 30.0
+joint_constraints/y/angular_limit_lower = -30.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Spine"]
+transform = Transform3D(0.10975574, 0.99303764, 0.04278023, -0.9891217, 0.113361225, -0.093742386, -0.09793913, -0.03202469, 0.9946772, 0.0004213918, 0.0034429282, 0.11954242)
+shape = SubResource("CapsuleShape3D_wuvde")
+
+[node name="Physical Bone mixamorig8Spine1" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(1.1337225, -0.07665257, 0.010944525, 0.01717706, 0.092360005, -1.1324737, 0.07550065, 1.1300071, 0.09330401, 0.01321088, 1.8678021, -0.03907492)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0005706134, 8.653595e-05, 0.0918308)
+body_offset = Transform3D(1.1363636, -7.325411e-05, 2.8964132e-07, 2.9988587e-07, 3.3818185e-05, -1.1363637, 7.326901e-05, 1.1363639, 3.3825636e-05, -0.0006484445, 0.10435319, -0.00010148436)
+bone_name = "mixamorig8Spine1"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 30.0
+joint_constraints/y/angular_limit_lower = -30.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Spine1"]
+transform = Transform3D(0.9960138, -0.08730711, 0.017414939, 0.017415427, -0.00074993074, -0.999845, 0.0873055, 0.9961798, 0.0007747188, -0.09708828, 0.00781925, 0.10014933)
+shape = SubResource("CapsuleShape3D_kvkvi")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Spine1"]
+transform = Transform3D(0.9955403, 0.08826297, 0.032841675, 0.033640854, -0.0075925663, -0.99940205, -0.08796004, 0.996067, -0.010527007, 0.1052161, -0.00049894303, 0.10470849)
+shape = SubResource("CapsuleShape3D_kvkvi")
+
+[node name="Physical Bone mixamorig8Spine2" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(1.1333191, -0.070139915, 0.044615816, 0.04889245, 0.0691763, -1.1332018, 0.06722877, 1.1320854, 0.07200876, 0.008197273, 2.0893002, -0.05508566)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.722428e-05, 9.27308e-05, 0.10295736)
+body_offset = Transform3D(1.1363637, -9.097904e-05, 1.5180558e-06, 1.5306287e-06, 5.64605e-05, -1.1363637, 9.097904e-05, 1.1363637, 5.645305e-05, -5.381182e-05, 0.116997, -0.000111192465)
+bone_name = "mixamorig8Spine2"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 30.0
+joint_constraints/y/angular_limit_lower = -30.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Spine2"]
+transform = Transform3D(0.9960143, -0.08730677, 0.017414913, 0.01741543, -0.0007484108, -0.99984187, 0.08730544, 0.99616987, 0.0007748753, -0.08513259, 0.022711031, 0.07720387)
+shape = SubResource("CapsuleShape3D_pgcff")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Spine2"]
+transform = Transform3D(0.9960143, -0.08730677, 0.01741491, 0.01741543, -0.0007484183, -0.9998418, 0.08730545, 0.9961698, 0.0007748753, 0.08881843, 0.016620062, 0.086330414)
+shape = SubResource("CapsuleShape3D_pgcff")
+
+[node name="Physical Bone mixamorig8Neck" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.1325808, 0.03677519, 0.08503451, -0.058586236, 0.5236899, -1.0067964, -0.07177002, -1.0078288, -0.5200506, -0.00058104255, 2.2559865, -0.03704405)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6991252e-05, 0.00039663445, 0.04816588)
+body_offset = Transform3D(-1.1363639, 5.8412552e-05, 8.519739e-05, -6.069988e-05, 0.3804562, -1.0707824, -8.356571e-05, -1.0707828, -0.3804563, -5.7525933e-05, 0.051424265, 0.018749714)
+bone_name = "mixamorig8Neck"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8Neck"]
+transform = Transform3D(1, 1.8626451e-09, -1.9744039e-07, 1.8626451e-08, 0, 0.99999976, 5.2154064e-08, -1, 7.1525574e-07, 1.4901161e-08, 0, -0.024292111)
+shape = SubResource("CapsuleShape3D_6ynph")
+
+[node name="Physical Bone mixamorig8LeftShoulder" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.34977838, -0.45764294, -0.97956127, -0.02864852, -1.0331079, 0.4724297, -1.0808129, -0.120720804, -0.3295333, 0.2115386, 2.1380599, -0.024415053)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00014801434, -0.0005382999, 0.09971182)
+body_offset = Transform3D(1.1363633, -0.00038291514, -0.00095385313, -0.00095388293, 0.00013636053, -1.1363634, 0.00038297474, 1.1363637, 0.00013608113, 0.00026310235, 0.11330879, 0.0005981922)
+bone_name = "mixamorig8LeftShoulder"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftShoulder"]
+transform = Transform3D(1.0000008, 2.9802322e-08, -1.3411045e-07, -8.940697e-08, 1.8626451e-08, 1.0000005, 3.5762787e-07, -1.0000002, -1.4901161e-08, 0, 5.9604645e-07, -0.015548199)
+shape = SubResource("CapsuleShape3D_p27wf")
+
+[node name="Physical Bone mixamorig8LeftArm" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.6552882, -0.9158682, -0.15200327, 0.049786005, -0.15111922, 1.1251696, -0.92706037, -0.6554927, -0.04701771, 0.33350235, 1.8999963, 0.01622735)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.7914058e-05, -0.00031661667, 0.17077768)
+body_offset = Transform3D(1.1363637, 0.0005824566, -7.1153045e-07, -9.573996e-07, 0.00047584996, -1.1363636, -0.000582397, 1.1363633, 0.00047584064, -6.5505505e-05, 0.19406569, 0.0002785623)
+bone_name = "mixamorig8LeftArm"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftArm"]
+transform = Transform3D(1.0000014, -1.1175871e-08, 0, -2.0861626e-07, -5.5879354e-09, 1.0000002, 1.8626451e-08, -1.0000023, 1.8626451e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_61f4l")
+
+[node name="Physical Bone mixamorig8LeftForeArm" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.6553541, -0.91882706, -0.13262782, 0.019957108, -0.1483641, 1.1264601, -0.9281352, -0.6519718, -0.069426626, 0.3787051, 1.5435677, 0.034278687)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2818517e-05, -0.00029130068, 0.14756101)
+body_offset = Transform3D(1.1363635, 0.00087070465, 7.973239e-05, 7.939339e-05, 0.0004558973, -1.1363634, -0.00087082386, 1.1363633, 0.0004558228, 3.054738e-06, 0.16768306, 0.00026375055)
+bone_name = "mixamorig8LeftForeArm"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftForeArm"]
+transform = Transform3D(1.0000017, 8.568168e-08, -2.9802322e-08, 1.1920929e-07, 2.682209e-07, 1, -8.568168e-08, -1.0000024, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_n3yc4")
+
+[node name="Physical Bone mixamorig8LeftHand" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.9677537, 0.39971998, 0.4415869, -0.019071931, -0.82124776, 0.78518194, 0.5953245, -0.6760905, -0.6926851, 0.38529828, 1.3554003, 0.06453751)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00019760709, -0.00020610192, 0.029212441)
+body_offset = Transform3D(-0.4672078, 0.6908096, 0.7718946, 1.6698614e-05, 0.84677917, -0.75781775, -1.0358759, -0.31156006, -0.34815735, -0.02231422, 0.022312224, 0.0103110075)
+bone_name = "mixamorig8LeftHand"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftHand"]
+transform = Transform3D(0.9919132, 0.028924642, -0.12357643, 0.074484915, 0.65568674, 0.75134814, 0.102760136, -0.7544772, 0.6482327, -0.0003992617, 0.06449215, -0.050851703)
+shape = SubResource("CapsuleShape3D_4iffa")
+
+[node name="Physical Bone mixamorig8RightShoulder" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.17711674, 0.60052973, 0.9483228, 0.046781614, -0.96317095, 0.60119516, 1.1215005, -0.054663517, -0.17484495, -0.197952, 2.1159508, -0.052657053)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7790815e-05, -0.0008073593, 0.09908912)
+body_offset = Transform3D(1.1363636, -0.000112727284, -0.00022119284, -0.00022129714, -0.0006553503, -1.1363636, 0.000112686306, 1.1363639, -0.00065544713, 4.2043626e-05, 0.112600744, 0.0009824038)
+bone_name = "mixamorig8RightShoulder"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightShoulder"]
+transform = Transform3D(0.9999981, -3.2782555e-07, 5.5879354e-08, -1.2293458e-07, 7.171184e-08, 0.99999934, 4.4703484e-08, -1, -1.648441e-07, -3.7252903e-09, -2.3841858e-07, 0.023521483)
+shape = SubResource("CapsuleShape3D_bgie3")
+
+[node name="Physical Bone mixamorig8RightArm" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.67915606, 0.8935687, 0.17777644, -0.08805791, -0.15631685, 1.122111, 0.906816, -0.6844139, -0.024180418, -0.32231283, 1.8660977, -0.031400494)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3232936e-05, -0.00023939378, 0.17046203)
+body_offset = Transform3D(1.1363633, -0.0011080503, -9.97819e-05, -9.950809e-05, 0.00022776332, -1.1363635, 0.0011079907, 1.1363631, 0.00022768881, 5.4508448e-05, 0.19370687, 0.00023326278)
+bone_name = "mixamorig8RightArm"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightArm"]
+transform = Transform3D(1.0000032, -2.30968e-07, 2.3841858e-07, -7.4505806e-07, -5.401671e-08, 1.0000019, -1.322478e-07, -0.99999905, -1.2479722e-07, 0, 0, 0.007438004)
+shape = SubResource("CapsuleShape3D_rmxgt")
+
+[node name="Physical Bone mixamorig8RightForeArm" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.6905217, 0.89814764, 0.08850431, 0.042459648, -0.14364547, 1.1264482, 0.90149844, -0.6811896, -0.12084629, -0.3655273, 1.5096731, -0.009534571)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0855866e-06, -0.00019084764, 0.14762114)
+body_offset = Transform3D(1.1363631, -0.0011754036, -0.00015634298, -0.00015619397, 2.2165477e-05, -1.1363637, 0.001175344, 1.1363631, 2.2001565e-05, 2.1621585e-05, 0.16775131, 0.00021362305)
+bone_name = "mixamorig8RightForeArm"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightForeArm"]
+transform = Transform3D(1, 2.0861626e-07, -3.2782555e-07, 6.556511e-07, -1.4901161e-08, 1, -9.685755e-08, -1, 0, 1.4901161e-08, 5.9604645e-08, 0.008472681)
+shape = SubResource("CapsuleShape3D_ns8pa")
+
+[node name="Physical Bone mixamorig8RightHand" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(0.79410255, -0.52953845, -0.61669487, 0.051834524, -0.82739586, 0.77720755, -0.8111945, -0.57125074, -0.5540382, -0.36073783, 1.3219371, 0.024189215)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00012529455, -0.00013346225, 0.029063657)
+body_offset = Transform3D(-0.46657, -0.6873471, -0.775364, 1.8253922e-07, 0.8503435, -0.7538157, 1.0361636, -0.309503, -0.3491353, 0.022384718, 0.022022128, 0.010235667)
+bone_name = "mixamorig8RightHand"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8RightHand"]
+transform = Transform3D(0.9788083, -0.13910434, -0.15029693, 0.20394261, 0.59539264, 0.77712196, -0.018615812, -0.7913023, 0.6111419, -0.0046943724, 0.059595615, -0.040935576)
+shape = SubResource("CapsuleShape3D_bbt66")
+
+[node name="Physical Bone mixamorig8LeftUpLeg" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.1130466, 0.19422269, -0.1213546, -0.08262404, 0.22104654, 1.1115907, 0.21359462, 1.0976057, -0.20238912, 0.16845874, 1.0156465, 0.08261427)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00053994317, 2.2471075e-05, 0.28490663)
+body_offset = Transform3D(1.1363637, -0.00034539402, 0.00019259751, 0.00019259378, 5.4836273e-06, -1.1363637, 0.0003453642, 1.1363636, 5.5879354e-06, -0.0006684363, 0.32375744, -2.7313828e-05)
+bone_name = "mixamorig8LeftUpLeg"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftUpLeg"]
+transform = Transform3D(1.0000007, -2.7567148e-07, -3.1292439e-07, -1.0877848e-06, -1.7881393e-07, 0.99999917, -5.9604645e-08, -1, -3.2782555e-07, 1.3411045e-07, 2.9802322e-08, 0.05453801)
+shape = SubResource("CapsuleShape3D_jvo65")
+
+[node name="Physical Bone mixamorig8LeftLeg" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.0975462, 0.26485404, -0.12871306, -0.14525868, -0.054880302, 1.1257044, 0.25615355, 1.1037041, 0.08686129, 0.23348007, 0.4254871, 0.11928661)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00010761105, -2.2368495e-05, 0.24324302)
+body_offset = Transform3D(1.1363636, -0.00029747188, 0.00050809234, 0.00050812773, 0.000180237, -1.1363635, 0.00029736757, 1.1363636, 0.00018034875, -1.3113022e-06, 0.27641255, -1.8417835e-05)
+bone_name = "mixamorig8LeftLeg"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftLeg"]
+transform = Transform3D(1.0000025, -4.0978193e-08, 2.9802322e-07, -3.427267e-07, 1.4901161e-07, 1.0000011, -2.1606684e-07, -1.0000031, -1.4156103e-07, 0, 7.450581e-09, 0.009242713)
+shape = SubResource("CapsuleShape3D_3xynj")
+
+[node name="Physical Bone mixamorig8LeftFoot" type="PhysicalBone3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D"]
+transform = Transform3D(-1.0968063, 0.08960918, -0.28338718, -0.0767092, 0.9614328, 0.60090345, 0.2871477, 0.5991156, -0.921916, 0.29538772, 0.0866856, 0.19803707)
+collision_layer = 4
+collision_mask = 19
+joint_type = 5
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8344528e-05, -9.8543474e-05, 0.10819099)
+body_offset = Transform3D(1.1363633, 1.0594726e-05, 0.0005785376, 0.0005785525, 0.00057914853, -1.1363631, -1.08629465e-05, 1.1363633, 0.00057914853, -9.480119e-05, 0.122944295, 4.9322844e-05)
+bone_name = "mixamorig8LeftFoot"
+joint_constraints/x/linear_limit_enabled = true
+joint_constraints/x/linear_limit_upper = 0.0
+joint_constraints/x/linear_limit_lower = 0.0
+joint_constraints/x/linear_limit_softness = 0.7
+joint_constraints/x/linear_spring_enabled = false
+joint_constraints/x/linear_spring_stiffness = 0.0
+joint_constraints/x/linear_spring_damping = 0.0
+joint_constraints/x/linear_equilibrium_point = 0.0
+joint_constraints/x/linear_restitution = 0.5
+joint_constraints/x/linear_damping = 1.0
+joint_constraints/x/angular_limit_enabled = true
+joint_constraints/x/angular_limit_upper = 0.0
+joint_constraints/x/angular_limit_lower = 0.0
+joint_constraints/x/angular_limit_softness = 0.5
+joint_constraints/x/angular_restitution = 0.0
+joint_constraints/x/angular_damping = 1.0
+joint_constraints/x/erp = 0.5
+joint_constraints/x/angular_spring_enabled = false
+joint_constraints/x/angular_spring_stiffness = 0.0
+joint_constraints/x/angular_spring_damping = 0.0
+joint_constraints/x/angular_equilibrium_point = 0.0
+joint_constraints/y/linear_limit_enabled = true
+joint_constraints/y/linear_limit_upper = 0.0
+joint_constraints/y/linear_limit_lower = 0.0
+joint_constraints/y/linear_limit_softness = 0.7
+joint_constraints/y/linear_spring_enabled = false
+joint_constraints/y/linear_spring_stiffness = 0.0
+joint_constraints/y/linear_spring_damping = 0.0
+joint_constraints/y/linear_equilibrium_point = 0.0
+joint_constraints/y/linear_restitution = 0.5
+joint_constraints/y/linear_damping = 1.0
+joint_constraints/y/angular_limit_enabled = true
+joint_constraints/y/angular_limit_upper = 0.0
+joint_constraints/y/angular_limit_lower = 0.0
+joint_constraints/y/angular_limit_softness = 0.5
+joint_constraints/y/angular_restitution = 0.0
+joint_constraints/y/angular_damping = 1.0
+joint_constraints/y/erp = 0.5
+joint_constraints/y/angular_spring_enabled = false
+joint_constraints/y/angular_spring_stiffness = 0.0
+joint_constraints/y/angular_spring_damping = 0.0
+joint_constraints/y/angular_equilibrium_point = 0.0
+joint_constraints/z/linear_limit_enabled = true
+joint_constraints/z/linear_limit_upper = 0.0
+joint_constraints/z/linear_limit_lower = 0.0
+joint_constraints/z/linear_limit_softness = 0.7
+joint_constraints/z/linear_spring_enabled = false
+joint_constraints/z/linear_spring_stiffness = 0.0
+joint_constraints/z/linear_spring_damping = 0.0
+joint_constraints/z/linear_equilibrium_point = 0.0
+joint_constraints/z/linear_restitution = 0.5
+joint_constraints/z/linear_damping = 1.0
+joint_constraints/z/angular_limit_enabled = true
+joint_constraints/z/angular_limit_upper = 0.0
+joint_constraints/z/angular_limit_lower = 0.0
+joint_constraints/z/angular_limit_softness = 0.5
+joint_constraints/z/angular_restitution = 0.0
+joint_constraints/z/angular_damping = 1.0
+joint_constraints/z/erp = 0.5
+joint_constraints/z/angular_spring_enabled = false
+joint_constraints/z/angular_spring_stiffness = 0.0
+joint_constraints/z/angular_spring_damping = 0.0
+joint_constraints/z/angular_equilibrium_point = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterModel/Node/Skeleton3D/PhysicalBoneSimulator3D/Physical Bone mixamorig8LeftFoot"]
+transform = Transform3D(0.9999993, 3.427267e-07, -2.5331974e-07, -5.9604645e-08, -2.2947788e-06, 1.0000002, -1.4901161e-08, -1.0000008, -2.2947788e-06, 2.9802322e-08, 0, -0.007252723)
+shape = SubResource("CapsuleShape3D_mtmu1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterModel"]
+active = false
 libraries = {
 &"": SubResource("AnimationLibrary_pbxby")
 }
 
-[node name="AnimationTree" type="AnimationTree" parent="thirdPersonModel/CharacterModel"]
+[node name="AnimationTree" type="AnimationTree" parent="CharacterModel"]
 tree_root = SubResource("AnimationNodeBlendTree_6ynph")
 anim_player = NodePath("../AnimationPlayer")
 parameters/WalkRunBlend/blend_position = Vector2(0, 0)
@@ -9353,6 +10689,11 @@ parameters/UpperBodyTransition/current_index = 0
 parameters/GroundedTransition/current_state = "grounded"
 parameters/GroundedTransition/transition_request = ""
 parameters/GroundedTransition/current_index = 0
+
+[node name="thirdPersonModel" type="Node3D" parent="."]
+
+[node name="attachment" type="Node3D" parent="thirdPersonModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49932957, -0.43160284)
 
 [node name="collider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45288086, 0)
