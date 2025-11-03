@@ -8,8 +8,8 @@ public struct PlayerConfig
 {
     public PlayerConfig() { }
 
-    public int window_height { get; set; } = 1920;
-    public int window_width { get; set; } = 1080;
+    public int window_height { get; set; } = 1080;
+    public int window_width { get; set; } = 1920;
 
     public float mouseSensX = 5f;
     public float mouseSensY = 5f;
