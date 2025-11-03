@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cnqjq7xp44cqn" path="res://assets/models/weapons/sniper_Image_1.png" id="5_th5pi"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
-size = Vector3(2.1488419, 0.4191208, 0.15637207)
+size = Vector3(1.64744, 0.3601513, 0.15637207)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k72ql"]
 resource_name = "sample.001"
@@ -242,7 +242,7 @@ type = 29
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.39710844, 0.013927478, -0.34324032)
+transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.30501103, 0.008656517, -0.25143296)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="."]
@@ -269,6 +269,7 @@ mesh = SubResource("ArrayMesh_5ay0r")
 skeleton = NodePath("")
 
 [node name="tps" type="Node3D" parent="."]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 
 [node name="v_pnevm_reference_sample_0" type="MeshInstance3D" parent="tps"]
 transform = Transform3D(-0.05, 0, -7.54979e-09, 0, 0.05, 0, 7.54979e-09, 0, -0.05, 0.39884186, -1.11087815e-08, -0.016969357)

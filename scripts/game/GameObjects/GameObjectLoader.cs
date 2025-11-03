@@ -26,6 +26,10 @@ public static class GameObjectLoader
         {"AssaultRifle", (GameObjectType.AssaultRifle,"res://scenes/GameObjects/items/equipment/assaultrifle.tscn", typeof(BasicGun))},
         {"SniperRifle", (GameObjectType.SniperRifle,"res://scenes/GameObjects/items/equipment/sniperrifle.tscn", typeof(BasicGun))},
         {"Shotgun", (GameObjectType.Shotgun,"res://scenes/GameObjects/items/equipment/shotgun.tscn", typeof(BasicGun))},
+        {"SniperRifleAmmo", (GameObjectType.SniperRifleAmmo, "res://scenes/GameObjects/items/equipment/SniperAmmoBox.tscn", typeof(GOAmmoBox)) },
+        {"AssaultRifleAmmo", (GameObjectType.AssaultRifleAmmo, "res://scenes/GameObjects/items/equipment/RifleAmmoBox.tscn", typeof(GOAmmoBox)) },
+        {"ShotgunAmmo", (GameObjectType.ShotgunAmmo, "res://scenes/GameObjects/items/equipment/ShotgunAmmoBox.tscn", typeof(GOAmmoBox)) },
+
 
 
         //AccessoryItems
@@ -39,7 +43,7 @@ public static class GameObjectLoader
         {"C4", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/C4.tscn", typeof(GOBaseRoleItem))},
 
         //Components
-        { "PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
+        //{ "PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},
 
         //Package 
         {"Package", (GameObjectType.Package, "res://scenes/GameObjects/props/Package.tscn", typeof(GOPackageBox))},
@@ -173,4 +177,7 @@ public enum GameObjectType
     SwarmRobotPlayer,
     AssaultRifle,
     SniperRifle,
+    SniperRifleAmmo,
+    AssaultRifleAmmo,
+    ShotgunAmmo,
 }

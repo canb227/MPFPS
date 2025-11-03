@@ -9,6 +9,7 @@ size = Vector3(0.14447021, 0.11010742, 0.07543945)
 [node name="GOAmmoBox" type="RigidBody3D" node_paths=PackedStringArray("collider")]
 collision_layer = 8
 collision_mask = 11
+continuous_cd = true
 script = ExtResource("1_jwvy2")
 collider = NodePath("CollisionShape3D")
 ammoAmount = 8

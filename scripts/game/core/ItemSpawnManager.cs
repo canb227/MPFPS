@@ -99,6 +99,10 @@ public partial class ItemSpawnManager : Node
                 {
                     spawnOptions.Add("Accessories");
                 }
+                if(marker.canSpawnAmmo)
+                {
+                    spawnOptions.Add("Ammo");
+                }
 
                 if (spawnOptions.Count > 0)
                 {
@@ -137,6 +141,10 @@ public partial class ItemSpawnManager : Node
         else if (type == "Accessories")
         {
             SpawnRandomAccessory(marker);
+        }
+        else if (type == "Ammo")
+        {
+            SpawnRandomAmmo(marker);
         }
     }
 
@@ -185,12 +193,12 @@ public partial class ItemSpawnManager : Node
         Random rand = new();
         SpawnItem(marker, packageItemList[rand.Next(packageItemList.Count)]);
     }
-    
+
     private void SpawnRandomAccessory(ItemMarker3D marker)
     {
         //select random packageitem and spawn it
         var accessoryItemList = GameObjectLoader.GetAllObjectsOfType(typeof(GOBaseAccessory));
-        if(accessoryItemList.Count <= 0)
+        if (accessoryItemList.Count <= 0)
         {
             Logging.Error("Package Item List is Empty and Tried to Spawn a Package Item", "ItemSpawnManager");
             return;
@@ -198,6 +206,21 @@ public partial class ItemSpawnManager : Node
         Random rand = new();
         SpawnItem(marker, accessoryItemList[rand.Next(accessoryItemList.Count)]);
     }
+
+    private void SpawnRandomAmmo(ItemMarker3D marker)
+    {
+        //select random packageitem and spawn it
+        var accessoryItemList = GameObjectLoader.GetAllObjectsOfType(typeof(GOAmmoBox));
+        if (accessoryItemList.Count <= 0)
+        {
+            Logging.Error("Ammo Item List is Empty and Tried to Spawn a Ammo Item", "ItemSpawnManager");
+            return;
+        }
+        Random rand = new();
+        SpawnItem(marker, accessoryItemList[rand.Next(accessoryItemList.Count)]);
+    }
+    
+    
 
 
 }

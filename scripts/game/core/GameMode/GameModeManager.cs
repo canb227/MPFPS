@@ -659,6 +659,7 @@ public partial class GameModeManager : Node
         {
             GameObjectConstructorData data = new GameObjectConstructorData(pcType);
             data.spawnTransform = MapManager.GetPlayerSpawnTransform();
+            data.paramList.Add(false);
             Global.gameState.Auth_SpawnObject(pcType, data);
         }
         else
