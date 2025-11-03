@@ -159,14 +159,15 @@ shape = SubResource("CapsuleShape3D_nnfe1")
 air_absorption = true
 stream = ExtResource("14_dyfw8")
 attenuation_model = 1
+volume_db = -3.0
 max_db = 0.0
-autoplay = true
 max_polyphony = 2
 panning_strength = 0.0
 
 [node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
 air_absorption = true
 attenuation_model = 1
+volume_db = -3.0
 unit_size = 20.0
 max_db = 0.0
 max_polyphony = 2

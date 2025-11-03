@@ -40,6 +40,8 @@ public partial class PlayerUIManager : Control
     {
         PlayerInfoUI.UpdateRoleUI(newTeam);
     }
+
+
     public void UpdateStunUI(int newStunBarRemaning, int maxStunBar)
     {
         PlayerInfoUI.UpdateStunUI(newStunBarRemaning, maxStunBar);
@@ -47,6 +49,10 @@ public partial class PlayerUIManager : Control
     public void UpdateAmmoUI(int remainingAmmo, int storedAmmo, int maxAmmo)
     {
         PlayerInfoUI.UpdateAmmoUI(remainingAmmo, storedAmmo, maxAmmo);
+    }
+    public void UpdateStoredAmmoUI(int storedAmmo)
+    {
+        PlayerInfoUI.UpdateStoredAmmoUI(storedAmmo);
     }
     public void UpdateHealthUI(int newHealth, int newHealthMax)
     {

@@ -30,9 +30,9 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
 
     public virtual void OnHold(ulong byID)
     {
-        GravityScale = 0.1f;
-        LinearDamp = 20;
-        AngularDamp = 5;
+        //GravityScale = 0.1f;
+        //LinearDamp = 20;
+        //AngularDamp = 5;
     }
 
     public virtual void OnRelease(ulong byID)

@@ -54,7 +54,18 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public override void _Ready()
     {
         base._Ready();
-        gunSounds = ["res://assets/audio/weapons/basic/fire1.wav"];
+        if (ammoType == AmmoType.ShotgunAmmo)
+        {
+            gunSounds = ["res://assets/audio/weapons/basic/shotgun_fire6.wav"];
+        }
+        else if (ammoType == AmmoType.RifleAmmo)
+        {
+            gunSounds = ["res://assets/audio/weapons/basic/fire1.wav"];
+        }
+        else
+        {
+            gunSounds = ["res://assets/audio/weapons/basic/357_fire2.wav"];
+        }        
         emptySounds = ["res://assets/audio/weapons/basic/ar2_empty.wav"];
     }
 
@@ -100,7 +111,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
         audioStreamPlayer2.Play();
         //play reload animation
-        animationPlayer.SpeedScale = 1.0f;
+        animationPlayer.SpeedScale = 1/(reloadTimeSeconds/2);
         animationPlayer.Play("reload");
     }
 
@@ -218,9 +229,11 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 if (current is IsDamagable target)
                 {
                     Logging.Log($"Hit a IsDamagable object", "BasicGun");
-                    //BasicPlayerCharacter takes stun damage = damage * 4, so 5 damage knocks out in 5 shots since 5(damage)*4(stun multipler)*5(num shots) = 100
-                    target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-                    target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                    if(playerHeldBy.authority == Global.steamid)
+                    {
+                        target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                        target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                    }
                 }
             }
         }
@@ -230,7 +243,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         PlayShotSound();
 
         //play firing animation
-        animationPlayer.SpeedScale = (float)fireRate;
+        animationPlayer.SpeedScale = 7.5f;
         animationPlayer.Play("fire");
     }
 

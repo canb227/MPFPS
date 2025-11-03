@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://tlnu6i7rw7ia"]
+
+[ext_resource type="Script" uid="uid://iswe8cik68ip" path="res://scripts/game/GameObjects/RigidBodies/GOAmmoBox.cs" id="1_q32vy"]
+[ext_resource type="PackedScene" uid="uid://dhi87trpclvfc" path="res://assets/models/weapons/ammo_box_mp_5.glb" id="2_5sa6v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r1kn8"]
+size = Vector3(0.20347595, 0.11010742, 0.097229004)
+
+[node name="GOAmmoBox" type="RigidBody3D" node_paths=PackedStringArray("collider")]
+collision_layer = 8
+collision_mask = 11
+script = ExtResource("1_q32vy")
+collider = NodePath("CollisionShape3D")
+ammoType = 1
+ammoAmount = 20
+metadata/_custom_type_script = "uid://iswe8cik68ip"
+
+[node name="ammo_box_mp_52" parent="." instance=ExtResource("2_5sa6v")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0004043579, 0.05456543, 0.00015258789)
+shape = SubResource("BoxShape3D_r1kn8")

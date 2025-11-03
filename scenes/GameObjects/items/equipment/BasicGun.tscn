@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://juf5gjmljg3f"]
+[gd_scene load_steps=13 format=4 uid="uid://juf5gjmljg3f"]
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_qceyg"]
 [ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_drkua"]
@@ -45,10 +45,6 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_1o18v")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bs15t"]
-no_depth_test = true
-albedo_texture = ExtResource("2_pmrh1")
 
 [sub_resource type="Animation" id="Animation_hq15s"]
 length = 0.001
@@ -182,8 +178,8 @@ center_of_mass_mode = 1
 center_of_mass = Vector3(0.39, 0.01, 0)
 continuous_cd = true
 script = ExtResource("1_qceyg")
-audioStreamPlayer1 = NodePath("fps/AudioPlayer")
-audioStreamPlayer2 = NodePath("fps/AudioPlayer2")
+audioStreamPlayer1 = NodePath("AudioPlayer")
+audioStreamPlayer2 = NodePath("AudioPlayer2")
 shotHitParticle = ExtResource("2_drkua")
 bulletsPerShot = 10
 spread = 0.1
@@ -196,32 +192,31 @@ metadata/_custom_type_script = "uid://dl524mp8g0aei"
 transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.3900894, 0.0107421875, -0.004598178)
 shape = SubResource("BoxShape3D_pmrh1")
 
+[node name="AudioPlayer" type="SteamAudioPlayer" parent="."]
+air_absorption = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
+stream = ExtResource("3_bs15t")
+max_polyphony = 4
+panning_strength = 0.0
+
+[node name="AudioPlayer2" type="SteamAudioPlayer" parent="."]
+air_absorption = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
+stream = ExtResource("3_bs15t")
+max_polyphony = 4
+panning_strength = 0.0
+
 [node name="fps" type="Node3D" parent="."]
 
 [node name="shotgun_1" type="MeshInstance3D" parent="fps"]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.35749662, 1.5174299e-15, -0.020223176)
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("StandardMaterial3D_bs15t")
-
-[node name="AudioPlayer" type="SteamAudioPlayer" parent="fps"]
-air_absorption = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
-stream = ExtResource("3_bs15t")
-max_polyphony = 4
-panning_strength = 0.0
-
-[node name="AudioPlayer2" type="SteamAudioPlayer" parent="fps"]
-air_absorption = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
-stream = ExtResource("3_bs15t")
-max_polyphony = 4
-panning_strength = 0.0
 
 [node name="tps" type="Node3D" parent="."]
 
 [node name="shotgun_1" type="MeshInstance3D" parent="tps"]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.35749662, 1.5174299e-15, -0.020223176)
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
 

@@ -18,6 +18,7 @@ public partial class PlayerInfoUI : MarginContainer
     [Export] public Label HealthLabel;
     [Export] public ProgressBar AmmoBar;
     [Export] public Label AmmoLabel;
+    [Export] public Label StoredAmmoLabel;
 
     public void UpdateRoleUI(Team newTeam)
     {
@@ -59,12 +60,19 @@ public partial class PlayerInfoUI : MarginContainer
         if (remainingAmmo == 0 && maxAmmo == 0)
         {
             AmmoLabel.Text = "";
+            StoredAmmoLabel.Text = "";
         }
         else
         {
-            AmmoLabel.Text = $"{remainingAmmo} + {storedAmmo}";
+            AmmoLabel.Text = $"{remainingAmmo} + ";
+            StoredAmmoLabel.Text = $"{storedAmmo}";
         }
-            
+
+    }
+    
+    public void UpdateStoredAmmoUI(int storedAmmo)
+    {
+        StoredAmmoLabel.Text = $"{storedAmmo}";
     }
     public void UpdateHealthUI(int newHealth, int newHealthMax)
     {

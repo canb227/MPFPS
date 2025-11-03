@@ -1,7 +1,7 @@
-[gd_scene load_steps=43 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=46 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
-[ext_resource type="Script" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
+[ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
 [ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
@@ -15,9 +15,12 @@
 [ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
 [ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="12_k56je"]
-[ext_resource type="PackedScene" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
+[ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
-[ext_resource type="PackedScene" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
+[ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
+[ext_resource type="PackedScene" uid="uid://bue5wsys6q8cg" path="res://scenes/GameObjects/items/equipment/SniperAmmoBox.tscn" id="19_76kew"]
+[ext_resource type="PackedScene" uid="uid://eb1q1kum7aa" path="res://scenes/GameObjects/items/equipment/ShotgunAmmoBox.tscn" id="20_l40bb"]
+[ext_resource type="PackedScene" uid="uid://tlnu6i7rw7ia" path="res://scenes/GameObjects/items/equipment/RifleAmmoBox.tscn" id="21_aqigo"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_mku5r"]
 viewport_path = NodePath("LabelViewport")
@@ -1068,3 +1071,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.212933, -17.04317, -1.652
 use_collision = true
 size = Vector3(2.2907176, 1.9477539, 3.389182)
 material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="GOAmmoBox" parent="." instance=ExtResource("19_76kew")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.218174, -0.38521314, 19.79522)
+
+[node name="GOAmmoBox2" parent="." instance=ExtResource("20_l40bb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.86271, -0.38521266, 19.385418)
+
+[node name="GOAmmoBox3" parent="." instance=ExtResource("21_aqigo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.77626, -0.3852129, 19.02786)
+
+[node name="GOAmmoBox4" parent="." instance=ExtResource("20_l40bb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.38346, -0.3852129, 17.913393)
+
+[node name="GOAmmoBox5" parent="." instance=ExtResource("19_76kew")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.972347, -0.38521266, 18.018028)

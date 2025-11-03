@@ -61,6 +61,11 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         gunRayCast.CollideWithBodies = true;
         gunRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(gunRayCast);
+
+        if(authority == Global.steamid)
+        {
+            thirdPersonModel.Visible = false;
+        }
     }
 
     public override bool InitFromData(GameObjectConstructorData data)

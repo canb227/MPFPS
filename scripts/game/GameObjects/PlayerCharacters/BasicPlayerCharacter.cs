@@ -22,6 +22,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [Export] public AudioStreamPlayer3D characterSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
     [Export] public AnimationTree animationTree;
+    [Export] public Skeleton3D skeleton3D;
     public CharacterSoundManager characterSoundManager = new();
     public int roleCredits { get; set; }
     public float maxHealth { get; set; } = 100;
@@ -44,6 +45,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private bool airbrake = false;
     //item bools
     public bool handcuffed;
+    public bool knockedOut;
 
     //fall damage values
     // private float fallTime = 0f;
@@ -115,6 +117,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void PerTickAuth(double delta)
     {
         base.PerTickAuth(delta);
+        if(currentStunBar <= 0)
+        {
+            
+        }
         //we wrap each one because an input could kill the character meaning the later calls have no input anymore
         if (input != null)
         {
@@ -138,6 +144,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 if (controllingPlayerID == Global.steamid)
                 {
                     Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
+                }
+            }
+            if(currentStunBar == maxStunBar && knockedOut)
+            {
+                if (controllingPlayerID == Global.steamid)
+                {
+                    RPCManager.RPC(this, "WakeUp", []);
                 }
             }
         }
@@ -196,6 +209,22 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                     else if (hit is IsInteractable i)
                     {
                         i.Local_OnInteract(id);
+                    }
+                    else if (hit is GOAmmoBox ammoBox)
+                    {
+                        if(ammoStored[ammoBox.ammoType] < maxAmmoStored[ammoBox.ammoType])
+                        {
+                            RPCManager.RPC(ammoBox, "PickupAmmo", []);
+                            ammoStored[ammoBox.ammoType] = Math.Min(ammoBox.ammoAmount + ammoStored[ammoBox.ammoType], maxAmmoStored[ammoBox.ammoType]);
+                            if(equipped is BasicGun basicGun)
+                            {
+                                if(basicGun.ammoType == ammoBox.ammoType)
+                                {
+                                    Global.ui.inGameUI.PlayerUIManager.UpdateStoredAmmoUI(ammoStored[ammoBox.ammoType]);
+                                }
+                            }
+                        }
+
                     }
                     else
                     {
@@ -715,10 +744,16 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
         KnockedOut?.Invoke(id);
-        //characterSoundManager.PlayerKnockoutSound(characterSFX);
+        knockedOut = true;
         DropEquipped();
         currentStunBar = 0;
         //ragdoll and other stuff
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void WakeUp()
+    {
+        //stop ragdoll here
     }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
@@ -733,7 +768,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
-        TakeStunDamage(damage*4, byID, PainSoundType.None);
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;

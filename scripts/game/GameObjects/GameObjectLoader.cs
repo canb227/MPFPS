@@ -23,10 +23,13 @@ public static class GameObjectLoader
 
         //InventoryItems
         {"Hands", (GameObjectType.Hands,"res://scenes/GameObjects/items/equipment/Hands.tscn", typeof(Hands))},
-        {"BasicGun", (GameObjectType.BasicGun,"res://scenes/GameObjects/items/equipment/BasicGun.tscn", typeof(BasicGun))},
+        {"AssaultRifle", (GameObjectType.AssaultRifle,"res://scenes/GameObjects/items/equipment/assaultrifle.tscn", typeof(BasicGun))},
+        {"SniperRifle", (GameObjectType.SniperRifle,"res://scenes/GameObjects/items/equipment/sniperrifle.tscn", typeof(BasicGun))},
+        {"Shotgun", (GameObjectType.Shotgun,"res://scenes/GameObjects/items/equipment/shotgun.tscn", typeof(BasicGun))},
+
 
         //AccessoryItems
-        {"PackageRadar", (GameObjectType.PackageRadar,"res://scenes/GameObjects/items/accessory/PackageRadar.tscn", typeof(GOBaseAccessory))},
+        { "PackageRadar", (GameObjectType.PackageRadar,"res://scenes/GameObjects/items/accessory/PackageRadar.tscn", typeof(GOBaseAccessory))},
         {"Flashlight", (GameObjectType.Flashlight,"res://scenes/GameObjects/items/accessory/Flashlight.tscn", typeof(GOBaseAccessory))},
         {"Handcuffs", (GameObjectType.Handcuffs,"res://scenes/GameObjects/items/accessory/Handcuffs.tscn", typeof(GOBaseAccessory))},
         //{"WalkieTalkie", (GameObjectType.WalkieTalkie,"res://scenes/GameObjects/items/accessory/WalkieTalkie.tscn", typeof(GOBaseAccessory))},
@@ -146,7 +149,7 @@ public enum GameObjectType
     LabelPaper,
     PaperBox,
     Hands,
-    BasicGun,
+    Shotgun,
     //ALL NEW ENUMS MUST GO AT THE BOTTOM OR ALL PACKAGEITEMS KEYS GET SHIFTED IN THEIR SCENE
     Handcuffs,
     PowerCell,
@@ -167,5 +170,7 @@ public enum GameObjectType
     WalkieTalkie,
     PlayerRadar,
     C4,
-    SwarmRobotPlayer
+    SwarmRobotPlayer,
+    AssaultRifle,
+    SniperRifle,
 }
