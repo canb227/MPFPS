@@ -37,10 +37,10 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
 
     public virtual void OnRelease(ulong byID)
     {
-        LinearVelocity = LinearVelocity.Clamp(0, 5);
-        GravityScale = 1;
-        LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
-        AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
+        //LinearVelocity = LinearVelocity.Clamp(0, 5);
+        //GravityScale = 1;
+        //LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
+        //AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
     }
 
     public override void OnEquipped(ulong bySteamID)

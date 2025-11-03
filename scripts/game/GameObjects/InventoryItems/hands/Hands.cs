@@ -58,7 +58,7 @@ public partial class Hands : GOBaseInventoryItem
                     if (chargeAmount<3)
                     {
                         chargeAmount += (float)delta * 3;
-                        CurrentHoldPosition.Translate(new Vector3(0, 0, .0005f));
+                        CurrentHoldPosition.Translate(new Vector3(0, 0, .00075f));
                     }
 
                 }
@@ -80,8 +80,10 @@ public partial class Hands : GOBaseInventoryItem
         if (charging && lastTickActions.HasFlag(ActionFlags.Fire) && !input.actions.HasFlag(ActionFlags.Fire))
         {
             //mouse released while charging
-
-            RPCManager.RPC(this, "ReleaseHeld", [(holding as Node3D).GlobalPosition, (holding as Node3D).GlobalRotation, new Vector3(0, 0, chargeAmount*100)]);
+            if(holding is RigidBody3D rb)
+            {
+                RPCManager.RPC(this, "ReleaseHeld", [rb.GlobalPosition, rb.GlobalRotation, new Vector3(chargeAmount*20*(rb.Mass*0.5f), chargeAmount*20*(rb.Mass*0.5f), chargeAmount*12*(rb.Mass*0.5f))]);
+            }
             charging = false;
             chargeAmount = 0;
         }
@@ -181,7 +183,7 @@ public partial class Hands : GOBaseInventoryItem
             rb.GlobalPosition = position;
             rb.GlobalRotation = rotation;
             rb.ProcessMode = ProcessModeEnum.Pausable;
-            rb.ApplyCentralImpulse((CurrentHoldPosition.GlobalPosition - (HoldPosition.GlobalPosition)) * -20f);
+            rb.ApplyCentralImpulse((CurrentHoldPosition.GlobalPosition - HoldPosition.GlobalPosition) * -impulse);
         }
         (holding as GameObject).sleeping = false;
         holding.OnRelease(equippedBySteamID);
