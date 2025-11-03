@@ -246,7 +246,7 @@ public partial class DebugScreen : Control
 
             playerListItem.GetNode<OptionButton>("roleSelect").ItemSelected += (index) => OnRoleSelect((Role)index);
             playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
-            playerListItem.GetNode<OptionButton>("roleSelect").Select(3);
+            playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
             
             OnRoleSelect((Role)3);
         }
