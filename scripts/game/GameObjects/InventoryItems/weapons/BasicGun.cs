@@ -137,7 +137,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 {
                     reloading = true;
                     reloadTimeLeft = reloadTimeSeconds;
-                    RPCManager.RPC(this, "ReloadAnimation", []);
+                    RPCManager.RPCID(id, "ReloadAnimation", []);
                 }
                 else
                 {
@@ -146,7 +146,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         _timeUntilReload = 1.0 / 8;
                         if (!audioStreamPlayer2.Playing)
                         {
-                            RPCManager.RPC(this, "EmptyAudio", []);
+                            RPCManager.RPCID(id, "EmptyAudio", []);
                         }
                     }
                 }
@@ -163,12 +163,12 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 _timeUntilFire = 1.0 / fireRate;
                 if (currentMagazineAmmo > 0)
                 {
-                    RPCManager.RPC(this, "TryFireGun", []);
+                    RPCManager.RPCID(id, "TryFireGun", []);
                 }
                 else
                 {
                     //gun is empty
-                    RPCManager.RPC(this, "PlayEmptySound", []);
+                    RPCManager.RPCID(id, "PlayEmptySound", []);
                 }
             }
         }
