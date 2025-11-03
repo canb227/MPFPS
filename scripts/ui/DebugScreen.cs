@@ -138,6 +138,12 @@ public partial class DebugScreen : Control
         UsePackageOverride = optNode.GetNode<CheckBox>("UsePackageOverrideCheck");
         UsePackageOverride.Pressed += GameOptionChanged;
 
+        RoundTime = optNode.GetNode<TextEdit>("RoundTimeEdit");
+        RoundTime.TextChanged += GameOptionChanged;
+
+        ExtraTime = optNode.GetNode<TextEdit>("ExtraTimeEdit");
+        ExtraTime.TextChanged += GameOptionChanged;
+
         PercentTraitors = optNode.GetNode<TextEdit>("PercentTraitorsEdit");
         PercentTraitors.TextChanged += GameOptionChanged;
 
@@ -165,6 +171,8 @@ public partial class DebugScreen : Control
     private TextEdit NumberOfPackages;
     private TextEdit PackagesPerPlayer;
     private CheckBox UsePackageOverride;
+    private TextEdit ExtraTime;
+    private TextEdit RoundTime;
 
     private TextEdit PercentTraitors;
     private TextEdit MaxTraitors;
@@ -184,6 +192,8 @@ public partial class DebugScreen : Control
         opts.numPackages = int.Parse(NumberOfPackages.Text);
         opts.packagePerPlayer = float.Parse(PackagesPerPlayer.Text);
         opts.usePackageOverride = UsePackageOverride.ButtonPressed;
+        opts.roundTime = int.Parse(RoundTime.Text);
+        opts.timeAddedPerPackage = int.Parse(ExtraTime.Text);
 
         opts.percentTraitors = float.Parse(PercentTraitors.Text);
         //opts.maxTraitors = int.Parse(MaxTraitors.Text);
@@ -229,15 +239,16 @@ public partial class DebugScreen : Control
 
         if (newPlayerSteamID==Global.steamid)
         {
-            foreach (string character in playerCharacters)
+            foreach (var role in Enum.GetValues(typeof(Role)))
             {
-                playerListItem.GetNode<OptionButton>("charSelect").AddItem(character);
+                playerListItem.GetNode<OptionButton>("roleSelect").AddItem(role.ToString());
             }
 
-            playerListItem.GetNode<OptionButton>("charSelect").ItemSelected += (index) => OnCharSelect(playerCharacters[(int)index]);
+            playerListItem.GetNode<OptionButton>("roleSelect").ItemSelected += (index) => OnRoleSelect((Role)index);
             playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
-            playerListItem.GetNode<OptionButton>("charSelect").Select(2);
-            OnCharSelect("basicPlayer");
+            playerListItem.GetNode<OptionButton>("roleSelect").Select(3);
+            
+            OnRoleSelect((Role)3);
         }
         else
         {
@@ -256,9 +267,9 @@ public partial class DebugScreen : Control
         Global.gameState.PushLocalPlayerData();
     }
 
-    private void OnCharSelect(string character)
+    private void OnRoleSelect(Role role)
     {
-        Global.gameState.PlayerData[Global.steamid].selectedCharacter = character;
+        Global.gameState.PlayerData[Global.steamid].role = role;
         Global.gameState.PushLocalPlayerData();
     }
 

@@ -289,6 +289,39 @@ offset_right = 240.0
 offset_bottom = 421.0
 text = "1"
 
+[node name="RoundTimeLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 236.0
+offset_top = 39.0
+offset_right = 382.0
+offset_bottom = 62.0
+text = "Round Time:"
+
+[node name="RoundTimeEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 341.0
+offset_top = 36.0
+offset_right = 395.0
+offset_bottom = 68.0
+text = "900"
+
+[node name="ExtraTimeLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 80.0
+offset_right = 379.0
+offset_bottom = 103.0
+text = "Extra Time 
+Per Package:"
+
+[node name="ExtraTimeEdit" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 341.0
+offset_top = 92.0
+offset_right = 395.0
+offset_bottom = 124.0
+text = "60"
+
 [node name="chat" type="Control" parent="."]
 layout_mode = 1
 anchor_left = 0.5609375
