@@ -301,7 +301,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         state = SwarmRobotState.NONE;
         Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         //remove ourselves and add a timed ragdoll
-
+        
     }
 
     public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)

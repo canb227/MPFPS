@@ -160,6 +160,7 @@ public partial class Hands : GOBaseInventoryItem
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void Hold(ulong itemID)
     {
+        Logging.Log($"{equippedBySteamID} has started holding something", "Hands");
         var obj = Global.gameState.GameObjects[itemID];
         if (obj is IsHoldable item)
         {
