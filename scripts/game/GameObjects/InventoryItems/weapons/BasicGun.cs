@@ -34,12 +34,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     private float reloadTimeLeft { get; set; }
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
     public override bool droppable { get; set; } = true;
-    public ulong currentlyHeldBy { get; set; }
-    public bool customHeldPhysics { get; set; }
-    public bool snapHoldNoPhysics { get; set; }
-    public float heldWeight { get; set; }
-    public float heldDrag { get; set; }
-    public float heldFriction { get; set; }
     private bool reloading { get; set; }
     private GOBasePlayerCharacter playerHeldBy;
 
@@ -224,9 +218,8 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     if (current is IsDamagable target)
                     {
                         Logging.Log($"Hit a IsDamagable object", "BasicGun");
-
-                        target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-                        target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
+                        RPCManager.RPC((Node)target, "rpc_TakeDamage", [physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0]);
+                        RPCManager.RPC((Node)target, "rpc_TakeStunDamage", [stunDamagePerShot,equippedBySteamID,PainSoundType.Bullet,0]);
 
                     }
                 }
@@ -298,21 +291,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         animationPlayer.Play("RESET");
     }
 
-    public virtual void OnHold(ulong byID)
-    {
-       // GravityScale = 0.1f;
-        //LinearDamp = 20;
-       // AngularDamp = 5;
-    }
-
-    public virtual void OnRelease(ulong byID)
-    {
-       // LinearVelocity = LinearVelocity.Clamp(0, 5);
-      //  GravityScale = 1;
-       // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
-       // AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
-    }
-
     private void UpdateUI(BasicPlayerCharacter basicPlayer = null)
     {
         var player = basicPlayer != null ? basicPlayer : GetHeldBy();
@@ -382,17 +360,4 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         return new Vector3(randomPos.X, randomPos.Y, -1) * 100;
     }
-}
-
-[MessagePackObject]
-public struct BasicGunStateUpdate
-{
-    [Key(0)]
-    public ulong inInventoryOf;
-    [Key(1)]
-    public ulong equippedBySteamID;
-    [Key(2)]
-    public Vector3 position;
-    [Key(3)]
-    public Vector3 rotation;
 }

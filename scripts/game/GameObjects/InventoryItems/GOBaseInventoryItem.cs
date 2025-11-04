@@ -139,15 +139,6 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         return $"category:{category.ToString()} | equippedBySteamID:{equippedBySteamID} | inInventoryOf {inInventoryOf}";
     }
 
-    public override byte[] GenerateStateUpdate()
-    {
-        return new byte[0];
-    }
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
-    }
-
     /// <summary>
     /// Gets the <c>GOBasePlayerCharacter</c> holding this object.
     /// </summary>
