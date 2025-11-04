@@ -121,7 +121,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
     {
         PlayAnimation("gameStart");
         Transform2D vehicleTransform = Transform2D.Identity;
-        vehicleTransform.Origin = new(500, 500);
+        vehicleTransform.Origin = new(716, 575);
         vehicle2D.Transform = vehicleTransform;
     }
 

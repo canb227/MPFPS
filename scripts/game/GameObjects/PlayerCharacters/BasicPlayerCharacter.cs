@@ -542,14 +542,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //fall damage calculation
         if (!IsOnFloor() && globalVelocity.Y < 0)
         {
-            GD.Print("increase falltime" + fallTime);
             fallTime += (float)delta;
         }
         else if (IsOnFloor())
         {
             if (fallTime > safeFallTime)
             {
-                GD.Print("Take damage " + fallTime);
                 float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
                 TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
             }
