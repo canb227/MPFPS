@@ -31,15 +31,11 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     [Export] public float spread;
     [Export] public float physDamagePerShot = 5;
     [Export] public float stunDamagePerShot = 5;
+    [Export] public int maxPenetrations = 2;
+
     private float reloadTimeLeft { get; set; }
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
     public override bool droppable { get; set; } = true;
-    public ulong currentlyHeldBy { get; set; }
-    public bool customHeldPhysics { get; set; }
-    public bool snapHoldNoPhysics { get; set; }
-    public float heldWeight { get; set; }
-    public float heldDrag { get; set; }
-    public float heldFriction { get; set; }
     private bool reloading { get; set; }
     private GOBasePlayerCharacter playerHeldBy;
 
@@ -184,21 +180,35 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     {
         Random rand = new();
         waitingToFire = false;
+        var exclude = new Array<Rid>();
         for (int i = 0; i < bulletsPerShot; i++)
         {
-            // randomly modify weapon spread using temporary ray
+            int penetrations = 0;
+
             var spaceState = GetWorld3D().DirectSpaceState;
             PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
-            ray.From = playerHeldBy.camera.GlobalPosition;
-            ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
-            ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
-            ray.CollideWithBodies = true;
-            var hitResult = spaceState.IntersectRay(ray);
+            Vector3 camPos = playerHeldBy.camera.GlobalTransform.Origin;
+            Vector3 camForward = -playerHeldBy.camera.GlobalTransform.Basis.Z;
+            Vector3 rayOrigin = camPos + camForward * 0.5f;
+            Vector3 rayEnd = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
 
-            //shoot the gun
-            if (hitResult.ContainsKey("collider"))
+
+            while (true)
             {
-                //spawn hit particle
+                var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd);
+                query.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
+                query.CollideWithBodies = true;
+                query.Exclude = exclude;
+
+                var hitResult = spaceState.IntersectRay(query);
+                if (hitResult.Count == 0)
+                    break; // nothing else hit
+
+                var collider = (Node)hitResult["collider"] as CollisionObject3D;
+                Vector3 hitPos = (Vector3)hitResult["position"];
+                Vector3 hitNormal = (Vector3)hitResult["normal"];
+
+                // spawn particles, etc.
                 if (shotHitParticle != null)
                 {
                     var hitParticle = shotHitParticle.Instantiate() as Node3D;
@@ -211,27 +221,31 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     hitParticle.LookAt(direction, up);
                 }
 
-                if (playerHeldBy.authority == Global.steamid)
+                // climb up to IsDamagable
+                Node current = collider;
+                while (current != null && current is not IsDamagable)
+                    current = current.GetParent();
+
+                if (current is IsDamagable target)
                 {
-                    var hit = (Node)hitResult["collider"];
+                    RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                    RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
 
-                    //we have to like climb up the scene tree to look for the actual object, because players have static bodies to represent just their head and body hitbox
-                    //we do this so they are on their own layers for precision hitboxes on layer 3 and phys capsules on layer 5. not opposed to redesigning that eventually
-                    Node current = (Node)hit;
-                    while (current != null && current is not IsDamagable)
-                        current = current.GetParent();
-
-                    if (current is IsDamagable target)
+                    // check if it's a SwarmRobot
+                    if (current is SwarmRobot && penetrations < maxPenetrations)
                     {
-                        Logging.Log($"Hit a IsDamagable object", "BasicGun");
+                        penetrations++;
 
-                        target.TakeDamage(physDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-                        target.TakeStunDamage(stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet);
-
+                        exclude.Add(collider.GetRid()); // skip this collider next time
+                        rayOrigin = hitPos + camForward * 0.05f; // continue just past hit
+                        continue; // loop again
                     }
                 }
+
+                break; // stop if not SwarmRobot or no penetrations left
             }
         }
+        
         currentMagazineAmmo--;
         UpdateUI();
 
@@ -296,21 +310,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         audioStreamPlayer1.Stop();
         audioStreamPlayer2.Stop();
         animationPlayer.Play("RESET");
-    }
-
-    public virtual void OnHold(ulong byID)
-    {
-       // GravityScale = 0.1f;
-        //LinearDamp = 20;
-       // AngularDamp = 5;
-    }
-
-    public virtual void OnRelease(ulong byID)
-    {
-       // LinearVelocity = LinearVelocity.Clamp(0, 5);
-      //  GravityScale = 1;
-       // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
-       // AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
     }
 
     private void UpdateUI(BasicPlayerCharacter basicPlayer = null)
@@ -382,17 +381,4 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         return new Vector3(randomPos.X, randomPos.Y, -1) * 100;
     }
-}
-
-[MessagePackObject]
-public struct BasicGunStateUpdate
-{
-    [Key(0)]
-    public ulong inInventoryOf;
-    [Key(1)]
-    public ulong equippedBySteamID;
-    [Key(2)]
-    public Vector3 position;
-    [Key(3)]
-    public Vector3 rotation;
 }

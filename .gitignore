@@ -5,3 +5,4 @@ build/
 .vs/
 addons/imgui-godot/bin/~libimgui-godot-native.windows.debug.x86_64.dll
 scripts/network/NetworkUtils.cs.uid
+addons/godot-steam-audio/bin/~libgodot-steam-audio.windows.template_debug.x86_64.dll

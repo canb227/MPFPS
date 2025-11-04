@@ -1,8 +1,9 @@
-[gd_scene load_steps=29 format=4 uid="uid://cergi4lpkn7h0"]
+[gd_scene load_steps=30 format=4 uid="uid://cergi4lpkn7h0"]
 
 [ext_resource type="Script" uid="uid://bl0741xk0s7iw" path="res://scripts/game/GameObjects/Interactable/GODeliveryGameMonitor.cs" id="1_4hkts"]
 [ext_resource type="Shader" uid="uid://cyd4agfsye7jb" path="res://assets/materials/8BitShader.gdshader" id="2_4hkts"]
 [ext_resource type="Script" uid="uid://d0mgvdrwiponf" path="res://scripts/game/other/DeliveryVehicle2D.cs" id="2_qh3yw"]
+[ext_resource type="AudioStream" uid="uid://b8us4f56vbk8y" path="res://assets/audio/music/deliverygamesong.wav" id="4_qh3yw"]
 
 [sub_resource type="Animation" id="Animation_qh3yw"]
 length = 0.001
@@ -685,3 +686,11 @@ label_settings = SubResource("LabelSettings_4hkts")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7111533, 0)
+stream = ExtResource("4_qh3yw")
+attenuation_model = 2
+unit_size = 3.0
+autoplay = true
+panning_strength = 0.0

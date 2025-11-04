@@ -60,7 +60,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         base._Ready();
         Logging.Log($"Spawned a new player character with id:{id} and authority: {authority}.", "PlayerCharacter");
         visualRayCast = new();
-        visualRayCast.TargetPosition = new Vector3(0, 0, -8);
+        visualRayCast.TargetPosition = new Vector3(0, 0, -12);
         visualRayCast.CollideWithBodies = true;
         visualRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(visualRayCast);

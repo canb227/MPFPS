@@ -514,7 +514,7 @@ metadata/_custom_type_script = "uid://crewntngyd76c"
 [node name="hordeSpawns" type="Node" parent="meta"]
 
 [node name="1" type="Marker3D" parent="meta/hordeSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.079664, 0, 31.508625)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.079664, 0.72216386, 31.508625)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_kx1m7")
@@ -604,7 +604,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.154438, -0.4036541, -1.71
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, 1.1147871, -1.6779103)
 
 [node name="PackagingMachine" parent="GameObjects/interactables&traps" instance=ExtResource("12_k56je")]
-transform = Transform3D(-0.99973863, 0, -0.022861786, 0, 1, 0, 0.022861786, 0, -0.99973863, -43.652374, -0.39771473, 12.830842)
+transform = Transform3D(-0.99973863, 0.008621119, -0.021173984, 9.313226e-10, 0.9261736, 0.37709734, 0.022861786, 0.37699878, -0.9259316, -43.652374, -0.39771473, 12.830842)
 
 [node name="packingButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
 transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -45.061207, 1.0129337, 11.838503)

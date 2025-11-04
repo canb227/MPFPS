@@ -301,12 +301,17 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         state = SwarmRobotState.NONE;
         Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         //remove ourselves and add a timed ragdoll
-
     }
 
     public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         TakeDamage(damage, byID, soundType, VolumeDb);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
+    {
+        rpc_TakeDamage(damage, byID, soundType, VolumeDb);
     }
 
 }

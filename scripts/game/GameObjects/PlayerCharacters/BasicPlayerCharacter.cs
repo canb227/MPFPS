@@ -50,11 +50,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public bool handcuffed;
     public bool knockedOut;
 
-    //fall damage values
-    // private float fallTime = 0f;
-    // private float safeFallTime = 0.7f;
-    // private float fallingDamagePerSecond = 50f;
-    // private bool wasOnFloor;
+
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
     {
@@ -88,6 +84,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast.CollideWithBodies = true;
         interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
+
+        //we scale ourselves
+        Scale = new(0.75f, 0.75f, 0.75f);
     }
     
     public override bool InitFromData(GameObjectConstructorData data)
@@ -170,7 +169,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerFrameShared(double delta)
     {
-        if (input != null)
+        if (input != null && !knockedOut)
         {
             HandleMouseLook(delta);
         }
@@ -529,7 +528,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if (!IsOnFloor())
         {
-            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta;
+            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
         }
 
         if (input.actions.HasFlag(ActionFlags.Jump))
@@ -541,26 +540,30 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
 
         //fall damage calculation
-        // if (!IsOnFloor() && globalVelocity.Y < 0)
-        // {
-        //     GD.Print("increase falltime" + fallTime);
-        //     fallTime += (float)delta;
-        // }
-        // else if (IsOnFloor())
-        // {
-        //     if (fallTime > safeFallTime)
-        //     {
-        //         GD.Print("Take damage " + fallTime);
-        //         float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
-        //         TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
-        //     }
-        //     fallTime = 0f;
-        // }
+        if (!IsOnFloor() && globalVelocity.Y < 0)
+        {
+            fallTime += (float)delta;
+        }
+        else if (IsOnFloor())
+        {
+            if (fallTime > safeFallTime)
+            {
+                float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
+                TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
+            }
+            fallTime = 0f;
+        }
 
 
 
         return globalVelocity;
     }
+
+    //fall damage values
+    private float fallTime = 0f;
+    private float safeFallTime = 0.7f;
+    private float fallingDamagePerSecond = 150f;
+    private bool wasOnFloor;
 
     private int ScaleDamageToVolume(float damage)
     {
@@ -772,6 +775,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         //only the authority can tell people they took damage
+        Logging.Log("Take Damage: " + Global.steamid + " " + authority, "BasicPlayerCharacter");
         if(Global.steamid == authority)
         {
             RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType,VolumeDb]);

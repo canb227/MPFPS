@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventoryItem
+public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
 {
     [Export]
     public virtual Node3D firstPersonScene { get; set; }
@@ -137,15 +137,6 @@ public abstract partial class GOBaseInventoryItem : GOBaseRigidBody, IsInventory
     public override string GenerateStateString()
     {
         return $"category:{category.ToString()} | equippedBySteamID:{equippedBySteamID} | inInventoryOf {inInventoryOf}";
-    }
-
-    public override byte[] GenerateStateUpdate()
-    {
-        return new byte[0];
-    }
-    public override void ProcessStateUpdate(byte[] update)
-    {
-
     }
 
     /// <summary>

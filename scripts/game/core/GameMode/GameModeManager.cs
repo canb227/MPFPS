@@ -87,6 +87,10 @@ public partial class GameModeManager : Node
             {
                 evacuationTimeLeft -= delta;
             }
+            if(evacuationTimeLeft <= 0 && Global.Lobby.bIsLobbyHost)
+            {
+                EvacuationEnding();
+            }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
@@ -270,6 +274,7 @@ public partial class GameModeManager : Node
             basicPlayers.Clear();
             ghostPlayers.Clear();
             playerStats.Clear();
+            deadPlayers.Clear();
             
 
             minimumItemTypeCount.Clear();
@@ -506,7 +511,7 @@ public partial class GameModeManager : Node
         numFinishedOrders = numFinished;
         if (numFinishedOrders >= ordersNeeded && Global.Lobby.bIsLobbyHost)
         {
-            StartEndOfGameEvacuation();
+            RPCManager.RPC(this, "StartEndOfGameEvacuation", []);
         }
     }
     public int GetNumTraitorsAlive()
