@@ -84,7 +84,7 @@ public partial class Hands : GOBaseInventoryItem
             {
                 var impulse = new Vector3(chargeAmount * 20 * (rb.Mass * 0.5f), chargeAmount * 20 * (rb.Mass * 0.5f), chargeAmount * 20 * (rb.Mass * 0.5f));
                 var vectoredImpulse = (CurrentHoldPosition.GlobalPosition - HoldPosition.GlobalPosition) * -impulse;
-                RPCManager.RPC(this, "ReleaseHeld", [rb.GlobalPosition, rb.GlobalRotation, vectoredImpulse]);
+                RPCManager.RPCID(id, "ReleaseHeld", [rb.GlobalPosition, rb.GlobalRotation, vectoredImpulse]);
             }
             charging = false;
             chargeAmount = 0;
@@ -105,7 +105,7 @@ public partial class Hands : GOBaseInventoryItem
                             {
                                 if (ih.currentlyHeldBy == 0)
                                 {
-                                    RPCManager.RPC(this, "Hold", [obj.id]);
+                                    RPCManager.RPCID(id, "Hold", [obj.id]);
                                 }
                                 else
                                 {
