@@ -110,9 +110,11 @@ public partial class SwarmManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void SpawnPlayerRobot(ulong steamID)
     {
+        Logging.Log($"Spawn Player Robot On Local Request for {steamID} we are {Global.steamid}", "SwarmManager");
         if(steamID == Global.steamid)
         {
-                  float radius = 5f;
+            Logging.Log("Spawn Player Robot On Local Machine", "SwarmManager");
+            float radius = 5f;
             float angle = (float)(rand.NextDouble() * 2 * Math.PI);
             float r = radius * Mathf.Sqrt((float)rand.NextDouble()); 
             Vector3 offset = new Vector3(
