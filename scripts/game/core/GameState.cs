@@ -1,12 +1,10 @@
 using Godot;
 using ImGuiNET;
 using MessagePack;
-using MessagePack.Resolvers;
+using Steamworks;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using static Lobby;
 
 [MessagePackObject]
 public struct GameObjectConstructorData
@@ -129,6 +127,7 @@ public partial class GameState : Node3D
         gmm.Name = "Game Mode Manager";
         AddChild(gmm);
         gameModeManager = gmm;
+
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -611,5 +610,20 @@ public partial class GameState : Node3D
         }
         return null;
     }
-}
 
+    private static float VoiceMixRate = 44100;
+
+    internal void ProcessSteamVoiceBytes(byte[] payload, ulong sender)
+    {
+        if (PlayerIDToControlledCharacter.TryGetValue((ulong)sender, out ulong charID))
+        {
+            if (GameObjects.TryGetValue(charID, out GameObject obj))
+            {
+                if (obj is GOBasePlayerCharacter pc)
+                {
+                    pc.ProcessVoiceData(payload);
+                }
+            }
+        }
+    }
+}

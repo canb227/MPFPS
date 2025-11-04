@@ -1,10 +1,13 @@
 using Godot;
 using Godot.Collections;
 using ImGuiNET;
+using Steamworks;
 using System;
 
 public partial class PlayerInputHandler : Node
 {
+
+    public bool VoiceChatAlwaysOn = true;
 
 
 
@@ -13,6 +16,11 @@ public partial class PlayerInputHandler : Node
         Logging.Log($"Starting local input gathering", "LocalInput");
         Global.gameState.PlayerInputs[Global.steamid] = new PlayerInputData();
         Global.gameState.PlayerInputs[Global.steamid].playerID = Global.steamid;
+        if (VoiceChatAlwaysOn)
+        {
+            SteamUser.StartVoiceRecording();
+        }
+
     }
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -49,8 +57,29 @@ public partial class PlayerInputHandler : Node
         }
     }
 
+
+
     public override void _Process(double delta)
     {
+        if (SteamUser.GetAvailableVoice(out uint numBytes) == EVoiceResult.k_EVoiceResultOK)
+        {
+            byte[] voiceBytes = new byte[numBytes];
+            var result = SteamUser.GetVoice(true, voiceBytes, numBytes, out uint bytesWritten);
+
+            if (bytesWritten != numBytes)
+            {
+                Logging.Warn($"Unexpected number of bytes in voice buffer array: (wrote {bytesWritten} but expected {numBytes})", "SteamVoice");
+            }
+            if (result!= EVoiceResult.k_EVoiceResultOK)
+            {
+                Logging.Warn($"Error collecting voice data: {result.ToString()}", "SteamVoice");
+                return;
+            }
+            Logging.Log($"Sending voice data of size: {voiceBytes.Length}", "SteamVoice");
+            Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
+        }
+       
+        
         if (Global.DrawDebugScreens)
         {
             //ImGui.Begin("input Debug");
@@ -63,5 +92,11 @@ public partial class PlayerInputHandler : Node
             //ImGui.End();
         }
     }
+
 }
 
+public struct SteamVoiceMessage
+{
+    public byte[] compressedVoiceBuffer;
+    public int numBytes;
+}

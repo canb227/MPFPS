@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://ch1u881og5rwt"]
+[gd_scene load_steps=7 format=3 uid="uid://ch1u881og5rwt"]
 
 [ext_resource type="Script" uid="uid://dlqiqow6onvpu" path="res://scripts/game/GameObjects/PlayerCharacters/Ghost.cs" id="1_xy2rk"]
 [ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="2_5i5vb"]
@@ -10,12 +10,16 @@ albedo_texture = ExtResource("2_5i5vb")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_5mfnq"]
 
-[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("thirdPersonModel", "camera")]
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_xy2rk"]
+buffer_length = 0.1
+
+[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("thirdPersonModel", "camera", "voicePlayer")]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_xy2rk")
 thirdPersonModel = NodePath("mesh")
 camera = NodePath("Camera3D")
+voicePlayer = NodePath("thirdPersonModel/SteamAudioVoice")
 type = 2
 metadata/_custom_type_script = "uid://dlqiqow6onvpu"
 
@@ -34,3 +38,12 @@ shape = SubResource("SphereShape3D_5mfnq")
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 spot_range = 6.646452
 spot_angle = 28.109053
+
+[node name="firstPersonModel" type="Node3D" parent="."]
+
+[node name="thirdPersonModel" type="Node3D" parent="."]
+
+[node name="SteamAudioVoice" type="SteamAudioPlayer" parent="thirdPersonModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7009541, -0.2089411)
+stream = SubResource("AudioStreamGenerator_xy2rk")
+panning_strength = 0.0
