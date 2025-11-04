@@ -190,6 +190,7 @@ reloadTimeSeconds = 3.0
 bulletsPerShot = 10
 spread = 0.1
 stunDamagePerShot = 13.0
+maxPenetrations = 1
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

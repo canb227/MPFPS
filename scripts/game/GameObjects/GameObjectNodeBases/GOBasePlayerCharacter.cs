@@ -43,13 +43,24 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public abstract void Pickup(IsInventoryItem item);
     public abstract void Equip(InventoryGroupCategory category, int index = 0);
 
-    [Export]
-    private AudioStreamPlayer3D voicePlayer;
 
 
-    private AudioStreamGeneratorPlayback playback;
+    [Export] private AudioStreamGeneratorPlayback playback;
+    private AudioStreamGenerator generator;
 
-    private List<AudioStreamWav> voiceDataQueue = new();
+
+
+    private const int MaxVoiceBufferSize = 20000;
+    private readonly List<AudioStreamWav> voiceDataQueue = new();
+    private readonly Timer playbackTimer;
+    [Export] private AudioStreamPlayer3D voicePlayer;
+    
+    public GOBasePlayerCharacter()
+    {
+        
+    }
+
+
     public virtual void Reset()
     {
 
@@ -58,25 +69,27 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public override void _Ready()
     {
         base._Ready();
-        Logging.Log($"Spawned a new player character with id:{id} and authority: {authority}.", "PlayerCharacter");
+        Logging.Log($"Spawned a new player character with id:{id} and authority: {authority}. Help", "PlayerCharacter");
         visualRayCast = new();
         visualRayCast.TargetPosition = new Vector3(0, 0, -20);
         visualRayCast.CollideWithBodies = true;
         visualRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(visualRayCast);
-        
+
         gunRayCast = new();
         gunRayCast.TargetPosition = new Vector3(0, 0, -100);
         gunRayCast.CollideWithBodies = true;
         gunRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(gunRayCast);
 
-        //voicePlayer.Play();
-        //if (voicePlayer.Stream is AudioStreamGenerator generator)
-        //{
-        //    playback = (AudioStreamGeneratorPlayback)voicePlayer.GetStreamPlayback();
-        //}
-
+        generator = new AudioStreamGenerator
+        {
+            MixRate = (int)SteamUser.GetVoiceOptimalSampleRate(),
+            BufferLength = 0.5f // Half a second buffer
+        };
+        voicePlayer.Stream = generator;
+        voicePlayer.Play();
+        playback = voicePlayer.GetStreamPlayback() as AudioStreamGeneratorPlayback;
 
 
         if (authority == Global.steamid)
@@ -202,42 +215,30 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 
 
 
-    public virtual void ProcessVoiceData(byte[] compressedVoiceData)
+    public void ProcessVoiceData(byte[] compressedVoiceData)
     {
         byte[] decompressedBytes = new byte[20000];
-        var result = SteamUser.DecompressVoice(compressedVoiceData, (uint)compressedVoiceData.Length, decompressedBytes, 20000, out uint bytesWritten, 44100);
-        Logging.Log($"got a packet of {bytesWritten} voice bytes! Decompression result: {result.ToString()}", "SteamVoice");
-        Array.Resize<byte>(ref decompressedBytes, (int)bytesWritten);
-        //AudioStreamWav implements the bit smushing nonsense in C++
-        //and it works!
-        //Just doing the below successfully decode the byte stream into correct audio data
-        //But its choppy - I added a queue to make sure each packet is played sequentially: it makes it even choppier!
-        AudioStreamWav audioStreamWav = new();
-        audioStreamWav = new();
-        audioStreamWav.Format = AudioStreamWav.FormatEnum.Format16Bits;
-        audioStreamWav.Data = decompressedBytes;
-        
-        //voicePlayer.Stream = audioStreamWav;
-        //voicePlayer.Play();
+        var result = SteamUser.DecompressVoice(
+            compressedVoiceData,
+            (uint)compressedVoiceData.Length,
+            decompressedBytes,
+            (uint)decompressedBytes.Length,
+            out uint bytesWritten,
+            (uint)generator.MixRate
+        );
 
-        voiceDataQueue.Add(audioStreamWav);
+        if (result != EVoiceResult.k_EVoiceResultOK || bytesWritten == 0)
+            return;
 
-
-        //In theory something like the below is the "correct" way of doing this
-        //But the amplitude values it produces are garbage - it doesnt even make any sounds at all.
-        //if (voicePlayer.Stream is AudioStreamGenerator generator)
-        //{
-        //    for (int i = 0; i < decompressedBytes.Length; i += 2)
-        //    {
-        //        float amplitude = BitConverter.ToInt16(decompressedBytes, i) / 32768.0f;
-        //        playback.PushFrame(new Vector2(amplitude, amplitude));
-        //    }
-
-        //    voicePlayer.Play();
-
-        //}
+        // Convert byte[] to float samples (16-bit PCM mono)
+        for (int i = 0; i < bytesWritten; i += 2)
+        {
+            short sample = BitConverter.ToInt16(decompressedBytes, i);
+            float normalized = sample / 32768f;
+            playback.PushFrame(new(normalized, normalized));
+        }
     }
-
+    
     public virtual void HandleVisualRayCast(double delta)
     {
         if (visualRayCast.GetCollider() is CollisionObject3D collider)
@@ -356,14 +357,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     
     }
 
-    public override void PerTickShared(double delta)
+     public override void PerTickShared(double delta)
     {
-        if (voicePlayer.Playing == false && voiceDataQueue.Count > 0)
-        {
-            voicePlayer.Stream = voiceDataQueue[0];
-            voicePlayer.Play();
-            voiceDataQueue.RemoveAt(0);
-        }
     }
 
     public override void PerFrameShared(double delta)
