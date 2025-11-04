@@ -90,6 +90,7 @@ public partial class GameModeManager : Node
             if(evacuationTimeLeft <= 0 && Global.Lobby.bIsLobbyHost)
             {
                 EvacuationEnding();
+                evacuationTimeLeft = 99999;
             }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {
@@ -219,7 +220,6 @@ public partial class GameModeManager : Node
         evacuationTimeLeft = 95;
         EvacuationStarted?.Invoke();
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
-        evacuationTimeLeft = 95;
     }
 
 
@@ -288,6 +288,7 @@ public partial class GameModeManager : Node
         roundNumber++;
         roundStarted = true;
         remainingRoundTime = options.roundTime;
+        evacuationTimeLeft = 9999999;
         //clear the scoreboard , role assignment comes later
         if (Global.Lobby.bIsLobbyHost)
         {
