@@ -563,7 +563,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     //fall damage values
     private float fallTime = 0f;
-    private float safeFallTime = 0.55f;
+    private float safeFallTime = 0.7f;
     private float fallingDamagePerSecond = 150f;
     private bool wasOnFloor;
 

@@ -506,7 +506,7 @@ public partial class GameModeManager : Node
         numFinishedOrders = numFinished;
         if (numFinishedOrders >= ordersNeeded && Global.Lobby.bIsLobbyHost)
         {
-            StartEndOfGameEvacuation();
+            RPCManager.RPC(this, "StartEndOfGameEvacuation", []);
         }
     }
     public int GetNumTraitorsAlive()
