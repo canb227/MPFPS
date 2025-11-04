@@ -11,8 +11,8 @@ public partial class SwarmManager : Node
     public int robotSwarmMinSize;
     public int robotSwarmSize;
     public int robotSwarmMaxSize;
-    public int swarmCooldownMax = 300;
-    public int swarmCooldownMin = 240;
+    public int swarmCooldownMax;
+    public int swarmCooldownMin;
     public double currentSwarmCooldown = 999;
     Random rand = new Random();
     public bool announcedSwarm = false;
@@ -26,9 +26,12 @@ public partial class SwarmManager : Node
 
     public void PrepareRound(int numPlayers)
     {
+        swarmCooldownMax = 300;
+        swarmCooldownMin = 240;
         robotSwarmMaxSize = (int) (numPlayers * 10 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
         robotSwarmMinSize = (int) (numPlayers * 7 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
         currentSwarmCooldown = 5; //TODO should be like 120
+        evacuationStarted = false;
     }
 
     public void EvacuationStarted()
