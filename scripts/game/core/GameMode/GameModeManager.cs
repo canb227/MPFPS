@@ -270,6 +270,7 @@ public partial class GameModeManager : Node
             basicPlayers.Clear();
             ghostPlayers.Clear();
             playerStats.Clear();
+            deadPlayers.Clear();
             
 
             minimumItemTypeCount.Clear();

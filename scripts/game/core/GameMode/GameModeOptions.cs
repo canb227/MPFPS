@@ -29,5 +29,7 @@ public class GameModeOptions
     [Key(14)] public float packagePerPlayer = 0.5f; //add logic
     [Key(15)] public float timeAddedPerPackage = 60f; //add logic
     [Key(16)] public double roundTime = 900;
+    [Key(17)] public float hordeSizeMultiplier = 1.0f;
+    [Key(18)] public float endgameHordeSizeMultiplier = 1.0f;
 }
 

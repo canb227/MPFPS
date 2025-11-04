@@ -514,7 +514,7 @@ metadata/_custom_type_script = "uid://crewntngyd76c"
 [node name="hordeSpawns" type="Node" parent="meta"]
 
 [node name="1" type="Marker3D" parent="meta/hordeSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.079664, 0, 31.508625)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.079664, 0.72216386, 31.508625)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_kx1m7")

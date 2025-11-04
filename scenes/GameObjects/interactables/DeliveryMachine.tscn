@@ -688,7 +688,9 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7111533, 0)
 stream = ExtResource("4_qh3yw")
 attenuation_model = 2
 unit_size = 3.0
+autoplay = true
 panning_strength = 0.0
