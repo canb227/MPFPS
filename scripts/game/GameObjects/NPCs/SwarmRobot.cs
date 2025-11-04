@@ -308,7 +308,8 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     {
         TakeDamage(damage, byID, soundType, VolumeDb);
     }
-
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         rpc_TakeDamage(damage, byID, soundType, VolumeDb);

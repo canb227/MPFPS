@@ -170,7 +170,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerFrameShared(double delta)
     {
-        if (input != null)
+        if (input != null && !knockedOut)
         {
             HandleMouseLook(delta);
         }

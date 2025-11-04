@@ -183,7 +183,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             // randomly modify weapon spread using temporary ray
             var spaceState = GetWorld3D().DirectSpaceState;
             PhysicsRayQueryParameters3D ray = new PhysicsRayQueryParameters3D();
-            ray.From = playerHeldBy.camera.GlobalPosition;
+            Vector3 camPos = playerHeldBy.camera.GlobalTransform.Origin;
+            Vector3 camForward = -playerHeldBy.camera.GlobalTransform.Basis.Z;
+            Vector3 rayOrigin = camPos + camForward * 0.5f;
+            ray.From = rayOrigin;
             ray.To = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
             ray.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
             ray.CollideWithBodies = true;
