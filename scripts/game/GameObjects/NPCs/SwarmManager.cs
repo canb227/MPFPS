@@ -33,6 +33,7 @@ public partial class SwarmManager : Node
 
     public void EvacuationStarted()
     {
+        Logging.Log("Start Evacuation Swarms", "SwarmManager");
         swarmCooldownMin = 5;
         swarmCooldownMax = 15;
         robotSwarmMaxSize = Mathf.CeilToInt(robotSwarmMaxSize / 4 * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);

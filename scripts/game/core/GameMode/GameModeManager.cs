@@ -87,6 +87,10 @@ public partial class GameModeManager : Node
             {
                 evacuationTimeLeft -= delta;
             }
+            if(evacuationTimeLeft <= 0 && Global.Lobby.bIsLobbyHost)
+            {
+                EvacuationEnding();
+            }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {
                 RPCManager.RPC(this, "TraitorsWin", []);
