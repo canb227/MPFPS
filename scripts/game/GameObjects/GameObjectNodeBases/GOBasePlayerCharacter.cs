@@ -207,7 +207,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         byte[] decompressedBytes = new byte[20000];
         var result = SteamUser.DecompressVoice(compressedVoiceData, (uint)compressedVoiceData.Length, decompressedBytes, 20000, out uint bytesWritten, 44100);
         Logging.Log($"got a packet of {bytesWritten} voice bytes! Decompression result: {result.ToString()}", "SteamVoice");
-
+        Array.Resize<byte>(ref decompressedBytes, (int)bytesWritten);
         //AudioStreamWav implements the bit smushing nonsense in C++
         //and it works!
         //Just doing the below successfully decode the byte stream into correct audio data
@@ -217,6 +217,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         audioStreamWav.Format = AudioStreamWav.FormatEnum.Format16Bits;
         audioStreamWav.Data = decompressedBytes;
         
+        //voicePlayer.Stream = audioStreamWav;
+        //voicePlayer.Play();
+
         voiceDataQueue.Add(audioStreamWav);
 
 
@@ -354,8 +357,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     }
 
     public override void PerTickShared(double delta)
-    { 
-        if (voicePlayer.Playing==false && voiceDataQueue.Count>0)
+    {
+        if (voicePlayer.Playing == false && voiceDataQueue.Count > 0)
         {
             voicePlayer.Stream = voiceDataQueue[0];
             voicePlayer.Play();

@@ -65,7 +65,7 @@ public partial class PlayerInputHandler : Node
         {
             byte[] voiceBytes = new byte[numBytes];
             var result = SteamUser.GetVoice(true, voiceBytes, numBytes, out uint bytesWritten);
-            //Logging.Log($"VoiceData | {numBytes} numBytes | {bytesWritten} bytesWritten | result: {result.ToString()}", "SteamVoice");
+
             if (bytesWritten != numBytes)
             {
                 Logging.Warn($"Unexpected number of bytes in voice buffer array: (wrote {bytesWritten} but expected {numBytes})", "SteamVoice");
@@ -75,7 +75,8 @@ public partial class PlayerInputHandler : Node
                 Logging.Warn($"Error collecting voice data: {result.ToString()}", "SteamVoice");
                 return;
             }
-            Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_Unreliable);
+            Logging.Log($"Sending voice data of size: {voiceBytes.Length}", "SteamVoice");
+            Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
         }
        
         
@@ -91,5 +92,11 @@ public partial class PlayerInputHandler : Node
             //ImGui.End();
         }
     }
+
 }
 
+public struct SteamVoiceMessage
+{
+    public byte[] compressedVoiceBuffer;
+    public int numBytes;
+}

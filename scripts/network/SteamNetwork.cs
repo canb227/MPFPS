@@ -12,6 +12,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using static Godot.HttpRequest;
 
 
 public enum Channel
@@ -334,6 +335,7 @@ public class SteamNetwork
                 RPCManager.HandleRPCBytes(payload, sender);
                 break;
             case Channel.SteamVoice:
+                Logging.Log($"Got voice data of size: {payload.Length}", "SteamVoice");
                 Global.gameState.ProcessSteamVoiceBytes(payload, sender);
                 break;
             default:
