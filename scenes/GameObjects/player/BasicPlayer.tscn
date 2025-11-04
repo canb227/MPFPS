@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=4 uid="uid://1tfhv6c0xvan"]
+[gd_scene load_steps=72 format=4 uid="uid://1tfhv6c0xvan"]
 
 [ext_resource type="Script" uid="uid://dlgw61h0fjdvg" path="res://scripts/game/GameObjects/PlayerCharacters/BasicPlayerCharacter.cs" id="1_dt3qt"]
 [ext_resource type="AudioStream" uid="uid://dn5rx0u0gk0uf" path="res://assets/audio/character/footsteps/concrete1.wav" id="3_bcbfx"]
@@ -7863,51 +7863,51 @@ input_2/auto_advance = false
 input_2/break_loop_at_end = false
 input_2/reset = true
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nhpn6"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pu85p"]
 animation = &"Walk"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rj67t"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6pekc"]
 animation = &"Walk_Left"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oc7gj"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nhpn6"]
 animation = &"Walk__Right"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_evul3"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rj67t"]
 animation = &"Walk_Backward"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wuvde"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_oc7gj"]
 animation = &"Idle"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4iffa"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_evul3"]
 animation = &"Run"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bgie3"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wuvde"]
 animation = &"Run_Right"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rmxgt"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4iffa"]
 animation = &"Run_Backward"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ns8pa"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bgie3"]
 animation = &"Run_Left"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_kvkvi"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_nhpn6")
+blend_point_0/node = SubResource("AnimationNodeAnimation_pu85p")
 blend_point_0/pos = Vector2(0, 0.5)
-blend_point_1/node = SubResource("AnimationNodeAnimation_rj67t")
+blend_point_1/node = SubResource("AnimationNodeAnimation_6pekc")
 blend_point_1/pos = Vector2(-0.5, 0)
-blend_point_2/node = SubResource("AnimationNodeAnimation_oc7gj")
+blend_point_2/node = SubResource("AnimationNodeAnimation_nhpn6")
 blend_point_2/pos = Vector2(0.5, 0)
-blend_point_3/node = SubResource("AnimationNodeAnimation_evul3")
+blend_point_3/node = SubResource("AnimationNodeAnimation_rj67t")
 blend_point_3/pos = Vector2(0, -0.5)
-blend_point_4/node = SubResource("AnimationNodeAnimation_wuvde")
+blend_point_4/node = SubResource("AnimationNodeAnimation_oc7gj")
 blend_point_4/pos = Vector2(0, 0)
-blend_point_5/node = SubResource("AnimationNodeAnimation_4iffa")
+blend_point_5/node = SubResource("AnimationNodeAnimation_evul3")
 blend_point_5/pos = Vector2(0, 1)
-blend_point_6/node = SubResource("AnimationNodeAnimation_bgie3")
+blend_point_6/node = SubResource("AnimationNodeAnimation_wuvde")
 blend_point_6/pos = Vector2(1, 0)
-blend_point_7/node = SubResource("AnimationNodeAnimation_rmxgt")
+blend_point_7/node = SubResource("AnimationNodeAnimation_4iffa")
 blend_point_7/pos = Vector2(0, -1)
-blend_point_8/node = SubResource("AnimationNodeAnimation_ns8pa")
+blend_point_8/node = SubResource("AnimationNodeAnimation_bgie3")
 blend_point_8/pos = Vector2(-1, 0)
 sync = true
 
@@ -7935,25 +7935,28 @@ nodes/AirAnimation/node = SubResource("AnimationNodeAnimation_n3yc4")
 nodes/AirAnimation/position = Vector2(260, 60)
 node_connections = [&"output", 0, &"UpperBodyBlend2", &"JumpOneShot", 0, &"GroundedTransition", &"JumpOneShot", 1, &"JumpAnimation", &"UpperBodyBlend2", 0, &"JumpOneShot", &"UpperBodyBlend2", 1, &"UpperBodyTransition", &"UpperBodyTransition", 0, &"Animation 2", &"UpperBodyTransition", 1, &"Animation 3", &"UpperBodyTransition", 2, &"Animation", &"GroundedTransition", 0, &"WalkRunBlend", &"GroundedTransition", 1, &"AirAnimation"]
 
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_pu85p"]
+buffer_length = 0.1
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oc7gj"]
 height = 2.4057617
 
-[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "movementSFX", "animationTree", "skeleton3D", "collider", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint") groups=["players"]]
+[node name="BasicPlayer" type="CharacterBody3D" node_paths=PackedStringArray("ourVoiceSpeaker", "characterSFX", "movementSFX", "animationTree", "skeleton3D", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint", "voicePlayer") groups=["players"]]
 collision_layer = 16
 collision_mask = 19
 platform_on_leave = 2
 script = ExtResource("1_dt3qt")
-ourVoiceSpeaker = NodePath("firstPersonModel/SteamAudioVoice")
+ourVoiceSpeaker = NodePath("thirdPersonModel/SteamAudioVoice")
 characterSFX = NodePath("SteamAudioCharacterSFX")
 movementSFX = NodePath("SteamAudioMovementSFX")
 animationTree = NodePath("thirdPersonModel/CharacterModel/AnimationTree")
 skeleton3D = NodePath("thirdPersonModel/CharacterModel/Node/Skeleton3D")
-collider = NodePath("collider")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("thirdPersonModel")
 camera = NodePath("firstPersonModel/Camera3D")
 firstPersonEquipmentAttachmentPoint = NodePath("firstPersonModel/Camera3D/attachment")
 thirdPersonEquipmentAttachmentPoint = NodePath("thirdPersonModel/attachment")
+voicePlayer = NodePath("thirdPersonModel/SteamAudioVoice")
 
 [node name="thirdPersonModel" type="Node3D" parent="."]
 
@@ -8204,7 +8207,7 @@ bones/12/bone_meta/extras = {
 "parentMatrixWorld": {
 "elements": [0.92995466196674, -0.1726658883169081, -0.3246087102613077, 0.0, 0.3559514107755235, 0.6439577268611445, 0.6772126876672575, 0.0, 0.09210275203646778, -0.7453220258266419, 0.6603121585444638, 0.0, 1.521423e-09, 14.994442195368867, 1.4415320492844332e-08, 1.0]
 },
-"preRotation": [-4.709757464749423, -5.8966579226710164e-08, 5.846673269123587],
+"preRotation": [-4.709757464749423, -5.896657922671016e-08, 5.846673269123587],
 "scale": [1.0, 0.9999999999999998, 0.9999999999999996],
 "translation": [1.3628812e-08, 25.743408555041157, -3.6196183827996726e-08]
 }
@@ -8528,7 +8531,7 @@ bones/29/bone_meta/extras = {
 "elements": [0.998226542671662, 0.05913419391475252, 0.00684957220669429, 0.0, -0.05867571100735026, 0.9967919909675946, -0.05443241427034252, 0.0, -0.0100464156366432, 0.05393397719034559, 0.9984939637560726, 0.0, 0.0, 13.968683304006008, -1.9749849755612562e-08, 1.0]
 },
 "preRotation": [-76.38229455494371, -88.59072034729913, -179.94823537121644],
-"rotation": [1.0985959e-14, -1.5902773e-15, 1.9878467e-16],
+"rotation": [1.0985959e-14, -1.5902773e-15, 1.9878467000000002e-16],
 "scale": [1.0000000000000002, 1.0, 1.0],
 "translation": [-7.3038254, 13.941333598632012, -0.1793753278630046]
 }
@@ -9525,6 +9528,11 @@ parameters/GroundedTransition/current_state = "grounded"
 parameters/GroundedTransition/transition_request = ""
 parameters/GroundedTransition/current_index = 0
 
+[node name="SteamAudioVoice" type="SteamAudioPlayer" parent="thirdPersonModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7009541, -0.2089411)
+stream = SubResource("AudioStreamGenerator_pu85p")
+panning_strength = 0.0
+
 [node name="collider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45288086, 0)
 shape = SubResource("CapsuleShape3D_oc7gj")
@@ -9540,10 +9548,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.26296115, -0.077233076)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27011144, -0.17565012)
 
 [node name="SteamAudioListener" type="SteamAudioListener" parent="firstPersonModel/Camera3D"]
-
-[node name="SteamAudioVoice" type="SteamAudioPlayer" parent="firstPersonModel"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0022827387, -0.1726473)
-panning_strength = 0.0
 
 [node name="SteamAudioCharacterSFX" type="SteamAudioPlayer" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0759262, -0.021221459)

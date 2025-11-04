@@ -24,6 +24,7 @@ public enum Channel
     PlayerData = 5,
     NetCommands = 6,
     RPC = 7,
+    SteamVoice = 8,
 }
 /// <summary>
 /// Handles low level networking functions - implemented using SteamMessages
@@ -331,6 +332,9 @@ public class SteamNetwork
                 break;
             case Channel.RPC:
                 RPCManager.HandleRPCBytes(payload, sender);
+                break;
+            case Channel.SteamVoice:
+                Global.gameState.ProcessSteamVoiceBytes(payload, sender);
                 break;
             default:
                 SteamNetworkingMessageReceivedEvent?.Invoke(channel, payload, sender);
