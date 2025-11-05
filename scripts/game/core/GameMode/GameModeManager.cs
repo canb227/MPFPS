@@ -275,13 +275,18 @@ public partial class GameModeManager : Node
             ghostPlayers.Clear();
             playerStats.Clear();
             deadPlayers.Clear();
+            packageOrders.Clear();
             
 
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
-            
+
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
+            if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)
+            {
+                RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
+            }
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
         }
@@ -308,7 +313,6 @@ public partial class GameModeManager : Node
 
     public void GenerateOrders()
     {
-        packageOrders.Clear();
         if (options.usePackageOverride)
         {
             ordersNeeded = options.numPackages;
@@ -498,9 +502,8 @@ public partial class GameModeManager : Node
         }
         if (id == Global.steamid)
         {
-            Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
+            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
         }
-        //JEFFTODO Set the players mesh here so they match their role.
     }
 
     public int GetNumFinishedOrders()

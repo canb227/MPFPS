@@ -607,12 +607,12 @@ public partial class GameState : Node3D
             }
             else
             {
-                Logging.Error($"The requested gameObject ID {charID} was not found in the GameObject dictionary!", "GameState");
+                Logging.Warn($"The requested gameObject ID {charID} was not found in the GameObject dictionary!", "GameState");
             }
         }
         else
         {
-            Logging.Error($"The requested playerID {playerID} was not found in the PlayerIDToCurrentlyControlledCharacter dictionary!", "GameState");
+            Logging.Warn($"The requested playerID {playerID} was not found in the PlayerIDToCurrentlyControlledCharacter dictionary!", "GameState");
         }
         return null;
     }

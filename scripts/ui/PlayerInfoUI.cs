@@ -20,7 +20,7 @@ public partial class PlayerInfoUI : MarginContainer
     [Export] public Label AmmoLabel;
     [Export] public Label StoredAmmoLabel;
 
-    public void UpdateRoleUI(Team newTeam)
+    public void UpdateTeamUI(Team newTeam)
     {
         StyleBoxFlat styleBox = TeamPanel.GetThemeStylebox("panel") as StyleBoxFlat;
         if (newTeam == Team.Innocent)
@@ -44,6 +44,7 @@ public partial class PlayerInfoUI : MarginContainer
             TeamLabel.Text = "...";
         }
     }
+    
     public void UpdateTimeLeftUI(string timeLeftString)
     {
         TimeLeftLabel.Text = timeLeftString;

@@ -36,14 +36,9 @@ public partial class PlayerUIManager : Control
     }
 
     //player info functions
-    public void UpdateRoleUI(Team newTeam)
+    public void UpdateTeamUI(Team newTeam)
     {
-        PlayerInfoUI.UpdateRoleUI(newTeam);
-    }
-
-    public void UpdateTeamUI(Role newRole)
-    {
-        //PlayerInfoUI.Update
+        PlayerInfoUI.UpdateTeamUI(newTeam);
     }
 
 

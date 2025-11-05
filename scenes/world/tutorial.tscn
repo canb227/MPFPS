@@ -595,7 +595,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.197498, -0.4036522, -2.55
 transform = Transform3D(-0.99973863, 0.0041128616, -0.022488791, 9.313226e-10, 0.9836847, 0.1799011, 0.022861786, 0.17985411, -0.98342764, -52.67817, -0.59495425, 18.173458)
 
 [node name="packingButton" parent="GameObjects/interactables&traps" instance=ExtResource("5_uqky3")]
-transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -49.59778, 0.5824002, 17.105576)
+transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -53.97272, 0.52753425, 17.776796)
 triggers = Array[Object]([SubResource("Resource_k56je")])
 
 [node name="GOShippingTube" parent="GameObjects/interactables&traps" instance=ExtResource("14_y8xvp")]
@@ -1194,54 +1194,54 @@ autowrap_mode = 2
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -34.9081, 5.224253, 14.158386)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -41.373466, 5.224253, 14.158386)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -51.317867, 5.224253, 17.198326)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D4" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -59.310013, 5.2242517, -1.0824776)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D5" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -48.70374, 5.2242517, -1.0824776)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D6" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -33.134388, 5.296918, -1.0824776)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D7" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.253483, 5.296918, -1.0824776)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
 
 [node name="SpotLight3D8" type="SpotLight3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.671436, 5.296919, 11.431655)
 light_energy = 2.483
 spot_range = 29.83
-spot_angle = 70.41
+spot_angle = 57.9
 spot_angle_attenuation = 2.0705302

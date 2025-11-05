@@ -923,7 +923,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         base.TakeControl(playerID);
         Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
         Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
-        Global.ui.inGameUI.PlayerUIManager.UpdateRoleUI(team);
+        Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
     }
 
     public void Handcuff(GOHandcuffs handcuffs)
