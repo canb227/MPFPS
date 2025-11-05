@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=43 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
@@ -142,6 +142,12 @@ data = PackedVector3Array(-55.845413, -8.815918, 14.01396, -55.845413, -8.815918
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_k56je"]
 data = PackedVector3Array(-75.17536, -8.815918, 39.468647, -75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, -8.815918, -39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, -75.17536, 8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, -8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, 8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647)
+
+[sub_resource type="BoxMesh" id="BoxMesh_iikxh"]
+size = Vector3(0.62, 2.12, 4.55)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_213ts"]
+size = Vector3(0.60583496, 2.079239, 4.520569)
 
 [node name="DevLevel" type="Node3D"]
 
@@ -1066,3 +1072,41 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.212933, -17.04317, -1.652
 use_collision = true
 size = Vector3(2.2907176, 1.9477539, 3.389182)
 material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.5869498, 20.092564)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/StaticBody3D"]
+mesh = SubResource("BoxMesh_iikxh")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
+shape = SubResource("BoxShape3D_213ts")
+
+[node name="SteamAudioGeometry" type="SteamAudioGeometry" parent="statics/StaticBody3D/CollisionShape3D"]
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.5869498, 27.26481)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/StaticBody3D2"]
+mesh = SubResource("BoxMesh_iikxh")
+skeleton = NodePath("../..")
+
+[node name="SteamAudioGeometry" type="SteamAudioGeometry" parent="statics/StaticBody3D2/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
+shape = SubResource("BoxShape3D_213ts")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.5869498, 14.039999)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/StaticBody3D3"]
+mesh = SubResource("BoxMesh_iikxh")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/StaticBody3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
+shape = SubResource("BoxShape3D_213ts")

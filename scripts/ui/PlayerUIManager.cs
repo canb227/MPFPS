@@ -41,6 +41,11 @@ public partial class PlayerUIManager : Control
         PlayerInfoUI.UpdateRoleUI(newTeam);
     }
 
+    public void UpdateTeamUI(Role newRole)
+    {
+        //PlayerInfoUI.Update
+    }
+
 
     public void UpdateStunUI(int newStunBarRemaning, int maxStunBar)
     {
