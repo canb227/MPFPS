@@ -22,9 +22,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [Export] public AudioStreamPlayer3D characterSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
     [Export] public AnimationTree animationTree;
-    [Export] public Skeleton3D skeleton3D;
-    [Export] public SkeletonModifier3D skeletonModifier;
     [Export] public CollisionShape3D collider;
+    [Export] public ColorRect hurtColorRect;
+    private ShaderMaterial hurtShaderMaterial;
+
+
 
     public CharacterSoundManager characterSoundManager = new();
     public int roleCredits { get; set; }
@@ -88,6 +90,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         //we scale ourselves
         Scale = new(0.75f, 0.75f, 0.75f);
+
+        hurtShaderMaterial = hurtColorRect.Material as ShaderMaterial;
     }
     
     public override bool InitFromData(GameObjectConstructorData data)
@@ -639,7 +643,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
-        if (input.actions.HasFlag(ActionFlags.Sprint))
+        if (input != null && input.actions.HasFlag(ActionFlags.Sprint))
         {
             finalSpeed = baseSpeed * 2;
         }
@@ -728,6 +732,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             ImGui.Text("InputLookVector: " + input.LookInputVector.ToString());
             ImGui.Text($"Actions flag: {input.actions}");
             ImGui.End();
+        }
+        if (hurtVisualIntensity > 0.0f)
+        {
+            hurtVisualIntensity -= (float)delta * 1.0f;
+            hurtVisualIntensity = Mathf.Max(hurtVisualIntensity, 0.0f);
+            hurtShaderMaterial.SetShaderParameter("vignette_intensity", hurtVisualIntensity);
         }
     }
 
@@ -835,11 +845,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         //only the authority can tell people they took damage
         Logging.Log("Take Damage: " + Global.steamid + " " + authority, "BasicPlayerCharacter");
-        if(Global.steamid == authority)
+        if (Global.steamid == authority)
         {
-            RPCManager.RPC(this, "rpc_TakeDamage", [damage,byID,soundType,VolumeDb]);
+            RPCManager.RPC(this, "rpc_TakeDamage", [damage, byID, soundType, VolumeDb]);
         }
     }
+
+    private float hurtVisualIntensity;
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
@@ -847,6 +859,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
+            hurtVisualIntensity = 0.5f;
+            hurtShaderMaterial.SetShaderParameter("vignette_intensity", hurtVisualIntensity);
             characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
             //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
@@ -882,8 +896,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         inventory.DropAllItems(authority);
         state = CharacterState.Missing;
         currentHealth = 0;
+        rpc_OnKnockedOut();
         Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
         Global.gameState.gameModeManager.CharacterDied(authority, team);
+        DelayDeathRelease();
+    }
+
+    public async void DelayDeathRelease()
+    {
+        await ToSignal(GetTree().CreateTimer(3), SceneTreeTimer.SignalName.Timeout);
         ulong tempControllingPlayerID = controllingPlayerID;
         ReleaseControl();
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
