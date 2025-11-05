@@ -134,7 +134,6 @@ panning_strength = 0.0
 [node name="SteamAudioPlayerSiren" type="SteamAudioPlayer" parent="."]
 distance_attenuation = true
 air_absorption = true
-reflection = true
 attenuation_model = 3
 volume_db = -6.0
 max_db = -6.0
