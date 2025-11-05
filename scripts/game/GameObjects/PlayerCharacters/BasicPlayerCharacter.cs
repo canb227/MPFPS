@@ -52,6 +52,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public bool handcuffed;
     public bool knockedOut;
     private bool crouched;
+    private bool LocalOnGround;
 
 
 
@@ -109,6 +110,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         GlobalRotation = update.Rotation;
         GlobalPosition = update.Position;
         camera.Rotation = update.CameraRotation;
+        LocalOnGround = update.OnGround;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -117,6 +119,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;
         update.CameraRotation = camera.Rotation;
+        update.OnGround = LocalOnGround;
         return MessagePackSerializer.Serialize(update);
     }
 
@@ -124,10 +127,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void PerTickAuth(double delta)
     {
         base.PerTickAuth(delta);
-        if (currentStunBar <= 0)
-        {
-
-        }
         if(!knockedOut)
         {
             //we wrap each one because an input could kill the character meaning the later calls have no input anymore
@@ -174,7 +173,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerFrameShared(double delta)
     {
-        if (input != null && !knockedOut)
+        if (input != null)
         {
             HandleMouseLook(delta);
         }
@@ -187,14 +186,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //use input from local and remote players to calculate footsteps
         if (input != null && !knockedOut)
         {
+            LocalOnGround = IsOnFloor();
             if (input.actions.HasFlag(ActionFlags.Jump))
             {
-                if (IsOnFloor())
+                if (LocalOnGround)
                 {
                     characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
                 }
             }
-            else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f)
+            else if (LocalOnGround && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f && !crouched)
             {
                 characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
             }
@@ -458,6 +458,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if (equipped != null && equipped is Hands hands)
         {
+            GD.Print(input.actions);
             hands.HandleHandInput(input, delta);
         }
         else if (equipped != null)
@@ -518,6 +519,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
         PushAwayRigidBodies();
         MoveAndSlide();
+
+        //update our grounded status for stateupdates
+        LocalOnGround = IsOnFloor();
     }
     
     bool CanUncrouch()
@@ -589,25 +593,27 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private Vector3 HandleYAxis(Vector3 globalVelocity, double delta)
     {
-        if (!IsOnFloor())
+        LocalOnGround = IsOnFloor();
+        if (!LocalOnGround)
         {
             globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
         }
-
         if (input.actions.HasFlag(ActionFlags.Jump))
         {
-            if (IsOnFloor())
+            LocalOnGround = IsOnFloor();
+            if (LocalOnGround)
             {
                 globalVelocity += jumpVelocity;
             }
         }
 
         //fall damage calculation
-        if (!IsOnFloor() && globalVelocity.Y < 0)
+        LocalOnGround = IsOnFloor();
+        if (!LocalOnGround && globalVelocity.Y < 0)
         {
             fallTime += (float)delta;
         }
-        else if (IsOnFloor())
+        else if (LocalOnGround)
         {
             if (fallTime > safeFallTime)
             {
@@ -657,7 +663,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         bool antiInput = (localVelocity.Z > 1 && moveZ < 0) || (localVelocity.Z < -1 && moveZ > 0);
 
         //airbrake prevents further air movement once youve cancelled your Z movement
-        if (!IsOnFloor() && (antiInput || airbrake))
+        LocalOnGround = IsOnFloor();
+        if (!LocalOnGround && (antiInput || airbrake))
         {
             airbrake = true;
             localVelocity.X = 0;
@@ -680,7 +687,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
 
         //apply deceleration
-        if (IsOnFloor())
+        LocalOnGround = IsOnFloor();
+        if (LocalOnGround)
         {
             if (moveZ == 0)
             {
@@ -706,7 +714,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             float mouseX = input.LookInputVector.X * Global.Config.loadedPlayerConfig.mouseSensX * ((float)delta);
             float mouseY = input.LookInputVector.Y * Global.Config.loadedPlayerConfig.mouseSensY * ((float)delta);
-
+            if(knockedOut)
+            {
+                mouseX *= 0.1f;
+                mouseY *= 0.1f;
+            }
             float newXRot = camera.RotationDegrees.X - mouseY;
             float newYRot = RotationDegrees.Y - mouseX;
 
@@ -982,13 +994,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public override void PerTickLocal(double delta)
     {
-        Vector3 globalVelocity = Velocity;
-        if (!IsOnFloor())
-        {
-            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
-        }
-        Velocity = globalVelocity;
-        MoveAndSlide();
+        // Vector3 globalVelocity = Velocity;
+        // if (!IsOnFloor())
+        // {
+        //     globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
+        // }
+        // Velocity = globalVelocity;
+        // MoveAndSlide();
     }
     private void UpdateAnimationTree()
     {
@@ -1032,7 +1044,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
 
-        if (IsOnFloor())
+        if (LocalOnGround)
         {
             animationTree.Set("parameters/GroundedTransition/transition_request", "grounded");
         }
@@ -1054,5 +1066,7 @@ public struct BasicPlayerStateUpdate
     public Vector3 Rotation;
     [Key(2)]
     public Vector3 CameraRotation;
+    [Key(3)]
+    public bool OnGround;
 
 }

@@ -17,7 +17,7 @@ public partial class SwarmManager : Node
     Random rand = new Random();
     public bool announcedSwarm = false;
     private bool evacuationStarted;
-    private int robotsPerTick = 1;
+    private float robotsToSpawnThisTick;
 
     public override void _Ready()
     {
@@ -29,7 +29,7 @@ public partial class SwarmManager : Node
         swarmCooldownMax = 300;
         swarmCooldownMin = 240;
         robotSwarmMaxSize = (int) (numPlayers * 10 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
-        robotSwarmMinSize = (int) (numPlayers * 7 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
+        robotSwarmMinSize = (int) (numPlayers * 8 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
         currentSwarmCooldown = 5; //TODO should be like 120
         evacuationStarted = false;
     }
@@ -62,12 +62,15 @@ public partial class SwarmManager : Node
         }
 
         robotsSpawned = 0;
+        
         if(robotSwarmSize > 0)
         {
-            while (robotsSpawned < robotsPerTick)
+            robotsToSpawnThisTick += 0.01f;
+            while (robotsSpawned < robotsToSpawnThisTick)
             {
                 SpawnRobot();
                 robotSwarmSize--;
+                robotsToSpawnThisTick = 0;
                 robotsSpawned++;
             }
         }

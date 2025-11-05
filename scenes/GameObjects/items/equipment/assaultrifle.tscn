@@ -342,14 +342,12 @@ transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, 
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="."]
-air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
 stream = ExtResource("3_7vhgp")
 max_polyphony = 4
 panning_strength = 0.0
 
 [node name="AudioPlayer2" type="SteamAudioPlayer" parent="."]
-air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
 stream = ExtResource("3_7vhgp")
 max_polyphony = 4

@@ -17,9 +17,8 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     [Export] public SwarmRobotState state = SwarmRobotState.NONE;
     [Export] private Area3D meleeArea;
     [Export] public AnimationPlayer animationPlayer;
-    [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
     [Export] public AudioStreamPlayer3D genericSFX;
-    [Export] public AudioStreamPlayer3D movementSFX;
+    [Export] public AudioStreamPlayer3D ambientSFX;
     public float maxHealth { get; set; } = 50;
     public float currentHealth { get; set; } = 50;
     private float currentSpeed = 10;
@@ -141,9 +140,9 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         } while (index == lastAmbientIndex && ambientSounds.Length > 1);
 
         lastAmbientIndex = index;
-        // genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
-        // genericSFX.Play();
-        genericSFX.Call("play_stream", GD.Load<AudioStream>(ambientSounds[index]), 0f, 0f, 1f);
+        ambientSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
+        ambientSFX.Play();
+        //genericSFX.Call("play_stream", GD.Load<AudioStream>(ambientSounds[index]), 0f, 0f, 1f);
     }
 
     private void ResetTimer()
@@ -215,7 +214,8 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     public void Attack()
     {
         attackCooldown = 3.0;
-        genericSFX.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/enemies/superphys_launch1.wav"), 0f, 0f, 1f);
+        genericSFX.Play();
+        //genericSFX.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/enemies/superphys_launch1.wav"), 0f, 0f, 1f);
         // Get all overlapping bodies
         foreach (var body in meleeArea.GetOverlappingBodies())
         {

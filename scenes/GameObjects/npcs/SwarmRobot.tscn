@@ -1,7 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://cnuhisk5vamn4"]
 
 [ext_resource type="Script" uid="uid://kuimq525di4f" path="res://scripts/game/GameObjects/NPCs/SwarmRobot.cs" id="1_aj03a"]
-[ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_1fq2r"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_a6bla"]
 
 [sub_resource type="Animation" id="Animation_3tng0"]
@@ -9,14 +8,26 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SteamAudioPlayer:volume_db")
+tracks/0/path = NodePath("AudioStreamPlayer3D:playing")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [0.0]
+"values": [-3.0]
 }
 
 [sub_resource type="Animation" id="Animation_aj03a"]
@@ -35,29 +46,26 @@ tracks/0/keys = {
 "method": &"Attack"
 }]
 }
-tracks/1/type = "audio"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SteamAudioPlayer")
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"clips": [{
-"end_offset": 0.6988,
-"start_offset": 0.0009619707,
-"stream": ExtResource("3_a6bla")
-}],
-"times": PackedFloat32Array(0.43333334)
+"times": PackedFloat32Array(0.4333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
 }
-tracks/1/use_blend = true
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("SteamAudioPlayer:volume_db")
+tracks/2/path = NodePath("AudioStreamPlayer3D:volume_db")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.033333335, 0.6651444, 1),
+"times": PackedFloat32Array(0, 0.8666667, 1),
 "transitions": PackedFloat32Array(1, 1, 4.4382725),
 "update": 0,
 "values": [-3.0, -3.0, -16.0]
@@ -70,6 +78,9 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
+radius = 0.40283203
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1fq2r"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3tng0"]
 
@@ -81,17 +92,17 @@ emission_enabled = true
 radius = 1.5991211
 height = 3.1982422
 
-[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "navAgent")]
-collision_layer = 2
-collision_mask = 3
+[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "genericSFX", "ambientSFX", "navAgent")]
+collision_layer = 32
+collision_mask = 51
 script = ExtResource("1_aj03a")
 root = NodePath(".")
-collider = NodePath("collider")
+collider = NodePath("StaticBody3D/collider")
 state = 3
 meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
-hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
-genericSFX = NodePath("SteamAudioPlayer")
+genericSFX = NodePath("AudioStreamPlayer3D")
+ambientSFX = NodePath("AmbientAudioPlayer")
 navAgent = NodePath("NavigationAgent3D")
 metadata/_custom_type_script = "uid://kuimq525di4f"
 
@@ -100,8 +111,15 @@ libraries = {
 &"": SubResource("AnimationLibrary_1fq2r")
 }
 
-[node name="collider" type="CollisionShape3D" parent="."]
+[node name="collider2" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_aj03a")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="collider" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("CapsuleShape3D_1fq2r")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_3tng0")
@@ -117,10 +135,14 @@ collision_mask = 16
 shape = SubResource("CapsuleShape3D_3tng0")
 debug_color = Color(0.992019, 0, 0.26401922, 0.41960785)
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
-panning_strength = 0.0
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_a6bla")
+volume_db = -3.0
+unit_size = 5.0
+max_db = 0.0
+max_distance = 20.0
 
-[node name="HitSoundPlayer" type="SteamAudioPlayer" parent="."]
-stream = ExtResource("2_1fq2r")
-volume_db = -6.0
-panning_strength = 0.0
+[node name="AmbientAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+unit_size = 5.0
+max_db = 0.0
+max_distance = 10.0
