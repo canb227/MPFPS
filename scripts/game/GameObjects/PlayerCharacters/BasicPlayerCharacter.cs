@@ -179,6 +179,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void PerTickShared(double delta)
     {
         base.PerTickShared(delta);
+
         //use input from local and remote players to calculate footsteps
         if (input != null && !knockedOut)
         {
@@ -901,6 +902,16 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
     }
 
+    public override void PerTickLocal(double delta)
+    {
+        Vector3 globalVelocity = Velocity;
+        if (!IsOnFloor())
+        {
+            globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
+        }
+        Velocity = globalVelocity;
+        MoveAndSlide();
+    }
     private void UpdateAnimationTree()
     {
         if (knockedOut)
