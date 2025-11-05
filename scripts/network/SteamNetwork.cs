@@ -335,7 +335,7 @@ public class SteamNetwork
                 RPCManager.HandleRPCBytes(payload, sender);
                 break;
             case Channel.SteamVoice:
-                Logging.Log($"Got voice data of size: {payload.Length}", "SteamVoice");
+                //Logging.Log($"Got voice data of size: {payload.Length}", "SteamVoice");
                 Global.gameState.ProcessSteamVoiceBytes(payload, sender);
                 break;
             default:

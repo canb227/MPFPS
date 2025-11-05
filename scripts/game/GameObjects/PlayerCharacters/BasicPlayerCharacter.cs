@@ -562,7 +562,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //fall damage values
     private float fallTime = 0f;
     private float safeFallTime = 0.7f;
-    private float fallingDamagePerSecond = 150f;
+    private float fallingDamagePerSecond = 50f;
     private bool wasOnFloor;
 
     private int ScaleDamageToVolume(float damage)
@@ -580,10 +580,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
-        // if (input.actions.HasFlag(ActionFlags.Sprint))
-        // {
-        //     finalSpeed = baseSpeed * 2;
-        // }
+        if (input.actions.HasFlag(ActionFlags.Sprint))
+        {
+            finalSpeed = baseSpeed * 2;
+        }
 
         //get input vectors
         Vector2 normalizedInput = input.MovementInputVector.Normalized();

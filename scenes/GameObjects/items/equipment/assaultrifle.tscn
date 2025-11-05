@@ -10,13 +10,14 @@ size = Vector3(1.3521881, 0.45162964, 0.15637207)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gwn1e"]
 resource_name = "main"
 cull_mode = 2
-albedo_color = Color(0.27058825, 0.27058825, 0.29411766, 1)
+albedo_color = Color(0.14620441, 0.14619935, 0.16121733, 1)
 metallic = 0.8604651
+metallic_specular = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7e1s"]
 resource_name = "mag"
 cull_mode = 2
-albedo_color = Color(0.36799008, 0.36799034, 0.399993, 1)
+albedo_color = Color(0.16394234, 0.16392657, 0.18148431, 1)
 roughness = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fa07h"]

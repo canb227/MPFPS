@@ -12,6 +12,7 @@ size = Vector3(1.4375, 0.171875, 0.06713867)
 resource_name = "shotgun_1"
 cull_mode = 2
 albedo_texture = ExtResource("4_6h40m")
+metallic_specular = 0.0
 texture_filter = 2
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_1o18v"]
