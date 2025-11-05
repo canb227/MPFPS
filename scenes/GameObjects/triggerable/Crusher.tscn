@@ -17,7 +17,7 @@
 [sub_resource type="Resource" id="Resource_pytuy"]
 script = ExtResource("2_v4yce")
 triggerName = "press_down"
-cooldownSeconds = 1.0
+cooldownSeconds = 10.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Animation" id="Animation_lblhg"]

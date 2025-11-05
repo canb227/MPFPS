@@ -17,6 +17,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
 
     [Export] DeliveryVehicle2D vehicle2D;
     [Export] Area2D finishArea;
+    [Export] AudioStreamPlayer3D audioStreamPlayer3D;
 
     public bool locked = false;
 
@@ -37,6 +38,7 @@ public partial class GODeliveryGameMonitor : GOBaseStaticInteractable
         base._Ready();
         finishArea.BodyEntered += OnBodyEntered;
         GameModeManager.OnDeliveryQueueAppended += NewDelivery;
+        audioStreamPlayer3D.Play();
     }
 
     public override void _Notification(int what)
