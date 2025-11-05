@@ -1,3 +1,3 @@
-[gd_scene format=3 uid="uid://clilbw6km5gwv"]
+[gd_scene load_steps=0 format=3 uid="uid://clilbw6km5gwv"]
 
 [node name="SteamAudioListener" type="SteamAudioListener"]
