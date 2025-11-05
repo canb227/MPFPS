@@ -67,19 +67,22 @@ public partial class Helicopter : GOBaseStaticBody
     {
         GD.Print("start leaving");
         HelicopterLeave();
-        await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
-        //check who is inside
-        List<BasicPlayerCharacter> basicPlayerCharacters = new();
-        var overlaps = insideHelicopterArea.GetOverlappingBodies();
-        GD.Print(overlaps.Count);
-        foreach (var body in overlaps)
+        if (Global.Lobby.bIsLobbyHost)
         {
-            if (body is BasicPlayerCharacter player)
+            await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
+            //check who is inside
+            List<BasicPlayerCharacter> basicPlayerCharacters = new();
+            var overlaps = insideHelicopterArea.GetOverlappingBodies();
+            GD.Print(overlaps.Count);
+            foreach (var body in overlaps)
             {
-                basicPlayerCharacters.Add(player);
+                if (body is BasicPlayerCharacter player)
+                {
+                    basicPlayerCharacters.Add(player);
+                }
             }
+            Global.gameState.gameModeManager.EvacuationLeft(basicPlayerCharacters);
         }
-        Global.gameState.gameModeManager.EvacuationLeft(basicPlayerCharacters);
     }
 
     public void StartHelicopter()

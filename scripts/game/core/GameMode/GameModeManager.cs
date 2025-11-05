@@ -87,10 +87,13 @@ public partial class GameModeManager : Node
             {
                 evacuationTimeLeft -= delta;
             }
-            if(evacuationTimeLeft <= 0 && Global.Lobby.bIsLobbyHost)
+            if (evacuationTimeLeft <= 0 )
             {
                 EvacuationEnding();
-                evacuationTimeLeft = 99999;
+                if(Global.Lobby.bIsLobbyHost)
+                {
+                    evacuationTimeLeft = 99999;
+                }
             }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {

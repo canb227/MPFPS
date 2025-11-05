@@ -745,11 +745,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             ImGui.Text($"Actions flag: {input.actions}");
             ImGui.End();
         }
-        if (hurtVisualIntensity > 0.0f)
+        if (Global.steamid == authority)
         {
-            hurtVisualIntensity -= (float)delta * 1.0f;
-            hurtVisualIntensity = Mathf.Max(hurtVisualIntensity, 0.0f);
-            hurtShaderMaterial.SetShaderParameter("vignette_intensity", hurtVisualIntensity);
+            if (hurtVisualIntensity > 0.0f)
+            {
+                hurtVisualIntensity -= (float)delta * 1.0f;
+                hurtVisualIntensity = Mathf.Max(hurtVisualIntensity, 0.0f);
+                hurtShaderMaterial.SetShaderParameter("vignette_intensity", hurtVisualIntensity);
+            }
         }
     }
 
@@ -872,7 +875,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             currentHealth -= damage;
             hurtVisualIntensity = 0.5f;
-            hurtShaderMaterial.SetShaderParameter("vignette_intensity", hurtVisualIntensity);
+            if(Global.steamid == authority)
+            {
+                hurtShaderMaterial.SetShaderParameter("vignette_intensity", hurtVisualIntensity);
+            }
             characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
             //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
