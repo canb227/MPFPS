@@ -76,7 +76,26 @@ public partial class PlayerInputHandler : Node
                 return;
             }
             Logging.Log($"Sending voice data of size: {voiceBytes.Length}", "SteamVoice");
-            Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
+
+            var playerChar = Global.gameState.GetCharacterControlledBy(Global.steamid);
+            if (playerChar is BasicPlayerCharacter bpc)
+            {
+                if (bpc.knockedOut || bpc.currentHealth <= 0)
+                {
+                    return;
+                }
+                else
+                {
+                    Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
+                }
+            }
+            else if (playerChar is Ghost ghost)
+            {
+                Global.network.BroadcastData(voiceBytes, Channel.SteamVoiceDead, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
+            }
+
+
+            
         }
        
         

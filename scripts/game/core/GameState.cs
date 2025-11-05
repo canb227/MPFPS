@@ -613,16 +613,25 @@ public partial class GameState : Node3D
 
     private static float VoiceMixRate = 44100;
 
-    internal void ProcessSteamVoiceBytes(byte[] payload, ulong sender)
+    internal void ProcessSteamVoiceBytes(byte[] payload, ulong sender, bool alive)
     {
-        if (PlayerIDToControlledCharacter.TryGetValue((ulong)sender, out ulong charID))
+        if (alive)
         {
-            if (GameObjects.TryGetValue(charID, out GameObject obj))
+            //if the sender is alive pipe the voice audio so it comes out of their basicPlayer head
+            if (GetCharacterControlledBy(sender) is BasicPlayerCharacter pc)
             {
-                if (obj is GOBasePlayerCharacter pc)
-                {
-                    pc.ProcessVoiceData(payload);
-                }
+                pc.ProcessVoiceData(payload);
+            }
+
+        }
+        else
+        {
+            //if the sender is dead
+            if (GetCharacterControlledBy(Global.steamid) is Ghost ghost)
+            {
+                //and if we are also dead
+                ////pipe the voice audio to come out of the speaker inside our own ghosty head for us to hear
+                ghost.ProcessVoiceData(payload);
             }
         }
     }

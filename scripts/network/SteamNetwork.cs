@@ -26,6 +26,7 @@ public enum Channel
     NetCommands = 6,
     RPC = 7,
     SteamVoice = 8,
+    SteamVoiceDead = 9,
 }
 /// <summary>
 /// Handles low level networking functions - implemented using SteamMessages
@@ -336,7 +337,11 @@ public class SteamNetwork
                 break;
             case Channel.SteamVoice:
                 Logging.Log($"Got voice data of size: {payload.Length}", "SteamVoice");
-                Global.gameState.ProcessSteamVoiceBytes(payload, sender);
+                Global.gameState.ProcessSteamVoiceBytes(payload, sender, true);
+                break;
+            case Channel.SteamVoiceDead:
+                Logging.Log($"Got voice data of size: {payload.Length}", "SteamVoice");
+                Global.gameState.ProcessSteamVoiceBytes(payload, sender, false);
                 break;
             default:
                 SteamNetworkingMessageReceivedEvent?.Invoke(channel, payload, sender);
