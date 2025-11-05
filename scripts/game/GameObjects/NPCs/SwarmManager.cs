@@ -60,15 +60,12 @@ public partial class SwarmManager : Node
         }
 
         robotsSpawned = 0;
-        
         if(robotSwarmSize > 0)
         {
-            robotsToSpawnThisTick += 0.20f;
-            while (robotsSpawned < robotsToSpawnThisTick)
+            while (robotsSpawned < 1)
             {
                 SpawnRobot();
                 robotSwarmSize--;
-                robotsToSpawnThisTick = 0;
                 robotsSpawned++;
             }
         }
