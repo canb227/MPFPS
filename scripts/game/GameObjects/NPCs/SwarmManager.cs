@@ -126,6 +126,7 @@ public partial class SwarmManager : Node
             GameObjectConstructorData data = new(GameObjectType.SwarmRobotPlayer);
             data.spawnTransform = MapManager.GetHordeSpawnTransform();
             data.paramList.Add(true);
+            RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobotPlayer, data);
         }
     }
