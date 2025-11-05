@@ -49,6 +49,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //item bools
     public bool handcuffed;
     public bool knockedOut;
+    private bool crouched;
 
 
 
@@ -902,18 +903,44 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private void UpdateAnimationTree()
     {
+        if (knockedOut)
+        {
+            animationTree.Set("parameters/GroundedTransition/transition_request", "dead");
+            //reseting upper blend just incase
+            animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 0);
+            return;
+        }
+
         // Update Movement Animation
         Vector3 localVel = CalculateLocalVelocity();
         animationTree.Set("parameters/WalkRunBlend/blend_position", new Vector2(localVel.X, -1 * localVel.Z));
+        animationTree.Set("parameters/CrouchBlend/blend_position", new Vector2(localVel.X, -1 * localVel.Z));
 
-        if (equipped is Hands hands)
+        if (crouched)
         {
-            animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 0);
+            animationTree.Set("parameters/StandTransition/transition_request", "crouched");
         }
         else
         {
+            animationTree.Set("parameters/StandTransition/transition_request", "standing");
+        }
+
+        if (handcuffed)
+        {
             animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 1);
-            animationTree.Set("parameters/UpperBodyTransition/transition_request", "rifle");
+            animationTree.Set("parameters/UpperBodyTransition/transition_request", "cuffed");
+        }
+        else
+        {
+            if (equipped is Hands hands)
+            {
+                animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 0);
+            }
+            else
+            {
+                animationTree.Set("parameters/UpperBodyBlend2/blend_amount", 1);
+                animationTree.Set("parameters/UpperBodyTransition/transition_request", "rifle");
+            }
         }
 
         if (IsOnFloor())
