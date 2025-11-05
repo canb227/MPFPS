@@ -76,6 +76,7 @@ public partial class GameModeManager : Node
         Logging.Log($"Starting Game Mode manager", "GameModeManager");
         Lobby.NewLobbyPeerAddedEvent += OnNewLobbyPeerAdded;
         Lobby.LobbyPeerRemovedEvent += OnLobbyPeerRemoved;
+        AddChild(swarmManager);
     }
 
     public void PerTick(double delta)
@@ -300,6 +301,7 @@ public partial class GameModeManager : Node
         roundNumber++;
         roundStarted = true;
         remainingRoundTime = options.roundTime;
+        evacuationStarted = false;
         evacuationTimeLeft = 9999999;
         swarmManager.PrepareRound(numPlayers);
         //clear the scoreboard , role assignment comes later

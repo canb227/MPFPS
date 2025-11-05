@@ -63,7 +63,7 @@ public partial class SwarmManager : Node
         
         if(robotSwarmSize > 0)
         {
-            robotsToSpawnThisTick += 0.01f;
+            robotsToSpawnThisTick += 0.20f;
             while (robotsSpawned < robotsToSpawnThisTick)
             {
                 SpawnRobot();
