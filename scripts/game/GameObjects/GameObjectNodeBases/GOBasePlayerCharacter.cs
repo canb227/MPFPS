@@ -135,6 +135,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             {
                 Logging.Log($"Local inputs are now being fed to character {id}", "GameModeManager");
                 camera.Current = true;
+                Node sal = ResourceLoader.Load<PackedScene>("res://scenes/GameObjects/player/SteamAudioListener.tscn").Instantiate();
+                sal.Name = "SteamAudioListener";
+                GetNode("firstPersonModel/Camera3D").AddChild(sal);
                 Input.MouseMode = Input.MouseModeEnum.Captured;
                 OnControlTaken(playerID);
             }
@@ -171,15 +174,17 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         else
         {
             OnControlReleased();
+            if (IsMe())
+            {
+                GetNode("firstPersonModel/Camera3D/SteamAudioListener").QueueFree();
+                camera.Current = false;
+                Input.MouseMode = Input.MouseModeEnum.Confined;
+            }
             Global.gameState.PlayerIDToControlledCharacter[controllingPlayerID] = 0;
             controllingPlayerID = 0;
             input = null;
 
-            if (IsMe())
-            {
-                camera.Current = false;
-                Input.MouseMode = Input.MouseModeEnum.Confined;
-            }
+
         }
     }
 

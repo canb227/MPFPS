@@ -234,6 +234,7 @@ public partial class Ghost : GOBasePlayerCharacter
 
     protected override void OnControlTaken(ulong byID)
     {
+        //base.OnControlTaken(byID);
         Show();
     }
 
