@@ -4,12 +4,15 @@ using System.Linq;
 
 public partial class MainMenu : Control
 {
+    [Export] Button startButton;
+    [Export] Button optionsButton;
+    [Export] Button quitButton;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-        GetNode<Button>("BUTTON_start").Pressed += OnStartPressed;
-        GetNode<Button>("BUTTON_options").Pressed += OnOptionsPressed;
-        GetNode<Button>("BUTTON_quit").Pressed += OnQuitPressed;
+        startButton.Pressed += OnStartPressed;
+        optionsButton.Pressed += OnOptionsPressed;
+        quitButton.Pressed += OnQuitPressed;
     }
 
     private void OnQuitPressed()

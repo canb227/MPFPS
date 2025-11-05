@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bqx27c5btqov2"]
+[gd_scene load_steps=20 format=3 uid="uid://bqx27c5btqov2"]
 
 [ext_resource type="Script" uid="uid://c8bdsd63biy5x" path="res://scripts/game/other/Announcer.cs" id="1_hcg5s"]
 [ext_resource type="AudioStream" uid="uid://dtwokj2y663h8" path="res://assets/audio/announcer/evacuate_area.wav" id="2_aage6"]
@@ -12,9 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://c8d21pxcnh4bf" path="res://assets/audio/announcer/thirty.wav" id="10_2ddil"]
 [ext_resource type="AudioStream" uid="uid://biwyu8jr5wa06" path="res://assets/audio/announcer/twenty.wav" id="11_a5kqg"]
 [ext_resource type="AudioStream" uid="uid://dtl18i0xv1c0c" path="res://assets/audio/announcer/ten.wav" id="12_wwv5q"]
-[ext_resource type="AudioStream" uid="uid://cvy6jwxpbspf1" path="res://assets/audio/environment/siren.wav" id="13_go8qm"]
 [ext_resource type="AudioStream" uid="uid://brb7yutinpg8m" path="res://assets/audio/announcer/five.wav" id="13_onj7a"]
-[ext_resource type="AudioStream" uid="uid://dntltxfayooni" path="res://assets/audio/announcer/alarm_citizen_loop1.wav" id="14_dyfw8"]
 [ext_resource type="AudioStream" uid="uid://dtxe27252t8rw" path="res://assets/audio/announcer/warning.wav" id="16_he2f7"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_i7kdg"]
@@ -85,21 +83,6 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 2.0666666, 5.0333333, 15.033333, 25.033333, 35.033333, 45.066666, 55.033333, 65.03333, 75.03333, 85.03333, 90)
 }
 tracks/0/use_blend = true
-tracks/1/type = "audio"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SteamAudioPlayer2")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("13_go8qm")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/1/use_blend = true
 
 [sub_resource type="Animation" id="Animation_ovm81"]
 resource_name = "swarmIncoming"
@@ -119,21 +102,6 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0)
 }
 tracks/0/use_blend = true
-tracks/1/type = "audio"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SteamAudioPlayer2")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("14_dyfw8")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/1/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_084sx"]
 _data = {
@@ -141,9 +109,10 @@ _data = {
 &"swarmIncoming": SubResource("Animation_ovm81")
 }
 
-[node name="Announcer" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
+[node name="Announcer" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "audioStreamPlayerSiren")]
 script = ExtResource("1_hcg5s")
 animationPlayer = NodePath("AnimationPlayer")
+audioStreamPlayerSiren = NodePath("SteamAudioPlayerSiren")
 metadata/_custom_type_script = "uid://c8bdsd63biy5x"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -162,9 +131,11 @@ max_db = -3.0
 max_polyphony = 2
 panning_strength = 0.0
 
-[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayerSiren" type="SteamAudioPlayer" parent="."]
+distance_attenuation = true
 air_absorption = true
-attenuation_model = 1
+reflection = true
+attenuation_model = 3
 volume_db = -6.0
 max_db = -6.0
 max_polyphony = 2

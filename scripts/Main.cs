@@ -93,7 +93,6 @@ public partial class Main : Node
 
         //TODO: Show main menu/intro screen/whatever
         Global.ui.SwitchFullScreenUI("UI_MainMenu");
-
         //If we launched the game normally, startup is now fully complete
     }
 

@@ -109,8 +109,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public void ReloadAnimation()
     {
         //play reload sound
-        audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
-        audioStreamPlayer2.Play();
+        // audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_reload.wav");
+        // audioStreamPlayer2.Play();
+        PlaySound(audioStreamPlayer2, "res://assets/audio/weapons/basic/ar2_reload.wav", 1f);
         //play reload animation
         animationPlayer.SpeedScale = 1/(reloadTimeSeconds/2);
         animationPlayer.Play("reload");
@@ -119,8 +120,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void EmptyAudio()
     {
-        audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
-        audioStreamPlayer2.Play();
+        PlaySound(audioStreamPlayer2, "res://assets/audio/weapons/basic/ar2_empty.wav", 1f);
+        // audioStreamPlayer2.Stream = GD.Load<AudioStream>("res://assets/audio/weapons/basic/ar2_empty.wav");
+        // audioStreamPlayer2.Play();
     }
 
     public override void HandleInput(ActionFlags input)
@@ -333,11 +335,18 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         }
     }
 
-    private void PlaySound(string soundResource, float pitchVariation)
+    private void PlaySound(AudioStreamPlayer3D audioPlayer, string soundResource, float pitchVariation)
     {
-        audioStreamPlayer1.Stream = GD.Load<AudioStream>(soundResource);
-        audioStreamPlayer1.PitchScale = pitchVariation;
-        audioStreamPlayer1.Play();
+        if(equippedBySteamID == Global.steamid)
+        {
+            audioPlayer.Stream = GD.Load<AudioStream>(soundResource);
+            audioPlayer.PitchScale = pitchVariation;
+            audioPlayer.Play();
+        }
+        else
+        {
+            audioPlayer.Call("play_stream", GD.Load<AudioStream>(soundResource), 0f, 0f, 1f);
+        }
     }
 
     private void PlayShotSound()
@@ -352,7 +361,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
 
-        PlaySound(gunSounds[index], pitchVariation);
+        PlaySound(audioStreamPlayer1, gunSounds[index], pitchVariation);
     }
     
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -368,7 +377,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         float pitchVariation = (float)(0.98 + rand.NextDouble() * 0.04);
 
-        PlaySound(emptySounds[index], pitchVariation);
+        PlaySound(audioStreamPlayer1, emptySounds[index], pitchVariation);
     }
     
     private Vector3 GetRandomBulletDirection(Random rand)

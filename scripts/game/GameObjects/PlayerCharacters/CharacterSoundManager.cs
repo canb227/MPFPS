@@ -74,7 +74,13 @@ public partial class CharacterSoundManager : Node
             Logging.Error("Invalid SoundType for Movement: " + soundType.ToString(), "CharacterSoundManager");
         }
     }
-    
+    float audioSoundTime = 0f;
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        audioSoundTime += (float)delta;
+    }
+
     public void PlayGenericFootstepSound(AudioStreamPlayer3D audioStream, bool isJump)
     {
         //increase step sound if this is a jump
@@ -85,11 +91,12 @@ public partial class CharacterSoundManager : Node
         else
         {
             audioStream.VolumeDb = 0.0f;
-            if (audioStream.GetPlaybackPosition() < 0.4 && audioStream.Playing)
+            if (audioSoundTime < 0.4 && audioStream.Playing)
             {
                 return;
             }
         }
+        audioSoundTime = 0f;
         //if its a jump play the new loud step immediately otherwise skip as we have a previous step sound playing
 
         string[] stepSounds =
@@ -98,7 +105,6 @@ public partial class CharacterSoundManager : Node
             "res://assets/audio/character/footsteps/concrete2.wav",
             "res://assets/audio/character/footsteps/concrete3.wav",
             "res://assets/audio/character/footsteps/concrete4.wav",
-
         };
         Random rand = new();
         int index;
@@ -111,9 +117,7 @@ public partial class CharacterSoundManager : Node
 
         //pitch variation (0.95–1.05)
         float pitch = 0.95f + (float)rand.NextDouble() * 0.1f;
-        audioStream.PitchScale = pitch;
-        audioStream.Stream = GD.Load<AudioStream>(stepSounds[index]);
-        audioStream.Play();
+        audioStream.Call("play_stream", GD.Load<AudioStream>(stepSounds[index]), 0f, 0f, pitch);
     }
 
     public void PlayDeathSound(AudioStreamPlayer3D audioStream)
@@ -131,8 +135,9 @@ public partial class CharacterSoundManager : Node
         int index = rand.Next(deathSounds.Length);
 
         // Load and play it
-        audioStream.Stream = GD.Load<AudioStream>(deathSounds[index]);
-        audioStream.Play();
+        //audioStream.Stream = GD.Load<AudioStream>(deathSounds[index]);
+        audioStream.Call("play_stream", GD.Load<AudioStream>(deathSounds[index]), 0f, 0f, 1f);
+
     }
 
     private void PlayGenericPainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
@@ -150,9 +155,9 @@ public partial class CharacterSoundManager : Node
         int index = rand.Next(painSounds.Length);
 
         // Load and play it
-        audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
-        audioStream.VolumeDb = VolumeDb;
-        audioStream.Play();
+        // audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        // audioStream.VolumeDb = VolumeDb;
+        audioStream.Call("play_stream", GD.Load<AudioStream>(painSounds[index]), 0f, VolumeDb, 1f);
     }
 
     private void PlayFirePainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
@@ -173,9 +178,9 @@ public partial class CharacterSoundManager : Node
         int index = rand.Next(painSounds.Length);
 
         // Load and play it
-        audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
-        audioStream.VolumeDb = VolumeDb;
-        audioStream.Play();
+        // audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        // audioStream.VolumeDb = VolumeDb;
+        audioStream.Call("play_stream", GD.Load<AudioStream>(painSounds[index]), 0f, VolumeDb, 1f);
     }
 
     private void PlayBulletPainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
@@ -193,9 +198,9 @@ public partial class CharacterSoundManager : Node
         int index = rand.Next(painSounds.Length);
 
         // Load and play it
-        audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
-        audioStream.VolumeDb = VolumeDb;
-        audioStream.Play();
+        // audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        // audioStream.VolumeDb = VolumeDb;
+        audioStream.Call("play_stream", GD.Load<AudioStream>(painSounds[index]), 0f, VolumeDb, 1f);
     }
 
     private void PlayFallingPainSound(AudioStreamPlayer3D audioStream, int VolumeDb)
@@ -213,9 +218,9 @@ public partial class CharacterSoundManager : Node
         int index = rand.Next(painSounds.Length);
 
         // Load and play it
-        audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
-        audioStream.VolumeDb = VolumeDb;
-        audioStream.Play();
+        // audioStream.Stream = GD.Load<AudioStream>(painSounds[index]);
+        // audioStream.VolumeDb = VolumeDb;
+        audioStream.Call("play_stream", GD.Load<AudioStream>(painSounds[index]), 0f, VolumeDb, 1f);
     }
 
     

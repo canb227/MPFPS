@@ -86,7 +86,7 @@ public partial class PlayerInputHandler : Node
                 }
                 else
                 {
-                    Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeersExceptSelf(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
+                    Global.network.BroadcastData(voiceBytes, Channel.SteamVoice, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_UnreliableNoDelay);
                 }
             }
             else if (playerChar is Ghost ghost)

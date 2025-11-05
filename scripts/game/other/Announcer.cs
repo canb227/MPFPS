@@ -8,6 +8,7 @@ using MessagePack;
 public partial class Announcer : GOBaseStaticBody
 {
     [Export] public AnimationPlayer animationPlayer;
+    [Export] public AudioStreamPlayer3D audioStreamPlayerSiren;
     bool evacuationStarted;
     public override void _Ready()
     {
@@ -29,12 +30,14 @@ public partial class Announcer : GOBaseStaticBody
     public void SwarmIncoming()
     {
         animationPlayer.Play("swarmIncoming");
+        audioStreamPlayerSiren.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav"), 0f, 0f, 1f);
     }
     public void SwarmStarted()
     {
         if(!evacuationStarted)
         {
             animationPlayer.Stop();
+            audioStreamPlayerSiren.Stop();
         }
     }
 
@@ -42,6 +45,7 @@ public partial class Announcer : GOBaseStaticBody
     {
         evacuationStarted = true;
         animationPlayer.Play("evacuationStart");
+        audioStreamPlayerSiren.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav"), 0f, 0f, 1f);
     }
     public override string GenerateStateString()
     {

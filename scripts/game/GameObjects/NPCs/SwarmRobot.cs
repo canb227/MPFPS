@@ -141,8 +141,9 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         } while (index == lastAmbientIndex && ambientSounds.Length > 1);
 
         lastAmbientIndex = index;
-        genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
-        genericSFX.Play();
+        // genericSFX.Stream = GD.Load<AudioStream>(ambientSounds[index]);
+        // genericSFX.Play();
+        genericSFX.Call("play_stream", GD.Load<AudioStream>(ambientSounds[index]), 0f, 0f, 1f);
     }
 
     private void ResetTimer()
@@ -192,7 +193,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     }
 
     private double attackCooldown = 0;
-    private const float MeleeRange = 2.0f; // tweak as needed
+    private const float MeleeRange = 1.8f; // tweak as needed
 
     private void TryAttack(double delta)
     {
@@ -205,21 +206,16 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         {
             if (MovementTarget is IsDamagable dmg)
             {
-                RPCManager.RPC(this, "AttackWindup", []);
+                RPCManager.RPC(this, "Attack", []);
             }
         }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void AttackWindup()
-    {
-        animationPlayer.Play("attack");
-    }
-
     public void Attack()
     {
         attackCooldown = 3.0;
-
+        genericSFX.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/enemies/superphys_launch1.wav"), 0f, 0f, 1f);
         // Get all overlapping bodies
         foreach (var body in meleeArea.GetOverlappingBodies())
         {

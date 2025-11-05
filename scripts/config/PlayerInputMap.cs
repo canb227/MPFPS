@@ -22,6 +22,7 @@ public class PlayerInputMap
 
             { Key.Space, ActionFlags.Jump },
             { Key.Shift, ActionFlags.Sprint},
+            { Key.Ctrl, ActionFlags.Crouch },
             { Key.C, ActionFlags.CrouchToggle },
             { Key.Z, ActionFlags.ProneToggle },
 
@@ -30,7 +31,7 @@ public class PlayerInputMap
             { Key.Key3, ActionFlags.InventorySlot3  },
             { Key.Key4, ActionFlags.InventorySlot4  },
             { Key.Key5, ActionFlags.InventorySlot5  },
-            
+
 
             { Key.Q, ActionFlags.DropItem },
 

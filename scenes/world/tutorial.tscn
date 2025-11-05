@@ -1,118 +1,116 @@
-[gd_scene load_steps=41 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=41 format=3 uid="uid://olgkt0b0w4ls"]
 
-[ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
-[ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
-[ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="1_vegv4"]
-[ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="2_qvxys"]
-[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="3_25h3n"]
-[ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="3_k4evv"]
-[ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="5_k4evv"]
-[ext_resource type="PackedScene" uid="uid://dgvdoj8ynxphu" path="res://scenes/GameObjects/interactables/BasicHingeDoor.tscn" id="5_o33i4"]
-[ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_vegv4"]
-[ext_resource type="PackedScene" uid="uid://cergi4lpkn7h0" path="res://scenes/GameObjects/interactables/DeliveryMachine.tscn" id="8_viqb8"]
-[ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="9_viqb8"]
-[ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_o2jhf"]
-[ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="12_12nid"]
-[ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="12_k56je"]
-[ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
-[ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
-[ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
+[ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_kl3qe"]
+[ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="2_fpu8h"]
+[ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="3_3dwjg"]
+[ext_resource type="Texture2D" uid="uid://b0v82knqowhvs" path="res://assets/sky/darksky.hdr" id="3_kl3qe"]
+[ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="4_x4q7n"]
+[ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="5_uqky3"]
+[ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="6_srp50"]
+[ext_resource type="PackedScene" uid="uid://72k7rfi0kvts" path="res://scenes/GameObjects/triggerable/LabelMonitor.tscn" id="7_2f0n7"]
+[ext_resource type="PackedScene" uid="uid://lkjoa1d5xng3" path="res://scenes/GameObjects/triggerable/LabelPrinter.tscn" id="8_pb8ib"]
+[ext_resource type="PackedScene" uid="uid://bxbuyv8mx3qil" path="res://scenes/GameObjects/triggerable/FallTrap.tscn" id="9_2r6gl"]
+[ext_resource type="PackedScene" uid="uid://8cg4bql5g6ts" path="res://scenes/GameObjects/triggerable/FireTrap.tscn" id="10_cotyu"]
+[ext_resource type="PackedScene" uid="uid://cergi4lpkn7h0" path="res://scenes/GameObjects/interactables/DeliveryMachine.tscn" id="11_6pcb8"]
+[ext_resource type="PackedScene" uid="uid://caeg44mi0sb4o" path="res://scenes/GameObjects/triggerable/PackingMachine.tscn" id="13_iy8sc"]
+[ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="14_y8xvp"]
+[ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="15_dayqd"]
+[ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="16_cselj"]
+[ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="17_qh73q"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
-sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_fpu8h"]
+panorama = ExtResource("3_kl3qe")
 
 [sub_resource type="Sky" id="Sky_qvxys"]
-sky_material = SubResource("ProceduralSkyMaterial_ny6f2")
+sky_material = SubResource("PanoramaSkyMaterial_fpu8h")
 
 [sub_resource type="Environment" id="Environment_kx1m7"]
 background_mode = 2
 sky = SubResource("Sky_qvxys")
 ambient_light_source = 3
-ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
-sdfgi_enabled = true
 
 [sub_resource type="Resource" id="Resource_kx1m7"]
-script = ExtResource("3_25h3n")
+script = ExtResource("4_x4q7n")
 triggerName = "press_down"
 cooldownSeconds = 5.0
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_vegv4"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../trap_crusher1")
 triggerName = "press_down"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_6h6a0"]
-script = ExtResource("3_25h3n")
+script = ExtResource("4_x4q7n")
 triggerName = "next"
 cooldownSeconds = 0.8
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_l6pk1"]
-script = ExtResource("3_25h3n")
+script = ExtResource("4_x4q7n")
 triggerName = "next"
 cooldownSeconds = 0.8
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_7fd8x"]
-script = ExtResource("3_25h3n")
+script = ExtResource("4_x4q7n")
 triggerName = "next"
 cooldownSeconds = 0.8
 metadata/_custom_type_script = "uid://bi8ssshhlhhd4"
 
 [sub_resource type="Resource" id="Resource_nxn20"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../GOLabelMonitor")
 triggerName = "next"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_s2rxf"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../GOLabelMonitor2")
 triggerName = "next"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_hd0xh"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../GOLabelMonitor3")
 triggerName = "next"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_k4evv"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../GOLabelPrinter")
 triggerName = "print"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_o2jhf"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../FallTrap")
 triggerName = "fall"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_8d4x2"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../FireTrap")
 triggerName = "firetrap"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_k56je"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../PackagingMachine")
 triggerName = "processPackage"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_q8pj7"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../GOShippingTube")
 triggerName = "processShipping"
 metadata/_custom_type_script = "uid://ceok257oa0301"
 
 [sub_resource type="Resource" id="Resource_wkfce"]
-script = ExtResource("5_k4evv")
+script = ExtResource("6_srp50")
 triggerableNode = NodePath("../SwarmRobotSpawner")
 triggerName = "spawn"
 metadata/_custom_type_script = "uid://ceok257oa0301"
@@ -150,57 +148,57 @@ data = PackedVector3Array(-75.17536, -8.815918, 39.468647, -75.17536, -8.815918,
 [node name="playerSpawns" type="Node" parent="meta"]
 
 [node name="PlayerMarker3D" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.387531, 1.2823963, 14.350945)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -36.61774, 1.2823956, 9.719194)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D2" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.043004, 1.2823963, 14.350945)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -35.273212, 1.2823956, 9.719194)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D3" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.79893, 1.2823963, 14.350945)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -34.02914, 1.2823956, 9.719194)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D4" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.454403, 1.2823963, 14.350945)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -32.684612, 1.2823956, 9.719194)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D5" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.387531, 1.2823963, 16.104607)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -36.61774, 1.2823956, 11.472855)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D6" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.043004, 1.2823963, 16.104607)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -35.273212, 1.2823956, 11.472855)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D7" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.79893, 1.2823963, 16.104607)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -34.02914, 1.2823956, 11.472855)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
 
 [node name="PlayerMarker3D8" type="Marker3D" parent="meta/playerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.454403, 1.2823963, 16.104607)
-script = ExtResource("1_213ts")
+transform = Transform3D(-0.9998878, 0, -0.014974292, 0, 1, 0, 0.014974292, 0, -0.9998878, -32.684612, 1.2823956, 11.472855)
+script = ExtResource("1_kl3qe")
 canSpawnSecurity = true
 canSpawnOfficeWorker = true
 canSpawnWarehouseWorker = true
@@ -210,317 +208,313 @@ canSpawnWarehouseWorker = true
 [node name="packageItemTest" type="Node" parent="meta/itemSpawns"]
 
 [node name="1" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.828093, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.119465, -0.13796583, 19.593752)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="2" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.007387, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.298763, -0.13796583, 19.593752)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="3" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.282396, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.573772, -0.13796583, 19.593752)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="4" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.436762, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.728138, -0.13796583, 19.593752)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="5" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.875845, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.10008, -0.13796583, 21.11372)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="6" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.220762, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.444996, -0.13796583, 21.11372)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="7" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.719358, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.943592, -0.13796583, 21.11372)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="8" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.91826, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.142494, -0.13796583, 21.11372)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="9" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.30533, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.529564, -0.13796583, 21.11372)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="10" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.2984, -0.13796583, 19.499489)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="11" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.4777, -0.13796583, 19.499489)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="12" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.75271, -0.13796583, 19.499489)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="13" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.907074, -0.13796583, 19.499489)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="14" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.346153, -0.13796583, 19.499489)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="15" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -61.69107, -0.13796583, 19.499489)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="16" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.395092, -0.13796583, 21.325481)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="17" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.593994, -0.13796583, 21.325481)
+script = ExtResource("2_fpu8h")
+canSpawnPackageItems = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="18" type="Marker3D" parent="meta/itemSpawns/packageItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.981064, -0.13796583, 21.325481)
+script = ExtResource("2_fpu8h")
 canSpawnPackageItems = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="weaponItemTest" type="Node" parent="meta/itemSpawns"]
 
 [node name="1" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.396973, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.352392, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="2" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.576263, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.531683, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="3" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.851273, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.806692, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="4" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.00564, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.961058, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="5" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -54.444725, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.400145, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="6" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.789642, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.745062, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="7" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.28824, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.243658, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="8" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.487137, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.442556, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="9" type="Marker3D" parent="meta/itemSpawns/weaponItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.874207, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.829626, -0.13796535, 10.574699)
+script = ExtResource("2_fpu8h")
 canSpawnWeapons = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="componentsItemTest" type="Node" parent="meta/itemSpawns"]
 
 [node name="1" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.367336, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.928528, -0.13796559, -1.6090786)
+script = ExtResource("2_fpu8h")
 canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="2" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.546627, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.10782, -0.13796559, -1.6090786)
+script = ExtResource("2_fpu8h")
 canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="3" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.821636, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="4" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.976, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="5" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -54.41509, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="6" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.760006, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="7" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.258602, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="8" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58.4575, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="9" type="Marker3D" parent="meta/itemSpawns/componentsItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.84457, -0.13796583, 13.691994)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -43.382828, -0.13796559, -1.6090786)
+script = ExtResource("2_fpu8h")
 canSpawnComponents = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="mixedItemTest" type="Node" parent="meta/itemSpawns"]
 
-[node name="1" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.695156, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="2" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.874447, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="3" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.149456, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="4" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.303822, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="5" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.742908, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="6" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.087826, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="7" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.586422, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="8" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.785324, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="9" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.172394, -0.13796583, 22.14509)
-script = ExtResource("1_12nid")
-canSpawnWeapons = true
-canSpawnPackageItems = true
-canSpawnComponents = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
-[node name="10" type="Marker3D" parent="meta/itemSpawns/mixedItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.586422, -0.13796583, 19.190079)
-script = ExtResource("1_12nid")
-canSpawnAmmo = true
-metadata/_custom_type_script = "uid://crewntngyd76c"
-
 [node name="accessoriesItemTest" type="Node" parent="meta/itemSpawns"]
 
 [node name="1" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.53086, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.249887, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="2" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.71015, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.429178, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="3" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.98516, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.704187, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="4" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.139526, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.858553, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="5" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.578613, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.29764, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="6" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.92353, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.642557, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="7" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.422127, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.141153, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="8" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.621025, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.340052, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="9" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.008095, -0.13796583, 22.259497)
-script = ExtResource("1_12nid")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.727121, -0.13796583, 13.207865)
+script = ExtResource("2_fpu8h")
 canSpawnAccessories = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="10" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.249887, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="11" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.429178, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="12" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.704187, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="13" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.858553, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="14" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.29764, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="15" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.642557, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="16" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.141153, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="17" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.340052, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
+metadata/_custom_type_script = "uid://crewntngyd76c"
+
+[node name="18" type="Marker3D" parent="meta/itemSpawns/accessoriesItemTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.727121, -0.13796583, 17.027338)
+script = ExtResource("2_fpu8h")
+canSpawnAmmo = true
 metadata/_custom_type_script = "uid://crewntngyd76c"
 
 [node name="hordeSpawns" type="Node" parent="meta"]
 
 [node name="1" type="Marker3D" parent="meta/hordeSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.079664, 0.72216386, 31.508625)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.277322, 0.72216386, -7.143446)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_kx1m7")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.93545026, 0.26222044, -0.23700918, -0.060745496, 0.77983457, 0.6230314, 0.3481995, -0.5684176, 0.7454251, 0, 16.512272, 0)
+light_color = Color(0.8294589, 0.87319946, 0.8974946, 1)
+light_energy = 0.135
 shadow_enabled = true
 
 [node name="SteamAudioConfig" type="SteamAudioConfig" parent="."]
@@ -530,129 +524,123 @@ shadow_enabled = true
 [node name="interactables&traps" type="Node3D" parent="GameObjects"]
 
 [node name="CrusherDemo" type="Node3D" parent="GameObjects/interactables&traps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.1763, 9.536743e-07, -0.0021476746)
 
-[node name="trap_crusher1" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("2_qvxys")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.054209, -0.3277135, -1.1960058)
+[node name="trap_crusher1" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("3_3dwjg")]
+transform = Transform3D(-0.9981719, 0, 0.060438883, 0, 1, 0, -0.060438883, 0, -0.9981719, -28.92919, -0.3277135, -3.260753)
 triggerables = Array[Object]([SubResource("Resource_kx1m7")])
 
-[node name="button_crusher2_animated" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.363422, -0.0017920136, 2.3524747)
-triggers = Array[Object]([SubResource("Resource_vegv4")])
-
-[node name="button_crusher2_animated2" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.490866, 0.030387878, 2.3524747)
+[node name="button_crusher2_animated" parent="GameObjects/interactables&traps/CrusherDemo" instance=ExtResource("5_uqky3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.095089, -0.0017920136, 0.7498276)
 triggers = Array[Object]([SubResource("Resource_vegv4")])
 
 [node name="LabelingGame" type="Node3D" parent="GameObjects/interactables&traps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.09649, -7.4796414, -1.9709693)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.27279, -7.4796405, -1.973117)
 
-[node name="GOLabelMonitor" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
+[node name="GOLabelMonitor" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("7_2f0n7")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9941063, 8.68178, 0.119417906)
 triggerables = Array[Object]([SubResource("Resource_6h6a0")])
 
-[node name="GOLabelMonitor2" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
+[node name="GOLabelMonitor2" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("7_2f0n7")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.9933434, 8.68178, 0.07935941)
 labelMonitorType = 1
 triggerables = Array[Object]([SubResource("Resource_l6pk1")])
 
-[node name="GOLabelMonitor3" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
+[node name="GOLabelMonitor3" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("7_2f0n7")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0038223267, 8.68178, 0.039525986)
 labelMonitorType = 2
 triggerables = Array[Object]([SubResource("Resource_7fd8x")])
 
-[node name="GOLabellingMonitorButton" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("3_k4evv")]
+[node name="GOLabellingMonitorButton" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("5_uqky3")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -4.0225143, 8.565615, 0.4406439)
 triggers = Array[Object]([SubResource("Resource_nxn20")])
 
-[node name="GOLabellingMonitorButton2" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("3_k4evv")]
+[node name="GOLabellingMonitorButton2" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("5_uqky3")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -2.0137138, 8.565615, 0.40042436)
 triggers = Array[Object]([SubResource("Resource_s2rxf")])
 
-[node name="GOLabellingMonitorButton3" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("3_k4evv")]
+[node name="GOLabellingMonitorButton3" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("5_uqky3")]
 transform = Transform3D(-1, 8.742278e-08, 3.821371e-15, 0, -4.371139e-08, 1, 8.742278e-08, 1, 4.371139e-08, -0.020244598, 8.565615, 0.36051178)
 triggers = Array[Object]([SubResource("Resource_hd0xh")])
 
-[node name="GOLabelPrinter" parent="GameObjects/interactables&traps/LabelingGame" node_paths=PackedStringArray("monitor1", "monitor2", "monitor3") instance=ExtResource("8_vegv4")]
+[node name="GOLabelPrinter" parent="GameObjects/interactables&traps/LabelingGame" node_paths=PackedStringArray("monitor1", "monitor2", "monitor3") instance=ExtResource("8_pb8ib")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.7715378, 7.092667, 0.407534)
 monitor1 = NodePath("../GOLabelMonitor")
 monitor2 = NodePath("../GOLabelMonitor2")
 monitor3 = NodePath("../GOLabelMonitor3")
 
-[node name="GOPrintButton" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("3_k4evv")]
+[node name="GOPrintButton" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("5_uqky3")]
 transform = Transform3D(-0.857522, 7.496694e-08, -1.3822983e-15, 5.6702564e-08, 0.6486017, 0.56094545, 4.90394e-08, 0.56094533, -0.6486017, 2.8972778, 8.234524, 0.83426964)
 triggers = Array[Object]([SubResource("Resource_k4evv")])
 ButtonDisableCondition = 1
 
-[node name="FallTrap" parent="GameObjects/interactables&traps" instance=ExtResource("9_viqb8")]
+[node name="FallTrap" parent="GameObjects/interactables&traps" instance=ExtResource("9_2r6gl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.211124, -0.3742671, -1.6044703)
 
-[node name="FallTrapButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
+[node name="FallTrapButton" parent="GameObjects/interactables&traps" instance=ExtResource("5_uqky3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.19547, -0.38486052, 0.40144658)
 triggers = Array[Object]([SubResource("Resource_o2jhf")])
 
-[node name="FireTrap" parent="GameObjects/interactables&traps" instance=ExtResource("10_o2jhf")]
+[node name="FireTrap" parent="GameObjects/interactables&traps" instance=ExtResource("10_cotyu")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -59.020603, 0.29887056, -1.7546511)
 
-[node name="FireTrapButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
+[node name="FireTrapButton" parent="GameObjects/interactables&traps" instance=ExtResource("5_uqky3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.182148, -0.38485765, 0.4780352)
 triggers = Array[Object]([SubResource("Resource_8d4x2")])
 
-[node name="GODeliveryMachine" parent="GameObjects/interactables&traps" instance=ExtResource("8_viqb8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.154438, -0.4036541, -1.7161186)
+[node name="GODeliveryMachine" parent="GameObjects/interactables&traps" instance=ExtResource("11_6pcb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.197498, -0.4036522, -2.5579746)
 
-[node name="basicDoor" parent="GameObjects/interactables&traps" instance=ExtResource("5_o33i4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.698961, 1.1147871, -1.6779103)
+[node name="PackagingMachine" parent="GameObjects/interactables&traps" instance=ExtResource("13_iy8sc")]
+transform = Transform3D(-0.99973863, 0.0041128616, -0.022488791, 9.313226e-10, 0.9836847, 0.1799011, 0.022861786, 0.17985411, -0.98342764, -52.67817, -0.59495425, 18.173458)
 
-[node name="PackagingMachine" parent="GameObjects/interactables&traps" instance=ExtResource("12_k56je")]
-transform = Transform3D(-0.99973863, 0.008621119, -0.021173984, 9.313226e-10, 0.9261736, 0.37709734, 0.022861786, 0.37699878, -0.9259316, -43.652374, -0.39771473, 12.830842)
-
-[node name="packingButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
-transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -45.061207, 1.0129337, 11.838503)
+[node name="packingButton" parent="GameObjects/interactables&traps" instance=ExtResource("5_uqky3")]
+transform = Transform3D(1, 0, 0, 0, 0.081468865, 0.9966759, 0, -0.9966759, 0.081468865, -49.59778, 0.5824002, 17.105576)
 triggers = Array[Object]([SubResource("Resource_k56je")])
 
-[node name="GOShippingTube" parent="GameObjects/interactables&traps" instance=ExtResource("13_o4214")]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -46.5571, -0.353854, -5.452427)
+[node name="GOShippingTube" parent="GameObjects/interactables&traps" instance=ExtResource("14_y8xvp")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -28.951738, -0.353854, -2.8728008)
 
-[node name="shippingButton" parent="GameObjects/interactables&traps" instance=ExtResource("3_k4evv")]
-transform = Transform3D(-1, -8.742278e-08, 0, -3.821371e-15, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, -45.472324, 0.96177036, -3.6682656)
+[node name="shippingButton" parent="GameObjects/interactables&traps" instance=ExtResource("5_uqky3")]
+transform = Transform3D(-1, -8.742278e-08, 0, -3.821371e-15, 4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, -27.725693, 0.96894294, -1.3210919)
 triggers = Array[Object]([SubResource("Resource_q8pj7")])
 
-[node name="SwarmRobotSpawner" parent="GameObjects" instance=ExtResource("12_12nid")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3303785, 3.5941045, -7.341351)
+[node name="SwarmRobotSpawner" parent="GameObjects" instance=ExtResource("15_dayqd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3303785, 1.9039192, -7.341351)
 
-[node name="spawnButton" parent="GameObjects" instance=ExtResource("3_k4evv")]
-transform = Transform3D(4.86, 0, 0, 0, -2.1243736e-07, -4.86, 0, 4.86, -2.1243736e-07, -13.5589285, 1.1176056, -1.0578002)
+[node name="spawnButton" parent="GameObjects" instance=ExtResource("5_uqky3")]
+transform = Transform3D(4.86, 0, 0, 0, -2.1243736e-07, -4.86, 0, 4.86, -2.1243736e-07, -9.262226, 1.1176056, -1.0578002)
 triggers = Array[Object]([SubResource("Resource_wkfce")])
 interactCooldownSeconds = 0.0
 
 [node name="Node3D" type="Node3D" parent="GameObjects"]
-transform = Transform3D(1, 0, 0, 0, 0.98748, 0.15774444, 0, -0.15774444, 0.98748, -41.644836, 1.5254246, 12.131912)
+transform = Transform3D(1, 0, 0, 0, 0.98748, 0.15774444, 0, -0.15774444, 0.98748, -44.04711, 1.152015, 17.842594)
 
-[node name="GOOrderMonitor" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
+[node name="GOOrderMonitor" parent="GameObjects/Node3D" instance=ExtResource("16_cselj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.68087, 0.54171205, -0.1393528)
 orderNumber = 1
 
-[node name="GOOrderMonitor2" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
+[node name="GOOrderMonitor2" parent="GameObjects/Node3D" instance=ExtResource("16_cselj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4248657, 0.54171205, -0.1393528)
 orderNumber = 2
 
-[node name="GOOrderMonitor3" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
+[node name="GOOrderMonitor3" parent="GameObjects/Node3D" instance=ExtResource("16_cselj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1522408, 0.54171205, -0.1393528)
 orderNumber = 3
 
-[node name="GOOrderMonitor4" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
+[node name="GOOrderMonitor4" parent="GameObjects/Node3D" instance=ExtResource("16_cselj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.68087, -0.3852129, -0.1393528)
 orderNumber = 4
 
-[node name="GOOrderMonitor5" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
+[node name="GOOrderMonitor5" parent="GameObjects/Node3D" instance=ExtResource("16_cselj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4248657, -0.3852129, -0.1393528)
 orderNumber = 5
 
-[node name="GOOrderMonitor6" parent="GameObjects/Node3D" instance=ExtResource("14_k56je")]
+[node name="GOOrderMonitor6" parent="GameObjects/Node3D" instance=ExtResource("16_cselj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1522408, -0.3852129, -0.1393528)
 orderNumber = 6
 
-[node name="Helicopter" parent="GameObjects" instance=ExtResource("16_q8pj7")]
+[node name="Helicopter" parent="GameObjects" instance=ExtResource("17_qh73q")]
 transform = Transform3D(1, 0, 0, 0, 0.9969842, 0.0776065, 0, -0.0776065, 0.9969842, -75.02698, -0.42502344, 0.014842144)
 
 [node name="statics" type="NavigationRegion3D" parent="."]
@@ -749,20 +737,10 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.83
 use_collision = true
 size = Vector3(11.6015625, 6.553711, 1)
 
-[node name="CSGBox3D9" type="CSGBox3D" parent="statics/CSGBox3D10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.81427, -0.6055908, 0.023803711)
-operation = 2
-size = Vector3(5.1610107, 5.203369, 1.3669434)
-
 [node name="CSGBox3D11" type="CSGBox3D" parent="statics"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -14.662852, 1.8916426, -7.189537)
 use_collision = true
 size = Vector3(11.6015625, 6.553711, 1)
-
-[node name="CSGBox3D9" type="CSGBox3D" parent="statics/CSGBox3D11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.81427, -0.6055908, 0.023803711)
-operation = 2
-size = Vector3(5.1610107, 5.203369, 1.3669434)
 
 [node name="CSGBox3D12" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -5.9664307, 5.5226965, -7.205861)
@@ -1002,38 +980,18 @@ outer_radius = 5.061079
 sides = 28
 ring_sides = 26
 
-[node name="CSGBox3D47" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.225683, -0.5023236, 2.3263385)
-size = Vector3(0.265625, 1, 0.30322266)
-
 [node name="Label3D2" type="Label3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.260841, 0.29073, 2.1008534)
-text = "BasicAnimatedButton"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.89344, 1.9028336, -0.37506545)
+text = "This is the Labelling Press, Place a package full of items on the white metal platform and place a label from the printer on top. Then press the button that is nearby to activate it. If the Label and the Pacakge match then it will apply it creating a single Labeled Package."
+autowrap_mode = 2
 
 [node name="Label3D6" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.513227, -4.837231, -0.6976271)
 text = "Spawn One Swarm Robot"
 
-[node name="Label3D" type="Label3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.629435, 1.4902849, 0)
-text = "Basic Hinge Door"
-
 [node name="CSGBox3D48" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.342667, -0.5023236, 2.3263385)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.51676, -0.5023236, 0.72369146)
 size = Vector3(0.265625, 1, 0.30322266)
-
-[node name="Label3D3" type="Label3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.101599, 0.26536465, 2.1124222)
-text = "BasicUnanimatedButton
-"
-
-[node name="Label3D4" type="Label3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.160055, 0.29073, 1.1572104)
-text = "Crusher"
-
-[node name="Label3D5" type="Label3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.079622, 1.894227, 2.1124222)
-text = "Both Trigger Crusher"
 
 [node name="CSGBox3D52" type="CSGBox3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7800579, -9.201131, -14.033365)
@@ -1046,7 +1004,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7800579, -9.201131, -14.033
 shape = SubResource("ConcavePolygonShape3D_o4214")
 
 [node name="CSGBox3D53" type="CSGBox3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.45727, -9.201131, 39.43025)
+transform = Transform3D(0.99999964, 7.949996e-05, 0.000830911, -7.9907615e-05, 0.9999999, 0.00047402707, -0.00083087187, -0.00047409564, 0.9999995, -17.45727, -9.201131, 39.43025)
 use_collision = true
 size = Vector3(150.35072, 17.631836, 78.937294)
 material = SubResource("StandardMaterial3D_kx1m7")
@@ -1066,3 +1024,224 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.212933, -17.04317, -1.652
 use_collision = true
 size = Vector3(2.2907176, 1.9477539, 3.389182)
 material = SubResource("StandardMaterial3D_kx1m7")
+
+[node name="Label3D3" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.524075, 2.1720166, -1.3791304)
+text = "This is the Label Printer, Using the Monitors and the buttons below them you can select what address combination you want to print. Be careful though because printing uses paper and you will need to find more around the warehouse."
+autowrap_mode = 2
+
+[node name="Label3D4" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.196878, 1.9028336, -0.9463974)
+text = "This is the Shipping Tube, once a package has all of its items and has been labelled properly it can be placed in here to be sent our for shipping. Simple place the package and press the button, if the package gets sucked up then you are good to go."
+autowrap_mode = 2
+
+[node name="Label3D5" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.63256, 1.9028336, 0.025386333)
+text = "The Labelling Press is found in the Labelling Office"
+autowrap_mode = 2
+
+[node name="Label3D7" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.27906, 2.632532, -0.9463974)
+text = "The Labelling Printer is found in the Labelling Office"
+autowrap_mode = 2
+
+[node name="Label3D8" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.635427, 1.9028336, -2.1677718)
+text = "This is the Delivery Machine, using this you can remotely control the delivery vehicle and get the package to the client, you start in the bottom right and are trying to get to the green square in the top left.
+This is the final step and if you played along the helicopter is likely ready for you."
+autowrap_mode = 2
+
+[node name="Label3D9" type="Label3D" parent="statics"]
+transform = Transform3D(-0.30914974, 0, -0.9510133, 0, 1, 0, 0.9510133, 0, -0.30914974, -15.949396, 1.6675829, 1.2815256)
+text = "This button will spawn a few robots in the room for you to \"play\" around with."
+autowrap_mode = 2
+
+[node name="Label3D10" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -43.274326, 1.6600115, 16.36097)
+text = "This is the Order Monitor Wall, here the workers can see all the orders that need to be completed in a round, the icons show what items need to be in the package and the Address at the bottom is what needs to be on its label"
+autowrap_mode = 2
+
+[node name="Label3D11" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.033604, 2.873653, -0.9597949)
+text = "The Shipping Tube is found in the Warehouse"
+autowrap_mode = 2
+
+[node name="Label3D12" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.25123, 2.1888704, -2.1540215)
+text = "The Delivery Machine is found in the upper floor of Management"
+autowrap_mode = 2
+
+[node name="Label3D13" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -40.87632, 0.8327656, 16.459337)
+text = "The OrderMonitor Wall is on the first floor of Management"
+autowrap_mode = 2
+
+[node name="Label3D14" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -50.367207, 2.6325817, 16.814688)
+text = "This is the Packing Machine. Place all the items needed for a specific order into its compartment and press the button. If the correct items, and only the correct items are inside it will pack them into a box for you. Next up is Labelling behind you."
+autowrap_mode = 2
+
+[node name="Label3D15" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -53.36723, 3.4396982, 17.439877)
+text = "The Packing Machine is in the Packing Department"
+autowrap_mode = 2
+
+[node name="Label3D16" type="Label3D" parent="statics"]
+transform = Transform3D(0.009843623, 0, 0.99995154, 0, 1, 0, -0.99995154, 0, 0.009843623, -68.05135, 2.7099504, 6.0786886)
+text = "The Helicopter is located out front of the warehouse, near the Lobby"
+autowrap_mode = 2
+
+[node name="Label3D17" type="Label3D" parent="statics"]
+transform = Transform3D(0.99906486, 0, -0.04323587, 0, 1, 0, 0.04323587, 0, 0.99906486, -59.779667, 1.2689074, 0.8749722)
+text = "Located around the Warehouse are various traps to help manage any Enemies that make it inside, careful to not hurt your fellow workers though..."
+autowrap_mode = 2
+
+[node name="Label3D18" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -23.444061, 0.47715712, 8.769695)
+text = "Every worker can hold Up to 1 Weapon, 1 Accessory (Package Radar, Flashlight, etc), and 1 Role Item (Player Radar, Teleporter, Disguise Kit, etc)"
+autowrap_mode = 2
+
+[node name="Label3D19" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -26.165524, 0.47715712, 8.658058)
+text = "As a Manager or a Traitor you can Press B to open the buy menu and select an item to purchase, WARNING IT DROPS THE ITEM IN FRONT OF YOU.
+"
+autowrap_mode = 2
+
+[node name="Label3D20" type="Label3D" parent="statics"]
+transform = Transform3D(-0.31996825, 0, -0.9474282, 0, 1, 0, 0.9474282, 0, -0.31996825, -16.174917, 0.8210381, 5.264617)
+text = "If you hear a siren that means one of two things:
+A swarm is coming to attack the warehouse from the front (the general area of the Lobby)
+Or the final package has been delivered and the evacuation helicopter has arrived. Go to the helicopter for more info"
+autowrap_mode = 2
+
+[node name="Label3D21" type="Label3D" parent="statics"]
+transform = Transform3D(0.009843623, 0, 0.99995154, 0, 1, 0, -0.99995154, 0, 0.009843623, -68.02151, 2.2038395, 3.0465522)
+text = "After all packages have been delivered the Helicopter arrives to evacuate any remaining workers. After ~90 seconds the helicopter will take off and if ANYBODY (traitor included) is on board then the Innocents will win. Be careful though as the attack waves will come constantly during the evacuation."
+autowrap_mode = 2
+
+[node name="Label3D22" type="Label3D" parent="statics"]
+transform = Transform3D(0.99906486, 0, -0.04323587, 0, 1, 0, 0.04323587, 0, 0.99906486, -56.795456, 1.2689074, 1.004118)
+text = "Be aware that if you die during a round, you will come back as a robot to attack the warehouse with the next Swarm, so dont walk away from your computer too quick."
+autowrap_mode = 2
+
+[node name="CSGBox3D49" type="CSGBox3D" parent="statics"]
+transform = Transform3D(0.9992297, 0, -0.039242376, 0, 1, 0, 0.039242376, 0, 0.9992297, -30.846916, 0.84154224, 19.05965)
+size = Vector3(0.265625, 2.6313477, 21.590088)
+
+[node name="CSGBox3D50" type="CSGBox3D" parent="statics"]
+transform = Transform3D(-0.008220386, 0, -0.9999662, 0, 1, 0, 0.9999662, 0, -0.008220386, -44.274826, 0.84154224, 29.125315)
+size = Vector3(0.265625, 2.6313477, 94.41559)
+
+[node name="CSGBox3D51" type="CSGBox3D" parent="statics"]
+transform = Transform3D(0.9992297, 0, -0.039242376, 0, 1, 0, 0.039242376, 0, 0.9992297, -63.514065, 0.84154224, 24.046429)
+size = Vector3(0.265625, 2.6313477, 10.8585205)
+
+[node name="CSGBox3D55" type="CSGBox3D" parent="statics"]
+transform = Transform3D(0.9992297, 0, -0.039242376, 0, 1, 0, 0.039242376, 0, 0.9992297, -88.18424, 0.84154224, 5.7119255)
+size = Vector3(0.265625, 2.6313477, 45.56305)
+
+[node name="CSGBox3D56" type="CSGBox3D" parent="statics"]
+transform = Transform3D(-0.008220386, 0, -0.9999662, 0, 1, 0, 0.9999662, 0, -0.008220386, -52.163185, 0.84154224, -16.741856)
+size = Vector3(0.265625, 2.6313477, 77.885315)
+
+[node name="CSGBox3D58" type="CSGBox3D" parent="statics"]
+transform = Transform3D(0.9992297, 0, -0.039242376, 0, 1, 0, 0.039242376, 0, 0.9992297, -13.144459, 0.84154224, -14.553404)
+size = Vector3(0.265625, 2.6313477, 9.833282)
+
+[node name="CSGBox3D59" type="CSGBox3D" parent="statics"]
+transform = Transform3D(0.9992297, 0, -0.039242376, 0, 1, 0, 0.039242376, 0, 0.9992297, 3.5301511, 0.84154224, 15.229285)
+size = Vector3(0.265625, 2.6313477, 31.942993)
+
+[node name="Label3D23" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -34.19928, 1.6600115, 16.733236)
+text = "Welcome to Dangerous Deliveries, hopefully this tutorial will help famarlize you with some of the inner workers of the game before you jump into the  real danger, follow the signs to your right, progressing clockwise."
+autowrap_mode = 2
+
+[node name="CSGBox3D60" type="CSGBox3D" parent="statics"]
+transform = Transform3D(0.9992297, 0, -0.039242376, 0, 1, 0, 0.039242376, 0, 0.9992297, -38.725822, 0.84154224, 8.0293255)
+size = Vector3(16.199219, 2.6313477, 0.49560547)
+
+[node name="Label3D24" type="Label3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.49482, 0.35671508, -1.5701492)
+text = "These monitors control what is printed by the printer, the address for each package can be found on its order monitor at the start of the tutorial"
+autowrap_mode = 2
+
+[node name="Label3D25" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -48.322735, 0.8327656, 17.689907)
+text = "Left click to pick up an item, then hold left click to charge up a throw."
+autowrap_mode = 2
+
+[node name="Label3D26" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -20.185562, 0.5759978, 8.876867)
+text = "Press 1 to equip your hands (used for move props, etc)
+Press 2 to equip a weapon,
+Press 3 to equip a accessory,
+Press 4 to equip a role item."
+autowrap_mode = 2
+
+[node name="Label3D27" type="Label3D" parent="statics"]
+transform = Transform3D(-0.8424995, 0, -0.5386972, 0, 1, 0, 0.5386972, 0, -0.8424995, -18.030285, 0.5759978, 8.267855)
+text = "Press F to pick up weapons and accessories off the ground.
+Press Q to drop them."
+autowrap_mode = 2
+
+[node name="Label3D28" type="Label3D" parent="statics"]
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -28.52842, 0.47715712, 8.561131)
+text = "Traitors and Managers start with only 1 credit, traitors recieve another credit for every 2 innocents that die or 1 traitor."
+autowrap_mode = 2
+
+[node name="SpotLight3D" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -34.9081, 5.224253, 14.158386)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -41.373466, 5.224253, 14.158386)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -51.317867, 5.224253, 17.198326)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -59.310013, 5.2242517, -1.0824776)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D5" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -48.70374, 5.2242517, -1.0824776)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -33.134388, 5.296918, -1.0824776)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D7" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.253483, 5.296918, -1.0824776)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302
+
+[node name="SpotLight3D8" type="SpotLight3D" parent="statics"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.671436, 5.296919, 11.431655)
+light_energy = 2.483
+spot_range = 29.83
+spot_angle = 70.41
+spot_angle_attenuation = 2.0705302

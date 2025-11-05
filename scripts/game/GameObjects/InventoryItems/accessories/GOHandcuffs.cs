@@ -15,7 +15,7 @@ public partial class GOHandcuffs : GOBaseAccessory
     [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
     public override void HandleInput(ActionFlags input)
     {
-        if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
+        if (!((BasicPlayerCharacter)GetHeldBy()).handcuffed && !lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
         {
             if (interactRayCast.IsColliding())
             {
@@ -30,7 +30,7 @@ public partial class GOHandcuffs : GOBaseAccessory
                 if (current is BasicPlayerCharacter target)
                 {
                     Logging.Log($"Hit a BasicPlayerCharacter object: " + target.currentStunBar, "GOHandcuffs");
-                    if (target.state == CharacterState.Living)
+                    if (target.state == CharacterState.Living && target.knockedOut)
                     {
                         RPCManager.RPCID(id, "Handcuff", [target.id]);
                     }

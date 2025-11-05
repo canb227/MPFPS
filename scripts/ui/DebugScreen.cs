@@ -43,35 +43,24 @@ public partial class DebugScreen : Control
 
     public static List<string> directLoadMap_mapPaths = new()
     {
-        "res://scenes/world/devLevel.tscn",
-        "res://scenes/world/debugPlatform.tscn",
-        "res://scenes/world/debugFlat.tscn",
+        "res://scenes/world/tutorial.tscn",
         "res://scenes/world/warehouse.tscn",
+        "res://scenes/world/devLevel.tscn",
     };
 
     public static List<string> directLoadMap_mapIconPaths = new()
     {
+        "res://assets/ui/tutorial_1.png",
+        "res://assets/ui/mainmenu_1.png",
         "res://assets/ui/img/devMapScreenie.png",
-        "res://assets/ui/img/debugMapScreenie.png",
-        "res://assets/ui/img/debugMapFlatScreenie.png",
-        "res://assets/ui/img/debugMapFlatScreenie.png",
     };
 
     public static List<string> directLoadMap_mapNames = new()
     {
-        "dev",
-        "platform",
-        "flat",
+        "tutorial",
         "warehouse",
+        "dev",
     };
-
-    public static List<string> playerCharacters = new()
-    {
-        "ghost",
-        "tony",
-        "basicPlayer",
-    };
-
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()

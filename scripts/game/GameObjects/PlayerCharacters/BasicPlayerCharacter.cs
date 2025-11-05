@@ -456,27 +456,84 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             hands.HandleHandInput(input, delta);
         }
-        else if(equipped != null)
+        else if (equipped != null)
         {
             equipped.HandleInput(input.actions);
         }
 
     }
 
+
+    private float crouchMoveSpeedMultiplier = 0.7f;
+    private float standHeight = 2.4f;
+    private float crouchHeight = 1.75f;
+    private float crouchSpeed = 12.0f;
+    private Vector3 standingCameraOffset = new Vector3(0, -0.24f, -0.08f);
+    private Vector3 crouchingCameraOffset = new Vector3(0, -0.75f, -0.08f);
+    private float cameraLerpSpeed = 12.0f;
+    private float cantUncrouchSticky = 0f;
     private void HandleMovementInputAndPhysics(double delta)
     {
         Velocity = HandleYAxis(Velocity, delta);
 
-        Vector3 localVelocity = CalculateLocalVelocity();
-        if(handcuffed)
+        // Handle crouch input
+        bool wantsToCrouch = input.actions.HasFlag(ActionFlags.Crouch);
+
+        //GD.Print(wantsToCrouch + " " + crouched + " " + " " + CanUncrouch() + ((CapsuleShape3D)collider.Shape).Height);
+        //we we are crouched and can't uncrouch then we must continue crouching
+        // if (!CanUncrouch())
+        // {
+        //     wantsToCrouch = true;
+        // }
+        //cantUncrouchSticky -= (float)delta;
+        
+        // Smoothly interpolate collider height
+        var capsule = collider.Shape as CapsuleShape3D;
+        if (capsule != null)
         {
-            localVelocity.X *= 0.7f;
-            localVelocity.Z *= 0.7f;
+            float currentHeight = capsule.Height;
+            float targetHeight = wantsToCrouch ? crouchHeight : standHeight;
+            capsule.Height = Mathf.Lerp(currentHeight, targetHeight, (float)delta * crouchSpeed);
+            crouched = capsule.Height < (standHeight + crouchHeight) / 2;
+        }
+        Vector3 targetOffset = crouched ? crouchingCameraOffset : standingCameraOffset;
+        camera.Position = camera.Position.Lerp(targetOffset, (float)delta * cameraLerpSpeed);
+
+        // Adjust movement speed
+        Vector3 localVelocity = CalculateLocalVelocity();
+        if (crouched)
+        {
+            localVelocity.X *= crouchMoveSpeedMultiplier;
+            localVelocity.Z *= crouchMoveSpeedMultiplier;
+        }
+        else if (handcuffed)
+        {
+            localVelocity.X *= crouchMoveSpeedMultiplier;
+            localVelocity.Z *= crouchMoveSpeedMultiplier;
         }
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
         PushAwayRigidBodies();
         MoveAndSlide();
     }
+    
+    bool CanUncrouch()
+    {
+        var capsule = collider.Shape as CapsuleShape3D;
+        if (capsule == null) return false;
+
+        // Temporarily increase height
+        float originalHeight = capsule.Height;
+        capsule.Height = standHeight;
+
+        // Test if the taller shape would collide
+        bool blocked = TestMove(Transform, Vector3.Zero);
+
+        // Restore original height
+        capsule.Height = originalHeight;
+
+        return !blocked;
+    }
+
 
     private float PushForceScalar = 1.0f;
     private float Mass = 80.0f;

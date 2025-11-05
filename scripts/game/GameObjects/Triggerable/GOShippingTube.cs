@@ -61,7 +61,7 @@ public partial class GOShippingTube : GOTrap
     }
     
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    private async void EjectAfterDelay()
+    public async void EjectAfterDelay()
     {
         float delaySeconds = 0.3f;
         float ejectPower = 20f;

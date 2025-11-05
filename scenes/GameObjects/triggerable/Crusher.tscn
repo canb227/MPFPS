@@ -10,9 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://bwak21svc2g80" path="res://assets/models/map/press_antyposlizg.jpg" id="5_8hvrf"]
 [ext_resource type="AudioStream" uid="uid://cvy6jwxpbspf1" path="res://assets/audio/environment/siren.wav" id="5_v4yce"]
 [ext_resource type="AudioStream" uid="uid://df1tkgwl3botl" path="res://assets/audio/environment/hall_elev_stop.wav" id="6_w6tdc"]
-[ext_resource type="AudioStream" uid="uid://632lj6hlnih" path="res://assets/audio/environment/elevator_move_loop1.wav" id="7_bc21h"]
 [ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/Hurtbox.cs" id="7_pytuy"]
 [ext_resource type="Texture2D" uid="uid://bn5edf2o42ota" path="res://assets/models/map/grate_metal_hr_2.png" id="11_pytuy"]
+[ext_resource type="AudioStream" uid="uid://cf0w6tu7k7xc0" path="res://assets/audio/environment/hall_elev_move.wav" id="12_w6tdc"]
 
 [sub_resource type="Resource" id="Resource_pytuy"]
 script = ExtResource("2_v4yce")
@@ -82,14 +82,62 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("StaticBody3D2/SteamAudioPlayerCage:volume_db")
+tracks/5/path = NodePath("SteamAudioPlayerAlarm:playing")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [3.0]
+"update": 1,
+"values": [true]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("StaticBody3D2/SteamAudioPlayerCage:playing")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("PressArm/SteamAudioPlayer:playing")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("PressArm/SteamAudioPlayer2:playing")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("StaticBody3D2/SteamAudioPlayerCage2:playing")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_vvntr"]
@@ -140,32 +188,13 @@ tracks/3/keys = {
 "update": 1,
 "values": [false, true]
 }
-tracks/4/type = "audio"
+tracks/4/type = "method"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("PressArm/SteamAudioPlayer")
+tracks/4/path = NodePath(".")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"clips": [{
-"end_offset": 0.29797524,
-"start_offset": 0.0,
-"stream": ExtResource("2_8hvrf")
-}, {
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("3_w3e0y")
-}],
-"times": PackedFloat32Array(3.2976828, 5.031016)
-}
-tracks/4/use_blend = true
-tracks/5/type = "method"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
 "times": PackedFloat32Array(3.4333334),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -173,63 +202,77 @@ tracks/5/keys = {
 "method": &"AttemptLabeling"
 }]
 }
-tracks/6/type = "audio"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("SteamAudioPlayerAlarm")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"clips": [{
-"end_offset": 0.478,
-"start_offset": 0.0,
-"stream": ExtResource("5_v4yce")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/6/use_blend = true
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("StaticBody3D2:position")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("StaticBody3D2:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
 "times": PackedFloat32Array(0, 0.1, 7.133333, 8),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, -3.5986538, 0), Vector3(0, -3.5986538, 0), Vector3(0, 0, 0)]
 }
-tracks/8/type = "audio"
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("SteamAudioPlayerAlarm:playing")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.01, 3.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("StaticBody3D2/SteamAudioPlayerCage:playing")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.15054256),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("StaticBody3D2/SteamAudioPlayerCage")
+tracks/8/path = NodePath("PressArm/SteamAudioPlayer:playing")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("6_w6tdc")
-}, {
-"end_offset": 1.8411,
-"start_offset": 0.0,
-"stream": ExtResource("7_bc21h")
-}],
-"times": PackedFloat32Array(0.16666666, 7.133333)
+"times": PackedFloat32Array(3.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
-tracks/8/use_blend = true
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("StaticBody3D2/SteamAudioPlayerCage:volume_db")
+tracks/9/path = NodePath("PressArm/SteamAudioPlayer2:playing")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0.13333333, 1.5, 7.0327616, 7.4666667, 7.7, 8.082555),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1.0000001, 1),
-"update": 0,
-"values": [-3.0, -3.0, -12.0, -6.0, -6.0, -12.0]
+"times": PackedFloat32Array(4.995276),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("StaticBody3D2/SteamAudioPlayerCage2:playing")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(7.0891857, 8.133333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dnnl5"]
@@ -497,6 +540,16 @@ disabled = true
 air_absorption = true
 reflection = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
+stream = ExtResource("2_8hvrf")
+attenuation_model = 2
+volume_db = 3.0
+panning_strength = 0.0
+
+[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="PressArm"]
+air_absorption = true
+reflection = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
+stream = ExtResource("3_w3e0y")
 attenuation_model = 2
 volume_db = 3.0
 panning_strength = 0.0
@@ -521,8 +574,17 @@ shape = SubResource("ConcavePolygonShape3D_w6tdc")
 [node name="SteamAudioPlayerCage" type="SteamAudioPlayer" parent="StaticBody3D2"]
 distance_attenuation = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8893733, -2.023976)
+stream = ExtResource("6_w6tdc")
 attenuation_model = 3
-volume_db = 3.0
+volume_db = -3.0
+panning_strength = 0.0
+
+[node name="SteamAudioPlayerCage2" type="SteamAudioPlayer" parent="StaticBody3D2"]
+distance_attenuation = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8893733, -2.023976)
+stream = ExtResource("12_w6tdc")
+attenuation_model = 3
+volume_db = -3.0
 panning_strength = 0.0
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
@@ -552,6 +614,7 @@ shape = SubResource("BoxShape3D_s3lk7")
 [node name="SteamAudioPlayerAlarm" type="SteamAudioPlayer" parent="."]
 air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
+stream = ExtResource("5_v4yce")
 attenuation_model = 2
 volume_db = 3.0
 unit_size = 15.0

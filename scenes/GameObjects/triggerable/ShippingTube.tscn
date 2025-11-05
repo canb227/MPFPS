@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=4 uid="uid://dmqaqtbkumgwh"]
+[gd_scene load_steps=35 format=4 uid="uid://dmqaqtbkumgwh"]
 
 [ext_resource type="Texture2D" uid="uid://b1idtne3ix0lo" path="res://assets/models/map/packageTube_pipe_hr_3.png" id="1_jef8e"]
 [ext_resource type="Script" uid="uid://bs2urqjwct2oj" path="res://scripts/game/GameObjects/Triggerable/GOShippingTube.cs" id="1_kfj15"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://duyj13ci6wny5" path="res://assets/audio/environment/elevbell1.wav" id="5_exdc2"]
 [ext_resource type="AudioStream" uid="uid://c8k8usi85aevf" path="res://assets/audio/environment/shippingTube/garage_move1.wav" id="6_qbjmv"]
 [ext_resource type="AudioStream" uid="uid://blxpt2irn6rri" path="res://assets/audio/environment/klaxon1.wav" id="7_5m41q"]
+[ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/Hurtbox.cs" id="9_qbjmv"]
 
 [sub_resource type="Resource" id="Resource_cmag4"]
 script = ExtResource("2_ht3jw")
@@ -64,6 +65,18 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("MainMesh/Hurtbox/CollisionShape3D:disabled")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_kfj15"]
@@ -149,6 +162,61 @@ tracks/5/keys = {
 "update": 0,
 "values": [-12.0, 0.0, 0.0, -6.0]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("MainMesh/Hurtbox/CollisionShape3D:disabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.8348081),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_inedd"]
+resource_name = "shipmentFail"
+length = 1.01
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MachineAudio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("7_5m41q")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MainMesh/StaticBody3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -2.4102998, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("MainMesh/Hurtbox/CollisionShape3D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_22u12"]
 resource_name = "shipmentSuccess"
@@ -226,36 +294,17 @@ tracks/4/keys = {
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, -2.4102998, 0)]
 }
-
-[sub_resource type="Animation" id="Animation_inedd"]
-resource_name = "shipmentFail"
-length = 1.01
-tracks/0/type = "audio"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("MachineAudio")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("7_5m41q")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/0/use_blend = true
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("MainMesh/StaticBody3D:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.6),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, -2.4102998, 0)]
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("MainMesh/Hurtbox/CollisionShape3D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ht3jw"]
@@ -453,7 +502,25 @@ collision_mask = 26
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MainMesh/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.008422852, 1.8875918, 0.07347107)
 shape = SubResource("BoxShape3D_jxxqo")
-debug_color = Color(0.8613333, 0.36, 1, 0.62352943)
+debug_color = Color(1, 0.19641912, 0, 0.624)
+
+[node name="Hurtbox" type="Area3D" parent="MainMesh"]
+collision_layer = 0
+collision_mask = 18
+script = ExtResource("9_qbjmv")
+damagePerTick = 30.0
+hurtsInnocents = true
+hurtsTraitors = true
+hurtsNPCs = true
+active = true
+damageSoundType = 2
+metadata/_custom_type_script = "uid://chlcmntip4s3"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MainMesh/Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.008422852, 1.8875918, 0.07347107)
+shape = SubResource("BoxShape3D_jxxqo")
+disabled = true
+debug_color = Color(1, 0.19641912, 0, 0.624)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3408031, 2.281433, -0.0029449463)

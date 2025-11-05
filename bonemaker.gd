@@ -6,7 +6,8 @@ func _run():
 	for node in selection.get_selected_nodes():
 		if node is Skeleton3D:
 			_generate_bone_attachments(node)
-
+	var test = SteamAudioStreamPlayback.new()
+	test.mix_audio()
 func _generate_bone_attachments(skel: Skeleton3D):
 	for i in range(skel.get_bone_count()):
 		var bone_name = skel.get_bone_name(i)

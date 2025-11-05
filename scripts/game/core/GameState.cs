@@ -105,6 +105,8 @@ public partial class GameState : Node3D
     private Queue<StateUpdatePacket> StateUpdatePacketBuffer = new();
     private Queue<PlayerInputData> PlayerInputPacketBuffer = new();
 
+    private AudioStreamPlayer menuMusicStreamPlayer = new();
+
     //runs after GameState gets added to scenetree during Main.cs init
     public override void _Ready()
     {
@@ -128,6 +130,10 @@ public partial class GameState : Node3D
         AddChild(gmm);
         gameModeManager = gmm;
 
+        menuMusicStreamPlayer.Stream = GD.Load<AudioStream>("res://assets/audio/music/hl1_song6.mp3");
+        AddChild(menuMusicStreamPlayer);
+        menuMusicStreamPlayer.Play();
+        menuMusicStreamPlayer.VolumeDb = -3.0f;
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -137,7 +143,7 @@ public partial class GameState : Node3D
         //Global.ui.StartLoadingScreen();
         MapManager.LoadMap(scenePath);
 
-
+        menuMusicStreamPlayer.Stop();
 
         AIManager aim = new();
         aim.Name = "AI Manager";
