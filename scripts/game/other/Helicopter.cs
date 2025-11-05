@@ -65,11 +65,13 @@ public partial class Helicopter : GOBaseStaticBody
 
     public async void EvacuationEnded()
     {
+        GD.Print("start leaving");
         HelicopterLeave();
         await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
         //check who is inside
         List<BasicPlayerCharacter> basicPlayerCharacters = new();
         var overlaps = insideHelicopterArea.GetOverlappingBodies();
+        GD.Print(overlaps.Count);
         foreach (var body in overlaps)
         {
             if (body is BasicPlayerCharacter player)

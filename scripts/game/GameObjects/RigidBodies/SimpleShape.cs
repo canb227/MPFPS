@@ -57,7 +57,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         }
         else
         {
-            Logging.Log("Quaternion Not Normalized!", "SimpleShape");
+            //Logging.Log("Quaternion Not Normalized!", "SimpleShape");
         }
     }
 

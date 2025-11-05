@@ -39,6 +39,7 @@ public partial class SwarmManager : Node
         robotSwarmMinSize = Mathf.CeilToInt(robotSwarmMinSize / 4 * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
         //spawn faster but smaller
         evacuationStarted = true;
+        GD.Print(currentSwarmCooldown);
     }
     int robotsSpawned = 0;
     public void PerTick(double delta)

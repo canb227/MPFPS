@@ -436,7 +436,6 @@ label_settings = SubResource("LabelSettings_rvq7n")
 metadata/_edit_use_anchors_ = true
 
 [node name="hostHide" type="ColorRect" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -446,14 +445,14 @@ offset_top = 5.0
 offset_bottom = -614.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.312, 0.34449998, 0.39, 1)
+color = Color(0.01772787, 0.021881554, 0.028440725, 1)
 
 [node name="Label" type="Label" parent="hostHide"]
 layout_mode = 0
-offset_left = 173.0
-offset_top = 27.0
-offset_right = 794.0
-offset_bottom = 115.0
-rotation = 0.50802815
-text = "Host Only Settings :)"
+offset_left = 111.0
+offset_top = 185.0
+offset_right = 732.0
+offset_bottom = 273.0
+text = "Host Only Settings"
 label_settings = SubResource("LabelSettings_mc2ep")
+horizontal_alignment = 1
