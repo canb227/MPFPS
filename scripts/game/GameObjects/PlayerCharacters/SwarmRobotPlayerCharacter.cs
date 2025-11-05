@@ -391,7 +391,18 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
         root.Visible = false;
         collider.Disabled = true;
         Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
+
+        DelayDeathRelease();
         //remove ourselves and add a timed ragdoll
+    }
+
+    public async void DelayDeathRelease()
+    {
+        await ToSignal(GetTree().CreateTimer(3), SceneTreeTimer.SignalName.Timeout);
+        ulong tempControllingPlayerID = controllingPlayerID;
+        ReleaseControl();
+        Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);
+        RPCManager.RPC(Global.gameState.gameModeManager.swarmManager, "RobotPlayerDied", [authority]);
     }
 
     public void TakeStunDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)

@@ -219,6 +219,10 @@ public partial class GameModeManager : Node
         evacuationStarted = true;
         evacuationTimeLeft = 95;
         EvacuationStarted?.Invoke();
+        if (Global.Lobby.bIsLobbyHost)
+        {
+            swarmManager.EvacuationStarted();
+        }
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
     }
 
@@ -294,6 +298,7 @@ public partial class GameModeManager : Node
         roundStarted = true;
         remainingRoundTime = options.roundTime;
         evacuationTimeLeft = 9999999;
+        swarmManager.PrepareRound(numPlayers);
         //clear the scoreboard , role assignment comes later
         if (Global.Lobby.bIsLobbyHost)
         {
@@ -479,7 +484,6 @@ public partial class GameModeManager : Node
             RPCManager.RPC(this, "ForceEndRound", []);
         }
         //prepare the swarm manager given the roles
-        swarmManager.PrepareRound(numPlayers);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]

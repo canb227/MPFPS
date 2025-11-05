@@ -210,6 +210,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
             {
+                RPCManager.RPC(Global.gameState.gameModeManager, "StartEndOfGameEvacuation", []);
                 if (interactRayCast.IsColliding())
                 {
                     var hit = interactRayCast.GetCollider();
@@ -458,7 +459,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         if (equipped != null && equipped is Hands hands)
         {
-            GD.Print(input.actions);
             hands.HandleHandInput(input, delta);
         }
         else if (equipped != null)

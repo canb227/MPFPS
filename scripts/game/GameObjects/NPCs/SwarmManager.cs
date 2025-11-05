@@ -18,11 +18,7 @@ public partial class SwarmManager : Node
     public bool announcedSwarm = false;
     private bool evacuationStarted;
     private float robotsToSpawnThisTick;
-
-    public override void _Ready()
-    {
-        GameModeManager.EvacuationStarted += EvacuationStarted;
-    }
+    public List<ulong> robotPlayers = new();
 
     public void PrepareRound(int numPlayers)
     {
@@ -36,9 +32,9 @@ public partial class SwarmManager : Node
 
     public void EvacuationStarted()
     {
-        Logging.Log("Start Evacuation Swarms", "SwarmManager");
-        swarmCooldownMin = 5;
-        swarmCooldownMax = 15;
+        swarmCooldownMin = 2;
+        swarmCooldownMax = 5;
+        currentSwarmCooldown = swarmCooldownMin + (swarmCooldownMax - swarmCooldownMin) * rand.NextDouble();
         robotSwarmMaxSize = Mathf.CeilToInt(robotSwarmMaxSize / 4 * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
         robotSwarmMinSize = Mathf.CeilToInt(robotSwarmMinSize / 4 * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
         //spawn faster but smaller
@@ -132,7 +128,6 @@ public partial class SwarmManager : Node
             data.spawnTransform = MapManager.GetHordeSpawnTransform();
             data.paramList.Add(true);
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobotPlayer, data);
-            //spawn player as a robot  
         }
     }
 
@@ -142,7 +137,21 @@ public partial class SwarmManager : Node
         robotSwarmSize = robotSwarmMinSize + randomSize; //swarm is somewhere between min and max size
         foreach (var playerSteamID in Global.gameState.gameModeManager.deadPlayers)
         {
-            RPCManager.RPC(this, "SpawnPlayerRobot", [playerSteamID]);
+            if (!robotPlayers.Contains(playerSteamID))
+            {
+                robotPlayers.Add(playerSteamID);
+                Logging.Log($"Tell {playerSteamID} to spawn a robot and control it", "SwarmManager");
+                RPCManager.RPC(this, "SpawnPlayerRobot", [playerSteamID]);
+            }
+        }
+    }
+
+    [RPCMethod(mode = RPCMode.OnlySendToAuth)]
+    public void RobotPlayerDied(ulong playerSteamID)
+    {
+        if (robotPlayers.Contains(playerSteamID))
+        {
+            robotPlayers.Remove(playerSteamID);
         }
     }
 }
