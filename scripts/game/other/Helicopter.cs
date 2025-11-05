@@ -65,7 +65,6 @@ public partial class Helicopter : GOBaseStaticBody
 
     public async void EvacuationEnded()
     {
-        GD.Print("start leaving");
         HelicopterLeave();
         if (Global.Lobby.bIsLobbyHost)
         {
