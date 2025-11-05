@@ -32,7 +32,7 @@ public partial class GOHandcuffs : GOBaseAccessory
                     Logging.Log($"Hit a BasicPlayerCharacter object: " + target.currentStunBar, "GOHandcuffs");
                     if (target.state == CharacterState.Living)
                     {
-                        RPCManager.RPC(this, "Handcuff", [target.id]);
+                        RPCManager.RPCID(id, "Handcuff", [target.id]);
                     }
                 }
             }
