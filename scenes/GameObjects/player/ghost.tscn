@@ -18,7 +18,7 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_xy2rk")
 thirdPersonModel = NodePath("mesh")
-camera = NodePath("Camera3D")
+camera = NodePath("firstPersonModel/Camera3D")
 voicePlayer = NodePath("thirdPersonModel/SteamAudioVoice")
 type = 2
 metadata/_custom_type_script = "uid://dlqiqow6onvpu"
@@ -31,15 +31,13 @@ surface_material_override/0 = SubResource("StandardMaterial3D_veat2")
 [node name="collider" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_5mfnq")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-
-[node name="SteamAudioListener" type="SteamAudioListener" parent="Camera3D"]
-
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 spot_range = 6.646452
 spot_angle = 28.109053
 
 [node name="firstPersonModel" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="firstPersonModel"]
 
 [node name="thirdPersonModel" type="Node3D" parent="."]
 
