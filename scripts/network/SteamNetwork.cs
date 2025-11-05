@@ -340,7 +340,7 @@ public class SteamNetwork
                 Global.gameState.ProcessSteamVoiceBytes(payload, sender, true);
                 break;
             case Channel.SteamVoiceDead:
-                Logging.Log($"Got voice data of size: {payload.Length}", "SteamVoice");
+                Logging.Log($"Got (dead) voice data of size: {payload.Length}", "SteamVoice");
                 Global.gameState.ProcessSteamVoiceBytes(payload, sender, false);
                 break;
             default:

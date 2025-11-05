@@ -620,6 +620,7 @@ public partial class GameState : Node3D
             //if the sender is alive pipe the voice audio so it comes out of their basicPlayer head
             if (GetCharacterControlledBy(sender) is BasicPlayerCharacter pc)
             {
+                Logging.Log($"processing voice data from {sender}, piping it into their playercharacter's ({pc.id}) head", "SteamVoice");
                 pc.ProcessVoiceData(payload);
             }
 
@@ -631,6 +632,7 @@ public partial class GameState : Node3D
             {
                 //and if we are also dead
                 ////pipe the voice audio to come out of the speaker inside our own ghosty head for us to hear
+                Logging.Log($"processing (dead) voice data from {sender}, piping it into our own ghost's ({ghost.id}) head ", "SteamVoice");
                 ghost.ProcessVoiceData(payload);
             }
         }
