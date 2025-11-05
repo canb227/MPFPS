@@ -75,7 +75,7 @@ public partial class PlayerInputHandler : Node
                 Logging.Warn($"Error collecting voice data: {result.ToString()}", "SteamVoice");
                 return;
             }
-            Logging.Log($"Sending voice data of size: {voiceBytes.Length}", "SteamVoice");
+            //Logging.Log($"Sending voice data of size: {voiceBytes.Length}", "SteamVoice");
 
             var playerChar = Global.gameState.GetCharacterControlledBy(Global.steamid);
             if (playerChar is BasicPlayerCharacter bpc)
