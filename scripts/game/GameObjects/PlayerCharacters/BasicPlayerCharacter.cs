@@ -193,7 +193,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
             }
-
+            
             UpdateAnimationTree();
         }
     }

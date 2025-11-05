@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://ttmcv3vlqbj2"]
+[gd_scene load_steps=45 format=3 uid="uid://ttmcv3vlqbj2"]
 
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="1_12nid"]
 [ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_213ts"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://dmqaqtbkumgwh" path="res://scenes/GameObjects/triggerable/ShippingTube.tscn" id="13_o4214"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="14_k56je"]
 [ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="16_q8pj7"]
+[ext_resource type="AudioStream" uid="uid://drxwbioo7ujq7" path="res://assets/audio/music/hl2_song12_long.mp3" id="18_213ts"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ny6f2"]
 sky_top_color = Color(0.3116983, 0.45120043, 0.6025601, 1)
@@ -144,10 +145,13 @@ data = PackedVector3Array(-55.845413, -8.815918, 14.01396, -55.845413, -8.815918
 data = PackedVector3Array(-75.17536, -8.815918, 39.468647, -75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, -8.815918, -39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, -39.468647, 75.17536, -8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, -75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, -75.17536, 8.815918, 39.468647, -75.17536, 8.815918, -39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, 39.468647, -75.17536, -8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, -8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, -8.815918, -39.468647, 75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, -75.17536, 8.815918, -39.468647, 75.17536, 8.815918, -39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, 39.468647, 75.17536, 8.815918, -39.468647, 75.17536, -8.815918, -39.468647)
 
 [sub_resource type="BoxMesh" id="BoxMesh_iikxh"]
-size = Vector3(0.62, 2.12, 4.55)
+size = Vector3(0.62, 3.585, 4.55)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_213ts"]
-size = Vector3(0.60583496, 2.079239, 4.520569)
+size = Vector3(0.60583496, 3.988987, 4.520569)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pgynr"]
+size = Vector3(1.0864258, 8.690552, 7.6589355)
 
 [node name="DevLevel" type="Node3D"]
 
@@ -551,6 +555,12 @@ triggers = Array[Object]([SubResource("Resource_vegv4")])
 
 [node name="LabelingGame" type="Node3D" parent="GameObjects/interactables&traps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.09649, -7.4796414, -1.9709693)
+
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="GameObjects/interactables&traps/LabelingGame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.917027, 8.077785, 22.53977)
+stream = ExtResource("18_213ts")
+autoplay = true
+panning_strength = 0.0
 
 [node name="GOLabelMonitor" parent="GameObjects/interactables&traps/LabelingGame" instance=ExtResource("1_vegv4")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9941063, 8.68178, 0.119417906)
@@ -1074,39 +1084,28 @@ size = Vector3(2.2907176, 1.9477539, 3.389182)
 material = SubResource("StandardMaterial3D_kx1m7")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.5869498, 20.092564)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.59814334, 20.5688)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="statics/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.57261086, 0)
 mesh = SubResource("BoxMesh_iikxh")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="statics/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.36711693, -0.0023498535)
 shape = SubResource("BoxShape3D_213ts")
 
 [node name="SteamAudioGeometry" type="SteamAudioGeometry" parent="statics/StaticBody3D/CollisionShape3D"]
 
 [node name="StaticBody3D2" type="StaticBody3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.5869498, 27.26481)
+transform = Transform3D(-0.0028448503, -0.99999595, 0, 0.99999595, -0.0028448503, 0, 0, 0, 1, -11.921067, -0.9590366, 20.5688)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="statics/StaticBody3D2"]
 mesh = SubResource("BoxMesh_iikxh")
 skeleton = NodePath("../..")
 
-[node name="SteamAudioGeometry" type="SteamAudioGeometry" parent="statics/StaticBody3D2/MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="statics/StaticBody3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
-shape = SubResource("BoxShape3D_213ts")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.039733768, 0.17185593, 0.094451904)
+shape = SubResource("BoxShape3D_pgynr")
 
-[node name="StaticBody3D3" type="StaticBody3D" parent="statics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.859188, 0.5869498, 14.039999)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="statics/StaticBody3D3"]
-mesh = SubResource("BoxMesh_iikxh")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="statics/StaticBody3D3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003479004, 0.017982483, -0.0023498535)
-shape = SubResource("BoxShape3D_213ts")
+[node name="SteamAudioGeometry" type="SteamAudioGeometry" parent="statics/StaticBody3D2/CollisionShape3D"]
