@@ -62,8 +62,10 @@ public partial class SwarmManager : Node
         robotsSpawned = 0;
         if(robotSwarmSize > 0)
         {
+            GD.Print("ROBOTSWARMSIZE: " + robotSwarmSize);
             while (robotsSpawned < 1)
             {
+                GD.Print("Spawn Robot");
                 SpawnRobot();
                 robotSwarmSize--;
                 robotsSpawned++;
