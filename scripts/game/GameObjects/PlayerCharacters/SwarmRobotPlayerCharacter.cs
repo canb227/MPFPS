@@ -18,9 +18,6 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
     [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
     [Export] public AudioStreamPlayer3D genericSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
-    [Export] public Camera3D camera;
-    public virtual PlayerInputData input { get; set; }
-    public ActionFlags lastTickActions { get; set; }
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
     private CharacterSoundManager characterSoundManager;

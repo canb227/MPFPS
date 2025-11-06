@@ -137,7 +137,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                 camera.Current = true;
                 Node sal = ResourceLoader.Load<PackedScene>("res://scenes/GameObjects/player/SteamAudioListener.tscn").Instantiate();
                 sal.Name = "SteamAudioListener";
-                GetNode("firstPersonModel/Camera3D").AddChild(sal);
+                camera.AddChild(sal);
                 Input.MouseMode = Input.MouseModeEnum.Captured;
                 OnControlTaken(playerID);
             }
@@ -176,7 +176,14 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             OnControlReleased();
             if (IsMe())
             {
-                GetNode("firstPersonModel/Camera3D/SteamAudioListener").QueueFree();
+                try
+                {
+                    camera.GetNode("SteamAudioListener").QueueFree();
+                }
+                catch
+                {
+                    
+                }
                 camera.Current = false;
                 Input.MouseMode = Input.MouseModeEnum.Confined;
             }

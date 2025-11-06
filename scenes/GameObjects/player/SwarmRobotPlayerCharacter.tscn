@@ -4,6 +4,14 @@
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_4l5s8"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3tng0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fq2r"]
+albedo_color = Color(1, 0.3491902, 0.29748532, 1)
+emission_enabled = true
+
 [sub_resource type="Animation" id="Animation_3tng0"]
 length = 0.001
 tracks/0/type = "value"
@@ -73,14 +81,6 @@ _data = {
 &"attack": SubResource("Animation_aj03a")
 }
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_3tng0"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fq2r"]
-albedo_color = Color(1, 0.3491902, 0.29748532, 1)
-emission_enabled = true
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3tng0"]
 radius = 1.5991211
 height = 3.1982422
@@ -93,13 +93,8 @@ meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
 genericSFX = NodePath("SteamAudioPlayer")
-camera = NodePath("Camera3D")
+camera = NodePath("firstpersonmodel/Camera3D")
 metadata/_custom_type_script = "uid://citq2tpxaq5ux"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_1fq2r")
-}
 
 [node name="collider" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_aj03a")
@@ -108,6 +103,11 @@ shape = SubResource("CapsuleShape3D_aj03a")
 mesh = SubResource("CapsuleMesh_3tng0")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_1fq2r")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_1fq2r")
+}
 
 [node name="AttackAoe" type="Area3D" parent="."]
 collision_layer = 16
@@ -125,5 +125,9 @@ stream = ExtResource("2_tcwxr")
 volume_db = -6.0
 panning_strength = 0.0
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="firstpersonmodel" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="firstpersonmodel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62766343, -0.12285447)
+
+[node name="thirdpersonmodel" type="Node3D" parent="."]
