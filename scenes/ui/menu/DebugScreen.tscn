@@ -332,7 +332,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="chatbar" type="TextEdit" parent="chat"]
+[node name="chatbar" type="LineEdit" parent="chat"]
 layout_mode = 0
 anchor_left = -0.00147275
 anchor_top = 0.860759

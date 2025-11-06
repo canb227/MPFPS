@@ -4,6 +4,7 @@ using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net.Sockets;
 using System.Reflection;
 
@@ -33,7 +34,7 @@ public partial class DebugScreen : Control
     //chat box
     public Button chat_send;
     public RichTextLabel chat_text;
-    public TextEdit chat_chatbar;
+    public LineEdit chat_chatbar;
 
     //player list
     public VBoxContainer playerList_list;
@@ -75,7 +76,7 @@ public partial class DebugScreen : Control
         directLoadMap_mapImage = GetNode<TextureRect>("directLoadMap/img");
 
         //chat box
-        chat_chatbar = GetNode<TextEdit>("chat/chatbar");
+        chat_chatbar = GetNode<LineEdit>("chat/chatbar");
         chat_text = GetNode<RichTextLabel>("chat/chatbox/chattext");
         chat_send = GetNode<Button>("chat/send");
 
@@ -88,7 +89,7 @@ public partial class DebugScreen : Control
         StartGameButton.Pressed += StartGameButton_Pressed;
         QuitGameButton.Pressed += QuitGameButton_Pressed;
         RPCManager.ChatReceivedEvent += RPCManager_ChatReceivedEvent;
-
+        GameState.PlayerDataReceivedEvent += GameState_PlayerDataReceivedEvent;
         Lobby.NewLobbyPeerAddedEvent += Lobby_NewLobbyPeerAddedEvent;
         Lobby.LobbyPeerRemovedEvent += Lobby_LobbyPeerRemovedEvent;
 
@@ -151,8 +152,15 @@ public partial class DebugScreen : Control
         ManualManagerCount = optNode.GetNode<TextEdit>("ManualManagerCountEdit");
         ManualManagerCount.TextChanged += GameOptionChanged;
 
+        chat_chatbar.GrabFocus();
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
+    }
+
+    private void GameState_PlayerDataReceivedEvent(PlayerData data, ulong sender)
+    {
+        Control playerListItem = playerList_list.GetNode<Control>(sender.ToString());
+        playerListItem.GetNode<OptionButton>("roleSelect").Select((int)data.role);
     }
 
     private Control optNode;
@@ -236,17 +244,17 @@ public partial class DebugScreen : Control
             playerListItem.GetNode<OptionButton>("roleSelect").ItemSelected += (index) => OnRoleSelect((Role)index);
             playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
             playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
-            
-            OnRoleSelect((Role)3);
+            Global.gameState.PlayerData[Global.steamid].role = (Role)0;
+            playerList_list.AddChild(playerListItem);
+            Global.gameState.PushLocalPlayerData();
         }
         else
         {
+            playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
             playerListItem.GetNode<OptionButton>("roleSelect").Disabled = true;
             playerListItem.GetNode<ColorPickerButton>("colorSelect").Disabled = true;
-        }
-
             playerList_list.AddChild(playerListItem);
-
+        }
 
     }
 
@@ -271,7 +279,10 @@ public partial class DebugScreen : Control
 
     private void Chat_send_Pressed()
     {
-        RPCManager.RPC(this,"ChatMessage",[chat_chatbar.Text,Global.steamid]);
+        if (chat_chatbar.Text.Length > 0)
+        {
+            RPCManager.RPC(this, "ChatMessage", [chat_chatbar.Text, Global.steamid]);
+        }
         chat_chatbar.Text = "";
     }
 
@@ -281,4 +292,13 @@ public partial class DebugScreen : Control
         chat_text.AddText($"{SteamFriends.GetFriendPersonaName(new CSteamID(from))}: {message}\n");
     }
 
+    public override void _Input(InputEvent @event)
+    {
+        if (!Global.bConsoleOpen && @event is InputEventKey k && k.Keycode == Key.Enter && k.Pressed)
+        {
+            Chat_send_Pressed();
+            chat_chatbar.GrabFocus();
+            GetViewport().SetInputAsHandled();
+        }
+    }
 }
