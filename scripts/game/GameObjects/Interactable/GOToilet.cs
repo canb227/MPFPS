@@ -11,9 +11,15 @@ public partial class GOToilet : GOBaseStaticInteractable
     [Export] public AudioStreamPlayer3D audioStreamPlayer3D;
     public override void Auth_HandleInteractionRequest(ulong byID, ulong onTick)
     {
-        if(!audioStreamPlayer3D.Playing)
+        if (!audioStreamPlayer3D.Playing)
         {
-            audioStreamPlayer3D.Play();
+            RPCManager.RPC(this, "PlayAudio", []);
         }
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PlayAudio()
+    {
+        audioStreamPlayer3D.Play();
     }
 }
