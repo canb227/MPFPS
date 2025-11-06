@@ -902,6 +902,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void WakeUp()
     {
+        Logging.Log("Waking Up: " + id + " " + authority, "BasicPlayerCharacter");
         knockedOut = false;
         collider.RotationDegrees = new Vector3(0, 0, 0);
         collider.Position = new Vector3(0, 0.442f, 0);
