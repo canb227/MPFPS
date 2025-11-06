@@ -97,6 +97,18 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         role = Global.gameState.PlayerData[authority].role;
         GameState.PlayerDataReceivedEvent += GameState_PlayerDataReceivedEvent;
+
+        //weird phys bug fix, set to knocked out then back TODO
+        collider.RotationDegrees = new Vector3(90, 0, 0);
+        collider.Position = new Vector3(0, -0.634f, 0);
+        ((CapsuleShape3D)collider.Shape).Radius = 0.186f;
+        ((CapsuleShape3D)collider.Shape).Height = 2.3f;
+                
+        collider.RotationDegrees = new Vector3(0, 0, 0);
+        collider.Position = new Vector3(0, 0.442f, 0);
+        ((CapsuleShape3D)collider.Shape).Radius = 0.5f;
+        ((CapsuleShape3D)collider.Shape).Height = 2.4f;
+
     }
 
     private void GameState_PlayerDataReceivedEvent(PlayerData data, ulong sender)
@@ -542,6 +554,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         //update our grounded status for stateupdates
         LocalOnGround = IsOnFloor();
+        GD.Print(LocalOnGround);
     }
     
     bool CanUncrouch()
@@ -640,6 +653,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
                 TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
             }
+            if(fallTime > safeStunFallTime)
+            {
+                float stunDamage = (fallTime - safeStunFallTime) * fallingDamagePerSecond * 2;
+                TakeStunDamage(stunDamage, authority, PainSoundType.Falling, ScaleDamageToVolume(stunDamage));
+            }
             fallTime = 0f;
         }
 
@@ -651,6 +669,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     //fall damage values
     private float fallTime = 0f;
     private float safeFallTime = 0.7f;
+    private float safeStunFallTime = 0.6f;
     private float fallingDamagePerSecond = 50f;
     private bool wasOnFloor;
 
@@ -740,8 +759,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             float mouseY = input.LookInputVector.Y * Global.Config.loadedPlayerConfig.mouseSensY * ((float)delta);
             if(knockedOut)
             {
-                mouseX *= 0.1f;
-                mouseY *= 0.1f;
+                mouseX = 0;
+                mouseY = 0;
             }
             float newXRot = camera.RotationDegrees.X - mouseY;
             float newYRot = RotationDegrees.Y - mouseX;
@@ -871,18 +890,26 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         knockedOut = true;
         DropEquipped();
         currentStunBar = 0;
-        collider.Rotation = new Vector3(90, 0, 0);
+        //adjust collider
+        collider.RotationDegrees = new Vector3(90, 0, 0);
         collider.Position = new Vector3(0, -0.634f, 0);
         ((CapsuleShape3D)collider.Shape).Radius = 0.186f;
+
+        //adjust camera
+        camera.Position = new Vector3(0, -2.259f, 1.01f);
+        camera.RotationDegrees = new Vector3(90, 0, 0);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void WakeUp()
     {
         knockedOut = false;
-        collider.Rotation = new Vector3(0, 0, 0);
+        collider.RotationDegrees = new Vector3(0, 0, 0);
         collider.Position = new Vector3(0, 0.442f, 0);
         ((CapsuleShape3D)collider.Shape).Radius = 0.5f;
+
+        camera.Position = new Vector3(0, -0.259f, -0.08f);
+        camera.RotationDegrees = new Vector3(0, 0, 0);
     }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
@@ -989,9 +1016,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void TakeControl(ulong playerID)
     {
         base.TakeControl(playerID);
-        Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
-        Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
-        Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
+        if(Global.steamid == playerID)
+        {
+            GD.Print("UPDATE BOTTOM RIGHT UI: " + currentStunBar + " " + currentHealth + " " + team);
+            Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
+            Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
+            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
+        }
     }
 
     public void Handcuff(GOHandcuffs handcuffs)

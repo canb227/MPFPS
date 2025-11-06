@@ -170,7 +170,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
             {
                 if (player is BasicPlayerCharacter p)
                 {
-                    if (p.state == CharacterState.Living)
+                    if (p.state == CharacterState.Living && !p.knockedOut)
                     {
                         float dist = GlobalTransform.Origin.DistanceTo(p.GlobalTransform.Origin);
                         if (dist < closestDist)
@@ -205,7 +205,17 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         {
             if (MovementTarget is IsDamagable dmg)
             {
-                RPCManager.RPC(this, "Attack", []);
+                if (MovementTarget is BasicPlayerCharacter basicPlayerCharacter)
+                {
+                    if (!basicPlayerCharacter.knockedOut)
+                    {
+                        RPCManager.RPC(this, "Attack", []);
+                    }
+                }
+                else
+                {
+                    RPCManager.RPC(this, "Attack", []);
+                }
             }
         }
     }
@@ -215,14 +225,19 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     {
         attackCooldown = 3.0;
         genericSFX.Play();
-        //genericSFX.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/enemies/superphys_launch1.wav"), 0f, 0f, 1f);
         // Get all overlapping bodies
         foreach (var body in meleeArea.GetOverlappingBodies())
         {
             if (body is IsDamagable dmg)
             {
-                dmg.TakeStunDamage(20, id, PainSoundType.None);
-                dmg.TakeDamage(10, id, PainSoundType.Generic);
+                if (MovementTarget is BasicPlayerCharacter basicPlayerCharacter)
+                {
+                    if (!basicPlayerCharacter.knockedOut)
+                    {
+                        dmg.TakeStunDamage(20, id, PainSoundType.None);
+                        dmg.TakeDamage(10, id, PainSoundType.Generic);
+                    }
+                }
             }
         }
     }

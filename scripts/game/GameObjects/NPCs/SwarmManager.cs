@@ -54,7 +54,6 @@ public partial class SwarmManager : Node
             Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
             SpawnSwarm();
             currentSwarmCooldown = swarmCooldownMin + (swarmCooldownMax - swarmCooldownMin) * rand.NextDouble();
-            GD.Print("swarm spawning, cooldown: " + currentSwarmCooldown);
             announcedSwarm = false;
         }
 

@@ -90,9 +90,9 @@ public partial class GameModeManager : Node
             }
             if (evacuationTimeLeft <= 0 )
             {
-                EvacuationEnding();
                 if(Global.Lobby.bIsLobbyHost)
                 {
+                    EvacuationEnding();
                     evacuationTimeLeft = 99999;
                 }
             }
@@ -707,17 +707,18 @@ public partial class GameModeManager : Node
         if (GameObjectLoader.LoadObjectByType(pcType) is GOBasePlayerCharacter sd)
         {
             GameObjectConstructorData data = new GameObjectConstructorData(pcType);
+            
             if(sd is BasicPlayerCharacter basicPlayerCharacter)
             {
-                if (basicPlayerCharacter.role == Role.OfficeWorker)
+                if (Global.gameState.PlayerData[Global.steamid].role == Role.OfficeWorker)
                 {
                     data.spawnTransform = MapManager.GetOfficeWorkerSpawnTransform();
                 }
-                else if (basicPlayerCharacter.role == Role.WarehouseWorker)
+                else if (Global.gameState.PlayerData[Global.steamid].role == Role.WarehouseWorker)
                 {
                     data.spawnTransform = MapManager.GetWarehouseWorkerSpawnTransform();
                 }
-                else if (basicPlayerCharacter.role == Role.Security)
+                else if (Global.gameState.PlayerData[Global.steamid].role == Role.Security)
                 {
                     data.spawnTransform = MapManager.GetSecuritySpawnTransform();
                 }

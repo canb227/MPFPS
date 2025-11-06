@@ -65,14 +65,14 @@ public partial class Helicopter : GOBaseStaticBody
 
     public async void EvacuationEnded()
     {
-        HelicopterLeave();
+        RPCManager.RPC(this, "HelicopterLeave" , []);
         if (Global.Lobby.bIsLobbyHost)
         {
             await ToSignal(GetTree().CreateTimer(5), SceneTreeTimer.SignalName.Timeout);
             //check who is inside
             List<BasicPlayerCharacter> basicPlayerCharacters = new();
             var overlaps = insideHelicopterArea.GetOverlappingBodies();
-            GD.Print(overlaps.Count);
+            GD.Print("OVERLAP HELICOPTER COUNT" + overlaps.Count);
             foreach (var body in overlaps)
             {
                 if (body is BasicPlayerCharacter player)
@@ -97,7 +97,8 @@ public partial class Helicopter : GOBaseStaticBody
             animationPlayer.Play("ramp_down");
         }
     }
-    
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void HelicopterLeave()
     {
         animationPlayer.Play("ramp_up");
