@@ -34,7 +34,7 @@ public partial class DebugScreen : Control
     //chat box
     public Button chat_send;
     public RichTextLabel chat_text;
-    public TextEdit chat_chatbar;
+    public LineEdit chat_chatbar;
 
     //player list
     public VBoxContainer playerList_list;
@@ -76,7 +76,7 @@ public partial class DebugScreen : Control
         directLoadMap_mapImage = GetNode<TextureRect>("directLoadMap/img");
 
         //chat box
-        chat_chatbar = GetNode<TextEdit>("chat/chatbar");
+        chat_chatbar = GetNode<LineEdit>("chat/chatbar");
         chat_text = GetNode<RichTextLabel>("chat/chatbox/chattext");
         chat_send = GetNode<Button>("chat/send");
 
@@ -152,6 +152,7 @@ public partial class DebugScreen : Control
         ManualManagerCount = optNode.GetNode<TextEdit>("ManualManagerCountEdit");
         ManualManagerCount.TextChanged += GameOptionChanged;
 
+        chat_chatbar.GrabFocus();
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
     }
@@ -278,7 +279,10 @@ public partial class DebugScreen : Control
 
     private void Chat_send_Pressed()
     {
-        RPCManager.RPC(this,"ChatMessage",[chat_chatbar.Text,Global.steamid]);
+        if (chat_chatbar.Text.Length > 0)
+        {
+            RPCManager.RPC(this, "ChatMessage", [chat_chatbar.Text, Global.steamid]);
+        }
         chat_chatbar.Text = "";
     }
 
@@ -290,9 +294,11 @@ public partial class DebugScreen : Control
 
     public override void _Input(InputEvent @event)
     {
-        if (@event is InputEventKey k && k.Keycode == Key.Enter && k.Pressed)
+        if (!Global.bConsoleOpen && @event is InputEventKey k && k.Keycode == Key.Enter && k.Pressed)
         {
             Chat_send_Pressed();
+            chat_chatbar.GrabFocus();
+            GetViewport().SetInputAsHandled();
         }
     }
 }
