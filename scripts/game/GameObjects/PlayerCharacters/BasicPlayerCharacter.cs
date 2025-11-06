@@ -58,14 +58,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
     {
-        {AmmoType.ShotgunAmmo, 8 },
-        {AmmoType.RifleAmmo, 30 },
-        {AmmoType.SniperAmmo, 10 },
+        {AmmoType.ShotgunAmmo, 0 },
+        {AmmoType.RifleAmmo, 0 },
+        {AmmoType.SniperAmmo, 0 },
     };
     public Dictionary<AmmoType, int> maxAmmoStored = new()
     {
         {AmmoType.ShotgunAmmo, 24 },
-        {AmmoType.RifleAmmo, 90 },
+        {AmmoType.RifleAmmo, 60 },
         {AmmoType.SniperAmmo, 30 },
     };
 
@@ -222,7 +222,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
             {
-                RPCManager.RPC(Global.gameState.gameModeManager, "StartEndOfGameEvacuation", []);
                 if (interactRayCast.IsColliding())
                 {
                     var hit = interactRayCast.GetCollider();
@@ -673,6 +672,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (input != null && input.actions.HasFlag(ActionFlags.Sprint))
         {
             finalSpeed = baseSpeed * 2;
+        }
+        if(input.actions.HasFlag(ActionFlags.DropItem))
+        {
+            RPCManager.RPC(Global.gameState.gameModeManager, "StartEndOfGameEvacuation", []);
         }
 
         //get input vectors
