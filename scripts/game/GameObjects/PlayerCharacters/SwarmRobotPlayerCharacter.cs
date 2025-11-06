@@ -66,17 +66,23 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
 
     private void HandleNonMovementInput(double delta)
     {
-        if(attackCooldown > 0)
+        if (attackCooldown > 0)
         {
             attackCooldown -= delta;
         }
-        if(attackCooldown <= 0)
+        if (attackCooldown <= 0)
         {
             if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
             {
-                animationPlayer.Play("attack");
+                RPCManager.RPC(this, "PlayAnimation", ["attack"]);
             }
         }
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PlayAnimation(string animationName)
+    {
+        animationPlayer.Play(animationName);
     }
 
 

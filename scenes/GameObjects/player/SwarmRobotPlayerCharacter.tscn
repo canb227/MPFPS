@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://4pw80uffkx1e"]
+[gd_scene load_steps=13 format=3 uid="uid://4pw80uffkx1e"]
 
 [ext_resource type="Script" uid="uid://citq2tpxaq5ux" path="res://scripts/game/GameObjects/PlayerCharacters/SwarmRobotPlayerCharacter.cs" id="1_n2121"]
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_4l5s8"]
+[ext_resource type="AudioStream" uid="uid://dn5rx0u0gk0uf" path="res://assets/audio/character/footsteps/concrete1.wav" id="4_4v5fo"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
 
@@ -29,6 +30,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_aj03a"]
 resource_name = "attack"
+length = 0.6
 tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -36,7 +38,7 @@ tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.5),
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -51,15 +53,11 @@ tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "clips": [{
-"end_offset": 1.3244,
-"start_offset": 0.0,
-"stream": ExtResource("2_tcwxr")
-}, {
-"end_offset": 0.6988,
+"end_offset": 0.6272,
 "start_offset": 0.0009619707,
 "stream": ExtResource("3_4l5s8")
 }],
-"times": PackedFloat32Array(0, 0.43333334)
+"times": PackedFloat32Array(0)
 }
 tracks/1/use_blend = true
 tracks/2/type = "value"
@@ -69,7 +67,7 @@ tracks/2/path = NodePath("SteamAudioPlayer:volume_db")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.033333335, 0.6651444, 1),
+"times": PackedFloat32Array(0.033333335, 0.4, 0.6348556),
 "transitions": PackedFloat32Array(1, 1, 4.4382725),
 "update": 0,
 "values": [-3.0, -3.0, -16.0]
@@ -85,7 +83,10 @@ _data = {
 radius = 1.5991211
 height = 3.1982422
 
-[node name="SwarmRobotPlayerCharacter" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "camera")]
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_htvkb"]
+buffer_length = 0.1
+
+[node name="SwarmRobotPlayerCharacter" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "movementSFX", "firstPersonModel", "thirdPersonModel", "camera", "voicePlayer")]
 script = ExtResource("1_n2121")
 root = NodePath(".")
 collider = NodePath("collider")
@@ -93,7 +94,11 @@ meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
 genericSFX = NodePath("SteamAudioPlayer")
+movementSFX = NodePath("SteamAudioMovementSFX")
+firstPersonModel = NodePath("firstpersonmodel")
+thirdPersonModel = NodePath("thirdpersonmodel")
 camera = NodePath("firstpersonmodel/Camera3D")
+voicePlayer = NodePath("thirdpersonmodel/SteamAudioVoice")
 metadata/_custom_type_script = "uid://citq2tpxaq5ux"
 
 [node name="collider" type="CollisionShape3D" parent="."]
@@ -125,9 +130,23 @@ stream = ExtResource("2_tcwxr")
 volume_db = -6.0
 panning_strength = 0.0
 
+[node name="SteamAudioMovementSFX" type="SteamAudioPlayer" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5308789, -0.021221459)
+stream = ExtResource("4_4v5fo")
+panning_strength = 0.0
+
 [node name="firstpersonmodel" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="firstpersonmodel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62766343, -0.12285447)
 
 [node name="thirdpersonmodel" type="Node3D" parent="."]
+
+[node name="SteamAudioVoice" type="SteamAudioPlayer" parent="thirdpersonmodel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7009541, -0.2089411)
+stream = SubResource("AudioStreamGenerator_htvkb")
+volume_db = -80.0
+unit_size = 1.0
+max_db = -24.0
+max_distance = 0.01
+panning_strength = 0.0
