@@ -24,7 +24,6 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
             SetPhysicsProcess(false);
         }
     }
-
     public override void ProcessStateUpdate(byte[] update)
     {
         SimpleShapeStateUpdate sssu = MessagePackSerializer.Deserialize<SimpleShapeStateUpdate>(update);
@@ -49,15 +48,11 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        Position = Position.Lerp(desiredPosition, (float)(delta / 0.1f));
+        Position = Position.Lerp(desiredPosition, (float)(delta / 0.01f));
         Godot.Quaternion temp = desiredQuaternion.Normalized();
         if (temp.IsNormalized())
         {
-            Quaternion = Quaternion.Slerp(temp, (float)(delta / 0.1f));
-        }
-        else
-        {
-            //Logging.Log("Quaternion Not Normalized!", "SimpleShape");
+            Quaternion = Quaternion.Slerp(temp, (float)(delta / 0.01f));
         }
     }
 
@@ -94,9 +89,10 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
     {
         //LinearVelocity = LinearVelocity.Clamp(0, 5);
         //GravityScale = 1;
-       // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
+        // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
         //AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
-        
+        desiredPosition = Position;
+        desiredQuaternion = Quaternion;
     }
 }
 [MessagePackObject]
