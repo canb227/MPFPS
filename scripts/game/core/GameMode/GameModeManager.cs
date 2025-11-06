@@ -306,7 +306,7 @@ public partial class GameModeManager : Node
         remainingRoundTime = options.roundTime;
         evacuationStarted = false;
         evacuationTimeLeft = 9999999;
-        swarmManager.PrepareRound(numPlayers);
+
         //clear the scoreboard , role assignment comes later
         if (Global.Lobby.bIsLobbyHost)
         {
@@ -492,6 +492,7 @@ public partial class GameModeManager : Node
             RPCManager.RPC(this, "ForceEndRound", []);
         }
         //prepare the swarm manager given the roles
+        swarmManager.PrepareRound(numPlayers);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]

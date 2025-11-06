@@ -116,7 +116,7 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         orderNumberLabel.Text = "Order #" + orderNumber;
         if (Global.gameState.gameModeManager.packageOrders.Count < orderNumber)
         {
-            Logging.Warn("Trying to update order of a monitor that doesn't exist (packageOrders.Count < orderNumber [for this monitor]).", "GOOrderMonitor");
+            Logging.Log("Trying to update order of a monitor that doesn't exist (packageOrders.Count < orderNumber [for this monitor]).", "GOOrderMonitor");
             MonitorScreen.Visible = false;
             return;
         }
@@ -124,7 +124,7 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber-1];
         if (orderInfo.OrderIsFinished())
         {
-            Logging.Warn("Trying to assign order to a monitor that has already been finished.", "GOOrderMonitor");
+            Logging.Log("Trying to assign order to a monitor that has already been finished.", "GOOrderMonitor");
         }
         
         foreach(var child in packageItems.GetChildren())
