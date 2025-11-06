@@ -4,6 +4,7 @@ using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net.Sockets;
 using System.Reflection;
 
@@ -88,7 +89,7 @@ public partial class DebugScreen : Control
         StartGameButton.Pressed += StartGameButton_Pressed;
         QuitGameButton.Pressed += QuitGameButton_Pressed;
         RPCManager.ChatReceivedEvent += RPCManager_ChatReceivedEvent;
-
+        GameState.PlayerDataReceivedEvent += GameState_PlayerDataReceivedEvent;
         Lobby.NewLobbyPeerAddedEvent += Lobby_NewLobbyPeerAddedEvent;
         Lobby.LobbyPeerRemovedEvent += Lobby_LobbyPeerRemovedEvent;
 
@@ -153,6 +154,12 @@ public partial class DebugScreen : Control
 
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
+    }
+
+    private void GameState_PlayerDataReceivedEvent(PlayerData data, ulong sender)
+    {
+        Control playerListItem = playerList_list.GetNode<Control>(sender.ToString());
+        playerListItem.GetNode<OptionButton>("roleSelect").Select((int)data.role);
     }
 
     private Control optNode;
@@ -236,17 +243,17 @@ public partial class DebugScreen : Control
             playerListItem.GetNode<OptionButton>("roleSelect").ItemSelected += (index) => OnRoleSelect((Role)index);
             playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
             playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
-            
-            OnRoleSelect((Role)3);
+            Global.gameState.PlayerData[Global.steamid].role = (Role)0;
+            playerList_list.AddChild(playerListItem);
+            Global.gameState.PushLocalPlayerData();
         }
         else
         {
+            playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
             playerListItem.GetNode<OptionButton>("roleSelect").Disabled = true;
             playerListItem.GetNode<ColorPickerButton>("colorSelect").Disabled = true;
-        }
-
             playerList_list.AddChild(playerListItem);
-
+        }
 
     }
 
@@ -281,4 +288,11 @@ public partial class DebugScreen : Control
         chat_text.AddText($"{SteamFriends.GetFriendPersonaName(new CSteamID(from))}: {message}\n");
     }
 
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is InputEventKey k && k.Keycode == Key.Enter && k.Pressed)
+        {
+            Chat_send_Pressed();
+        }
+    }
 }
