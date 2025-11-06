@@ -444,7 +444,7 @@ public partial class GameModeManager : Node
         Logging.Log($"Out of {numPlayers} players, {numTraitors} will be picked as traitors", "GameModeManager");
         for (int i = 0; i < numTraitors; i++)
         {
-            ulong selectedID = players[Random.Shared.Next(numPlayers)];
+            ulong selectedID = players[Random.Shared.Next(players.Count)];
             players.Remove(selectedID);
             traitors.Add(selectedID);
         }
@@ -453,7 +453,7 @@ public partial class GameModeManager : Node
         Logging.Log($"Out of {numPlayers} players, {numManagers} will be picked as managers", "GameModeManager");
         for (int i = 0; i < numManagers; i++)
         {
-            ulong selectedID = players[Random.Shared.Next(numPlayers)];
+            ulong selectedID = players[Random.Shared.Next(players.Count)];
             players.Remove(selectedID);
             managers.Add(selectedID);
         }

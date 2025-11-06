@@ -54,7 +54,11 @@ func _physics_process(delta: float) -> void:
 		var offset = Vector3(0, i * vertical_offset, 0)
 		var query = PhysicsRayQueryParameters3D.create(origin + offset, target_pos + offset)
 		query.collide_with_areas = false
+		# (bitmask: 1 << 0 = 1, 1 << 1 = 2, so combined = 3)
+		query.collision_mask = (1 << 0) | (1 << 1)
 		var result = space_state.intersect_ray(query)
+		
+		#NEED TO ADD SELF TO EXCEPTION I THINK?
 
 		if result and not result.collider.is_in_group("AudioTarget"):
 			rays_blocked += 1
