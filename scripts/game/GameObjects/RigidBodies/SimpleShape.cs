@@ -49,11 +49,11 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        Position = Position.Lerp(desiredPosition, (float)(delta / 0.01f));
+        Position = Position.Lerp(desiredPosition, (float)(delta / 0.1f));
         Godot.Quaternion temp = desiredQuaternion.Normalized();
         if (temp.IsNormalized())
         {
-            Quaternion = Quaternion.Slerp(temp, (float)(delta / 0.01f));
+            Quaternion = Quaternion.Slerp(temp, (float)(delta / 0.1f));
         }
         else
         {
@@ -96,6 +96,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         //GravityScale = 1;
        // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
         //AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
+        
     }
 }
 [MessagePackObject]
