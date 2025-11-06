@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Diagnostics;
+using System.Linq;
 
 public partial class OptionsScreen : Control
 {
@@ -13,8 +15,11 @@ public partial class OptionsScreen : Control
     private PlayerConfig conf;
 
     private GridContainer keymapGrid;
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    private bool waitingForInput;
+    private ActionFlags waitingForInputAction;
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
         conf = Global.Config.loadedPlayerConfig;
         GetNode<Button>("BUTTON_cancel").Pressed += OnCancelPressed;
@@ -36,17 +41,36 @@ public partial class OptionsScreen : Control
         MouseSensY.Text = conf.mouseSensY.ToString();
 
         keymapGrid = GetNode<GridContainer>("keymap/keymapGrid");
-        foreach(var action in Enum.GetValues(typeof(ActionFlags)))
+        foreach(ActionFlags action in Enum.GetValues(typeof(ActionFlags)))
         {
+            if (action == ActionFlags.None)
+            {
+                continue;
+            }
             Label actionLabel = new Label();
             actionLabel.Text = action.ToString();
             keymapGrid.AddChild(actionLabel);
             
             Button button = new Button();
-            button.Text = "KEYNAME";
+            button.Name = action.ToString();
+            var key = InputMapManager.loadedPlayerInputMap.KeyboardKeyCodeToActionMap.FirstOrDefault(x => x.Value == action).Key;
+
+            button.Text = key.ToString();
+
+            button.Pressed += () => OnKeyMapButtonPressed(action);
+
             keymapGrid.AddChild(button);
         }
 
+    }
+
+    void OnKeyMapButtonPressed(ActionFlags action)
+    {
+        Logging.Log($"pressed {action} remap key", "Remapper");
+        GetNode<Control>("bg2").Show();
+        GetNode<Control>("bg2").GetNode<Label>("lbl").Text = $"Press Key for `{action.ToString()}`";
+        waitingForInput = true;
+        waitingForInputAction = action;
     }
 
     private void OnApplyPressed()
@@ -67,10 +91,12 @@ public partial class OptionsScreen : Control
         conf.mouseSensY = 5;
         Global.Config.SavePlayerConfig();
         Global.ui.SwitchFullScreenUI("UI_MainMenu");
+
     }
 
     private void OnCancelPressed()
     {
+        //InputMapManager.LoadPlayerInputMap();
         Global.ui.SwitchFullScreenUI("UI_MainMenu");
     }
 
@@ -78,4 +104,51 @@ public partial class OptionsScreen : Control
     public override void _Process(double delta)
 	{
 	}
+
+    public override void _Input(InputEvent @event)
+    {
+        if (!waitingForInput) { return; }
+        if (@event is InputEventKey k && k.Pressed && k.Keycode!=Key.Quoteleft)
+        {
+            if (InputMapManager.loadedPlayerInputMap.KeyboardKeyCodeToActionMap.TryGetValue(k.Keycode,out var val) && val == waitingForInputAction)
+            {
+                waitingForInputAction = ActionFlags.None;
+                waitingForInput = false;
+                GetNode<Control>("bg2").Hide();
+                return;
+            }
+            if (InputMapManager.loadedPlayerInputMap.KeyboardKeyCodeToActionMap.TryGetValue(k.Keycode, out var val2) && val2 != ActionFlags.None)
+            {
+                Logging.Log($"That key ({k.Keycode}) is already bound to {InputMapManager.loadedPlayerInputMap.KeyboardKeyCodeToActionMap[k.Keycode]},unbinding that key!", "Keymapper");
+                keymapGrid.GetNode<Button>(Enum.GetName(InputMapManager.loadedPlayerInputMap.KeyboardKeyCodeToActionMap[k.Keycode])).Text = Key.None.ToString();
+                InputMapManager.UnbindKeyboardKey(k.Keycode);
+
+            }
+
+            InputMapManager.BindKeyboardKey(k.Keycode, waitingForInputAction, false);
+            waitingForInput = false;
+            GetNode<Control>("bg2").Hide();
+            keymapGrid.GetNode<Button>(Enum.GetName(waitingForInputAction)).Text = k.Keycode.ToString();
+            waitingForInputAction = ActionFlags.None;
+
+
+        }
+        else if (@event is InputEventMouseButton m && m.Pressed)
+        {
+            if (InputMapManager.loadedPlayerInputMap.MouseButtonToActionMap.TryGetValue(m.ButtonIndex, out var val2) && val2 != ActionFlags.None)
+            {
+                Logging.Log($"That mousebutton ({m.ButtonIndex}) is already bound to {InputMapManager.loadedPlayerInputMap.MouseButtonToActionMap[m.ButtonIndex]},unbinding that key!", "Keymapper");
+                keymapGrid.GetNode<Button>(Enum.GetName(InputMapManager.loadedPlayerInputMap.MouseButtonToActionMap[m.ButtonIndex])).Text = Key.None.ToString();
+                InputMapManager.UnbindMouseButton(m.ButtonIndex);
+
+            }
+            InputMapManager.BindMouseButton(m.ButtonIndex, waitingForInputAction, false);
+            waitingForInput = false;
+            GetNode<Control>("bg2").Hide();
+            keymapGrid.GetNode<Button>(Enum.GetName(waitingForInputAction)).Text = m.ButtonIndex.ToString();
+            waitingForInputAction = ActionFlags.None;
+        }
+
+
+    }
 }

@@ -93,8 +93,19 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Scale = new(0.75f, 0.75f, 0.75f);
 
         hurtShaderMaterial = hurtColorRect.Material as ShaderMaterial;
+
+        role = Global.gameState.PlayerData[authority].role;
+        GameState.PlayerDataReceivedEvent += GameState_PlayerDataReceivedEvent;
     }
-    
+
+    private void GameState_PlayerDataReceivedEvent(PlayerData data, ulong sender)
+    {
+        if (sender==authority)
+        {
+            role = data.role;
+        }
+    }
+
     public override bool InitFromData(GameObjectConstructorData data)
     {
         Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
