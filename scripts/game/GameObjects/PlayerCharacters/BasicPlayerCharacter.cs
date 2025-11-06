@@ -221,7 +221,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (!lastTickActions.HasFlag(ActionFlags.Use) && input.actions.HasFlag(ActionFlags.Use))
             {
-                RPCManager.RPC(Global.gameState.gameModeManager, "StartEndOfGameEvacuation", []);
                 if (interactRayCast.IsColliding())
                 {
                     var hit = interactRayCast.GetCollider();
@@ -663,6 +662,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (input != null && input.actions.HasFlag(ActionFlags.Sprint))
         {
             finalSpeed = baseSpeed * 2;
+        }
+        if(input.actions.HasFlag(ActionFlags.DropItem))
+        {
+            RPCManager.RPC(Global.gameState.gameModeManager, "StartEndOfGameEvacuation", []);
         }
 
         //get input vectors

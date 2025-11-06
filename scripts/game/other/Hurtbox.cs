@@ -31,12 +31,6 @@ public partial class Hurtbox : Area3D
 
     public override void _Ready()
     {
-        BodyEntered += Hurtbox_BodyEntered;
-    }
-
-    private void Hurtbox_BodyEntered(Node3D body)
-    {
-
     }
 
     public override void _PhysicsProcess(double delta)
