@@ -183,6 +183,7 @@ public partial class GameModeManager : Node
     public async void TraitorsWin()
     {
         Logging.Log("Traitors Win As Peer", "GameModeManager");
+        roundStarted = false;
         Global.ui.inGameUI.ShowRoundReport(Team.Traitor);
         if(Global.Lobby.bIsLobbyHost)
         {
@@ -193,6 +194,7 @@ public partial class GameModeManager : Node
     public async void InnocentsWin()
     {
         Logging.Log("Innocents Win As Peer", "GameModeManager");
+        roundStarted = false;
         Global.ui.inGameUI.ShowRoundReport(Team.Innocent);
         if(Global.Lobby.bIsLobbyHost)
         {
@@ -203,6 +205,7 @@ public partial class GameModeManager : Node
     public async void ForceEndRound()
     {
         Logging.Log("ForceEndRound as Peer", "GameModeManager");
+        roundStarted = false;
         Global.ui.inGameUI.ShowRoundReport(Team.None);
         if (Global.Lobby.bIsLobbyHost)
         {
