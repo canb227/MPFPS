@@ -18,9 +18,6 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
     [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
     [Export] public AudioStreamPlayer3D genericSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
-    [Export] public Camera3D camera;
-    public virtual PlayerInputData input { get; set; }
-    public ActionFlags lastTickActions { get; set; }
     public float maxHealth { get; set; } = 100;
     public float currentHealth { get; set; } = 100;
     private CharacterSoundManager characterSoundManager;
@@ -69,17 +66,23 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
 
     private void HandleNonMovementInput(double delta)
     {
-        if(attackCooldown > 0)
+        if (attackCooldown > 0)
         {
             attackCooldown -= delta;
         }
-        if(attackCooldown <= 0)
+        if (attackCooldown <= 0)
         {
             if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
             {
-                animationPlayer.Play("attack");
+                RPCManager.RPC(this, "PlayAnimation", ["attack"]);
             }
         }
+    }
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void PlayAnimation(string animationName)
+    {
+        animationPlayer.Play(animationName);
     }
 
 
