@@ -2,9 +2,14 @@
 
 [sub_resource type="AudioEffectLimiter" id="AudioEffectLimiter_j3pel"]
 resource_name = "Limiter"
+threshold_db = -1.0
+soft_clip_db = 0.0
 
 [sub_resource type="AudioEffectCompressor" id="AudioEffectCompressor_j3pel"]
 resource_name = "Compressor"
+threshold = -12.0
+ratio = 3.0
+gain = 3.0
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
@@ -15,15 +20,16 @@ damping = 0.4
 wet = 0.2
 
 [resource]
+bus/0/volume_db = -3.1173582
 bus/0/effect/0/effect = SubResource("AudioEffectLimiter_j3pel")
-bus/0/effect/0/enabled = true
+bus/0/effect/0/enabled = false
 bus/0/effect/1/effect = SubResource("AudioEffectCompressor_j3pel")
-bus/0/effect/1/enabled = true
+bus/0/effect/1/enabled = false
 bus/1/name = &"PlayerVoices"
 bus/1/solo = false
 bus/1/mute = false
 bus/1/bypass_fx = false
-bus/1/volume_db = 0.0
+bus/1/volume_db = 3.2424984
 bus/1/send = &"Master"
 bus/1/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
 bus/1/effect/0/enabled = true
