@@ -230,8 +230,11 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
                 if (current is IsDamagable target)
                 {
-                    RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
-                    RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                    if(Global.steamid == GetHeldBy().authority)
+                    {
+                        RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                        RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                    }
 
                     // check if it's a SwarmRobot
                     if (current is SwarmRobot && penetrations < maxPenetrations)

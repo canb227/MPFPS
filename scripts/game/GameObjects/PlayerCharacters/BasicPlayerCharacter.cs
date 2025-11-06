@@ -35,8 +35,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float maxStunBar { get; set; } = 100;
     public float currentStunBar { get; set; } = 100;
     public float currentTimeUntilStunRegen { get; set; } = 0;
-    public float stunRegenDelaySeconds { get; set; } = 3;
-    public float stunRegenRatePerSecond { get; set; } = 5;
+    public float stunRegenDelaySeconds { get; set; } = 5;
+    public float stunRegenRatePerSecond { get; set; } = 20;
     public Inventory inventory { get; set; } = new();
     public IsInventoryItem equipped { get; set; }
     public CharacterState state { get; set; }
@@ -837,7 +837,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (state == CharacterState.Living)
         {
             currentStunBar -= damage;
-            currentTimeUntilStunRegen = stunRegenDelaySeconds;
+            if(!knockedOut)
+            {
+                currentTimeUntilStunRegen = stunRegenDelaySeconds;
+            }
             characterSoundManager.PlayDamageSound(characterSFX, soundType, VolumeDb);
             //Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
@@ -868,16 +871,18 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         knockedOut = true;
         DropEquipped();
         currentStunBar = 0;
-        
-        //ragdoll and other stuff
-        knockedOut = true;
+        collider.Rotation = new Vector3(90, 0, 0);
+        collider.Position = new Vector3(0, -0.634f, 0);
+        ((CapsuleShape3D)collider.Shape).Radius = 0.186f;
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void WakeUp()
     {
-        //stop ragdoll here
         knockedOut = false;
+        collider.Rotation = new Vector3(0, 0, 0);
+        collider.Position = new Vector3(0, 0.442f, 0);
+        ((CapsuleShape3D)collider.Shape).Radius = 0.5f;
     }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)

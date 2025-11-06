@@ -37,7 +37,7 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
     public override void _Ready()
     {
         base._Ready();
-
+        priority = 100;
         characterSoundManager = new();
         Logging.Log($"Spawned new SwarmRobotPlayerCharacter Controlled by: {authority}", "SwarmRobotPlayerCharacter");
     }
@@ -161,10 +161,6 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
-        if (input.actions.HasFlag(ActionFlags.Sprint))
-        {
-            finalSpeed = baseSpeed * 2;
-        }
 
         //get input vectors
         Vector2 normalizedInput = input.MovementInputVector.Normalized();
