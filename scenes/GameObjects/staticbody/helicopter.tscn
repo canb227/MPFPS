@@ -914,6 +914,8 @@ libraries = {
 
 [node name="RearRotorAudio" type="SteamAudioPlayer" parent="."]
 air_absorption = true
+occlusion = false
+reflection = true
 transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 6.728962, -0.18983467)
 stream = ExtResource("2_ly7q5")
 attenuation_model = 2
@@ -922,6 +924,8 @@ panning_strength = 0.0
 
 [node name="FrontRotorAudio" type="SteamAudioPlayer" parent="."]
 air_absorption = true
+occlusion = false
+reflection = true
 transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 4.684301, 15.253166)
 stream = ExtResource("2_ly7q5")
 attenuation_model = 2
