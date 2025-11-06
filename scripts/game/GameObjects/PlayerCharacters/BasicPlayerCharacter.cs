@@ -329,7 +329,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
             if (input.actions.HasFlag(ActionFlags.Aim))
             {
-                Logging.Log($"SETTING FOV TO: {Global.Config.loadedPlayerConfig.fov / 2}", "FOV");
                 camera.Fov = Global.Config.loadedPlayerConfig.fov/2;
             }
             else

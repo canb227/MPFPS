@@ -119,6 +119,7 @@ metadata/_custom_type_script = "uid://citq2tpxaq5ux"
 shape = SubResource("CapsuleShape3D_aj03a")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("CapsuleMesh_3tng0")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_1fq2r")

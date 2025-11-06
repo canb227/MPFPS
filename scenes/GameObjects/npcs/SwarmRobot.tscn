@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cnuhisk5vamn4"]
+[gd_scene load_steps=10 format=3 uid="uid://cnuhisk5vamn4"]
 
 [ext_resource type="Script" uid="uid://kuimq525di4f" path="res://scripts/game/GameObjects/NPCs/SwarmRobot.cs" id="1_aj03a"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_a6bla"]
@@ -78,9 +78,7 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
-radius = 0.40283203
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1fq2r"]
+radius = 0.5019531
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3tng0"]
 
@@ -93,11 +91,11 @@ radius = 1.5991211
 height = 3.1982422
 
 [node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "genericSFX", "ambientSFX", "navAgent")]
-collision_layer = 32
+collision_layer = 2
 collision_mask = 51
 script = ExtResource("1_aj03a")
 root = NodePath(".")
-collider = NodePath("StaticBody3D/collider")
+collider = NodePath("")
 state = 3
 meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
@@ -113,13 +111,6 @@ libraries = {
 
 [node name="collider2" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_aj03a")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-collision_layer = 4
-collision_mask = 0
-
-[node name="collider" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("CapsuleShape3D_1fq2r")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_3tng0")
