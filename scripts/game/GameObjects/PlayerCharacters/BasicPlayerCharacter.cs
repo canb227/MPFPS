@@ -870,7 +870,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
         //only the authority can tell people they took damage
-        Logging.Log("Take Damage: " + Global.steamid + " " + authority, "BasicPlayerCharacter");
+        //Logging.Log("Take Damage: " + Global.steamid + " " + authority, "BasicPlayerCharacter");
         if (Global.steamid == authority)
         {
             RPCManager.RPC(this, "rpc_TakeDamage", [damage, byID, soundType, VolumeDb]);
