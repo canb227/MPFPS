@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://4pw80uffkx1e"]
+[gd_scene load_steps=16 format=3 uid="uid://4pw80uffkx1e"]
 
 [ext_resource type="Script" uid="uid://citq2tpxaq5ux" path="res://scripts/game/GameObjects/PlayerCharacters/SwarmRobotPlayerCharacter.cs" id="1_n2121"]
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_4l5s8"]
 [ext_resource type="AudioStream" uid="uid://dn5rx0u0gk0uf" path="res://assets/audio/character/footsteps/concrete1.wav" id="4_4v5fo"]
+[ext_resource type="Script" uid="uid://s1fhx5upsr8w" path="res://assets/materials/post_process_grayscale.gd" id="5_htvkb"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
 
@@ -83,6 +84,19 @@ _data = {
 radius = 1.5991211
 height = 3.1982422
 
+[sub_resource type="CompositorEffect" id="CompositorEffect_k4xx5"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = false
+needs_normal_roughness = false
+script = ExtResource("5_htvkb")
+metadata/_custom_type_script = "uid://s1fhx5upsr8w"
+
+[sub_resource type="Compositor" id="Compositor_4v5fo"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_k4xx5")])
+
 [sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_htvkb"]
 buffer_length = 0.1
 
@@ -139,11 +153,12 @@ panning_strength = 0.0
 
 [node name="Camera3D" type="Camera3D" parent="firstpersonmodel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62766343, -0.12285447)
+compositor = SubResource("Compositor_4v5fo")
 
 [node name="thirdpersonmodel" type="Node3D" parent="."]
 
 [node name="SteamAudioVoice" type="SteamAudioPlayer" parent="thirdpersonmodel"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7009541, -0.2089411)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.4214277, -0.2089411)
 stream = SubResource("AudioStreamGenerator_htvkb")
 volume_db = -80.0
 unit_size = 1.0

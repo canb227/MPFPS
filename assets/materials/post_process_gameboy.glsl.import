@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bxracr17h4d05"
+path="res://.godot/imported/post_process_gameboy.glsl-3f2c1dd94ed8a84847269d062dd789a0.res"
+
+[deps]
+
+source_file="res://assets/materials/post_process_gameboy.glsl"
+dest_files=["res://.godot/imported/post_process_gameboy.glsl-3f2c1dd94ed8a84847269d062dd789a0.res"]
+
+[params]
+
