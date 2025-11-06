@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dlqiqow6onvpu" path="res://scripts/game/GameObjects/PlayerCharacters/Ghost.cs" id="1_xy2rk"]
 [ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="2_5i5vb"]
+[ext_resource type="Script" uid="uid://bd37pxx3kgd2n" path="res://addons/giga_audio/src/audio_occluder_3d.gd" id="3_5i5vb"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bbnym"]
 
@@ -10,38 +11,42 @@ albedo_texture = ExtResource("2_5i5vb")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_5mfnq"]
 
-[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_xy2rk"]
-buffer_length = 0.1
-
-[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("thirdPersonModel", "camera", "voicePlayer")]
-collision_layer = 0
-collision_mask = 0
+[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "camera", "voicePlayer")]
 script = ExtResource("1_xy2rk")
+firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("mesh")
 camera = NodePath("firstPersonModel/Camera3D")
-voicePlayer = NodePath("thirdPersonModel/SteamAudioVoice")
+voicePlayer = NodePath("thirdPersonModel/AudioOccluder3D")
 type = 2
 metadata/_custom_type_script = "uid://dlqiqow6onvpu"
 
 [node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3584206, 0)
 layers = 2
 mesh = SubResource("SphereMesh_bbnym")
 surface_material_override/0 = SubResource("StandardMaterial3D_veat2")
 
 [node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3584206, 0)
 shape = SubResource("SphereShape3D_5mfnq")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3584206, 0)
 spot_range = 6.646452
 spot_angle = 28.109053
 
 [node name="firstPersonModel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3584206, 0)
 
 [node name="Camera3D" type="Camera3D" parent="firstPersonModel"]
 
 [node name="thirdPersonModel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3584206, 0)
 
-[node name="SteamAudioVoice" type="SteamAudioPlayer" parent="thirdPersonModel"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7009541, -0.2089411)
-stream = SubResource("AudioStreamGenerator_xy2rk")
-panning_strength = 0.0
+[node name="AudioOccluder3D" type="AudioStreamPlayer3D" parent="thirdPersonModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3584206, 0)
+unit_size = 15.0
+max_distance = 40.0
+script = ExtResource("3_5i5vb")
+occlusion_db = -16.0
+metadata/_custom_type_script = "uid://bd37pxx3kgd2n"

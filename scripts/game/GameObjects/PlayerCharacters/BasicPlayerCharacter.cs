@@ -18,7 +18,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 {
     public event Action<ulong> KnockedOut;
     public event Action<ulong> Killed;
-    [Export] public AudioStreamPlayer3D ourVoiceSpeaker;
     [Export] public AudioStreamPlayer3D characterSFX;
     [Export] public AudioStreamPlayer3D movementSFX;
     [Export] public AnimationTree animationTree;
@@ -554,7 +553,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         //update our grounded status for stateupdates
         LocalOnGround = IsOnFloor();
-        GD.Print(LocalOnGround);
+        //GD.Print(LocalOnGround);
     }
     
     bool CanUncrouch()

@@ -35,7 +35,7 @@ project/assembly_name="MPFPS"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/anim_player_refactor/plugin.cfg", "res://addons/blender_godot_pipeline/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/anim_player_refactor/plugin.cfg", "res://addons/blender_godot_pipeline/plugin.cfg", "res://addons/giga_audio/src/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/limbo_console/plugin.cfg")
 
 [global_group]
 

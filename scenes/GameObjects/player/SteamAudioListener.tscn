@@ -1,3 +1,9 @@
-[gd_scene load_steps=0 format=3 uid="uid://clilbw6km5gwv"]
+[gd_scene load_steps=2 format=3 uid="uid://clilbw6km5gwv"]
+
+[ext_resource type="Script" uid="uid://box7ayhjttslg" path="res://addons/giga_audio/src/audio_target.gd" id="1_j2kvb"]
 
 [node name="SteamAudioListener" type="SteamAudioListener"]
+
+[node name="AudioTarget3D" type="Node" parent="."]
+script = ExtResource("1_j2kvb")
+metadata/_custom_type_script = "uid://box7ayhjttslg"

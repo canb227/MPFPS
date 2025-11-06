@@ -91,10 +91,16 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         voicePlayer.Play();
         playback = voicePlayer.GetStreamPlayback() as AudioStreamGeneratorPlayback;
 
-
-        if (authority == Global.steamid)
+        if (IsMe())
         {
+            GD.Print("CHANGING TARGETS OF AUDIO TO: " + id + " " + Name);
             thirdPersonModel.Visible = false;
+            //we tell everybodies occluder audio voices to target our new camera for occlusion on our local machine
+            var targetNodes = GetTree().GetNodesInGroup("AudioOccluder");
+            foreach(var audioOccluder in targetNodes)
+            {
+                audioOccluder.Call("changeTarget", camera);
+            }
         }
     }
 
@@ -190,8 +196,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             Global.gameState.PlayerIDToControlledCharacter[controllingPlayerID] = 0;
             controllingPlayerID = 0;
             input = null;
-
-
+            thirdPersonModel.Visible = true;
+            firstPersonModel.Visible = false;
         }
     }
 

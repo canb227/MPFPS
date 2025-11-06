@@ -126,17 +126,20 @@ shape = SubResource("CapsuleShape3D_nnfe1")
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
 air_absorption = true
+occlusion = false
 attenuation_model = 1
 max_db = -3.0
 max_polyphony = 2
 panning_strength = 0.0
 
 [node name="SteamAudioPlayerSiren" type="SteamAudioPlayer" parent="."]
-distance_attenuation = true
 air_absorption = true
-attenuation_model = 3
+occlusion = false
+attenuation_model = 2
+volume_db = -3.0
+unit_size = 15.0
 max_db = -3.0
-max_polyphony = 2
+max_distance = 40.0
 panning_strength = 0.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
