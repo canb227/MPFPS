@@ -14,6 +14,8 @@ public struct PlayerConfig
     public float mouseSensX = 5f;
     public float mouseSensY = 5f;
 
+    public float fov = 75;
+
     public bool fullscreen = false;
 }
 

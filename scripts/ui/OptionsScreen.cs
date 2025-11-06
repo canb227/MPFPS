@@ -6,13 +6,15 @@ using System.Linq;
 public partial class OptionsScreen : Control
 {
 
-    private TextEdit WindowWidth;
-    private TextEdit WindowHeight;
+    private LineEdit WindowWidth;
+    private LineEdit WindowHeight;
     private CheckBox Fullscreen;
 
-    private TextEdit MouseSensX;
-    private TextEdit MouseSensY;
+    private LineEdit MouseSensX;
+    private LineEdit MouseSensY;
     private PlayerConfig conf;
+
+    private LineEdit FOV;
 
     private GridContainer keymapGrid;
     private bool waitingForInput;
@@ -25,20 +27,23 @@ public partial class OptionsScreen : Control
         GetNode<Button>("BUTTON_cancel").Pressed += OnCancelPressed;
         GetNode<Button>("BUTTON_apply").Pressed += OnApplyPressed;
 
-        WindowWidth = GetNode<TextEdit>("WindowWidthEdit");
+        WindowWidth = GetNode<LineEdit>("WindowWidthEdit");
         WindowWidth.Text = conf.window_width.ToString();
 
-        WindowHeight = GetNode<TextEdit>("WindowHeightEdit");
+        WindowHeight = GetNode<LineEdit>("WindowHeightEdit");
         WindowHeight.Text = conf.window_height.ToString();
 
         Fullscreen = GetNode<CheckBox>("FullscreenCheck");
         Fullscreen.ButtonPressed = conf.fullscreen;
 
-        MouseSensX = GetNode<TextEdit>("MouseSensXEdit");
+        MouseSensX = GetNode<LineEdit>("MouseSensXEdit");
         MouseSensX.Text = conf.mouseSensX.ToString();
 
-        MouseSensY = GetNode<TextEdit>("MouseSensYEdit");
+        MouseSensY = GetNode<LineEdit>("MouseSensYEdit");
         MouseSensY.Text = conf.mouseSensY.ToString();
+
+        FOV = GetNode<LineEdit>("FOVEdit");
+        FOV.Text = conf.fov.ToString();
 
         keymapGrid = GetNode<GridContainer>("keymap/keymapGrid");
         foreach(ActionFlags action in Enum.GetValues(typeof(ActionFlags)))
@@ -86,9 +91,11 @@ public partial class OptionsScreen : Control
             conf.window_height = int.Parse(WindowHeight.Text);
             GetWindow().Size = new Vector2I(conf.window_width, conf.window_height);
         }
-
-        conf.mouseSensX = 5;
-        conf.mouseSensY = 5;
+        Logging.Log($"SETTING FOV TO: {int.Parse(FOV.Text)}", "FOV");
+        conf.fov = int.Parse(FOV.Text);
+        conf.mouseSensX = int.Parse(MouseSensX.Text);
+        conf.mouseSensY = int.Parse(MouseSensY.Text);
+        Global.Config.loadedPlayerConfig = conf;
         Global.Config.SavePlayerConfig();
         Global.ui.SwitchFullScreenUI("UI_MainMenu");
 

@@ -51,12 +51,12 @@ offset_right = 196.0
 offset_bottom = 134.0
 text = "Windowed Width:"
 
-[node name="WindowWidthEdit" type="TextEdit" parent="."]
+[node name="WindowWidthEdit" type="LineEdit" parent="."]
 layout_mode = 0
 offset_left = 197.0
 offset_top = 108.0
 offset_right = 271.0
-offset_bottom = 137.0
+offset_bottom = 139.0
 text = "1920"
 
 [node name="WindowHeightLabel" type="Label" parent="."]
@@ -67,12 +67,12 @@ offset_right = 215.0
 offset_bottom = 175.0
 text = "Windowed Height:"
 
-[node name="WindowHeightEdit" type="TextEdit" parent="."]
+[node name="WindowHeightEdit" type="LineEdit" parent="."]
 layout_mode = 0
 offset_left = 198.0
 offset_top = 149.0
 offset_right = 274.0
-offset_bottom = 176.0
+offset_bottom = 180.0
 text = "1080"
 
 [node name="FullscreenLabel" type="Label" parent="."]
@@ -127,12 +127,12 @@ offset_right = 189.0
 offset_bottom = 411.0
 text = "Mouse X-Axis Sensitivity:"
 
-[node name="MouseSensXEdit" type="TextEdit" parent="."]
+[node name="MouseSensXEdit" type="LineEdit" parent="."]
 layout_mode = 0
 offset_left = 246.0
 offset_top = 385.0
 offset_right = 320.0
-offset_bottom = 414.0
+offset_bottom = 416.0
 text = "5"
 
 [node name="MouseSensYLabel" type="Label" parent="."]
@@ -143,12 +143,12 @@ offset_right = 208.0
 offset_bottom = 452.0
 text = "Mouse Y-Axis Sensitivity:"
 
-[node name="MouseSensYEdit" type="TextEdit" parent="."]
+[node name="MouseSensYEdit" type="LineEdit" parent="."]
 layout_mode = 0
 offset_left = 247.0
 offset_top = 425.0
 offset_right = 323.0
-offset_bottom = 452.0
+offset_bottom = 456.0
 text = "5"
 
 [node name="keymap" type="Panel" parent="."]
@@ -197,3 +197,19 @@ offset_right = 1441.0
 offset_bottom = 556.0
 text = "Press Key for \"\""
 label_settings = SubResource("LabelSettings_asb5d")
+
+[node name="FOVLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 583.0
+offset_right = 237.0
+offset_bottom = 606.0
+text = "FOV:"
+
+[node name="FOVEdit" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 579.0
+offset_right = 326.0
+offset_bottom = 610.0
+text = "75"

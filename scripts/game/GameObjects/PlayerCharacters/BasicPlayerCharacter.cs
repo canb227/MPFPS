@@ -53,7 +53,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public bool knockedOut;
     private bool crouched;
     private bool LocalOnGround;
-
+    private float fov = 90;
 
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
@@ -75,6 +75,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void _Ready()
     {
         base._Ready();
+        Logging.Log($"FOVIS: {Global.Config.loadedPlayerConfig.fov}", "FOV");
         Global.ui.inGameUI.ScoreBoard.AddLivingWorkerPlayerRow(authority);
 
         currentGroup = InventoryGroupCategory.Hands;
@@ -315,6 +316,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             else if (!lastTickActions.HasFlag(ActionFlags.InventorySlot4) && input.actions.HasFlag(ActionFlags.InventorySlot4))
             {
                 EquipNextFromSlot(InventoryGroupCategory.Role);
+            }
+            if (input.actions.HasFlag(ActionFlags.Aim))
+            {
+                Logging.Log($"SETTING FOV TO: {Global.Config.loadedPlayerConfig.fov / 2}", "FOV");
+                camera.Fov = Global.Config.loadedPlayerConfig.fov/2;
+            }
+            else
+            {
+                camera.Fov = Global.Config.loadedPlayerConfig.fov;
             }
         }
     }

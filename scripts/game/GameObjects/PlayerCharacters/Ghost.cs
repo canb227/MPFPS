@@ -12,6 +12,7 @@ public partial class Ghost : GOBasePlayerCharacter
     {
         base._Ready();
         priority = 100;
+        camera.Fov = Global.Config.loadedPlayerConfig.fov;
     }
 
     public override void ProcessStateUpdate(byte[] _update)
