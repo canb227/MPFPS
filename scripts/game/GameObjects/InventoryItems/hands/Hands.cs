@@ -172,7 +172,10 @@ public partial class Hands : GOBaseInventoryItem
             if (holding is GOBaseRigidBody rb)
             {
                 rb.DisableMode = DisableModeEnum.Remove;
-                rb.ProcessMode = ProcessModeEnum.Disabled;
+                if (rb is not GOC4)
+                {
+                    rb.ProcessMode = ProcessModeEnum.Disabled;
+                }           
             }
         }
     }

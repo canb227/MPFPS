@@ -13,7 +13,9 @@ public partial class GOC4 : GOBaseRoleItem
     [Export] AudioStreamPlayer3D explosionAudioStream { get; set; }
     [Export] Area3D explosionRadius { get; set; }
     [Export] Label timeLeftLabel { get; set; }
-    private double countdown { get; set; } = 5; //45
+    private double countdownMax { get; set; } = 60; //45
+    private double countdown;
+    private double timeSinceLastPlay = 0.0;     
     private bool planted { get; set; }
     public override bool pickupable { get; set; } = true;
 
@@ -35,6 +37,7 @@ public partial class GOC4 : GOBaseRoleItem
             basicPlayerCharacter.DropEquipped();
         }
         planted = true;
+        countdown = countdownMax;
         pickupable = false;
     }
 
@@ -44,9 +47,19 @@ public partial class GOC4 : GOBaseRoleItem
         {
             countdown -= delta;
             timeLeftLabel.Text = $"{TimeSpan.FromSeconds(countdown):mm\\:ss}";
-            if (!audioStreamPlayer.Playing)
+            // Update timer
+            timeSinceLastPlay += delta;
+
+            // Scale interval: at countdownMax = 5s, at 0 = 0s
+            double interval = 5.0 * (countdown / countdownMax);
+
+            // Clamp so it never goes below e.g. 0.2s
+            interval = Math.Max(interval, 0.2);
+
+            if (timeSinceLastPlay >= interval)
             {
                 audioStreamPlayer.Play();
+                timeSinceLastPlay = 0.0;
             }
             if (countdown < 0 && Global.steamid == authority) //only authority can trigger explosion
             {
@@ -54,23 +67,11 @@ public partial class GOC4 : GOBaseRoleItem
             }
         }
     }
-    
-    private double GetBeepInterval()
-    {
-        // Example: linearly map countdown (10 → 0) to interval (1.0 → 0.1)
-        double maxInterval = 1.0;
-        double minInterval = 0.1;
-        double maxCountdown = 10.0; // adjust to your bomb timer length
-
-        double t = Mathf.Clamp(countdown / maxCountdown, 0.0, 1.0);
-        return minInterval + (maxInterval - minInterval) * t;
-    }
 
 
     public void DetonateC4()
     {
-        float maxDamage = 110.0f;
-        float force = 5000.0f; // tweak this for stronger/weaker knockback
+        float maxDamage = 100.0f;
         explosionAudioStream.Play();
          // Get all bodies currently inside the Area3D
         var bodies = explosionRadius.GetOverlappingBodies();
@@ -83,20 +84,22 @@ public partial class GOC4 : GOBaseRoleItem
 
                 // Scale damage by distance
                 float radius = (explosionRadius.GetNode<CollisionShape3D>("CollisionShape3D").Shape as SphereShape3D).Radius;
-                float damage = Mathf.Max(0, maxDamage * (1 - (distance / radius)));
+                float t = distance / radius;
+                float falloff = 1 - Mathf.SmoothStep(0, 1, t);
+                float damage = Mathf.Max(0, maxDamage * falloff);
+
 
                 if (node is IsDamagable d)
                 {
-                    d.TakeDamage(damage, 0, PainSoundType.Fire, 0);
-                    d.TakeStunDamage(damage * 2, 0, PainSoundType.None, 0);
-                }
-
-                // Apply physics impulse if it's a rigid body
-                if (node is RigidBody3D rb)
-                {
-                    Vector3 dir = (rb.GlobalTransform.Origin - GlobalTransform.Origin).Normalized();
-                    float scaledForce = force * (1 - (distance / radius));
-                    rb.ApplyImpulse(Vector3.Zero, dir * scaledForce);
+                    if (distance < 15)
+                    {
+                        d.TakeDamage(100, 0, PainSoundType.Fire, 0);
+                    }
+                    else
+                    {
+                        d.TakeDamage(damage, 0, PainSoundType.Fire, 0);
+                        d.TakeStunDamage(damage * 2, 0, PainSoundType.None, 0);
+                    }                    
                 }
             }
         }
