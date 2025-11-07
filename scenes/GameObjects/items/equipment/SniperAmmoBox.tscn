@@ -17,7 +17,7 @@ ammoAmount = 10
 metadata/_custom_type_script = "uid://iswe8cik68ip"
 
 [node name="ammo_box_mp_4_12" parent="." instance=ExtResource("2_2pvok")]
-transform = Transform3D(1.495, 0, 0, 0, 1.275, 0, 0, 0, 1.435, 0, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 1.706, 0, 0, 0, 1.92, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00012779236, 0.038208008, -0.00019073486)

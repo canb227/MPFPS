@@ -20,7 +20,6 @@ config/icon="res://icon.svg"
 
 Global="*res://scripts/Global.cs"
 LimboConsole="*res://addons/limbo_console/limbo_console.gd"
-ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 
 [display]
 
