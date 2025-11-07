@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 
@@ -9,10 +10,13 @@ public partial class GOC4 : GOBaseRoleItem
     [Export] Node3D tps { get; set; }
     [Export] CollisionShape3D collider { get; set; }
     [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
+    [Export] AudioStreamPlayer3D explosionAudioStream { get; set; }
     [Export] Area3D explosionRadius { get; set; }
-    private double countdown { get; set; } = 45;
+    [Export] Label timeLeftLabel { get; set; }
+    private double countdown { get; set; } = 5; //45
     private bool planted { get; set; }
-    private double beepTimer = 0.0;
+    public override bool pickupable { get; set; } = true;
+
 
     public override void HandleInput(ActionFlags input)
     {
@@ -31,6 +35,7 @@ public partial class GOC4 : GOBaseRoleItem
             basicPlayerCharacter.DropEquipped();
         }
         planted = true;
+        pickupable = false;
     }
 
     public override void _Process(double delta)
@@ -38,7 +43,8 @@ public partial class GOC4 : GOBaseRoleItem
         if (planted)
         {
             countdown -= delta;
-            if (audioStreamPlayer.Playing)
+            timeLeftLabel.Text = $"{TimeSpan.FromSeconds(countdown):mm\\:ss}";
+            if (!audioStreamPlayer.Playing)
             {
                 audioStreamPlayer.Play();
             }
@@ -63,9 +69,9 @@ public partial class GOC4 : GOBaseRoleItem
 
     public void DetonateC4()
     {
-        float maxDamage = 100.0f;
-        float force = 50.0f; // tweak this for stronger/weaker knockback
-
+        float maxDamage = 110.0f;
+        float force = 5000.0f; // tweak this for stronger/weaker knockback
+        explosionAudioStream.Play();
          // Get all bodies currently inside the Area3D
         var bodies = explosionRadius.GetOverlappingBodies();
 
@@ -79,8 +85,11 @@ public partial class GOC4 : GOBaseRoleItem
                 float radius = (explosionRadius.GetNode<CollisionShape3D>("CollisionShape3D").Shape as SphereShape3D).Radius;
                 float damage = Mathf.Max(0, maxDamage * (1 - (distance / radius)));
 
-                if (node.HasMethod("TakeDamage"))
-                    node.Call("TakeDamage", damage);
+                if (node is IsDamagable d)
+                {
+                    d.TakeDamage(damage, 0, PainSoundType.Fire, 0);
+                    d.TakeStunDamage(damage * 2, 0, PainSoundType.None, 0);
+                }
 
                 // Apply physics impulse if it's a rigid body
                 if (node is RigidBody3D rb)

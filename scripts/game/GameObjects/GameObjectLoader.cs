@@ -40,7 +40,7 @@ public static class GameObjectLoader
 
         //RoleItems
         {"PlayerRadar", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/PlayerRadar.tscn", typeof(GOBaseRoleItem))},
-        {"C4", (GameObjectType.PlayerRadar,"res://scenes/GameObjects/items/role/C4.tscn", typeof(GOBaseRoleItem))},
+        {"C4", (GameObjectType.C4,"res://scenes/GameObjects/items/role/C4.tscn", typeof(GOBaseRoleItem))},
 
         //Components
         //{ "PowerCell", (GameObjectType.PowerCell,"res://scenes/GameObjects/components/powercell.tscn", typeof(GOComponent))},

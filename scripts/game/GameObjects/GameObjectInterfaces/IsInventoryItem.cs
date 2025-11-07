@@ -9,6 +9,7 @@ public interface IsInventoryItem
     public ulong equippedBySteamID { get; set; }
 
     public bool droppable { get; set; }
+    public bool pickupable { get; set; }
 
     public Node3D firstPersonScene { get; set; }
     public Node3D thirdPersonScene { get; set; }

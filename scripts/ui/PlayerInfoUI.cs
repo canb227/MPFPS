@@ -77,7 +77,7 @@ public partial class PlayerInfoUI : MarginContainer
     }
     public void UpdateHealthUI(int newHealth, int newHealthMax)
     {
-        HealthLabel.Text = newHealth.ToString();
+        HealthLabel.Text = Mathf.CeilToInt(newHealth).ToString();
         HealthBar.MaxValue = newHealthMax;
         HealthBar.Value = newHealth;
     }

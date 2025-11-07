@@ -238,8 +238,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                     var hit = interactRayCast.GetCollider();
                     if (hit is IsInventoryItem s)
                     {
-                        Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
-                        Pickup(s);
+                        if (s.pickupable)
+                        {
+                            Logging.Log("Calling Pickup!", "BasicPlayerCharacter");
+                            Pickup(s);
+                        }
+
                     }
                     else if (hit is IsInteractable i)
                     {

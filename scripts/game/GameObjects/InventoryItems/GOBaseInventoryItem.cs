@@ -24,6 +24,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
     public virtual ulong inInventoryOf { get; set; }
     public virtual ulong equippedBySteamID { get; set; }
     public virtual bool droppable { get; set; }
+    public virtual bool pickupable { get; set; } = true;
     public Node3D currentParent {get; set; }
 
     public abstract void HandleInput(ActionFlags actionFlags);
