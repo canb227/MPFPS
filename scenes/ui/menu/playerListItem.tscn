@@ -124,8 +124,11 @@ offset_right = 153.9
 offset_bottom = 68.0
 fit_to_longest_item = false
 item_count = 3
+popup/item_0/text = "Security"
 popup/item_0/id = 0
+popup/item_1/text = "OfficeWorker"
 popup/item_1/id = 1
+popup/item_2/text = "WarehouseWorker"
 popup/item_2/id = 2
 metadata/_edit_use_anchors_ = true
 
