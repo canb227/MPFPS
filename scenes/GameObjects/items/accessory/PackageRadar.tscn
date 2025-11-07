@@ -63,6 +63,7 @@ center_of_mass_mode = 1
 center_of_mass = Vector3(0.37, 0.1, -0.32)
 script = ExtResource("1_xeqj4")
 audioStreamPlayer = NodePath("SteamAudioPlayer")
+iconPath = "res://assets/ui/icons/packageradar.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

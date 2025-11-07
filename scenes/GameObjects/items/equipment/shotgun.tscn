@@ -193,6 +193,7 @@ spread = 0.1
 physDamagePerShot = 4.0
 stunDamagePerShot = 8.0
 maxPenetrations = 1
+iconPath = "res://assets/ui/icons/Shotgun.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

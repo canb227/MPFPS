@@ -69,6 +69,7 @@ script = ExtResource("1_tgcn5")
 spotLight3D = NodePath("SpotLight3D")
 omniLight3D = NodePath("OmniLight3D")
 audioStreamPlayer = NodePath("SteamAudioPlayer")
+iconPath = "res://assets/ui/icons/flashlight.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

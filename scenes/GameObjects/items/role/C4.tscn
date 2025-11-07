@@ -123,6 +123,7 @@ audioStreamPlayer = NodePath("AudioStreamPlayer3D")
 explosionAudioStream = NodePath("AudioStreamPlayer3D2")
 explosionRadius = NodePath("ExplosionRadius")
 timeLeftLabel = NodePath("SubViewport/Label")
+iconPath = "res://assets/ui/icons/c4.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

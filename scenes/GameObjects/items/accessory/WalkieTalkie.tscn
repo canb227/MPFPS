@@ -56,6 +56,7 @@ _data = {
 
 [node name="GOBaseAccessory" type="RigidBody3D" node_paths=PackedStringArray("firstPersonScene", "thirdPersonScene", "animationPlayer")]
 script = ExtResource("1_j08s7")
+iconPath = "res://assets/ui/icons/radar.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

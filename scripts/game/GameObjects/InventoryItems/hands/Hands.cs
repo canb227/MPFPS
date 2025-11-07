@@ -26,6 +26,7 @@ public partial class Hands : GOBaseInventoryItem
 
     Node3D CurrentHoldPosition { get; set; }
     public bool rotateMode = false;
+    [Export] private string iconPath;
 
     public override void _Ready()
     {
@@ -209,6 +210,10 @@ public partial class Hands : GOBaseInventoryItem
 
     public override void OnDropped(ulong byID)
     {
+        if (inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(1, "");
+        }        
         base.OnDropped(byID);
         if(holding != null)
         {
@@ -226,6 +231,10 @@ public partial class Hands : GOBaseInventoryItem
 
     public override void OnPickup(ulong byID)
     {
+        if (inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(1, iconPath);
+        }
         base.OnPickup(byID);
         Logging.Log($"Hands PickedUp?", "Hands");
     }

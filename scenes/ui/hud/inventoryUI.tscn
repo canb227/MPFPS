@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://be71vq8wdukjf"]
+[gd_scene load_steps=3 format=3 uid="uid://be71vq8wdukjf"]
+
+[ext_resource type="Texture2D" uid="uid://n2n1rbk2kr8y" path="res://assets/ui/icons/packageradar.png" id="1_r50rw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2et4"]
 bg_color = Color(0.19215687, 0.19215687, 0.19215687, 0.50980395)
@@ -31,17 +33,37 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
 
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("1_r50rw")
+expand_mode = 2
+
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+texture = ExtResource("1_r50rw")
+expand_mode = 2
 
 [node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
 
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/PanelContainer3"]
+layout_mode = 2
+texture = ExtResource("1_r50rw")
+expand_mode = 2
+
 [node name="PanelContainer4" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/PanelContainer4"]
+layout_mode = 2
+texture = ExtResource("1_r50rw")
+expand_mode = 2

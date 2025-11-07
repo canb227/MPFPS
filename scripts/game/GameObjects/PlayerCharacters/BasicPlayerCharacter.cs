@@ -1060,7 +1060,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (controllingPlayerID == Global.steamid)
         {
             Logging.Log("Disabling Player UI " + controllingPlayerID, "BasicPlayerCharacter");
-            Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
+            //Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
         }
     }
 

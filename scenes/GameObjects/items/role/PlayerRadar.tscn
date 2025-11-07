@@ -63,6 +63,7 @@ center_of_mass_mode = 1
 center_of_mass = Vector3(0.29, 0.08, -0.23)
 script = ExtResource("1_c8pk1")
 audioStreamPlayer = NodePath("SteamAudioPlayer")
+iconPath = "res://assets/ui/icons/radar.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
@@ -87,7 +88,6 @@ mesh = SubResource("ArrayMesh_sux2j")
 skeleton = NodePath("")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-root_node = NodePath("")
 libraries = {
 &"": SubResource("AnimationLibrary_wyqfw")
 }

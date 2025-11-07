@@ -233,6 +233,7 @@ magazineSize = 10
 reloadTimeSeconds = 4.0
 physDamagePerShot = 35.0
 stunDamagePerShot = 80.0
+iconPath = "res://assets/ui/icons/SniperRifle.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

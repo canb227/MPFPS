@@ -38,6 +38,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     public override bool droppable { get; set; } = true;
     private bool reloading { get; set; }
     private GOBasePlayerCharacter playerHeldBy;
+    [Export] string iconPath;
 
 
     private ActionFlags lastTickActions;
@@ -308,7 +309,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
     public override void OnUnequipped(ulong bySteamID)
     {
-        if(equippedBySteamID == Global.steamid)
+        if (equippedBySteamID == Global.steamid)
         {
             Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
         }
@@ -322,11 +323,22 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         audioStreamPlayer2.Stop();
         animationPlayer.Play("RESET");
     }
+
+    public override void OnPickup(ulong bySteamID)
+    {
+        base.OnPickup(bySteamID);
+        if(inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(2,iconPath);
+        }
+    }
+
     
     public override void OnDropped(ulong bySteamID)
     {
-        if(equippedBySteamID == Global.steamid)
+        if(inInventoryOf == Global.steamid)
         {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(2,"");
             Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
         }
         base.OnDropped(bySteamID);

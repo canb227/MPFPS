@@ -331,6 +331,7 @@ magazineSize = 20
 physDamagePerShot = 9.0
 stunDamagePerShot = 20.0
 maxPenetrations = 1
+iconPath = "res://assets/ui/icons/AssaultRifle.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")

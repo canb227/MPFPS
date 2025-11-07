@@ -22,6 +22,7 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
     public float heldFriction { get; set; }
     protected ActionFlags lastTickActions;
     protected RayCast3D interactRayCast;
+    [Export] string iconPath;
 
     public override void HandleInput(ActionFlags input)
     {
@@ -60,9 +61,23 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
         //audioStreamPlayer.Stop();
         //animationPlayer.Play("RESET");
     }
+
+    public override void OnPickup(ulong bySteamID)
+    {
+        base.OnPickup(bySteamID);
+        if(inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(4, iconPath);
+        }
+    }
+
     
     public override void OnDropped(ulong bySteamID)
     {
+        if(inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(4, "");
+        }
         base.OnDropped(bySteamID);
         //audioStreamPlayer.Stop();
         //animationPlayer.Play("RESET");

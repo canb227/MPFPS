@@ -17,6 +17,7 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
     public override bool droppable { get; set; } = true;
     protected ActionFlags lastTickActions;
     protected RayCast3D interactRayCast;
+    [Export] string iconPath;
 
     public override void HandleInput(ActionFlags input)
     {
@@ -32,6 +33,15 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
         }
     }
 
+    public override void OnPickup(ulong bySteamID)
+    {
+        base.OnPickup(bySteamID);
+        if(inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(3, iconPath);
+        }
+    }
+
 
     public override void OnUnequipped(ulong bySteamID)
     {
@@ -43,6 +53,10 @@ public partial class GOBaseAccessory : GOBaseInventoryItem, IsHoldable
     
     public override void OnDropped(ulong bySteamID)
     {
+        if(inInventoryOf == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(3, "");
+        }
         base.OnDropped(bySteamID);
         //audioStreamPlayer.Stop();
         //animationPlayer.Play("RESET");

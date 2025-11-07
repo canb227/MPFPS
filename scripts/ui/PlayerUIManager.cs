@@ -17,6 +17,10 @@ public partial class PlayerUIManager : Control
     [Export] public Label targetPlayerName;
     [Export] public Label targetPlayerHealth;
     [Export] public Label targetPlayerRole;
+    [Export] public TextureRect inventorySlot1;
+    [Export] public TextureRect inventorySlot2;
+    [Export] public TextureRect inventorySlot3;
+    [Export] public TextureRect inventorySlot4;
 
     public void ShowPlayerUI(ulong characterID)
     {
@@ -39,6 +43,59 @@ public partial class PlayerUIManager : Control
     public void UpdateTeamUI(Team newTeam)
     {
         PlayerInfoUI.UpdateTeamUI(newTeam);
+    }
+
+    public void UpdateInventorySlot(int slot, string iconPath)
+    {
+        GD.Print("Update Slot " + slot);
+        if (slot == 1)
+        {
+            if (iconPath == "")
+            {
+                inventorySlot1.Texture = null;
+            }
+            else
+            {
+                inventorySlot1.Texture = ResourceLoader.Load<Texture2D>(iconPath);
+            }            
+        }
+        else if (slot == 2)
+        {
+            if (iconPath == "")
+            {
+                inventorySlot2.Texture = null;
+            }
+            else
+            {
+                inventorySlot2.Texture = ResourceLoader.Load<Texture2D>(iconPath);
+            }          
+        }
+        else if (slot == 3)
+        {
+            if (iconPath == "")
+            {
+                inventorySlot3.Texture = null;
+            }
+            else
+            {
+                inventorySlot3.Texture = ResourceLoader.Load<Texture2D>(iconPath);
+            }           
+        }
+        else if (slot == 4)
+        {
+            if (iconPath == "")
+            {
+                inventorySlot4.Texture = null;
+            }
+            else
+            {
+                inventorySlot4.Texture = ResourceLoader.Load<Texture2D>(iconPath);
+            }  
+        }
+        else
+        {
+            Logging.Error("INVALID Inventory Slot Update Request", "PlayerUIManager");
+        }
     }
 
 

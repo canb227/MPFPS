@@ -47,10 +47,11 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         Freeze = false;
         equippedBySteamID = 0;
         inInventoryOf = 0;
-        if(currentParent != null)
+        if (currentParent != null)
         {
             DetachFromPlayer(currentParent);
         }
+
     }
     public virtual void OnEquipped(ulong bySteamID)
     {
