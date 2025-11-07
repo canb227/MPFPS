@@ -188,7 +188,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 if (controllingPlayerID == Global.steamid)
                 {
-                    RPCManager.RPC(this, "WakeUp", []);
+                    RPCManager.RPC(this, "rpc_WakeUp", []);
                 }
             }
         }
@@ -478,7 +478,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     
     public void DropEquipped()
     {
-        RPCManager.RPC(this, "rpc_DropEquipped", []);
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_DropEquipped", []);
+        }
     }
     
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -868,9 +871,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar); ;
             }
-            if (currentStunBar <= 0 && Global.steamid == authority)
+            if (currentStunBar <= 0)
             {
-                rpc_OnKnockedOut();
+                OnKnockedOut();
             }
         }
         else
@@ -906,7 +909,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void WakeUp()
+    public void rpc_WakeUp()
     {
         Logging.Log("Waking Up: " + id + " " + authority, "BasicPlayerCharacter");
         knockedOut = false;

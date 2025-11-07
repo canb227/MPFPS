@@ -19,7 +19,7 @@ public partial class GOFlashlight : GOBaseAccessory
     {
         if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
         {
-            RPCManager.RPC(this, "ToggleFlashLight", []);
+            RPCManager.RPCID(id, "ToggleFlashLight", []);
         }
         base.HandleInput(input);
     }

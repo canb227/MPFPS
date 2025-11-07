@@ -290,7 +290,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerHealth.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerRole.Visible = true;
                                 Global.ui.inGameUI.PlayerUIManager.targetPlayerName.Text = SteamFriends.GetFriendPersonaName(new CSteamID(basicPlayerCharacter.authority));
-                                if (team == Team.Manager)
+                                if (basicPlayerCharacter.team == Team.Manager)
                                 {
                                     Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontColor = Colors.Blue;
                                 }
