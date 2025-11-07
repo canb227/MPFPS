@@ -51,7 +51,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public bool handcuffed;
     public bool knockedOut;
     private bool crouched;
-    private bool LocalOnGround;
+    public bool onGround = true;
     private float fov = 90;
 
 
@@ -133,7 +133,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         GlobalRotation = update.Rotation;
         GlobalPosition = update.Position;
         camera.Rotation = update.CameraRotation;
-        LocalOnGround = update.OnGround;
+        if (onGround != update.OnGround)
+        {
+            Logging.Log($"Swapping grounded state of PC {id} to {update.OnGround}","BasicPlayerCharacter");
+        }
+        onGround = update.OnGround;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -142,7 +146,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         update.Rotation = GlobalRotation;
         update.Position = GlobalPosition;
         update.CameraRotation = camera.Rotation;
-        update.OnGround = LocalOnGround;
+        update.OnGround = IsOnFloor();
+        onGround = IsOnFloor();
         return MessagePackSerializer.Serialize(update);
     }
 
@@ -209,15 +214,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //use input from local and remote players to calculate footsteps
         if (input != null && !knockedOut)
         {
-            LocalOnGround = IsOnFloor();
+
             if (input.actions.HasFlag(ActionFlags.Jump))
             {
-                if (LocalOnGround)
+                if (IsOnFloor())
                 {
                     characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
                 }
             }
-            else if (LocalOnGround && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f && !crouched)
+            else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f && !crouched)
             {
                 characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
             }
@@ -554,9 +559,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         PushAwayRigidBodies();
         MoveAndSlide();
 
-        //update our grounded status for stateupdates
-        LocalOnGround = IsOnFloor();
-        //GD.Print(LocalOnGround);
+
+        //GD.Print(IsOnFloor();
     }
     
     bool CanUncrouch()
@@ -628,27 +632,27 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     private Vector3 HandleYAxis(Vector3 globalVelocity, double delta)
     {
-        LocalOnGround = IsOnFloor();
-        if (!LocalOnGround)
+
+        if (!IsOnFloor())
         {
             globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
         }
         if (input.actions.HasFlag(ActionFlags.Jump))
         {
-            LocalOnGround = IsOnFloor();
-            if (LocalOnGround)
+
+            if (IsOnFloor())
             {
                 globalVelocity += jumpVelocity;
             }
         }
 
         //fall damage calculation
-        LocalOnGround = IsOnFloor();
-        if (!LocalOnGround && globalVelocity.Y < 0)
+
+        if (!IsOnFloor() && globalVelocity.Y < 0)
         {
             fallTime += (float)delta;
         }
-        else if (LocalOnGround)
+        else if (IsOnFloor())
         {
             if (fallTime > safeFallTime)
             {
@@ -708,8 +712,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         bool antiInput = (localVelocity.Z > 1 && moveZ < 0) || (localVelocity.Z < -1 && moveZ > 0);
 
         //airbrake prevents further air movement once youve cancelled your Z movement
-        LocalOnGround = IsOnFloor();
-        if (!LocalOnGround && (antiInput || airbrake))
+
+        if (!IsOnFloor() && (antiInput || airbrake))
         {
             airbrake = true;
             localVelocity.X = 0;
@@ -732,8 +736,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
 
         //apply deceleration
-        LocalOnGround = IsOnFloor();
-        if (LocalOnGround)
+
+        if (IsOnFloor())
         {
             if (moveZ == 0)
             {
@@ -1113,7 +1117,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             }
         }
 
-        if (LocalOnGround)
+        if (onGround)
         {
             animationTree.Set("parameters/GroundedTransition/transition_request", "grounded");
         }
