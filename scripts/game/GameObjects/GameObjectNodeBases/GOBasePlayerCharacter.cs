@@ -147,6 +147,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                 camera.AddChild(sal);
                 Input.MouseMode = Input.MouseModeEnum.Captured;
                 OnControlTaken(playerID);
+                thirdPersonModel.Visible = false;
+                firstPersonModel.Visible = true;
             }
         }
     }

@@ -86,6 +86,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast = new();
         interactRayCast.TargetPosition = new Vector3(0, 0, -4);
         interactRayCast.CollideWithBodies = true;
+        interactRayCast.CollideWithAreas = true;
         interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
 
@@ -974,15 +975,18 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath()
     {
-        Killed?.Invoke(id);
-        characterSoundManager.PlayDeathSound(characterSFX);
-        inventory.DropAllItems(authority);
-        state = CharacterState.Missing;
-        currentHealth = 0;
-        rpc_OnKnockedOut();
-        Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
-        Global.gameState.gameModeManager.CharacterDied(authority, team);
-        DelayDeathRelease();
+        if(state == CharacterState.Living)
+        {
+            Killed?.Invoke(id);
+            characterSoundManager.PlayDeathSound(characterSFX);
+            inventory.DropAllItems(authority);
+            state = CharacterState.Missing;
+            currentHealth = 0;
+            rpc_OnKnockedOut();
+            Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
+            Global.gameState.gameModeManager.CharacterDied(authority, team);
+            DelayDeathRelease();
+        }
     }
 
     public async void DelayDeathRelease()
