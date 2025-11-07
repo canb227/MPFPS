@@ -115,6 +115,17 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
                     }
 
                     Velocity = velocity;
+                    if (Velocity.Length() > 0.1f)
+                    {
+                        Vector3 forward = new Vector3(Velocity.X, 0, Velocity.Z).Normalized();
+                        // Current facing direction
+                        Vector3 currentForward = -GlobalTransform.Basis.Z;
+                        // Interpolate between current and target
+                        Vector3 newForward = currentForward.Slerp(forward, (float)(delta * 5.0));
+                        LookAt(GlobalPosition + newForward, Vector3.Up);
+                    }
+
+
                     MoveAndSlide();
                 }
                 break;
