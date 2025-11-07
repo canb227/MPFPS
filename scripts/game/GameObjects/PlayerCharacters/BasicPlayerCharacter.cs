@@ -134,10 +134,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         GlobalPosition = update.Position;
         camera.Rotation = update.CameraRotation;
         Velocity = update.Velocity;
-        if (onGround != update.OnGround)
-        {
-            Logging.Log($"Swapping grounded state of PC {id} to {update.OnGround}","BasicPlayerCharacter");
-        }
+        crouched = update.Crouched;
         onGround = update.OnGround;
     }
 
@@ -149,6 +146,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         update.CameraRotation = camera.Rotation;
         update.OnGround = IsOnFloor();
         update.Velocity = Velocity;
+        update.Crouched = crouched;
         onGround = IsOnFloor();
         return MessagePackSerializer.Serialize(update);
     }
@@ -1148,4 +1146,6 @@ public struct BasicPlayerStateUpdate
     [Key(4)]
     public bool OnGround;
 
+    [Key(5)]
+    public bool Crouched;
 }
