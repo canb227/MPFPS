@@ -128,7 +128,7 @@ material = SubResource("StandardMaterial3D_u7le3")
 size = Vector2(0.5, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dd2wd"]
-size = Vector3(3.3312683, 1, 1)
+size = Vector3(3.3312683, 1.6425781, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a214j"]
 resource_name = "metal_hr_2.008"
@@ -206,7 +206,7 @@ active = true
 damageSoundType = 2
 
 [node name="HurtBoxShape" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4694743, 0.04663086, 0.03012085)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4694743, -0.02758789, 0.03012085)
 shape = SubResource("BoxShape3D_dd2wd")
 disabled = true
 debug_color = Color(0.988404, 0, 0.3075631, 0.41960785)

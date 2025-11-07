@@ -43,7 +43,8 @@ public partial class Hurtbox : Area3D
                 {
                     if (go is IsDamagable d)
                     {
-                        d.TakeDamage(damagePerTick, (ulong)0, damageSoundType);
+                        d.TakeDamage(damagePerTick, 0, damageSoundType);
+                        d.TakeStunDamage(damagePerTick * 2, 0, damageSoundType); 
                     }
                 }
                 else
