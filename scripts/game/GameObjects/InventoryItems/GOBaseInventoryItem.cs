@@ -106,36 +106,6 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         currentParent = null;
     }
 
-    public override void PerFrameAuth(double delta)
-    {
-
-    }
-
-    public override void PerFrameLocal(double delta)
-    {
-
-    }
-
-    public override void PerFrameShared(double delta)
-    {
-
-    }
-
-    public override void PerTickAuth(double delta)
-    {
-
-    }
-
-    public override void PerTickLocal(double delta)
-    {
-
-    }
-
-    public override void PerTickShared(double delta)
-    {
-
-    }
-
     public override string GenerateStateString()
     {
         return $"category:{category.ToString()} | equippedBySteamID:{equippedBySteamID} | inInventoryOf {inInventoryOf}";
