@@ -869,7 +869,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             //Logging.Log($"{damage} Stun Taken, {currentStunBar} Stun Bar Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
-                Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar); ;
+                Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar)); ;
             }
             if (currentStunBar <= 0)
             {
@@ -948,12 +948,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "BasicPlayerCharacter");
             if (controllingPlayerID == Global.steamid)
             {
-                Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
+                Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI(Mathf.CeilToInt(currentHealth), Mathf.CeilToInt(maxHealth)); ;
             }
-            if (currentHealth <= 0 && Global.steamid == authority)
+            if (currentHealth <= 0)
             {
                 Logging.Log($"{authority} PlayerCharacter has died", "BasicPlayerCharacter");
-                rpc_OnDeath();
+                OnDeath();
             }
         }
         else
@@ -1028,8 +1028,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if(Global.steamid == playerID)
         {
             GD.Print("UPDATE BOTTOM RIGHT UI: " + currentStunBar + " " + currentHealth + " " + team);
-            Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar);
-            Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth);
+            Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar));
+            Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI(Mathf.CeilToInt(currentHealth), Mathf.CeilToInt(maxHealth));
             Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
         }
     }
