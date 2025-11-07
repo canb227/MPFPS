@@ -26,6 +26,7 @@ public static class GameObjectLoader
         {"AssaultRifle", (GameObjectType.AssaultRifle,"res://scenes/GameObjects/items/equipment/assaultrifle.tscn", typeof(BasicGun))},
         {"SniperRifle", (GameObjectType.SniperRifle,"res://scenes/GameObjects/items/equipment/sniperrifle.tscn", typeof(BasicGun))},
         {"Shotgun", (GameObjectType.Shotgun,"res://scenes/GameObjects/items/equipment/shotgun.tscn", typeof(BasicGun))},
+        {"DartGun", (GameObjectType.DartGun,"res://scenes/GameObjects/items/equipment/dartgun.tscn", typeof(GODartGun))},
         {"SniperRifleAmmo", (GameObjectType.SniperRifleAmmo, "res://scenes/GameObjects/items/equipment/SniperAmmoBox.tscn", typeof(GOAmmoBox)) },
         {"AssaultRifleAmmo", (GameObjectType.AssaultRifleAmmo, "res://scenes/GameObjects/items/equipment/RifleAmmoBox.tscn", typeof(GOAmmoBox)) },
         {"ShotgunAmmo", (GameObjectType.ShotgunAmmo, "res://scenes/GameObjects/items/equipment/ShotgunAmmoBox.tscn", typeof(GOAmmoBox)) },
@@ -180,4 +181,5 @@ public enum GameObjectType
     SniperRifleAmmo,
     AssaultRifleAmmo,
     ShotgunAmmo,
+    DartGun,
 }

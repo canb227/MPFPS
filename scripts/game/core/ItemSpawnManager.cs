@@ -22,7 +22,7 @@ public partial class ItemSpawnManager : Node
                 if (!marker.canSpawnPackageItems)
                     continue;
             }
-            else if (objectClass == typeof(BasicGun))
+            else if (objectClass == typeof(BasicGun) && objectClass != typeof(GODartGun))
             {
                 if (!marker.canSpawnWeapons)
                     continue;
@@ -160,6 +160,8 @@ public partial class ItemSpawnManager : Node
     {
         //select random weapon and spawn it
         var weaponList = GameObjectLoader.GetAllObjectsOfType(typeof(BasicGun));
+        weaponList.Remove(GameObjectType.DartGun);
+
         if(weaponList.Count <= 0)
         {
             Logging.Error("Weapon List is Empty and Tried to Spawn a Weapon", "ItemSpawnManager");

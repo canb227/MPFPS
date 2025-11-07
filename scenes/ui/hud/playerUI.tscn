@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dp035d7xehaf3"]
+[gd_scene load_steps=17 format=3 uid="uid://dp035d7xehaf3"]
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
 [ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://c80b8tarywtcb" path="res://scripts/ui/RoleShopScreen.cs" id="9_ak5ua"]
 [ext_resource type="Texture2D" uid="uid://cfdkd473ytihb" path="res://assets/ui/icons/radar.png" id="9_eow85"]
 [ext_resource type="Texture2D" uid="uid://b1ajbturvuone" path="res://assets/ui/icons/c4.png" id="10_ak5ua"]
+[ext_resource type="Texture2D" uid="uid://cyjijqcnyg7su" path="res://assets/ui/icons/dartgun.png" id="12_mfrf8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2et4"]
 bg_color = Color(0.19215687, 0.19215687, 0.19215687, 0.50980395)
@@ -297,7 +298,7 @@ custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 text = "Close"
 
-[node name="RoleShopScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("roleShopScreen", "creditLabel", "itemButtonContainer", "itemDescriptionLabel", "closeWindowButton", "purchaseButton", "radarButton", "c4Button")]
+[node name="RoleShopScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("roleShopScreen", "creditLabel", "itemButtonContainer", "itemDescriptionLabel", "closeWindowButton", "purchaseButton", "radarButton", "c4Button", "dartGunButton")]
 visible = false
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
@@ -310,6 +311,7 @@ closeWindowButton = NodePath("VBoxContainer/TopBar/CloseWindowButton")
 purchaseButton = NodePath("VBoxContainer/MarginContainer/HBoxContainer/PurchaseButton")
 radarButton = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/RadarButton")
 c4Button = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/C4Button")
+dartGunButton = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/DartGunButton")
 metadata/_custom_type_script = "uid://c80b8tarywtcb"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/RoleShopScreen"]
@@ -364,6 +366,13 @@ expand_icon = true
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("10_ak5ua")
+icon_alignment = 1
+expand_icon = true
+
+[node name="DartGunButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+icon = ExtResource("12_mfrf8")
 icon_alignment = 1
 expand_icon = true
 

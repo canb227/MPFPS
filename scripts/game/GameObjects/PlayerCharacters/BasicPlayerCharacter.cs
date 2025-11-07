@@ -60,12 +60,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {AmmoType.ShotgunAmmo, 0 },
         {AmmoType.RifleAmmo, 0 },
         {AmmoType.SniperAmmo, 0 },
+        {AmmoType.MediDart, 0 },
     };
     public Dictionary<AmmoType, int> maxAmmoStored = new()
     {
         {AmmoType.ShotgunAmmo, 24 },
         {AmmoType.RifleAmmo, 60 },
         {AmmoType.SniperAmmo, 30 },
+        {AmmoType.MediDart, 5 },
     };
 
     private int currentItemSlot;
@@ -395,6 +397,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             if (inventory.HasGroup(GOItem.category))
             {
+                GD.Print("PICKED UP A " + GOItem.category);
                 InventoryGroup group = inventory.GetGroup(GOItem.category);
                 if (group.CanStoreItem(item))
                 {
@@ -940,6 +943,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (state == CharacterState.Living)
         {
             currentHealth -= damage;
+            currentHealth = Math.Min(currentHealth, maxHealth);
             hurtVisualIntensity = 0.5f;
             if(Global.steamid == authority)
             {

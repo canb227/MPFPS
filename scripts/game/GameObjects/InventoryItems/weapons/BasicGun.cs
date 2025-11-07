@@ -13,15 +13,16 @@ public enum AmmoType
     ShotgunAmmo,
     RifleAmmo,
     SniperAmmo,
+    MediDart,
 }
 [GlobalClass]
 public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 {
     //A note on the audio player, we have two audio players because otherwise we cant have the gun firing sound continue as we start our reload, making it very jarring.
     //we can have multiple sounds of the same type playing on a player at the sametime, ie the gunshots overlap, but not if they are different audio files.
-    [Export] AudioStreamPlayer3D audioStreamPlayer1 { get; set; }
-    [Export] AudioStreamPlayer3D audioStreamPlayer2 { get; set; }
-    [Export] PackedScene shotHitParticle { get; set; }
+    [Export] public AudioStreamPlayer3D audioStreamPlayer1 { get; set; }
+    [Export] public AudioStreamPlayer3D audioStreamPlayer2 { get; set; }
+    [Export] public PackedScene shotHitParticle { get; set; }
     [Export] public double fireRate { get; set; } = 8; //number of shots per second
     [Export] public AmmoType ammoType { get; set; } = AmmoType.RifleAmmo;
     [Export] public int currentMagazineAmmo { get; set; } = 30;
@@ -33,22 +34,22 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     [Export] public float stunDamagePerShot = 5;
     [Export] public int maxPenetrations = 2;
 
-    private float reloadTimeLeft { get; set; }
+    public float reloadTimeLeft { get; set; }
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
     public override bool droppable { get; set; } = true;
-    private bool reloading { get; set; }
-    private GOBasePlayerCharacter playerHeldBy;
-    [Export] string iconPath;
+    public bool reloading { get; set; }
+    public GOBasePlayerCharacter playerHeldBy;
+    [Export]public string iconPath;
 
 
-    private ActionFlags lastTickActions;
+    public ActionFlags lastTickActions;
 
-    private int lastFireIndex;
-    private double _timeUntilFire;
-    private double _timeUntilReload;
-    private string[] gunSounds;
-    private string[] emptySounds;
-    private bool waitingToFire;
+    public int lastFireIndex;
+    public double _timeUntilFire;
+    public double _timeUntilReload;
+    public string[] gunSounds;
+    public string[] emptySounds;
+    public bool waitingToFire;
     public override void _Ready()
     {
         base._Ready();

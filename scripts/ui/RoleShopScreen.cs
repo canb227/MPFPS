@@ -14,6 +14,7 @@ public partial class RoleShopScreen : PanelContainer
 
     [Export] public Button radarButton;
     [Export] public Button c4Button;
+    [Export] public Button dartGunButton;
 
     private GameObjectType currentGameObjectType = GameObjectType.ERROR;
 
@@ -24,8 +25,10 @@ public partial class RoleShopScreen : PanelContainer
         base._Ready();
         closeWindowButton.Pressed += CloseRoleShopScreen;
         purchaseButton.Pressed += PurchaseSelectedItem;
-        radarButton.Pressed += () => SelectItem(GameObjectType.PlayerRadar);  
-        c4Button.Pressed += () => SelectItem(GameObjectType.C4);      
+        radarButton.Pressed += () => SelectItem(GameObjectType.PlayerRadar);
+        c4Button.Pressed += () => SelectItem(GameObjectType.C4);
+        dartGunButton.Pressed += () => SelectItem(GameObjectType.DartGun); 
+           
     }
 
     public void OpenRoleShopScreen()
@@ -53,11 +56,15 @@ public partial class RoleShopScreen : PanelContainer
         currentGameObjectType = gameObjectType;
         if (gameObjectType == GameObjectType.C4)
         {
-            itemDescriptionLabel.Text = "C4:\nC4 is planted by left clicking, it will explode in a large radius hurting and killing players through walls.";
+            itemDescriptionLabel.Text = "C4:\nC4 is planted by left clicking, it will explode in a large radius after 1 minute hurting and killing players and robots through walls.";
         }
-        else if(gameObjectType == GameObjectType.PlayerRadar)
+        else if (gameObjectType == GameObjectType.PlayerRadar)
         {
             itemDescriptionLabel.Text = "Radar:\nRadar will periodically (and automatically) mark the location of all the workers on the map, tracking their location for a short duration.";
+        }
+        else if (gameObjectType == GameObjectType.DartGun)
+        {
+            itemDescriptionLabel.Text = "Dart Gun:\nThe Dart Gun fully heals the target but also knocks them unconscious for ~10 seconds, use with care.";
         }
     }
 
