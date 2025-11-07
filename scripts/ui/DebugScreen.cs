@@ -236,11 +236,6 @@ public partial class DebugScreen : Control
 
         if (newPlayerSteamID==Global.steamid)
         {
-            foreach (var role in Enum.GetValues(typeof(Role)))
-            {
-                playerListItem.GetNode<OptionButton>("roleSelect").AddItem(role.ToString());
-            }
-
             playerListItem.GetNode<OptionButton>("roleSelect").ItemSelected += (index) => OnRoleSelect((Role)index);
             playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
             playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
