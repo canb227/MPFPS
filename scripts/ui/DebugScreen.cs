@@ -205,7 +205,7 @@ public partial class DebugScreen : Control
 
     private void DirectLoadMap_mapList_ItemSelected(long v)
     {
-        directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(directLoadMap_mapIconPaths[directLoadMap_mapList.Selected]));
+        directLoadMap_mapImage.Texture = ImageTexture.CreateFromImage(ResourceLoader.Load<Image>(directLoadMap_mapIconPaths[directLoadMap_mapList.Selected]));
     }
 
     private void Lobby_LobbyPeerRemovedEvent(ulong removedPlayerSteamID)

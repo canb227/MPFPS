@@ -32,15 +32,14 @@ public partial class SwarmManager : Node
 
     public void EvacuationStarted()
     {
+        //spawn faster but smaller
         swarmCooldownMin = 2;
         swarmCooldownMax = 5;
         currentSwarmCooldown = swarmCooldownMin + (swarmCooldownMax - swarmCooldownMin) * rand.NextDouble();
         robotSwarmMaxSize = Mathf.CeilToInt(robotSwarmMaxSize / 4 * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
         robotSwarmMinSize = Mathf.CeilToInt(robotSwarmMinSize / 4 * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
-        //spawn faster but smaller
         evacuationStarted = true;
     }
-    int robotsSpawned = 0;
     public void PerTick(double delta)
     {
         currentSwarmCooldown -= delta;
@@ -57,7 +56,7 @@ public partial class SwarmManager : Node
             announcedSwarm = false;
         }
 
-        robotsSpawned = 0;
+        int robotsSpawned = 0;
         if(robotSwarmSize > 0)
         {
             while (robotsSpawned < 1)

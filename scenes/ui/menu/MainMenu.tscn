@@ -1,9 +1,11 @@
-[gd_scene load_steps=23 format=3 uid="uid://dr2k33e8wu14u"]
+[gd_scene load_steps=25 format=3 uid="uid://dr2k33e8wu14u"]
 
 [ext_resource type="Script" uid="uid://b7eqxvwse7s78" path="res://scripts/ui/MainMenu.cs" id="1_vjtqc"]
 [ext_resource type="Texture2D" uid="uid://ckdcp8kdpnmst" path="res://assets/ui/mainmenu_2.png" id="2_ul53e"]
 [ext_resource type="FontFile" uid="uid://dbr688n2ax7tt" path="res://assets/ui/fonts/Kenney Future.ttf" id="3_xordn"]
 [ext_resource type="FontFile" uid="uid://xu5u5uhpo4p1" path="res://assets/ui/fonts/Kenney Future Narrow.ttf" id="4_m04jw"]
+[ext_resource type="Texture2D" uid="uid://bv7djgswqqxdr" path="res://assets/ui/mainmenu_1.png" id="5_3yb8c"]
+[ext_resource type="Texture2D" uid="uid://c2pghih87mu28" path="res://assets/ui/tutorial_1.png" id="6_j8nol"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wb0ko"]
 texture = ExtResource("2_ul53e")
@@ -179,3 +181,24 @@ text = "A Game By Cx"
 label_settings = SubResource("LabelSettings_ul53e")
 horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_ul53e")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("5_3yb8c")
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("6_j8nol")

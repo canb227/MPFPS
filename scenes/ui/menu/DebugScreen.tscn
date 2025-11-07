@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://d01yl1nr74x5n"]
+[gd_scene load_steps=5 format=3 uid="uid://d01yl1nr74x5n"]
 
 [ext_resource type="Script" uid="uid://d246elj3h2lkq" path="res://scripts/ui/DebugScreen.cs" id="1_gwmwt"]
+[ext_resource type="Texture2D" uid="uid://c2pghih87mu28" path="res://assets/ui/tutorial_1.png" id="2_pkbny"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rvq7n"]
 font_size = 48
@@ -70,6 +71,7 @@ offset_left = 46.0
 offset_top = 70.0
 offset_right = 340.0
 offset_bottom = 303.0
+texture = ExtResource("2_pkbny")
 expand_mode = 5
 
 [node name="start" type="Button" parent="."]
@@ -436,6 +438,7 @@ label_settings = SubResource("LabelSettings_rvq7n")
 metadata/_edit_use_anchors_ = true
 
 [node name="hostHide" type="ColorRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

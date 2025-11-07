@@ -271,20 +271,20 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
 
     public override void PerTickShared(double delta)
     {
-        if (input != null)
-        {
-            if (input.actions.HasFlag(ActionFlags.Jump))
-            {
-                if (IsOnFloor())
-                {
-                    characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
-                }
-            }
-            else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f)
-            {
-                characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
-            }
-        }
+        // if (input != null)
+        // {
+        //     if (input.actions.HasFlag(ActionFlags.Jump))
+        //     {
+        //         if (IsOnFloor())
+        //         {
+        //             characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
+        //         }
+        //     }
+        //     else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f)
+        //     {
+        //         characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
+        //     }
+        // }
     }
 
     public override void PerFrameShared(double delta)
