@@ -203,7 +203,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     }
 
     private double attackCooldown = 0;
-    private const float MeleeRange = 1.8f; // tweak as needed
+    private const float MeleeRange = 1.7f; // tweak as needed
 
     private void TryAttack(double delta)
     {
