@@ -96,7 +96,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         Transform = Transform3D.Identity;
         currentParent = newParent;
     }
-    
+
     public void DetachFromPlayer(Node3D oldParent)
     {
         Reparent(Global.gameState.GameObjectNodeParent);
@@ -104,6 +104,14 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         newTransform.Origin = oldParent.GlobalPosition;
         Transform = newTransform;
         currentParent = null;
+    }
+    
+    public override void PerTickLocal(double delta)
+    {
+        // if(currentParent == null)
+        // {
+        //     base.PerFrameLocal(delta);
+        // }
     }
 
     public override string GenerateStateString()

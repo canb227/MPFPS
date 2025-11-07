@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 Global="*res://scripts/Global.cs"
 LimboConsole="*res://addons/limbo_console/limbo_console.gd"
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 
 [display]
 
@@ -79,6 +80,7 @@ forward={
 3d_physics/layer_4="InventoryItems"
 3d_physics/layer_5="playerCharacter"
 3d_physics/layer_6="NPCs"
+3d_physics/layer_7="Non-ShootableAreas"
 
 [physics]
 

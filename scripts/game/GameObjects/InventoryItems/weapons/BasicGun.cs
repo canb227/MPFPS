@@ -195,13 +195,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             Vector3 camForward = -playerHeldBy.camera.GlobalTransform.Basis.Z;
             Vector3 rayOrigin = camPos + camForward * 0.5f;
             Vector3 rayEnd = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
-            GD.Print("FIRE BULLET TOWARDS: " + rayEnd.ToString());
 
             while (true)
             {
                 var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd);
                 query.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
                 query.CollideWithBodies = true;
+                query.CollideWithAreas = true;
                 query.Exclude = exclude;
 
                 var hitResult = spaceState.IntersectRay(query);
@@ -238,7 +238,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         CollisionShape3D shapeNode = collider.GetChild(shapeIndex) as CollisionShape3D;
                         if (shapeNode != null && shapeNode.IsInGroup("headshotcollider"))
                         {
-                            GD.Print("Headshot! " + shapeNode.Name);
                             RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot*1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
                             RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot * 1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
                             //rifle does 33.4 stun (3 to knock) 15.03 dmg (7 to kill)
@@ -247,7 +246,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         }
                         else
                         {
-                            GD.Print("Hit!");
                             RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
                             RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
                             //rifle does 20 stun (5 to knock) 9 dmg (12 to kill)
