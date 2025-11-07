@@ -230,6 +230,7 @@ public partial class Ghost : GOBasePlayerCharacter
     {
         base.InitFromData(data);
         Global.gameState.gameModeManager.ghostPlayers.Add(authority, this);
+        GlobalTranslate(new(0, 2, 0));
         return true;
     }
 

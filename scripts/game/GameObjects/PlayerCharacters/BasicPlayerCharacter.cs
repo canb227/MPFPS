@@ -215,7 +215,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (input != null && !knockedOut)
         {
 
-            if (input.actions.HasFlag(ActionFlags.Jump))
+            if (!lastTickActions.HasFlag(ActionFlags.Jump) && input.actions.HasFlag(ActionFlags.Jump))
             {
                 if (IsOnFloor())
                 {
@@ -694,14 +694,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Vector3 localVelocity = PCUtils.LocalizeVector(this, Velocity);
 
         finalSpeed = baseSpeed;
-        if (input != null && input.actions.HasFlag(ActionFlags.Sprint))
-        {
-            finalSpeed = baseSpeed * 2;
-        }
-        if(input.actions.HasFlag(ActionFlags.DropItem))
-        {
-            RPCManager.RPC(Global.gameState.gameModeManager, "StartEndOfGameEvacuation", []);
-        }
+        // if (input != null && input.actions.HasFlag(ActionFlags.Sprint))
+        // {
+        //     finalSpeed = baseSpeed * 2;
+        // }
 
         //get input vectors
         Vector2 normalizedInput = input.MovementInputVector.Normalized();

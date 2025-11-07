@@ -538,6 +538,7 @@ disabled = true
 
 [node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="PressArm"]
 air_absorption = true
+occlusion = false
 reflection = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
 stream = ExtResource("2_8hvrf")
@@ -547,6 +548,7 @@ panning_strength = 0.0
 
 [node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="PressArm"]
 air_absorption = true
+occlusion = false
 reflection = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
 stream = ExtResource("3_w3e0y")
@@ -573,6 +575,7 @@ shape = SubResource("ConcavePolygonShape3D_w6tdc")
 
 [node name="SteamAudioPlayerCage" type="SteamAudioPlayer" parent="StaticBody3D2"]
 distance_attenuation = true
+occlusion = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8893733, -2.023976)
 stream = ExtResource("6_w6tdc")
 attenuation_model = 3
@@ -581,6 +584,7 @@ panning_strength = 0.0
 
 [node name="SteamAudioPlayerCage2" type="SteamAudioPlayer" parent="StaticBody3D2"]
 distance_attenuation = true
+occlusion = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8893733, -2.023976)
 stream = ExtResource("12_w6tdc")
 attenuation_model = 3
@@ -613,6 +617,7 @@ shape = SubResource("BoxShape3D_s3lk7")
 
 [node name="SteamAudioPlayerAlarm" type="SteamAudioPlayer" parent="."]
 air_absorption = true
+occlusion = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)
 stream = ExtResource("5_v4yce")
 attenuation_model = 2

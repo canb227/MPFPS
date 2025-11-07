@@ -24,7 +24,7 @@ public partial class GOC4 : GOBaseRoleItem
     {
         if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.HasFlag(ActionFlags.Fire))
         {
-            RPCManager.RPC(this, "PlaceC4", []);
+            RPCManager.RPCID(id, "PlaceC4", []);
         }
         base.HandleInput(input);
     }
