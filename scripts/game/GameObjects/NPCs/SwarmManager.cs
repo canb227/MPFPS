@@ -46,7 +46,10 @@ public partial class SwarmManager : Node
     public void PerTick(double delta)
     {
         currentSwarmCooldown -= delta;
-        warehouseRobotCooldown -= delta;
+        if(Global.gameState.gameModeManager.options.warehouseRobots)
+        {
+            warehouseRobotCooldown -= delta;
+        }
         if(warehouseRobotCooldown <= 0)
         {
             warehouseRobotsToSpawn = Global.gameState.gameModeManager.GetNumInnocentsAlive() + Global.gameState.gameModeManager.GetNumManagersAlive() + Global.gameState.gameModeManager.GetNumTraitorsAlive();

@@ -182,9 +182,10 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     {
         Random rand = new();
         waitingToFire = false;
-        var exclude = new Array<Rid>();
+
         for (int i = 0; i < bulletsPerShot; i++)
         {
+            var exclude = new Array<Rid>();
             int penetrations = 0;
 
             var spaceState = GetWorld3D().DirectSpaceState;
@@ -193,7 +194,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             Vector3 camForward = -playerHeldBy.camera.GlobalTransform.Basis.Z;
             Vector3 rayOrigin = camPos + camForward * 0.5f;
             Vector3 rayEnd = playerHeldBy.camera.ToGlobal(GetRandomBulletDirection(rand));
-
+            GD.Print("FIRE BULLET TOWARDS: " + rayEnd.ToString());
 
             while (true)
             {
@@ -234,8 +235,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     {
                         int shapeIndex = (int)hitResult["shape"];
                         CollisionShape3D shapeNode = collider.GetChild(shapeIndex) as CollisionShape3D;
-                        if (shapeNode.IsInGroup("headshotcollider"))
+                        if (shapeNode != null && shapeNode.IsInGroup("headshotcollider"))
                         {
+                            GD.Print("Headshot! " + shapeNode.Name);
                             RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot*1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
                             RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot * 1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
                             //rifle does 33.4 stun (3 to knock) 15.03 dmg (7 to kill)
@@ -244,6 +246,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         }
                         else
                         {
+                            GD.Print("Hit!");
                             RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
                             RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
                             //rifle does 20 stun (5 to knock) 9 dmg (12 to kill)
@@ -305,15 +308,16 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
     public override void OnUnequipped(ulong bySteamID)
     {
+        if(equippedBySteamID == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
+        }
         base.OnUnequipped(bySteamID);
         playerHeldBy = null;
         //reset reload progress
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
-        if(equippedBySteamID == Global.steamid)
-        {
-            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
-        }
+
         audioStreamPlayer1.Stop();
         audioStreamPlayer2.Stop();
         animationPlayer.Play("RESET");
@@ -321,14 +325,14 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     
     public override void OnDropped(ulong bySteamID)
     {
+        if(equippedBySteamID == Global.steamid)
+        {
+            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
+        }
         base.OnDropped(bySteamID);
         //reset reload progress
         reloading = false;
         reloadTimeLeft = reloadTimeSeconds;
-        if (equippedBySteamID == Global.steamid)
-        {
-            Global.ui.inGameUI.PlayerUIManager.UpdateAmmoUI(0, 0, 0);
-        }
         audioStreamPlayer1.Stop();
         audioStreamPlayer2.Stop();
         animationPlayer.Play("RESET");

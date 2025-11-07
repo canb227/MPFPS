@@ -4,6 +4,9 @@
 [ext_resource type="AudioStream" uid="uid://c0vhttprn2irc" path="res://assets/audio/enemies/combine_shield_loop3.wav" id="3_1fq2r"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_a6bla"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_1fq2r"]
+size = Vector3(1, 0.4992981, 0.66845703)
+
 [sub_resource type="Animation" id="Animation_3tng0"]
 length = 0.001
 tracks/0/type = "value"
@@ -78,11 +81,9 @@ _data = {
 &"attack": SubResource("Animation_aj03a")
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1fq2r"]
-size = Vector3(1, 0.4992981, 0.66845703)
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
 radius = 0.5019531
+height = 1.4165039
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_th8ud"]
 resource_name = "lambert1.001"
@@ -162,7 +163,7 @@ collision_mask = 51
 script = ExtResource("1_aj03a")
 root = NodePath(".")
 collider = NodePath("boxCapsule")
-collider2 = NodePath("headBox")
+collider2 = NodePath("StaticBody3D/headBox")
 state = 3
 meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
@@ -171,16 +172,21 @@ ambientSFX = NodePath("AmbientAudioPlayer")
 navAgent = NodePath("NavigationAgent3D")
 metadata/_custom_type_script = "uid://kuimq525di4f"
 
+[node name="StaticBody3D" type="StaticBody3D" parent="." groups=["headshotcollider"]]
+collision_layer = 2
+collision_mask = 51
+
+[node name="headBox" type="CollisionShape3D" parent="StaticBody3D" groups=["headshotcollider"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56755614, -0.005126953)
+shape = SubResource("BoxShape3D_1fq2r")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_1fq2r")
 }
 
-[node name="headBox" type="CollisionShape3D" parent="." groups=["headshotcollider"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56755614, -0.005126953)
-shape = SubResource("BoxShape3D_1fq2r")
-
 [node name="boxCapsule" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.29174805, 0)
 shape = SubResource("CapsuleShape3D_aj03a")
 
 [node name="pCube1" type="MeshInstance3D" parent="."]
