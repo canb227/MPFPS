@@ -872,7 +872,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateStunUI((int)currentStunBar, (int)maxStunBar); ;
             }
-            if (currentStunBar <= 0)
+            if (currentStunBar <= 0 && Global.steamid == authority)
             {
                 rpc_OnKnockedOut();
             }
@@ -885,7 +885,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void OnKnockedOut()
     {
-        RPCManager.RPC(this, "rpc_OnKnockedOut", []);
+        if (Global.steamid == authority)
+        {
+            RPCManager.RPC(this, "rpc_OnKnockedOut", []);
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -948,7 +951,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI((int)currentHealth, (int)maxHealth); ;
             }
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 && Global.steamid == authority)
             {
                 Logging.Log($"{authority} PlayerCharacter has died", "BasicPlayerCharacter");
                 rpc_OnDeath();

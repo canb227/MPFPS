@@ -321,7 +321,10 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         root.Visible = false;
         collider.Disabled = true;
         state = SwarmRobotState.NONE;
-        Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
+        if(byID != 0)
+        {
+            Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
+        }
         //remove ourselves and add a timed ragdoll
     }
 
