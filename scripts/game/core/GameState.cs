@@ -133,7 +133,7 @@ public partial class GameState : Node3D
         menuMusicStreamPlayer.Stream = GD.Load<AudioStream>("res://assets/audio/music/hl1_song6.mp3");
         AddChild(menuMusicStreamPlayer);
         menuMusicStreamPlayer.Play();
-        menuMusicStreamPlayer.VolumeDb = -3.0f;
+        menuMusicStreamPlayer.VolumeDb = -6.0f;
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
