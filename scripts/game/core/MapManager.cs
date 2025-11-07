@@ -11,6 +11,7 @@ public static class MapManager
     private static PackedScene cachedLevel;
     private static List<PlayerMarker3D> PlayerSpawnPoints = new();
     private static List<Marker3D> HorderSpawnPoints = new();
+    private static List<Marker3D> WarehouseRobotSpawnPoints = new();
     public static List<ItemMarker3D> ItemSpawnPoints = new();
     private static ulong staticIDCounter = 1;
 
@@ -60,6 +61,11 @@ public static class MapManager
     {
         return HorderSpawnPoints[Random.Shared.Next(HorderSpawnPoints.Count)].GlobalTransform;
     }
+
+    public static Transform3D GetWarehouseRobotSpawnTransform()
+    {
+        return WarehouseRobotSpawnPoints[Random.Shared.Next(WarehouseRobotSpawnPoints.Count)].GlobalTransform;
+    }
     
     public static void ResetMap()
     {
@@ -67,6 +73,7 @@ public static class MapManager
         nodeStaticLevel = null;
         PlayerSpawnPoints.Clear();
         HorderSpawnPoints.Clear();
+        WarehouseRobotSpawnPoints.Clear();
         ItemSpawnPoints.Clear();
         staticIDCounter = 1;
         nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
@@ -142,6 +149,20 @@ public static class MapManager
                 HorderSpawnPoints.Add(marker);
             }
             Logging.Log($"Loaded {HorderSpawnPoints.Count} horde spawn points.", "GameStateLevel");
+        }
+        else
+        {
+            Logging.Warn("Static level meta has no \"playerSpawns\" node! Skipping player spawn init", "GameStateLevel");
+        }
+
+                if (meta.GetNode("hordeSpawns") != null)
+        {
+
+            foreach (Marker3D marker in nodeStaticLevel.GetNode("meta/warehouseRobotSpawns").GetChildren())
+            {
+                WarehouseRobotSpawnPoints.Add(marker);
+            }
+            Logging.Log($"Loaded {WarehouseRobotSpawnPoints.Count} warehouse spawn points.", "GameStateLevel");
         }
         else
         {

@@ -41,6 +41,7 @@ enabled=PackedStringArray("res://addons/anim_player_refactor/plugin.cfg", "res:/
 navigation_mesh_source_group=""
 players=""
 PackageBoxes=""
+headshotcollider=""
 
 [importer_defaults]
 

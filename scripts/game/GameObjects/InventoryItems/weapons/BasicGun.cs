@@ -232,8 +232,25 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 {
                     if(Global.steamid == GetHeldBy().authority)
                     {
-                        RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
-                        RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                        int shapeIndex = (int)hitResult["shape"];
+                        CollisionShape3D shapeNode = collider.GetChild(shapeIndex) as CollisionShape3D;
+                        if (shapeNode.IsInGroup("headshotcollider"))
+                        {
+                            RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot*1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot * 1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            //rifle does 33.4 stun (3 to knock) 15.03 dmg (7 to kill)
+                            //sniper does 133.6 stun (1 to knock) 58.45 (2 to kill)
+                            //shotgun :) does 13.36 per bullet total 106.88 stun (1 to knock) | does 6.68 per pullet total 53.44 dmg (2 to kill)
+                        }
+                        else
+                        {
+                            RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            //rifle does 20 stun (5 to knock) 9 dmg (12 to kill)
+                            //sniper does 80 stun (2 to knock) 35 dmg (3 to kill)
+                            //shotgun :) does 8 per bullet total 64 stun (2 to knock) | does 4 per pullet total 32 dmg (4 to kill)
+                        }
+
                     }
 
                     // check if it's a SwarmRobot

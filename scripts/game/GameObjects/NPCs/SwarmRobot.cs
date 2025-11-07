@@ -14,6 +14,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
     //add robot walking sounds/ambient sounds, add robot kills to end of round screen, spawn waves of ai, etc, 
     [Export] public Node3D root;
     [Export] public CollisionShape3D collider;
+    [Export] public CollisionShape3D collider2;
     [Export] public SwarmRobotState state = SwarmRobotState.NONE;
     [Export] private Area3D meleeArea;
     [Export] public AnimationPlayer animationPlayer;
@@ -320,6 +321,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         currentHealth = 0;
         root.Visible = false;
         collider.Disabled = true;
+        collider2.Disabled = true;
         state = SwarmRobotState.NONE;
         if(byID != 0)
         {

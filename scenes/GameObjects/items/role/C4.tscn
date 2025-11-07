@@ -114,7 +114,7 @@ font = ExtResource("7_4k4gy")
 font_size = 56
 
 [node name="GOC4" type="RigidBody3D" node_paths=PackedStringArray("fps", "tps", "collider", "audioStreamPlayer", "explosionAudioStream", "explosionRadius", "timeLeftLabel", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
-mass = 7.0
+mass = 3.0
 script = ExtResource("1_mjxm0")
 fps = NodePath("fps")
 tps = NodePath("tps")

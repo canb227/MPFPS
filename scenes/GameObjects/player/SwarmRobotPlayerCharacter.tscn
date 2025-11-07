@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://4pw80uffkx1e"]
+[gd_scene load_steps=20 format=4 uid="uid://4pw80uffkx1e"]
 
 [ext_resource type="Script" uid="uid://citq2tpxaq5ux" path="res://scripts/game/GameObjects/PlayerCharacters/SwarmRobotPlayerCharacter.cs" id="1_n2121"]
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
@@ -8,6 +8,11 @@
 [ext_resource type="AudioStream" uid="uid://c0vhttprn2irc" path="res://assets/audio/enemies/combine_shield_loop3.wav" id="6_k4xx5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]
+radius = 0.40283203
+height = 1.3852539
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k4xx5"]
+size = Vector3(1, 0.4992981, 0.66845703)
 
 [sub_resource type="Animation" id="Animation_3tng0"]
 length = 0.001
@@ -163,10 +168,11 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_yp6v5")
 
-[node name="SwarmRobotPlayerCharacter" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "movementSFX", "firstPersonModel", "thirdPersonModel", "camera", "voicePlayer")]
+[node name="SwarmRobotPlayerCharacter" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "collider2", "meleeArea", "animationPlayer", "hitSoundAudioStreamPlayer", "genericSFX", "movementSFX", "firstPersonModel", "thirdPersonModel", "camera", "voicePlayer")]
 script = ExtResource("1_n2121")
 root = NodePath(".")
 collider = NodePath("collider")
+collider2 = NodePath("collider2")
 meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 hitSoundAudioStreamPlayer = NodePath("HitSoundPlayer")
@@ -179,7 +185,12 @@ voicePlayer = NodePath("thirdpersonmodel/SteamAudioVoice")
 metadata/_custom_type_script = "uid://citq2tpxaq5ux"
 
 [node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.30737305, 0)
 shape = SubResource("CapsuleShape3D_aj03a")
+
+[node name="collider2" type="CollisionShape3D" parent="." groups=["headshotcollider"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56755614, -0.005126953)
+shape = SubResource("BoxShape3D_k4xx5")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

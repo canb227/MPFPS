@@ -41,7 +41,7 @@ public partial class GOPlayerRadar : GOBaseRoleItem
                     }
                 }
             }
-            audioStreamPlayer.Play();
+            //audioStreamPlayer.Play();
         }
 
     }

@@ -532,6 +532,11 @@ metadata/_custom_type_script = "uid://crewntngyd76c"
 [node name="1" type="Marker3D" parent="meta/hordeSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.277322, 0.72216386, -7.143446)
 
+[node name="warehouseRobotSpawns" type="Node" parent="meta"]
+
+[node name="Marker3D" type="Marker3D" parent="meta/warehouseRobotSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1734946, -9.536743e-07, -8.422512)
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_kx1m7")
 
@@ -1061,11 +1066,13 @@ autowrap_mode = 2
 
 [node name="Label3D5" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.63256, 1.9028336, 0.025386333)
+modulate = Color(0.71112853, 0.73337764, 1, 1)
 text = "The Labelling Press is found in the Labelling Office"
 autowrap_mode = 2
 
 [node name="Label3D7" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.27906, 2.632532, -0.9463974)
+modulate = Color(0.6294428, 0.6421665, 1, 1)
 text = "The Labelling Printer is found in the Labelling Office"
 autowrap_mode = 2
 
@@ -1081,22 +1088,25 @@ text = "This button will spawn a few robots in the room for you to \"play\" arou
 autowrap_mode = 2
 
 [node name="Label3D10" type="Label3D" parent="statics"]
-transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -43.274326, 1.6600115, 16.36097)
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -43.684628, 1.6600115, 17.200506)
 text = "This is the Order Monitor Wall, here the workers can see all the orders that need to be completed in a round, the icons show what items need to be in the package and the Address at the bottom is what needs to be on its label"
 autowrap_mode = 2
 
 [node name="Label3D11" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.033604, 2.873653, -0.9597949)
+modulate = Color(0.47657922, 0.48899934, 1, 1)
 text = "The Shipping Tube is found in the Warehouse"
 autowrap_mode = 2
 
 [node name="Label3D12" type="Label3D" parent="statics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.25123, 2.1888704, -2.1540215)
+modulate = Color(0.463739, 0.5516501, 1, 1)
 text = "The Delivery Machine is found in the upper floor of Management"
 autowrap_mode = 2
 
 [node name="Label3D13" type="Label3D" parent="statics"]
-transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -40.87632, 0.8327656, 16.459337)
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -40.904778, 0.5280156, 17.153107)
+modulate = Color(0.5074483, 0.4834036, 1, 1)
 text = "The OrderMonitor Wall is on the first floor of Management"
 autowrap_mode = 2
 
@@ -1107,6 +1117,7 @@ autowrap_mode = 2
 
 [node name="Label3D15" type="Label3D" parent="statics"]
 transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -53.36723, 3.4396982, 17.439877)
+modulate = Color(0.5351205, 0.52508664, 1, 1)
 text = "The Packing Machine is in the Packing Department"
 autowrap_mode = 2
 
@@ -1126,7 +1137,7 @@ text = "Every worker can hold Up to 1 Weapon, 1 Accessory (Package Radar, Flashl
 autowrap_mode = 2
 
 [node name="Label3D19" type="Label3D" parent="statics"]
-transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -26.165524, 0.47715712, 8.658058)
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -26.004623, 0.47715712, 8.664659)
 text = "As a Manager or a Traitor you can Press B to open the buy menu and select an item to purchase, WARNING IT DROPS THE ITEM IN FRONT OF YOU.
 "
 autowrap_mode = 2
@@ -1145,6 +1156,7 @@ autowrap_mode = 2
 
 [node name="Label3D22" type="Label3D" parent="statics"]
 transform = Transform3D(0.99906486, 0, -0.04323587, 0, 1, 0, 0.04323587, 0, 0.99906486, -56.795456, 1.2689074, 1.004118)
+modulate = Color(1, 0.47079715, 0.4072413, 1)
 text = "Be aware that if you die during a round, you will come back as a robot to attack the warehouse with the next Swarm, so dont walk away from your computer too quick."
 autowrap_mode = 2
 
@@ -1214,7 +1226,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.305691, 0, -10.712642)
 shape = SubResource("ConcavePolygonShape3D_pb8ib")
 
 [node name="Label3D23" type="Label3D" parent="statics"]
-transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -34.19928, 1.6600115, 16.733236)
+transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -35.85153, 1.6600115, 16.66546)
 text = "Welcome to Dangerous Deliveries, hopefully this tutorial will help famarlize you with some of the inner workers of the game before you jump into the  real danger, follow the signs to your right, progressing clockwise."
 autowrap_mode = 2
 
@@ -1230,6 +1242,7 @@ autowrap_mode = 2
 
 [node name="Label3D26" type="Label3D" parent="statics"]
 transform = Transform3D(-0.9991597, 0, 0.04098641, 0, 1, 0, -0.04098641, 0, -0.9991597, -20.185562, 0.5759978, 8.876867)
+modulate = Color(0.5074483, 0.53013366, 1, 1)
 text = "Press 1 to equip your hands (used for move props, etc)
 Press 2 to equip a weapon,
 Press 3 to equip a accessory,
@@ -1238,6 +1251,7 @@ autowrap_mode = 2
 
 [node name="Label3D27" type="Label3D" parent="statics"]
 transform = Transform3D(-0.8424995, 0, -0.5386972, 0, 1, 0, 0.5386972, 0, -0.8424995, -18.030285, 0.5759978, 8.267855)
+modulate = Color(0.54102784, 0.53013366, 1, 1)
 text = "Press F to pick up weapons and accessories off the ground.
 Press Q to drop them."
 autowrap_mode = 2
@@ -1302,3 +1316,9 @@ light_energy = 2.483
 spot_range = 29.83
 spot_angle = 57.9
 spot_angle_attenuation = 2.0705302
+
+[node name="Label3D29" type="Label3D" parent="statics"]
+transform = Transform3D(0.99906486, 0, -0.04323587, 0, 1, 0, 0.04323587, 0, 0.99906486, -62.36561, 1.2689074, 0.7630621)
+modulate = Color(1, 0.3491902, 0.33003333, 1)
+text = "Damage in Dangerous Deliveries comes in two forms, Stun Damage and Regular Damage. The Blue Bar above your health represents your current Stun Resistance. If it is completely drained you will be knocked out. It regenerates after not taking damage for 4 seconds"
+autowrap_mode = 2

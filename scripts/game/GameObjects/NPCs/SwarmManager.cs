@@ -19,6 +19,9 @@ public partial class SwarmManager : Node
     private bool evacuationStarted;
     private float robotsToSpawnThisTick;
     public List<ulong> robotPlayers = new();
+    public double warehouseRobotCooldown = 30; //10 to 20
+    public int warehouseRobotsToSpawn = 0;
+    //spawn numInnocentsAlive + numManagersAlive + numTraitorsAlive robots every 10 to 20 seconds
 
     public void PrepareRound(int numPlayers)
     {
@@ -43,6 +46,12 @@ public partial class SwarmManager : Node
     public void PerTick(double delta)
     {
         currentSwarmCooldown -= delta;
+        warehouseRobotCooldown -= delta;
+        if(warehouseRobotCooldown <= 0)
+        {
+            warehouseRobotsToSpawn = Global.gameState.gameModeManager.GetNumInnocentsAlive() + Global.gameState.gameModeManager.GetNumManagersAlive() + Global.gameState.gameModeManager.GetNumTraitorsAlive();
+            warehouseRobotCooldown = 10 + rand.NextSingle() * 10;
+        }
         if (currentSwarmCooldown <= 30 && currentSwarmCooldown > 0 && !announcedSwarm && !evacuationStarted) //30 second warning
         {
             Global.gameState.gameModeManager.TriggerSwarmIncomingEvent();
@@ -56,19 +65,19 @@ public partial class SwarmManager : Node
             announcedSwarm = false;
         }
 
-        int robotsSpawned = 0;
-        if(robotSwarmSize > 0)
+        if (robotSwarmSize > 0)
         {
-            while (robotsSpawned < 1)
-            {
-                SpawnRobot();
-                robotSwarmSize--;
-                robotsSpawned++;
-            }
+            SpawnRobot(false);
+            robotSwarmSize--;
+        }
+        if(warehouseRobotsToSpawn > 0)
+        {
+            SpawnRobot(true);
+            warehouseRobotsToSpawn--;
         }
     }
 
-    public void SpawnRobot()
+    public void SpawnRobot(bool warehouseRobot)
     {
         float radius = 5f;
         GameObjectConstructorData data = new(GameObjectType.SwarmRobot);
@@ -95,23 +104,33 @@ public partial class SwarmManager : Node
             0,
             Mathf.Sin(angle) * r
         );
-        Transform3D spawnTransform = MapManager.GetHordeSpawnTransform();
+
+        Transform3D spawnTransform = new();
+        if (warehouseRobot)
+        {
+            spawnTransform = MapManager.GetWarehouseRobotSpawnTransform();
+        }
+        else
+        {
+            spawnTransform = MapManager.GetHordeSpawnTransform();
+        }
+        
         spawnTransform.Origin += offset;
         data.spawnTransform = spawnTransform;
 
         Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobot, data);
     }
-    
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void SpawnPlayerRobot(ulong steamID)
     {
         Logging.Log($"Spawn Player Robot On Local Request for {steamID} we are {Global.steamid}", "SwarmManager");
-        if(steamID == Global.steamid)
+        if (steamID == Global.steamid)
         {
             Logging.Log("Spawn Player Robot On Local Machine", "SwarmManager");
             float radius = 5f;
             float angle = (float)(rand.NextDouble() * 2 * Math.PI);
-            float r = radius * Mathf.Sqrt((float)rand.NextDouble()); 
+            float r = radius * Mathf.Sqrt((float)rand.NextDouble());
             Vector3 offset = new Vector3(
                 Mathf.Cos(angle) * r,
                 0,
@@ -127,6 +146,7 @@ public partial class SwarmManager : Node
             Global.gameState.Auth_SpawnObject(GameObjectType.SwarmRobotPlayer, data);
         }
     }
+
 
     public void SpawnSwarm()
     {

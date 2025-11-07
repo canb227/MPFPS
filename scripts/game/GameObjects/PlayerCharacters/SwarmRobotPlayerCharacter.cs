@@ -13,6 +13,8 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
 {
     [Export] public Node3D root;
     [Export] public CollisionShape3D collider;
+    [Export] public CollisionShape3D collider2;
+
     [Export] private Area3D meleeArea;
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D hitSoundAudioStreamPlayer;
@@ -389,6 +391,7 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
         currentHealth = 0;
         root.Visible = false;
         collider.Disabled = true;
+        collider2.Disabled = true;
         Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
 
         DelayDeathRelease();

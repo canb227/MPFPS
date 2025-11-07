@@ -41,7 +41,7 @@ public partial class GOPackageRadar : GOBaseAccessory
                     }
                 }
             }
-            audioStreamPlayer.Play();
+            //audioStreamPlayer.Play();
         }
 
     }
