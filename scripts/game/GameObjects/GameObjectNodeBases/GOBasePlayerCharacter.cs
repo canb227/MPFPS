@@ -73,6 +73,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         visualRayCast = new();
         visualRayCast.TargetPosition = new Vector3(0, 0, -20);
         visualRayCast.CollideWithBodies = true;
+        visualRayCast.CollideWithAreas = true;
         visualRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(visualRayCast);
 
