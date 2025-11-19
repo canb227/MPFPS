@@ -145,10 +145,9 @@ public partial class GameState : Node3D
 
         menuMusicStreamPlayer.Stop();
 
-        AIManager aim = new();
-        aim.Name = "AI Manager";
-        AddChild(aim);
-        AIManager = aim;
+        AIManager = new();
+        AIManager.Name = "AI Manager";
+        AddChild(AIManager);
 
         gameModeManager.StartGameMode(scenePath, gameMode);
         gameStarted = true;
@@ -156,7 +155,7 @@ public partial class GameState : Node3D
         if (Global.Lobby.bIsLobbyHost)
         {
             gameModeManager.GameStartAsHost();
-            aim.GameStartAsHost();
+            AIManager.GameStartAsHost();
         }
         ProcessMode = ProcessModeEnum.Pausable;
         RPCManager.RPC(gameModeManager, "ClientReady", [Global.steamid]);

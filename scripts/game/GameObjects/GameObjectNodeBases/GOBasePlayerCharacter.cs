@@ -125,6 +125,10 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual void rpc_TakeControl(ulong playerID)
     {
         Logging.Log($"Player {playerID} is taking control of character {id}", "GameModeManager");
+        if(playerID == Global.steamid)
+        {
+            Global.gameState.AIManager.UpdateLocalPlayer(this);
+        }
         if (controllingPlayerID != 0)
         {
             Logging.Error($"Player {playerID} cannot take control of player character {id}, that character is already being controlled by player {controllingPlayerID}", "PlayerCharacter");
