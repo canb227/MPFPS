@@ -19,7 +19,7 @@ public partial class AIManager : Node3D
         options = Global.gameState.gameModeManager.options;
     }
 
-    int agentCount = 10;
+    int agentCount = 1000;
     public override void _Ready()
     {
         base._Ready();
@@ -97,7 +97,7 @@ public partial class AIManager : Node3D
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void UpdateAgentPathOnClient(float x, float z)
     {
-        path = CalculatePath(new Vector3(oldX, 1, oldZ), new Vector3(x, 1, z));
+        path = CalculatePath(new Vector3(oldX, 1, oldZ), new Vector3(x, 1.2f, z));
         oldX = x;
         oldZ = z;
         foreach(var agent in controlledNPCs)
@@ -124,13 +124,13 @@ public partial class AIManager : Node3D
         }
     }
 
-    public void SetGlobalAITarget(Node3D target)
-    {
-        foreach (HordeAgent npc in controlledNPCs)
-        {
-            npc.MovementTarget = target;
-        }
-    }
+    // public void SetGlobalAITarget(Node3D target)
+    // {
+    //     foreach (HordeAgent npc in controlledNPCs)
+    //     {
+    //         npc.MovementTarget = target;
+    //     }
+    // }
 
 
 

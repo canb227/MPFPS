@@ -9,9 +9,6 @@ using System.Threading.Tasks;
 public partial class GOBaseHordeNPC : Node3D, GameObject
 {
     [Export]
-    public Node3D MovementTarget = new();
-
-    [Export]
     public virtual ulong id { get; set; }
     [Export]
     public virtual float priority { get; set; } = 2;

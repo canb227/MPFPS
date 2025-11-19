@@ -14,19 +14,22 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 {
     //add robot walking sounds/ambient sounds, add robot kills to end of round screen, spawn waves of ai, etc, 
     [Export] public Node3D root;
-    [Export] public CollisionShape3D collider;
-    [Export] public CollisionShape3D collider2;
+    [Export] public Area3D headArea;
+    [Export] public Area3D bodyArea;
     [Export] public HordeAgentState state = HordeAgentState.NONE;
     [Export] private Area3D meleeArea;
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D genericSFX;
     public float maxHealth { get; set; } = 50;
     public float currentHealth { get; set; } = 50;
+    private Transform3D targetNetworkTransform;
+    private Vector3 targetPosition;
+    private float stateUpdateAge;
 
     //new navigation stuff
-    private float cellSize = 3f;
+    private float cellSize = 1f;
     public Vector3I currentCell;
-    private float midRange = 10f;
+    private float midRange = 20f;
     private float nearRange = 5f;
     private int updateCounter = 0;
 
@@ -35,7 +38,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         base._Ready();
         Global.gameState.AIManager.controlledNPCs.Add(this);
 
-        Logging.Log($"Spawned new HordeRobot with initial state: {state} and target: {MovementTarget.Name}", "SwarmRobot");
+        Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
 
     }
 
@@ -45,17 +48,19 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             ImGui.Begin("path");
             ImGui.Text($"Pathfinding Debug for: {Name}");
-            ImGui.Text($"Target: {MovementTarget.Name}");
-            ImGui.Text($"Target Pos: {MovementTarget.GlobalPosition}");
             ImGui.Text($"Self Pos: {GlobalPosition}");
             ImGui.Text($"");
             ImGui.End();
+        }
+        if(attackCooldown > 0)
+        {
+            attackCooldown -= delta;
         }
     }
 
     public override void PerTickAuth(double delta)
     {
-        base._PhysicsProcess(delta);
+        base.PerTickAuth(delta);
         switch (state)
         {
             case HordeAgentState.NONE:
@@ -74,28 +79,63 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private double deltaAccumulator = 0;
     public override void PerTickShared(double delta)
     {
+        stateUpdateAge += (float)delta;
         base.PerTickShared(delta);
         // Distance to local player
         Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
         float dist = (GlobalPosition - playerPos).Length();
 
         // Decide update frequency
-        int updateRate = 1; // every tick
-        if (dist > midRange) updateRate = 15; // update every 15 ticks
-        else if (dist > nearRange) updateRate = 5; // update every 5 ticks
+        int ticksPerUpdate = 1; // every tick
+        if (dist > midRange)
+        {
+            ticksPerUpdate = 8;
+            bodyArea.Monitorable = false;
+            headArea.Monitorable = false;
+            meleeArea.Monitoring = false;
+        } 
+        else if (dist > nearRange)
+        {
+            ticksPerUpdate = 4;
+            bodyArea.Monitorable = true;
+            headArea.Monitorable = true;
+            meleeArea.Monitoring = false;
+        } 
+        else 
+        {
+            ticksPerUpdate = 1;
+            bodyArea.Monitorable = true;
+            headArea.Monitorable = true;
+            meleeArea.Monitoring = true;
+        }
 
         updateCounter++;
         deltaAccumulator += delta;
-        if (updateCounter >= updateRate)
+        if (updateCounter >= ticksPerUpdate)
         {
             updateCounter = 0;
             if(path != null)
             {
-                MoveAgent(deltaAccumulator);
-                UpdateGridLocation();
+                //if our location is too far from the fresh networked state we teleport to the correct origin
+                if(stateUpdateAge < 0.1f && Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
+                {
+                    Transform = targetNetworkTransform;
+                }
+                else
+                {
+                    MoveAgent(deltaAccumulator);
+                    UpdateGridLocation();
+                }
             }
             deltaAccumulator = 0;
         }
+        LerpAgent((float)delta);
+    }
+
+    private void LerpAgent(float deltaF)
+    {
+        //lerp towards targetPosition
+        Position = Position.Lerp(targetPosition, 40.0f * deltaF);//lerps fully in .25 seconds
     }
 
     private float separationRadius = 1;
@@ -104,6 +144,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float cohWeight = 1;
     private float sepWeight = 2;
     private float avoidWeight = 1;
+    private float networkWeight = 2;
     private float speed = 5;
     private float navMeshSnapTolerance = 0.1f;
     private int currentIndex = 0;
@@ -153,17 +194,25 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             cohesion = (center - GlobalPosition).Normalized();
         }
 
+        //we track state update freshness
+        //if the stateupdate is new enough we add it in as a weighting for target location
+        Vector3 networkOrigin = Vector3.Zero;
+        if(stateUpdateAge < 0.10f)
+        {
+            networkOrigin = targetNetworkTransform.Origin;
+        }
+
         // Combine forces
         Vector3 steering =
             pathDir * pathWeight +
             separation * sepWeight +
-            cohesion * cohWeight; // +
+            cohesion * cohWeight +
+            networkOrigin * networkWeight; // +
             //alignment * alignWeight;
             
 
         if (steering.LengthSquared() > 0.001f)
             steering = steering.Normalized();
-
 
         // Obstacle avoidance (navmesh based) (OFF FOR TESTING TODO)
         var navMap = GetWorld3D().NavigationMap;
@@ -177,16 +226,16 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         float tolerance = speed * deltaF * 0.5f; // dynamic tolerance
         if (dist < tolerance)
         {
-            GlobalPosition = candidate; // valid move
+            targetPosition = candidate; // valid move
         }
         else
         {
-            GlobalPosition = closest;   // clamp to navmesh
+            targetPosition = closest;   // clamp to navmesh
         }
-
-        //GlobalPosition += new Vector3(steering.X * deltaF * speed, steering.Y * deltaF * speed, steering.Z * deltaF * speed);
-        if ((target - GlobalPosition).LengthSquared() < waypointThreshold)
+        if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold && currentIndex < path.Count - 1)
+        {
             currentIndex++;
+        }
     }
     
     public void UpdatePath(List<Vector3> path)
@@ -213,32 +262,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     private double attackCooldown = 0;
     private const float MeleeRange = 1.7f; // tweak as needed
-
-    private void TryAttack(double delta)
-    {
-        attackCooldown -= delta;
-        if (MovementTarget == null || attackCooldown > 0)
-            return;
-
-        float dist = GlobalTransform.Origin.DistanceTo(MovementTarget.GlobalTransform.Origin);
-        if (dist <= MeleeRange)
-        {
-            if (MovementTarget is IsDamagable dmg)
-            {
-                if (MovementTarget is BasicPlayerCharacter basicPlayerCharacter)
-                {
-                    if (!basicPlayerCharacter.knockedOut)
-                    {
-                        Attack();
-                    }
-                }
-                else
-                {
-                    Attack();
-                }
-            }
-        }
-    }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void Attack()
@@ -283,7 +306,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        this.Transform = message.transform;
+        this.targetNetworkTransform = message.transform;
+        stateUpdateAge = 0;
         //this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
         this.state = message.state;
     }
@@ -320,8 +344,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         currentHealth = 0;
         root.Visible = false;
-        collider.Disabled = true;
-        collider2.Disabled = true;
+        bodyArea.Monitorable = false;
+        headArea.Monitorable = false;
         state = HordeAgentState.NONE;
         if (byID != 0)
         {
@@ -349,9 +373,6 @@ public struct HordeAgentStateMessage
 {
     [Key(0)]
     public Transform3D transform;
-
-    //[Key(1)]
-    //public string targetNodePath;
 
     [Key(1)]
     public HordeAgentState state;

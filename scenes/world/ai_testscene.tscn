@@ -343,12 +343,12 @@ metadata/_custom_type_script = "uid://crewntngyd76c"
 [node name="hordeSpawns" type="Node" parent="meta"]
 
 [node name="1" type="Marker3D" parent="meta/hordeSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5340862, 0.72216386, 39.224014)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5340862, 0.72216386, 66.76749)
 
 [node name="warehouseRobotSpawns" type="Node" parent="meta"]
 
 [node name="Marker3D" type="Marker3D" parent="meta/warehouseRobotSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3328085, -3.8146973e-06, 40.417282)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3328085, -3.8146973e-06, 72.18391)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o3lcx")

@@ -107,11 +107,11 @@ shadow_mesh = SubResource("ArrayMesh_1fq2r")
 radius = 1.5991211
 height = 3.1982422
 
-[node name="HordeRobot" type="Node3D" node_paths=PackedStringArray("root", "collider", "collider2", "meleeArea", "animationPlayer", "genericSFX")]
+[node name="HordeRobot" type="Node3D" node_paths=PackedStringArray("root", "headArea", "bodyArea", "meleeArea", "animationPlayer", "genericSFX")]
 script = ExtResource("1_l3ql2")
 root = NodePath(".")
-collider = NodePath("headHitArea/headBox")
-collider2 = NodePath("bodyHitArea/CollisionShape3D")
+headArea = NodePath("headHitArea")
+bodyArea = NodePath("bodyHitArea")
 meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 genericSFX = NodePath("AudioStreamPlayer3D")
@@ -145,8 +145,10 @@ mesh = SubResource("ArrayMesh_jfk1n")
 skeleton = NodePath("")
 
 [node name="AttackAoe" type="Area3D" parent="."]
-collision_layer = 16
+collision_layer = 0
 collision_mask = 16
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AttackAoe"]
 shape = SubResource("CapsuleShape3D_3tng0")

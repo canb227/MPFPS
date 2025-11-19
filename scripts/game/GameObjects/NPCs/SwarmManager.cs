@@ -29,7 +29,7 @@ public partial class SwarmManager : Node
         swarmCooldownMin = 240;
         robotSwarmMaxSize = (int) (numPlayers * 10 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
         robotSwarmMinSize = (int) (numPlayers * 8 * Global.gameState.gameModeManager.options.hordeSizeMultiplier);
-        currentSwarmCooldown = 999999; //shoudl be 120ish maybe 
+        currentSwarmCooldown = 120; //shoudl be 120ish maybe 
         evacuationStarted = false;
     }
 
