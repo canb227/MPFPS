@@ -493,6 +493,12 @@ public partial class GameState : Node3D
                     Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
                     return;
                 }
+                if (updateObj.tickOfLastUpdate>stateUpdate.tick)
+                {
+                    Logging.Warn($"Ignoring stale state update for object {updateObj.id}", "GameState");
+                    return;
+                }
+                updateObj.tickOfLastUpdate = tick;
                 updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
             }
             else

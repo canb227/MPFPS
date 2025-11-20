@@ -17,6 +17,7 @@ public abstract partial class GOBaseStaticBody : StaticBody3D, GameObject
     [Export]
     public virtual GameObjectType type { get; set; }
     public virtual bool predict { get; set; } = true;
+    public ulong tickOfLastUpdate { get; set; }
     public virtual bool sleeping { get; set; }
     public virtual bool destroyed { get; set; }
     [Export]

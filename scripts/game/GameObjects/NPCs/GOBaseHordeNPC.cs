@@ -22,6 +22,7 @@ public partial class GOBaseHordeNPC : Node3D, GameObject
     public virtual bool destroyed { get; set; }
     [Export]
     public virtual float priorityAccumulator { get; set; }
+    public ulong tickOfLastUpdate { get; set; }
 
     public virtual bool InitFromData(GameObjectConstructorData data)
     {
