@@ -27,7 +27,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
     public override void ProcessStateUpdate(byte[] update)
     {
         SimpleShapeStateUpdate sssu = MessagePackSerializer.Deserialize<SimpleShapeStateUpdate>(update);
-        LinearVelocity = sssu.velocity;
+        //LinearVelocity = sssu.velocity;
         desiredPosition = sssu.position;
         desiredQuaternion = sssu.quaternion;
     }
@@ -35,7 +35,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
     public override byte[] GenerateStateUpdate()
     {
         SimpleShapeStateUpdate sssu = new();
-        sssu.velocity = LinearVelocity;
+        //sssu.velocity = LinearVelocity;
         sssu.position = GlobalPosition;
         sssu.quaternion = Quaternion;
         return MessagePackSerializer.Serialize(sssu);
@@ -80,17 +80,17 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public virtual void OnHold(ulong byID)
     {
-        //GravityScale = 0.1f;
-        //LinearDamp = 20;
-       // AngularDamp = 5;
+        GravityScale = 0.1f;
+        LinearDamp = 20;
+        AngularDamp = 5;
     }
 
     public virtual void OnRelease(ulong byID)
     {
         //LinearVelocity = LinearVelocity.Clamp(0, 5);
-        //GravityScale = 1;
-        // LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
-        //AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
+        GravityScale = 1;
+        LinearDamp = ProjectSettings.GetSetting("physics/3d/default_linear_damp").AsSingle();
+        AngularDamp = ProjectSettings.GetSetting("physics/3d/default_angular_damp").AsSingle();
         desiredPosition = Position;
         desiredQuaternion = Quaternion;
     }

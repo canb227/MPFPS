@@ -336,14 +336,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 EquipNextFromSlot(InventoryGroupCategory.Role);
             }
-            if (input.actions.HasFlag(ActionFlags.Aim))
-            {
-                camera.Fov = Global.Config.loadedPlayerConfig.fov/2;
-            }
-            else
-            {
-                camera.Fov = Global.Config.loadedPlayerConfig.fov;
-            }
+
         }
     }
 

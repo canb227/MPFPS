@@ -171,6 +171,17 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 }
             }
         }
+        if (input.HasFlag(ActionFlags.Aim))
+        {
+            if (NetworkUtils.IsMe(equippedBySteamID))
+            {
+                Global.gameState.GetCharacterControlledBy(equippedBySteamID).camera.Fov = Global.Config.loadedPlayerConfig.fov / 2;
+            }
+        }
+        else
+        {
+            Global.gameState.GetCharacterControlledBy(equippedBySteamID).camera.Fov = Global.Config.loadedPlayerConfig.fov;
+        }
     }
     
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
