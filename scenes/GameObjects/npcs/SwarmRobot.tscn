@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=4 uid="uid://cnuhisk5vamn4"]
+[gd_scene load_steps=13 format=4 uid="uid://cnuhisk5vamn4"]
 
 [ext_resource type="Script" uid="uid://kuimq525di4f" path="res://scripts/game/GameObjects/NPCs/SwarmRobot.cs" id="1_aj03a"]
-[ext_resource type="AudioStream" uid="uid://c0vhttprn2irc" path="res://assets/audio/enemies/combine_shield_loop3.wav" id="3_1fq2r"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_a6bla"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1fq2r"]
@@ -209,14 +208,6 @@ max_distance = 20.0
 [node name="AmbientAudioPlayer" type="AudioStreamPlayer3D" parent="."]
 unit_size = 5.0
 max_db = 0.0
-max_distance = 10.0
-
-[node name="AmbientHumPlayer" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("3_1fq2r")
-volume_db = -6.0
-unit_size = 5.0
-max_db = -6.0
-autoplay = true
 max_distance = 10.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

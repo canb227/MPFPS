@@ -45,7 +45,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float acceleration = 1;
     public float deceleration = 1;
     public float finalSpeed;
-    private Vector3 jumpVelocity = new Vector3(0, 6, 0);
+    private Vector3 jumpVelocity = new Vector3(0, 25, 0);
     private bool airbrake = false;
     //item bools
     public bool handcuffed;
@@ -660,12 +660,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             if (fallTime > safeFallTime)
             {
                 float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
-                TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
+                //TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
             }
             if(fallTime > safeStunFallTime)
             {
                 float stunDamage = (fallTime - safeStunFallTime) * fallingDamagePerSecond * 2;
-                TakeStunDamage(stunDamage, authority, PainSoundType.Falling, ScaleDamageToVolume(stunDamage));
+                //TakeStunDamage(stunDamage, authority, PainSoundType.Falling, ScaleDamageToVolume(stunDamage));
             }
             fallTime = 0f;
         }

@@ -3,10 +3,11 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public partial class AIManager : Node3D
 {
-
+    public List<HordeAgent> agentPool = new();
     public List<HordeAgent> controlledNPCs = new();
     public GOBasePlayerCharacter localPlayer;
     private GameModeOptions options;
@@ -19,18 +20,31 @@ public partial class AIManager : Node3D
         options = Global.gameState.gameModeManager.options;
     }
 
-    int agentCount = 1000;
-    public override void _Ready()
+    public int hordeSize = 100;
+    public void SpawnHorde()
     {
-        base._Ready();
-        for(int i = 0; i < agentCount; i++)
+        var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
+        var agentPoolSnapshot = agentPool.ToList();
+        for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
+        {
+            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin);
+        }
+    }
+
+    public void CreateAgentPool(int agentPoolCount = 200)
+    {
+        for(int i = 0; i < agentPoolCount; i++)
         {
             GameObjectConstructorData data = new(GameObjectType.HordeAgent);
             data.spawnTransform = Transform3D.Identity;
-            data.spawnTransform.Origin = new Vector3(0,1,0);
-            data.paramList.Add(HordeAgentState.SIMPLECHASE);
+            data.spawnTransform.Origin = new Vector3(0,0,0);
+            data.paramList.Add(HordeAgentState.NONE);
             Global.gameState.Auth_SpawnObject(GameObjectType.HordeAgent, data);
         }
+    }
+    public override void _Ready()
+    {
+        base._Ready();
     }
 
 
@@ -87,11 +101,23 @@ public partial class AIManager : Node3D
     public void UpdateAllAgentPaths()
     {
         //need to actually set start and target
-        Random rand = new Random();
-        float x = (float)(rand.NextDouble() * 80 - 40);
-        float z = (float)(rand.NextDouble() * 80 - 40);
+        // Random rand = new Random();
+        // float x = (float)(rand.NextDouble() * 80 - 40);
+        // float z = (float)(rand.NextDouble() * 80 - 40);
+        var livingPlayers = Global.gameState.gameModeManager.basicPlayers
+            .Where(p => p.Value.state == CharacterState.Living)
+            .Select(p => p.Value)
+            .ToList();
 
-        RPCManager.RPC(this, "UpdateAgentPathOnClient", [x,z]);
+        BasicPlayerCharacter chosen = null;
+        if (livingPlayers.Count > 0)
+        {
+            var rand = new Random();
+            int index = rand.Next(livingPlayers.Count);
+            chosen = livingPlayers[index];
+        }
+
+        RPCManager.RPC(this, "UpdateAgentPathOnClient", [chosen.GlobalPosition.X,chosen.GlobalPosition.Z]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -108,18 +134,22 @@ public partial class AIManager : Node3D
 
 
     double updatePathTimer = 10;
-    double pathUpdateWaitTime = 30;
+    double pathUpdateWaitTime = 60;
     public override void _PhysicsProcess(double delta)
     {
-        if(Global.Lobby.bIsLobbyHost)
+        if(Global.gameState.gameModeManager.options.warehouseRobots)
         {
-            updatePathTimer -= delta;
-            //decide if we want to updatepath and set target and start
-            if(updatePathTimer <= 0)
+            if(Global.Lobby.bIsLobbyHost)
             {
-                GD.Print("Updating All Agents Path");
-                UpdateAllAgentPaths();
-                updatePathTimer = pathUpdateWaitTime;
+                updatePathTimer -= delta;
+                //decide if we want to updatepath and set target and start
+                if(updatePathTimer <= 0)
+                {
+                    GD.Print("Updating All Agents Path");
+                    SpawnHorde();
+                    UpdateAllAgentPaths();
+                    updatePathTimer = pathUpdateWaitTime;
+                }
             }
         }
     }

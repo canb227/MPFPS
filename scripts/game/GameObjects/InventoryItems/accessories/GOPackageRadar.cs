@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 [GlobalClass]
 public partial class GOPackageRadar : GOBaseAccessory
 {
-    [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
     [Export] double scanCooldown = 30;
     private double currentScanCooldown = 5;
 

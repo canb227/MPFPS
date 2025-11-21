@@ -273,6 +273,7 @@ public partial class GameModeManager : Node
         if (roundNumber == 0)
         {
             Logging.Log("Starting First Round as Peer", "GameModeManager");
+            Global.gameState.AIManager.CreateAgentPool();
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
@@ -292,6 +293,7 @@ public partial class GameModeManager : Node
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
+            Global.gameState.AIManager.CreateAgentPool();
 
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)
