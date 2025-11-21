@@ -100,7 +100,7 @@ public partial class GameState : Node3D
 
 
     private GameObject debugTarget;
-    private int numUpdatesPerFrame = 20;
+    private int numUpdatesPerFrame = 200;
     private ulong StateFreshnessThreshold { get; set; } = 60;
     private Queue<StateUpdatePacket> StateUpdatePacketBuffer = new();
     private Queue<PlayerInputData> PlayerInputPacketBuffer = new();
@@ -493,6 +493,12 @@ public partial class GameState : Node3D
                     Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
                     return;
                 }
+                if (updateObj.tickOfLastUpdate>stateUpdate.tick)
+                {
+                    Logging.Warn($"Ignoring stale state update for object {updateObj.id}", "GameState");
+                    return;
+                }
+                updateObj.tickOfLastUpdate = tick;
                 updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
             }
             else

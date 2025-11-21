@@ -20,6 +20,7 @@ public abstract partial class GOBaseCharacterBody3D : CharacterBody3D, GameObjec
     public virtual bool destroyed { get; set; }
     [Export]
     public virtual float priorityAccumulator { get; set; }
+    public ulong tickOfLastUpdate { get; set; }
 
     public override void _Ready()
     {

@@ -18,6 +18,9 @@ public interface GameObject
 
     [Export]
     GameObjectType type { get; set; }
+
+    ulong tickOfLastUpdate { get; set; }
+
     bool dirty { get; set; }
     bool sleeping { get; set; }
     bool destroyed { get; set; }
