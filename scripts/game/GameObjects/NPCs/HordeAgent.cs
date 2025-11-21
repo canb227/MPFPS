@@ -42,16 +42,14 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         bodyArea.Monitorable = false;
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
-        GlobalPosition = new Vector3(0, 0, 0);
+        Position = new Vector3(0, 1, 0);
         UpdateGridLocation();
         Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
     }
 
     public void SpawnAgent(Vector3 spawnPosition)
     {
-        var newTransform = Transform3D.Identity;
-        newTransform.Origin = spawnPosition;
-        Transform = newTransform;
+        //Position = spawnPosition;
         state = HordeAgentState.SWARM;
         currentHealth = maxHealth;
         root.Visible = true;
@@ -484,7 +482,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         }
-        GlobalPosition = new Vector3(-999, -999, -999);
+        Position = new Vector3(-999, -999, -999);
         UpdateGridLocation();
         Global.gameState.AIManager.agentPool.Add(this);
         Global.gameState.AIManager.controlledNPCs.Remove(this);

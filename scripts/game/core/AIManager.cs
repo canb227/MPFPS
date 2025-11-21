@@ -24,6 +24,7 @@ public partial class AIManager : Node3D
     public void SpawnHorde()
     {
         var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
+
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
@@ -33,6 +34,8 @@ public partial class AIManager : Node3D
 
     public void CreateAgentPool(int agentPoolCount = 200)
     {
+        agentPool.Clear();
+        controlledNPCs.Clear();
         for(int i = 0; i < agentPoolCount; i++)
         {
             GameObjectConstructorData data = new(GameObjectType.HordeAgent);
