@@ -82,6 +82,28 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
         //audioStreamPlayer.Stop();
         //animationPlayer.Play("RESET");
     }
+
+    public override bool InitFromData(GameObjectConstructorData data)
+    {
+        try
+        {
+            GlobalTransform = data.spawnTransform;
+            bool attemptPickup = (bool)data.paramList[0];
+            uint playerCharacterTarget = (uint)data.paramList[1];
+            if(attemptPickup)
+            {
+                if(Global.gameState.GameObjects[playerCharacterTarget] is BasicPlayerCharacter bpc)
+                {
+                    bpc.Pickup(this);
+                }
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
 }
 
 [MessagePackObject]

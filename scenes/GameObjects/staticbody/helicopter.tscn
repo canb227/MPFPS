@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=4 uid="uid://du2toamiqaivk"]
+[gd_scene load_steps=54 format=4 uid="uid://du2toamiqaivk"]
 
 [ext_resource type="Script" uid="uid://ctqdvvnvjarkk" path="res://scripts/game/other/Helicopter.cs" id="1_gybdq"]
 [ext_resource type="AudioStream" uid="uid://cag32t1rb7mug" path="res://assets/audio/environment/packingMachine/elevator_stop1.wav" id="2_f4cif"]
@@ -6,7 +6,6 @@
 [ext_resource type="AudioStream" uid="uid://dkiry55d0aag2" path="res://assets/audio/environment/helicopter/helicopter_interior.mp3" id="3_4na8w"]
 [ext_resource type="Texture2D" uid="uid://dv62hrkawm77c" path="res://assets/models/map/helicopter_Image.png" id="3_qil56"]
 [ext_resource type="Texture2D" uid="uid://d3vfthp7ouvef" path="res://assets/models/map/helicopter_CH47_Mask_Map.png" id="4_gybdq"]
-[ext_resource type="PackedScene" uid="uid://bqx27c5btqov2" path="res://scenes/other/announcer.tscn" id="4_pagf7"]
 [ext_resource type="Texture2D" uid="uid://gspcd6pus0rb" path="res://assets/models/map/helicopter_CH47_Normal.png" id="5_pagf7"]
 [ext_resource type="Texture2D" uid="uid://bka1ciycxd35q" path="res://assets/models/map/helicopter_m240l mmg_M240L_BaseMap.png" id="6_f4cif"]
 [ext_resource type="Texture2D" uid="uid://mssw2knfdd5h" path="res://assets/models/map/helicopter_m240l mmg_M240L_MaskMap.png" id="7_g52l4"]
@@ -895,10 +894,10 @@ shadow_mesh = SubResource("ArrayMesh_mpjfq")
 transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 script = ExtResource("1_gybdq")
 helicopterRoot = NodePath(".")
-rearRotorAudio = NodePath("RearRotorAudio")
-frontRotorAudio = NodePath("FrontRotorAudio")
+rearRotorAudio = NodePath("RearRotorAudioPlayer")
+frontRotorAudio = NodePath("FrontRotorAudioPlayer")
 InteriorAudio = NodePath("InteriorNoise")
-announcer = NodePath("Announcer")
+announcer = NodePath("")
 insideHelicopterArea = NodePath("InsideHelicopterArea")
 animationPlayer = NodePath("AnimationPlayer")
 rearRotorMesh = NodePath("RearRotor")
@@ -912,38 +911,28 @@ libraries = {
 &"": SubResource("AnimationLibrary_4na8w")
 }
 
-[node name="RearRotorAudio" type="SteamAudioPlayer" parent="."]
-air_absorption = true
-occlusion = false
-reflection = true
-transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 6.728962, -0.18983467)
+[node name="RearRotorAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 7.4279795, -1.6943703)
 stream = ExtResource("2_ly7q5")
-attenuation_model = 2
-unit_size = 55.0
-panning_strength = 0.0
-
-[node name="FrontRotorAudio" type="SteamAudioPlayer" parent="."]
-air_absorption = true
-occlusion = false
-reflection = true
-transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 4.684301, 15.253166)
-stream = ExtResource("2_ly7q5")
-attenuation_model = 2
-unit_size = 60.0
-panning_strength = 0.0
-
-[node name="InteriorNoise" type="SteamAudioPlayer" parent="."]
-air_absorption = true
-reflection = true
-transform = Transform3D(1, 0, 0, 0, 0.9973943, -0.072141565, 0, 0.07214156, 0.9973943, 0, 2.5455484, 15.19944)
-stream = ExtResource("3_4na8w")
 attenuation_model = 2
 volume_db = 3.0
-unit_size = 30.0
-panning_strength = 0.0
+unit_size = 60.0
+max_db = 0.0
 
-[node name="Announcer" parent="." instance=ExtResource("4_pagf7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9173222, -4.657334)
+[node name="FrontRotorAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 4.4709544, 15.85544)
+stream = ExtResource("2_ly7q5")
+attenuation_model = 2
+volume_db = 3.0
+unit_size = 60.0
+max_db = 0.0
+
+[node name="InteriorNoise" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 2.3322163, 15.944915)
+stream = ExtResource("3_4na8w")
+attenuation_model = 1
+volume_db = 3.0
+unit_size = 30.0
 
 [node name="InsideHelicopterArea" type="Area3D" parent="."]
 collision_layer = 0
@@ -1076,12 +1065,10 @@ transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0,
 mesh = SubResource("ArrayMesh_ari3h")
 skeleton = NodePath("")
 
-[node name="RampAudio" type="SteamAudioPlayer" parent="Ramp"]
-air_absorption = true
+[node name="RampAudio" type="AudioStreamPlayer3D" parent="Ramp"]
 transform = Transform3D(2.7818305, 0, 0, 0, 1.5039754, 2.3402224, 0, -2.3402224, 1.5039754, 0.007017531, -0.04854572, -0.21418977)
 stream = ExtResource("2_f4cif")
 pitch_scale = 0.33
-panning_strength = 0.0
 
 [node name="RearRotor" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.013650587, -0.3592163, 0, 0.3592163, -0.013650587, 0.040915273, 7.9741898, -1.7482331)

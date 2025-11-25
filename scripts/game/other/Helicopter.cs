@@ -10,7 +10,6 @@ public partial class Helicopter : GOBaseStaticBody
     [Export] AudioStreamPlayer3D rearRotorAudio { get; set; }
     [Export] AudioStreamPlayer3D frontRotorAudio { get; set; }
     [Export] AudioStreamPlayer3D InteriorAudio { get; set; }
-    [Export] Announcer announcer { get; set; }
     [Export] Area3D insideHelicopterArea { get; set; }
     [Export] AnimationPlayer animationPlayer { get; set; }
     [Export] PathFollow3D pathFollow3D { get; set; }

@@ -74,6 +74,8 @@ public partial class RoleShopScreen : PanelContainer
                     spawnTransform.Origin += new Vector3(0, 2, -1);
                     GameObjectConstructorData data = new(currentGameObjectType);
                     data.spawnTransform = spawnTransform;
+                    data.paramList.Add(true);
+                    data.paramList.Add(Global.steamid);
                     Global.gameState.Auth_SpawnObject(currentGameObjectType, data);
                     basicPlayerCharacter.roleCredits--;
                     creditLabel.Text = $"You Currently Have {basicPlayerCharacter.roleCredits} Credits";
