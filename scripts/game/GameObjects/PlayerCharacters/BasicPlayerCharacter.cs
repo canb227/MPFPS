@@ -1000,6 +1000,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             state = CharacterState.Dead;
             Global.ui.inGameUI.ScoreBoard.PlayerFound(authority);
+            Global.gameState.gameModeManager.PlayerFound(authority);
         }
 
     }

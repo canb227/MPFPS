@@ -55,6 +55,7 @@ public partial class GameModeManager : Node
     public GameModeOptions options = new();
 
     public double remainingRoundTime;
+    public double publicRemainingRoundTime;
     private int numTraitorsAlive;
     private int numInnocentsAlive;
     private int numManagersAlive;
@@ -84,6 +85,7 @@ public partial class GameModeManager : Node
         if (roundStarted)
         {
             remainingRoundTime -= delta;
+            publicRemainingRoundTime -= delta;
             if (evacuationStarted)
             {
                 evacuationTimeLeft -= delta;
@@ -98,7 +100,7 @@ public partial class GameModeManager : Node
             }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {
-                RPCManager.RPC(this, "TraitorsWin", []);
+                RPCManager.RPC(this, "StartEndOfGameEvacuation", []);
             }
             Global.ui.inGameUI.UpdateTimeLeftUI();
             if (Global.Lobby.bIsLobbyHost)
@@ -222,6 +224,7 @@ public partial class GameModeManager : Node
     public void StartEndOfGameEvacuation()
     {
         remainingRoundTime = 99999;
+        publicRemainingRoundTime = 99999;
         //switch round timers everywhere to a 95 second countdown TDOD
         evacuationStarted = true;
         evacuationTimeLeft = 95;
@@ -306,6 +309,7 @@ public partial class GameModeManager : Node
         roundNumber++;
         roundStarted = true;
         remainingRoundTime = options.roundTime;
+        publicRemainingRoundTime = options.roundTime;
         evacuationStarted = false;
         evacuationTimeLeft = 9999999;
 
@@ -528,10 +532,16 @@ public partial class GameModeManager : Node
     public void SetNumFinishedOrders(int numFinished)
     {
         numFinishedOrders = numFinished;
-        if (numFinishedOrders >= ordersNeeded && Global.Lobby.bIsLobbyHost)
+        if(Global.Lobby.bIsLobbyHost)
         {
-            RPCManager.RPC(this, "StartEndOfGameEvacuation", []);
+            RPCManager.RPC(this, "SetRoundTime", [remainingRoundTime-120, publicRemainingRoundTime-120]);
         }
+    }
+
+    public void SetRoundTime(double roundTime, double publicRoundTime)
+    {
+        remainingRoundTime = roundTime;
+        publicRemainingRoundTime = publicRoundTime;
     }
     public int GetNumTraitorsAlive()
     {
@@ -627,6 +637,15 @@ public partial class GameModeManager : Node
         {
             DecreaseNumTraitorsAlive();
         }
+        if(!evacuationStarted)
+        {
+            remainingRoundTime += 60;
+        }
+    }
+
+    public void PlayerFound(ulong steamID)
+    {
+        publicRemainingRoundTime += 60;
     }
 
 
