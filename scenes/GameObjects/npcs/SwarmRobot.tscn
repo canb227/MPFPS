@@ -155,7 +155,7 @@ height = 3.1982422
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1fq2r"]
 height = 1.2719727
 
-[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "collider2", "meleeArea", "animationPlayer", "genericSFX", "ambientSFX", "navAgent")]
+[node name="SwarmRobot" type="CharacterBody3D" node_paths=PackedStringArray("root", "collider", "collider2", "meleeArea", "animationPlayer", "genericSFX", "ambientSFX", "navAgent") groups=["enemies"]]
 collision_layer = 2
 collision_mask = 51
 script = ExtResource("1_aj03a")

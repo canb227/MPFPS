@@ -43,6 +43,7 @@ navigation_mesh_source_group=""
 players=""
 PackageBoxes=""
 headshotcollider=""
+enemies=""
 
 [importer_defaults]
 

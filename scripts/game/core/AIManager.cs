@@ -24,11 +24,14 @@ public partial class AIManager : Node3D
     public void SpawnHorde()
     {
         var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
+        var generatorLocation = Global.gameState.gameModeManager.generator.GlobalPosition;
+        path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(generatorLocation.X, generatorLocation.Y+1.0f, generatorLocation.Z));
 
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
-            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin);
+            //spawn the agent and set its path
+            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin).UpdatePath(path);
         }
     }
 
@@ -99,36 +102,17 @@ public partial class AIManager : Node3D
         return neighbors;
     }
 
-    float oldX = 0;
-    float oldZ = 0;
     public void UpdateAllAgentPaths()
     {
-        //need to actually set start and target
-        // Random rand = new Random();
-        // float x = (float)(rand.NextDouble() * 80 - 40);
-        // float z = (float)(rand.NextDouble() * 80 - 40);
-        var livingPlayers = Global.gameState.gameModeManager.basicPlayers
-            .Where(p => p.Value.state == CharacterState.Living)
-            .Select(p => p.Value)
-            .ToList();
+        Vector3 targetPosition = Global.gameState.gameModeManager.generator.GlobalPosition;
 
-        BasicPlayerCharacter chosen = null;
-        if (livingPlayers.Count > 0)
-        {
-            var rand = new Random();
-            int index = rand.Next(livingPlayers.Count);
-            chosen = livingPlayers[index];
-        }
-
-        RPCManager.RPC(this, "UpdateAgentPathOnClient", [chosen.GlobalPosition.X,chosen.GlobalPosition.Z]);
+        RPCManager.RPC(this, "UpdateAgentsPathOnClient", [targetPosition.X,targetPosition.Z]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void UpdateAgentPathOnClient(float x, float z)
+    public void UpdateAgentsPathOnClient(float x_start, float z_start, float x, float z)
     {
-        path = CalculatePath(new Vector3(oldX, 1, oldZ), new Vector3(x, 1.2f, z));
-        oldX = x;
-        oldZ = z;
+        path = CalculatePath(new Vector3(x_start, 1.2f, z_start), new Vector3(x, 1.2f, z));
         foreach(var agent in controlledNPCs)
         {
             agent.UpdatePath(path);
@@ -136,35 +120,33 @@ public partial class AIManager : Node3D
     }
 
 
-    double updatePathTimer = 10;
-    double pathUpdateWaitTime = 60;
+    double currentHordeCooldown = 10;
+    double hordeCooldown = 60;
+    bool announcedHorde = false;
     public override void _PhysicsProcess(double delta)
     {
         if(Global.gameState.gameModeManager.options.warehouseRobots)
         {
             if(Global.Lobby.bIsLobbyHost)
             {
-                updatePathTimer -= delta;
+                currentHordeCooldown -= delta;
                 //decide if we want to updatepath and set target and start
-                if(updatePathTimer <= 0)
+                if(currentHordeCooldown <= 30 && currentHordeCooldown > 0 && !announcedHorde && !Global.gameState.gameModeManager.evacuationStarted)
                 {
-                    GD.Print("Updating All Agents Path");
+                    Global.gameState.gameModeManager.TriggerSwarmIncomingEvent();
+                    announcedHorde = true;
+                }
+                if(currentHordeCooldown <= 0)
+                {
+                    Logging.Log("Spawn Horde", "AIManager");
+                    Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
                     SpawnHorde();
-                    UpdateAllAgentPaths();
-                    updatePathTimer = pathUpdateWaitTime;
+                    //UpdateAllAgentPaths();
+                    currentHordeCooldown = hordeCooldown;
+                    announcedHorde = false;
                 }
             }
         }
+
     }
-
-    // public void SetGlobalAITarget(Node3D target)
-    // {
-    //     foreach (HordeAgent npc in controlledNPCs)
-    //     {
-    //         npc.MovementTarget = target;
-    //     }
-    // }
-
-
-
 }

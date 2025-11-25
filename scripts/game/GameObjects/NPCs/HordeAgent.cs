@@ -47,7 +47,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
     }
 
-    public void SpawnAgent(Vector3 spawnPosition)
+    public HordeAgent SpawnAgent(Vector3 spawnPosition)
     {
         //Position = spawnPosition;
         state = HordeAgentState.SWARM;
@@ -56,6 +56,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         Global.gameState.AIManager.agentPool.Remove(this);
         Global.gameState.AIManager.controlledNPCs.Add(this);
         UpdateGridLocation();
+        return this;
     }
 
     public override void _Process(double delta)

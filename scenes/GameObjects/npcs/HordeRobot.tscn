@@ -107,7 +107,7 @@ shadow_mesh = SubResource("ArrayMesh_1fq2r")
 radius = 1.5991211
 height = 3.1982422
 
-[node name="HordeRobot" type="Node3D" node_paths=PackedStringArray("root", "headArea", "bodyArea", "meleeArea", "animationPlayer", "genericSFX")]
+[node name="HordeRobot" type="Node3D" node_paths=PackedStringArray("root", "headArea", "bodyArea", "meleeArea", "animationPlayer", "genericSFX") groups=["enemies"]]
 script = ExtResource("1_l3ql2")
 root = NodePath(".")
 headArea = NodePath("headHitArea")

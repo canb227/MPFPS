@@ -46,6 +46,7 @@ public partial class GameModeManager : Node
     public SwarmManager swarmManager = new();
     public bool roundStarted;
     public bool evacuationStarted;
+    public GOGenerator generator;
 
 
    
@@ -338,7 +339,7 @@ public partial class GameModeManager : Node
         }
         else
         {
-            ordersNeeded = Mathf.CeilToInt(options.packagePerPlayer * Global.Lobby.AllPeers().Count); //this is likely inaccurate to actual player count?
+            ordersNeeded = 8; //8 max
         }
 
         //determine our possible address details
@@ -555,7 +556,7 @@ public partial class GameModeManager : Node
             Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
             if (numTraitorsAlive <= 0)
             {
-                //do something maybe
+                RPCManager.RPC(this, "InnocentsWin", []);
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
