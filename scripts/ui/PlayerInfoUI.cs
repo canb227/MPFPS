@@ -44,10 +44,44 @@ public partial class PlayerInfoUI : MarginContainer
             TeamLabel.Text = "...";
         }
     }
-    
-    public void UpdateTimeLeftUI(string timeLeftString)
+
+    double switchClockTimer = 3;
+    double timeSinceSwitch = 0;
+    private string timeLeftString = "";
+    private string hiddenTimeLeftString = "";
+    private bool displayingHiddenTime;
+    public override void _PhysicsProcess(double delta)
     {
-        TimeLeftLabel.Text = timeLeftString;
+        base._PhysicsProcess(delta);
+        GameObject temp = Global.gameState.GameObjects[Global.gameState.PlayerIDToControlledCharacter[Global.steamid]];
+        if(temp is BasicPlayerCharacter bpc)
+        {
+            if(bpc.team != Team.Traitor)
+            {
+                return;
+            }
+        }
+        timeSinceSwitch += delta;
+        if(timeSinceSwitch >= switchClockTimer)
+        {
+            if(displayingHiddenTime)
+            {
+                TimeLeftLabel.RemoveThemeColorOverride("font_color");
+                TimeLeftLabel.Text = timeLeftString;
+            }
+            else
+            {
+                TimeLeftLabel.AddThemeColorOverride("font_color", new Color(1, 0, 0)); // red
+                TimeLeftLabel.Text = hiddenTimeLeftString;
+            }
+        }
+    }
+
+    
+    public void UpdateTimeLeftUI(string timeLeftString, string hiddenTimeLeftString)
+    {
+        this.timeLeftString = timeLeftString;
+        this.hiddenTimeLeftString = hiddenTimeLeftString;
     }
     public void UpdateStunUI(int newStunBarRemaning, int maxStunBar)
     {

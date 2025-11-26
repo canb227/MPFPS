@@ -32,6 +32,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float midRange = 25f;
     private float nearRange = 15f;
     private int updateCounter = 0;
+    private static int computeBucket = 0; // shared across agents
+    private int myBucket;
+    private int bucketCount = 8;
 
     public override void _Ready()
     {
@@ -43,6 +46,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
         Position = new Vector3(0, 1, 0);
+        myBucket = computeBucket++ % bucketCount;
         UpdateGridLocation();
         Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
     }
@@ -94,8 +98,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     }
 
     private double deltaAccumulator = 0;
+    private bool triedApplyStatePacket;
+    private double timeSincePathUpdate = 0;
+    private double pathUpdateRate = 3;
+    private int tickIndex;
     public override void PerTickShared(double delta)
     {
+        tickIndex++;
         switch (state)
         {
             case HordeAgentState.NONE:
@@ -103,65 +112,16 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             case HordeAgentState.IDLE:
                 break;
             case HordeAgentState.SWARM:
-                stateUpdateAge += (float)delta;
-                base.PerTickShared(delta);
-                // Distance to local player
-                Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
-                float dist = (GlobalPosition - playerPos).Length();
-
-                // Decide update frequency
-                int ticksPerUpdate = 1; // every tick
-                if (dist > midRange)
-                {
-                    ticksPerUpdate = 1;
-                    bodyArea.Monitorable = false;
-                    headArea.Monitorable = false;
-                    meleeArea.Monitoring = false;
-                } 
-                else if (dist > nearRange)
-                {
-                    ticksPerUpdate = 1;
-                    bodyArea.Monitorable = true;
-                    headArea.Monitorable = true;
-                    meleeArea.Monitoring = false;
-                } 
-                else 
-                {
-                    ticksPerUpdate = 1;
-                    bodyArea.Monitorable = true;
-                    headArea.Monitorable = true;
-                    meleeArea.Monitoring = true;
-                }
-
-                updateCounter++;
-                deltaAccumulator += delta;
-                if (updateCounter >= ticksPerUpdate)
-                {
-                    updateCounter = 0;
-                    if(path != null)
-                    {
-                        //if our location is too far from the fresh networked state we teleport to the correct origin
-                        if(stateUpdateAge < 0.1f && Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
-                        {
-                            Transform = targetNetworkTransform;
-                        }
-                        else
-                        {
-                            MoveAgent(deltaAccumulator);
-                            UpdateGridLocation();
-                        }
-                    }
-                    //attempt to attack, look for overlapping bodies and attack if off cooldown
-                    if(meleeArea.Monitoring)
-                    {
-                        AttackTick();
-                    }
-
-                    deltaAccumulator = 0;
-                }
-                LerpAgent((float)delta, ticksPerUpdate);
+                PerTickAgent(delta);
                 break;
             case HordeAgentState.SIMPLECHASE:
+                timeSincePathUpdate += (float)delta;
+                //bucket scheduling
+                if (tickIndex % bucketCount == myBucket)
+                {
+                    RecalculatePath(delta);
+                }
+                PerTickAgent(delta);
                 break;
             default:
                 break;
@@ -169,10 +129,120 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         
     }
 
+    private void RecalculatePath(double delta)
+    {
+        //Distance to target
+        BasicPlayerCharacter bpc = GetNearestAlivePlayer(GlobalPosition);
+        if (bpc == null) return;
+
+        float distToTarget = (bpc.GlobalPosition - GlobalPosition).Length();
+
+        //Distance between path endpoint and player
+        float distPathEndToPlayer = path.Count > 0
+            ? (path[path.Count - 1] - bpc.GlobalPosition).Length()
+            : distToTarget;
+        pathUpdateRate = Mathf.Clamp(
+            distToTarget * 0.05f + distPathEndToPlayer * 0.1f,
+            0.25f, 3.0f
+        );
+
+        if (timeSincePathUpdate >= pathUpdateRate)
+        {
+            timeSincePathUpdate = 0f;
+
+            var navMap = GetWorld3D().NavigationMap;
+            var pathPoints = NavigationServer3D.MapGetPath(
+                navMap,
+                GlobalPosition,
+                bpc.GlobalPosition,
+                true
+            );
+            path = new List<Vector3>(pathPoints);
+        }
+    }
+
+    private void PerTickAgent(double delta)
+    {
+        stateUpdateAge += (float)delta;
+        base.PerTickShared(delta);
+        // Distance to local player
+        Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
+        float dist = (GlobalPosition - playerPos).Length();
+
+        // Decide update frequency
+        if (dist > midRange)
+        {
+            bodyArea.Monitorable = false;
+            headArea.Monitorable = false;
+            meleeArea.Monitoring = false;
+        } 
+        else if (dist > nearRange)
+        {
+            bodyArea.Monitorable = true;
+            headArea.Monitorable = true;
+            meleeArea.Monitoring = false;
+        } 
+        else 
+        {
+            bodyArea.Monitorable = true;
+            headArea.Monitorable = true;
+            meleeArea.Monitoring = true;
+        }
+
+        deltaAccumulator += delta;
+        updateCounter = 0;
+        if(path != null)
+        {
+            //if our location is too far from the fresh networked state we teleport to the correct origin once
+            if(!triedApplyStatePacket)
+            {
+                triedApplyStatePacket = true;
+                if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
+                {
+                    Transform = targetNetworkTransform;
+                }
+            }
+            else
+            {
+                MoveAgent(deltaAccumulator);
+                UpdateGridLocation();
+            }
+        }
+        //attempt to attack, look for overlapping bodies and attack if off cooldown
+        if(meleeArea.Monitoring)
+        {
+            AttackTick();
+        }
+
+        deltaAccumulator = 0;
+        LerpAgent((float)delta, 1);
+    }
+
     private void LerpAgent(float deltaF, float ticksPerUpdate)
     {
         //lerp towards targetPosition
         Position = Position.Lerp(targetPosition, 60.0f * deltaF * (1/ticksPerUpdate));
+    }
+
+    public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
+    {
+        BasicPlayerCharacter nearest = null;
+        float nearestDistSq = float.MaxValue;
+
+        foreach (var kv in Global.gameState.gameModeManager.basicPlayers)
+        {
+            var player = kv.Value;
+            if (player.state != CharacterState.Living) continue; // skip dead
+
+            float distSq = (player.GlobalPosition - agentPos).LengthSquared();
+            if (distSq < nearestDistSq)
+            {
+                nearestDistSq = distSq;
+                nearest = player;
+            }
+        }
+
+        return nearest; // null if none alive
     }
     
 
@@ -413,6 +483,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 }
             }
             Random rand = new();
+            //even though attacking is being run by everybody, takedamage only works if you are the authority
+            //this means we get the performance advantage of toggling colliders
+            //and if people are close together you hear the attacks go off based on your truth
+            //its imperfect but reduces network traffic while maintaining majority of sync
             dmg.TakeStunDamage(16+rand.Next(3), id, PainSoundType.None);
             dmg.TakeDamage(4+rand.Next(3), id, PainSoundType.Generic);
         }
@@ -440,6 +514,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         this.targetNetworkTransform = message.transform;
         stateUpdateAge = 0;
+        triedApplyStatePacket = false;
         //this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
         this.state = message.state;
     }

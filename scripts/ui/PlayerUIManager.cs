@@ -34,9 +34,9 @@ public partial class PlayerUIManager : Control
         PlayerInfoUI.Visible = false;
     }
 
-    public void UpdateTimeLeftUI(string timerString)
+    public void UpdateTimeLeftUI(string timerString, string hiddenTimerString)
     {
-        PlayerInfoUI.UpdateTimeLeftUI(timerString);
+        PlayerInfoUI.UpdateTimeLeftUI(timerString, hiddenTimerString);
     }
 
     //player info functions
