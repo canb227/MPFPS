@@ -480,11 +480,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_DropEquipped()
     {
-        if (equipped != null && equipped.droppable)
+        if (equipped != null)
         {
             equipped.OnUnequipped(authority);
-            equipped.OnDropped(authority);
-            inventory.GetGroup(equipped.category).items.Remove(equipped);
+            if(equipped.droppable)
+            {
+                equipped.OnDropped(authority);
+                inventory.GetGroup(equipped.category).items.Remove(equipped);
+            }
             equipped = null;
             Equip(InventoryGroupCategory.Hands);
         }

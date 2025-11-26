@@ -1,6 +1,7 @@
-[gd_scene load_steps=45 format=4 uid="uid://dhbhw2eugai6h"]
+[gd_scene load_steps=46 format=4 uid="uid://dhbhw2eugai6h"]
 
 [ext_resource type="Texture2D" uid="uid://dv1gw05heyhep" path="res://assets/models/warehouse/Rotorobj_Body_BaseColor.1001.png" id="1_1tmik"]
+[ext_resource type="Script" uid="uid://b8gepvpe7edat" path="res://scripts/game/GameObjects/StaticBodies/GOGenerator.cs" id="1_ckp0e"]
 [ext_resource type="Texture2D" uid="uid://hd87ey2n2ui8" path="res://assets/models/warehouse/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png" id="2_vigri"]
 [ext_resource type="Texture2D" uid="uid://barohp151hufs" path="res://assets/models/warehouse/Rotorobj_Body_Normal.1001.jpg" id="3_g7r1e"]
 [ext_resource type="Texture2D" uid="uid://bi3bh1wo6qavp" path="res://assets/models/warehouse/Rotorobj_Cage_BaseColor.1001.png" id="4_yee2q"]
@@ -390,7 +391,10 @@ data = PackedVector3Array(1.7889999, -0.37359998, 2.0179, 1.7879, -0.0019999999,
 height = 4.8027344
 radius = 8.094238
 
-[node name="Cyberpunk Generator" type="Node3D"]
+[node name="Cyberpunk Generator" type="StaticBody3D" node_paths=PackedStringArray("generatorArea")]
+script = ExtResource("1_ckp0e")
+generatorArea = NodePath("Area3D")
+metadata/_custom_type_script = "uid://b8gepvpe7edat"
 metadata/extras = {
 "ant_landscape": {},
 "asset_data": {
