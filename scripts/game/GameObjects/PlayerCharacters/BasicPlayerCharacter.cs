@@ -283,7 +283,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                 case CharacterState.Living:
                                     if (basicPlayerCharacter.handcuffed)
                                     {
-                                        DropEquipped();
+                                        RPCManager.RPC(basicPlayerCharacter, "RemoveHandcuffs", []);
+                                        RPCManager.RPC(basicPlayerCharacter, "rpc_DropEquipped", []);
                                     }
                                     break;
 
@@ -1033,6 +1034,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void Handcuff(GOHandcuffs handcuffs)
     {
+        //make sure we have dropped what the hands are holding
+        if(equipped.category == InventoryGroupCategory.Hands)
+        {
+            equipped.OnUnequipped(authority);
+        }
         PickupReplace(handcuffs);
         handcuffed = true;
     }
