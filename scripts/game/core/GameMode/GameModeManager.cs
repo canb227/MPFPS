@@ -575,7 +575,7 @@ public partial class GameModeManager : Node
         if (Global.Lobby.bIsLobbyHost)
         {
             Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
-            if (numTraitorsAlive <= 0)
+            if (numTraitorsAlive <= 0 && !evacuationStarted)
             {
                 RPCManager.RPC(this, "InnocentsWin", []);
             }
