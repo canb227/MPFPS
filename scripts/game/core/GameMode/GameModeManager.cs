@@ -18,6 +18,8 @@ public partial class GameModeManager : Node
     //Events
     public static event Action SwarmIncoming;
     public static event Action SwarmStarted;
+    public static event Action GeneratorUnderAttack;
+    public static event Action GeneratorSafe;
     public static event Action EvacuationStarted;
     public static event Action EvacuationEnded;
     public static event Action OnPackageOrdersUpdated;
@@ -47,6 +49,7 @@ public partial class GameModeManager : Node
     public bool roundStarted;
     public bool evacuationStarted;
     public GOGenerator generator;
+    public Helicopter helicopter;
 
 
    
@@ -232,7 +235,15 @@ public partial class GameModeManager : Node
         EvacuationStarted?.Invoke();
         if (Global.Lobby.bIsLobbyHost)
         {
-            swarmManager.EvacuationStarted();
+            foreach(BasicPlayerCharacter bpc in basicPlayers.Values)
+            {
+                if(bpc.team == Team.Traitor && bpc.state == CharacterState.Living)
+                {
+                    bpc.TakeDamage(999, 0, PainSoundType.Generic, 0);
+                }
+            }
+            //swarmManager.EvacuationStarted();
+            Global.gameState.AIManager.EvacuationStarted();
         }
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
     }
@@ -271,13 +282,23 @@ public partial class GameModeManager : Node
         }
     }
 
+    public void TriggerGeneratorUnderAttack()
+    {
+        GeneratorUnderAttack?.Invoke();
+    }
+
+    public void TriggerGeneratorSafe()
+    {
+        GeneratorSafe?.Invoke();
+    }
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartNewRound()
     {
         if (roundNumber == 0)
         {
             Logging.Log("Starting First Round as Peer", "GameModeManager");
-            Global.gameState.AIManager.CreateAgentPool();
+            Global.gameState.AIManager.NewRound();
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
@@ -297,7 +318,7 @@ public partial class GameModeManager : Node
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
-            Global.gameState.AIManager.CreateAgentPool();
+            Global.gameState.AIManager.NewRound();
 
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)

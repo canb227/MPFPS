@@ -10,12 +10,15 @@ public partial class Announcer : GOBaseStaticBody
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D audioStreamPlayerSiren;
     bool evacuationStarted;
+    public AnnouncerState announcerState;
     public override void _Ready()
     {
         base._Ready();
         GameModeManager.EvacuationStarted += EvacuationStarted;
         GameModeManager.SwarmIncoming += SwarmIncoming;
         GameModeManager.SwarmStarted += SwarmStarted;
+        GameModeManager.GeneratorSafe += GeneratorSafe;
+        GameModeManager.GeneratorUnderAttack += GeneratorUnderAttack;
     }
     public override void _Notification(int what)
     {
@@ -24,18 +27,26 @@ public partial class Announcer : GOBaseStaticBody
             GameModeManager.EvacuationStarted -= EvacuationStarted;
             GameModeManager.SwarmIncoming -= SwarmIncoming;
             GameModeManager.SwarmStarted -= SwarmStarted;
+            GameModeManager.GeneratorSafe -= GeneratorSafe;
+            GameModeManager.GeneratorUnderAttack -= GeneratorUnderAttack;
         }
     }
 
+
+
     public void SwarmIncoming()
     {
+        announcerState = AnnouncerState.HORDE;
         animationPlayer.Play("swarmIncoming");
-        audioStreamPlayerSiren.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav"), 0f, 0f, 1f);
+        audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
+        audioStreamPlayerSiren.Play();
     }
+
     public void SwarmStarted()
     {
-        if(!evacuationStarted)
+        if(announcerState == AnnouncerState.HORDE)
         {
+            announcerState = AnnouncerState.NONE;
             animationPlayer.Stop();
             audioStreamPlayerSiren.Stop();
         }
@@ -43,10 +54,30 @@ public partial class Announcer : GOBaseStaticBody
 
     public void EvacuationStarted()
     {
+        announcerState = AnnouncerState.EVACUATION;
         evacuationStarted = true;
         animationPlayer.Play("evacuationStart");
-        audioStreamPlayerSiren.Call("play_stream", GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav"), 0f, 0f, 1f);
+        audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
+        audioStreamPlayerSiren.Play();
     }
+
+    public void GeneratorSafe()
+    {
+        announcerState = AnnouncerState.NONE;
+        animationPlayer.Stop();
+        audioStreamPlayerSiren.Stop();
+    }
+    public void GeneratorUnderAttack()
+    {
+        if(announcerState != AnnouncerState.EVACUATION)
+        {
+            announcerState = AnnouncerState.GENERATOR;
+            animationPlayer.Play("generatorUnderAttack");
+            audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
+            audioStreamPlayerSiren.Play();
+        }
+    }
+
     public override string GenerateStateString()
     {
         return $"I am a announcer :)";
@@ -84,4 +115,12 @@ public partial class Announcer : GOBaseStaticBody
     {
         
     }
+}
+
+public enum AnnouncerState
+{
+    NONE,
+    HORDE,
+    GENERATOR,
+    EVACUATION,
 }

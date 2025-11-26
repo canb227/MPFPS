@@ -30,6 +30,7 @@ public partial class Helicopter : GOBaseStaticBody
         base._Ready();
         GameModeManager.EvacuationStarted += EvacuationStarted;
         GameModeManager.EvacuationEnded += EvacuationEnded;
+        Global.gameState.gameModeManager.helicopter = this;
     }
 
     public override void _Notification(int what)

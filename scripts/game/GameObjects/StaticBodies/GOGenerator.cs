@@ -34,26 +34,46 @@ public partial class GOGenerator : GOBaseStaticBody
         }
     }
 
+    private bool announcedAttacked;
+    private float timeSinceNoEnemy;
     public override void _PhysicsProcess(double delta)
     {
-        if (robotsInArea > 0)
+        if(Global.Lobby.bIsLobbyHost)
         {
-            generatorHealthInSeconds -= (float)delta;
-
-            if(generatorHealthInSeconds <= 0)
+            if (robotsInArea > 0)
             {
-                //traitors win
+                generatorHealthInSeconds -= (float)delta;
+                timeSinceNoEnemy = 0;
+                if(generatorHealthInSeconds <= 0)
+                {
+                    //ignore generator if we have started end of round evacuation
+                    if(!Global.gameState.gameModeManager.evacuationStarted)
+                    {
+                        //traitors win
+                        RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
+                    }
+                }
+                else if(generatorHealthInSeconds <= 30 && !announcedAttacked)
+                {
+                    //announcer alert
+                    announcedAttacked = true;
+                    Global.gameState.gameModeManager.TriggerGeneratorUnderAttack();
+                }
             }
-            else if(generatorHealthInSeconds <= 30)
+            else
             {
-                //announcer alert
+                timeSinceNoEnemy += (float)delta;   
+                //don't consider it "safe" until no enemies are present for 1 second
+                if(announcedAttacked && timeSinceNoEnemy > 1)
+                {
+                    announcedAttacked = false;
+                    Global.gameState.gameModeManager.TriggerGeneratorSafe();
+                }
+                if (generatorHealthInSeconds > generatorMaxHealth)
+                    generatorHealthInSeconds = generatorMaxHealth;
+                else
+                    generatorHealthInSeconds += (float)delta;
             }
-        }
-        else
-        {
-            generatorHealthInSeconds += (float)delta;
-            if (generatorHealthInSeconds > generatorMaxHealth)
-                generatorHealthInSeconds = generatorMaxHealth;
         }
     }
 

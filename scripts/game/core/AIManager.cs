@@ -2,6 +2,7 @@ using Godot;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 
@@ -24,8 +25,16 @@ public partial class AIManager : Node3D
     public void SpawnHorde()
     {
         var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
-        var generatorLocation = Global.gameState.gameModeManager.generator.GlobalPosition;
-        path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(generatorLocation.X, generatorLocation.Y+1.0f, generatorLocation.Z));
+        Vector3 targetLocation = new();
+        if(evacuationStarted)
+        {
+            targetLocation = Global.gameState.gameModeManager.helicopter.GlobalPosition;
+        }
+        else
+        {
+            targetLocation = Global.gameState.gameModeManager.generator.GlobalPosition;
+        }
+        path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
 
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
@@ -51,6 +60,13 @@ public partial class AIManager : Node3D
     public override void _Ready()
     {
         base._Ready();
+    }
+
+    public void NewRound()
+    {
+        evacuationStarted = false;
+        currentHordeCooldown = 10;
+        CreateAgentPool();
     }
 
 
@@ -119,9 +135,10 @@ public partial class AIManager : Node3D
         }
     }
 
-
-    double currentHordeCooldown = 10;
+    bool evacuationStarted;
+    double currentHordeCooldown = 9999;
     double hordeCooldown = 60;
+    double evacuationHordeCooldown = 10;
     bool announcedHorde = false;
     public override void _PhysicsProcess(double delta)
     {
@@ -139,14 +156,26 @@ public partial class AIManager : Node3D
                 if(currentHordeCooldown <= 0)
                 {
                     Logging.Log("Spawn Horde", "AIManager");
+                    //we should play a sound like L4D
                     Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
                     SpawnHorde();
-                    //UpdateAllAgentPaths();
-                    currentHordeCooldown = hordeCooldown;
+                    if(evacuationStarted)
+                    {
+                        currentHordeCooldown = evacuationHordeCooldown;
+                    }
+                    else
+                    {
+                        currentHordeCooldown = hordeCooldown;
+                    }
                     announcedHorde = false;
                 }
             }
         }
+    }
 
+    public void EvacuationStarted()
+    {
+        currentHordeCooldown = 5;
+        evacuationStarted = true;
     }
 }

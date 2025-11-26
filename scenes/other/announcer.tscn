@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bqx27c5btqov2"]
+[gd_scene load_steps=21 format=3 uid="uid://bqx27c5btqov2"]
 
 [ext_resource type="Script" uid="uid://c8bdsd63biy5x" path="res://scripts/game/other/Announcer.cs" id="1_hcg5s"]
 [ext_resource type="AudioStream" uid="uid://dtwokj2y663h8" path="res://assets/audio/announcer/evacuate_area.wav" id="2_aage6"]
@@ -13,6 +13,7 @@
 [ext_resource type="AudioStream" uid="uid://biwyu8jr5wa06" path="res://assets/audio/announcer/twenty.wav" id="11_a5kqg"]
 [ext_resource type="AudioStream" uid="uid://dtl18i0xv1c0c" path="res://assets/audio/announcer/ten.wav" id="12_wwv5q"]
 [ext_resource type="AudioStream" uid="uid://brb7yutinpg8m" path="res://assets/audio/announcer/five.wav" id="13_onj7a"]
+[ext_resource type="AudioStream" uid="uid://dtxe27252t8rw" path="res://assets/audio/announcer/warning.wav" id="14_dyfw8"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_i7kdg"]
 
@@ -87,9 +88,28 @@ tracks/0/use_blend = true
 resource_name = "swarmIncoming"
 length = 60.0
 
+[sub_resource type="Animation" id="Animation_onj7a"]
+resource_name = "generatorUnderAttack"
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AudioStreamPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("14_dyfw8")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_084sx"]
 _data = {
 &"evacuationStart": SubResource("Animation_hcg5s"),
+&"generatorUnderAttack": SubResource("Animation_onj7a"),
 &"swarmIncoming": SubResource("Animation_ovm81")
 }
 
