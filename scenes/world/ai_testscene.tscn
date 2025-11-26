@@ -386,7 +386,7 @@ metadata/_custom_type_script = "uid://crewntngyd76c"
 [node name="hordeSpawns" type="Node" parent="meta"]
 
 [node name="1" type="Marker3D" parent="meta/hordeSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.534, 1, 2.014)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.624826, 1, 1.2894745)
 
 [node name="warehouseRobotSpawns" type="Node" parent="meta"]
 

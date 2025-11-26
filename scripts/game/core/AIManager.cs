@@ -28,11 +28,25 @@ public partial class AIManager : Node3D
         Vector3 targetLocation = new();
         if(evacuationStarted)
         {
-            targetLocation = Global.gameState.gameModeManager.helicopter.GlobalPosition;
+            if(Global.gameState.gameModeManager.helicopter != null)
+            {
+                targetLocation = Global.gameState.gameModeManager.helicopter.GlobalPosition;
+            }
+            else
+            {
+                targetLocation = new Vector3(20, 0, 28); //just for debug
+            }
         }
         else
         {
-            targetLocation = Global.gameState.gameModeManager.generator.GlobalPosition;
+            if(Global.gameState.gameModeManager.generator != null)
+            {
+                targetLocation = Global.gameState.gameModeManager.generator.GlobalPosition;
+            }
+            else
+            {
+                targetLocation = new Vector3(20, 0, 28); //just for debug
+            }
         }
         path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
 
@@ -44,7 +58,7 @@ public partial class AIManager : Node3D
         }
     }
 
-    public void CreateAgentPool(int agentPoolCount = 200)
+    public void CreateAgentPool(int agentPoolCount = 300)
     {
         agentPool.Clear();
         controlledNPCs.Clear();
@@ -137,7 +151,7 @@ public partial class AIManager : Node3D
 
     bool evacuationStarted;
     double currentHordeCooldown = 9999;
-    double hordeCooldown = 60;
+    double hordeCooldown = 20;
     double evacuationHordeCooldown = 10;
     bool announcedHorde = false;
     public override void _PhysicsProcess(double delta)

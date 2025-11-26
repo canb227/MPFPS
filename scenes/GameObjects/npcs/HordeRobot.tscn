@@ -125,7 +125,7 @@ monitoring = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56755614, -0.005126953)
 shape = SubResource("BoxShape3D_1fq2r")
 
-[node name="bodyHitArea" type="Area3D" parent="." groups=["headshotcollider"]]
+[node name="bodyHitArea" type="Area3D" parent="."]
 collision_layer = 4
 collision_mask = 0
 monitoring = false

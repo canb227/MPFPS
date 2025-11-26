@@ -58,6 +58,8 @@ public partial class PlayerInfoUI : MarginContainer
         {
             if(bpc.team != Team.Traitor)
             {
+                TimeLeftLabel.RemoveThemeColorOverride("font_color");
+                TimeLeftLabel.Text = timeLeftString;
                 return;
             }
         }

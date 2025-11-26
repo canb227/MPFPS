@@ -53,12 +53,14 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public HordeAgent SpawnAgent(Vector3 spawnPosition)
     {
-        //Position = spawnPosition;
         state = HordeAgentState.SWARM;
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
         Global.gameState.AIManager.controlledNPCs.Add(this);
+        //GlobalTransform = new Transform3D(Basis.Identity, spawnPosition);
+        //ResetPhysicsInterpolation();
+        targetPosition = spawnPosition;
         UpdateGridLocation();
         return this;
     }
@@ -256,7 +258,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float speed = 5;
     private float navMeshSnapTolerance = 0.1f;
     private int currentIndex = 0;
-    private float waypointThreshold = 0.5f;
+    private float waypointThreshold = 1.5f;
     private List<Vector3> path;
     private void MoveAgent(double delta)
     {
@@ -549,6 +551,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_OnDeath(ulong byID)
     {
+        // ProcessMode = ProcessModeEnum.Disabled;
         currentHealth = 0;
         root.Visible = false;
         bodyArea.Monitorable = false;
