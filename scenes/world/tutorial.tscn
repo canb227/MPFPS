@@ -1,10 +1,9 @@
-[gd_scene load_steps=51 format=3 uid="uid://olgkt0b0w4ls"]
+[gd_scene load_steps=49 format=3 uid="uid://olgkt0b0w4ls"]
 
 [ext_resource type="Script" uid="uid://l4ytmjujcole" path="res://scripts/game/other/PlayerMarker3D.cs" id="1_kl3qe"]
 [ext_resource type="Script" uid="uid://crewntngyd76c" path="res://scripts/game/other/ItemMarker3D.cs" id="2_fpu8h"]
 [ext_resource type="PackedScene" uid="uid://b40cl37f4wy5f" path="res://scenes/GameObjects/triggerable/Crusher.tscn" id="3_3dwjg"]
 [ext_resource type="Texture2D" uid="uid://b0v82knqowhvs" path="res://assets/sky/darksky.hdr" id="3_kl3qe"]
-[ext_resource type="PackedScene" uid="uid://1tfhv6c0xvan" path="res://scenes/GameObjects/player/BasicPlayer.tscn" id="4_3dwjg"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="4_x4q7n"]
 [ext_resource type="PackedScene" uid="uid://deq0mm8jgluwn" path="res://scenes/GameObjects/interactables/BasicAnimatedButton.tscn" id="5_uqky3"]
 [ext_resource type="Script" uid="uid://ceok257oa0301" path="res://scripts/game/GameObjects/Triggerable/Triggers.cs" id="6_srp50"]
@@ -18,7 +17,6 @@
 [ext_resource type="PackedScene" uid="uid://bg2178j2f8lof" path="res://scenes/GameObjects/triggerable/SwarmRobotSpawner.tscn" id="15_dayqd"]
 [ext_resource type="PackedScene" uid="uid://rq1ajbvigovp" path="res://scenes/GameObjects/staticbody/OrderMonitor.tscn" id="16_cselj"]
 [ext_resource type="PackedScene" uid="uid://du2toamiqaivk" path="res://scenes/GameObjects/staticbody/helicopter.tscn" id="17_qh73q"]
-[ext_resource type="PackedScene" uid="uid://dmy1m1vj5it30" path="res://scenes/GameObjects/items/equipment/dartgun.tscn" id="19_x4q7n"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_fpu8h"]
 panorama = ExtResource("3_kl3qe")
@@ -552,9 +550,6 @@ shadow_enabled = true
 
 [node name="GameObjects" type="Node3D" parent="."]
 
-[node name="BasicPlayer" parent="GameObjects" instance=ExtResource("4_3dwjg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.05899, 0.34478486, 14.931101)
-
 [node name="interactables&traps" type="Node3D" parent="GameObjects"]
 
 [node name="CrusherDemo" type="Node3D" parent="GameObjects/interactables&traps"]
@@ -676,9 +671,6 @@ orderNumber = 6
 
 [node name="Helicopter" parent="GameObjects" instance=ExtResource("17_qh73q")]
 transform = Transform3D(1, 0, 0, 0, 0.9969842, 0.0776065, 0, -0.0776065, 0.9969842, -75.02698, -0.42502344, 0.014842144)
-
-[node name="MedDartGun" parent="GameObjects" instance=ExtResource("19_x4q7n")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.952953, -0.17417446, 13.169136)
 
 [node name="statics" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_8d4x2")

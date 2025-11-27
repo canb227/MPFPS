@@ -14,6 +14,8 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     [Export] public ColorRect backgroundColor { get; set; }
     [Export] public TextureRect orderCompletedImage { get; set; }
     [Export] public int orderNumber { get; set; }
+    [Export] public bool rotateOrders { get; set; }
+    [Export] public double rotateTime { get; set; } = 6;
 
     public override string GenerateStateString()
     {
@@ -32,9 +34,9 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     {
         
     }
-    public override void PerFrameShared(double delta) 
+    public override void PerFrameShared(double delta)
     {
-        
+
     }
     public override void PerTickAuth(double delta)  
     {
@@ -46,7 +48,20 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     }
     public override void PerTickShared(double delta)   
     {
-        
+        if(rotateOrders)
+        {
+            rotateTime -= delta;
+            if(rotateTime <= 0)
+            {
+                rotateTime = 6;
+                orderNumber++;
+                if(orderNumber >= Global.gameState.gameModeManager.packageOrders.Count)
+                {
+                    orderNumber = 1;
+                }
+                UpdateDisplayedOrder();
+            }
+        }
     }
     public override void ProcessStateUpdate(byte[] update)    
     {
@@ -122,10 +137,10 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         }
         MonitorScreen.Visible = true;
         PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber-1];
-        if (orderInfo.OrderIsFinished())
-        {
-            Logging.Log("Trying to assign order to a monitor that has already been finished.", "GOOrderMonitor");
-        }
+        // if (orderInfo.OrderIsFinished())
+        // {
+        //     //Logging.Log("Trying to assign order to a monitor that has already been finished.", "GOOrderMonitor");
+        // }
         
         foreach(var child in packageItems.GetChildren())
         {

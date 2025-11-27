@@ -305,7 +305,7 @@ offset_left = 341.0
 offset_top = 36.0
 offset_right = 395.0
 offset_bottom = 68.0
-text = "900"
+text = "480"
 
 [node name="ExtraTimeLabel" type="Label" parent="sessionOptions"]
 layout_mode = 0
@@ -323,6 +323,58 @@ offset_top = 92.0
 offset_right = 395.0
 offset_bottom = 124.0
 text = "60"
+
+[node name="hordeSizeMultiplierLabel" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 138.0
+offset_right = 379.0
+offset_bottom = 187.0
+text = "Horde Size:"
+vertical_alignment = 1
+
+[node name="hordeSizeMultiplier" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 341.0
+offset_top = 150.0
+offset_right = 395.0
+offset_bottom = 182.0
+text = "1"
+
+[node name="ExtraTimeLabel3" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 196.0
+offset_right = 379.0
+offset_bottom = 245.0
+text = "EndGame
+HordeSize"
+
+[node name="endgameHordeSizeMultiplier" type="TextEdit" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 341.0
+offset_top = 208.0
+offset_right = 395.0
+offset_bottom = 240.0
+text = "1"
+
+[node name="ExtraTimeLabel4" type="Label" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 253.0
+offset_right = 379.0
+offset_bottom = 302.0
+text = "Warehouse
+Robots:"
+
+[node name="warehouseRobots" type="CheckBox" parent="sessionOptions"]
+layout_mode = 0
+offset_left = 332.0
+offset_top = 262.0
+offset_right = 356.0
+offset_bottom = 286.0
+scale = Vector2(1.58, 1.58)
+button_pressed = true
 
 [node name="chat" type="Control" parent="."]
 layout_mode = 1

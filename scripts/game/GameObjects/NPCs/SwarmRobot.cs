@@ -246,8 +246,8 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
                 {
                     if (!basicPlayerCharacter.knockedOut)
                     {
-                        dmg.TakeStunDamage(20, id, PainSoundType.None);
-                        dmg.TakeDamage(10, id, PainSoundType.Generic);
+                        dmg.TakeStunDamage(25, id, PainSoundType.None);
+                        dmg.TakeDamage(5, id, PainSoundType.Generic);
                     }
                 }
             }

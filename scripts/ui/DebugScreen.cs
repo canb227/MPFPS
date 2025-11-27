@@ -109,7 +109,6 @@ public partial class DebugScreen : Control
                 Logging.Log($"Lobby already has players in it, manually adding one of them :{peer}", "DebugScreen");
                 Lobby_NewLobbyPeerAddedEvent(peer);
             }
-
         }
         DirectLoadMap_mapList_ItemSelected(0);
 
@@ -152,6 +151,15 @@ public partial class DebugScreen : Control
         ManualManagerCount = optNode.GetNode<TextEdit>("ManualManagerCountEdit");
         ManualManagerCount.TextChanged += GameOptionChanged;
 
+        hordeSizeMultiplier = optNode.GetNode<TextEdit>("hordeSizeMultiplier");
+        hordeSizeMultiplier.TextChanged += GameOptionChanged;
+        
+        endgameHordeSizeMultiplier = optNode.GetNode<TextEdit>("endgameHordeSizeMultiplier");
+        endgameHordeSizeMultiplier.TextChanged += GameOptionChanged;
+        
+        warehouseRobots = optNode.GetNode<CheckBox>("warehouseRobots");
+        warehouseRobots.Pressed += GameOptionChanged;
+
         chat_chatbar.GrabFocus();
         Logging.Log("Debug Screen ready.", "DebugScreen");
 
@@ -178,6 +186,9 @@ public partial class DebugScreen : Control
     private CheckBox ManualTeamOverride;
     private TextEdit ManualTraitorCount;
     private TextEdit ManualManagerCount;
+    private TextEdit hordeSizeMultiplier;
+    private TextEdit endgameHordeSizeMultiplier;
+    private CheckBox warehouseRobots;
 
 
     private void GameOptionChanged()
@@ -199,6 +210,10 @@ public partial class DebugScreen : Control
         opts.manualTeamOverride = ManualTeamOverride.ButtonPressed;
         opts.manualTraitorCount = int.Parse(ManualTraitorCount.Text);
         opts.manualManagerCount = int.Parse(ManualManagerCount.Text);
+
+        opts.hordeSizeMultiplier = float.Parse(hordeSizeMultiplier.Text);
+        opts.endgameHordeSizeMultiplier = float.Parse(endgameHordeSizeMultiplier.Text);
+        opts.warehouseRobots = warehouseRobots.ButtonPressed;
 
         Global.gameState.gameModeManager.PushGameStateOptions();
     }

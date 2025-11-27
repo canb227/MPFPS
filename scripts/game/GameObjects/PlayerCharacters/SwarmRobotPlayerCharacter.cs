@@ -351,7 +351,8 @@ public partial class SwarmRobotPlayerCharacter : GOBasePlayerCharacter, IsDamaga
         {
             if (body is IsDamagable dmg)
             {
-                dmg.TakeDamage(10, id, PainSoundType.Generic);
+                dmg.TakeStunDamage(25, id, PainSoundType.None);
+                dmg.TakeDamage(5, id, PainSoundType.Generic);
             }
         }
     }
