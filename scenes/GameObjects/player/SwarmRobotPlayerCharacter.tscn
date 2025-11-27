@@ -4,7 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://biihaftew0u7p" path="res://assets/audio/enemies/physcannon_charge.wav" id="2_tcwxr"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="3_4l5s8"]
 [ext_resource type="AudioStream" uid="uid://dn5rx0u0gk0uf" path="res://assets/audio/character/footsteps/concrete1.wav" id="4_4v5fo"]
-[ext_resource type="Script" uid="uid://s1fhx5upsr8w" path="res://assets/materials/post_process_grayscale.gd" id="5_htvkb"]
+[ext_resource type="Script" path="res://assets/materials/post_process_grayscale.gd" id="5_htvkb"]
 [ext_resource type="AudioStream" uid="uid://c0vhttprn2irc" path="res://assets/audio/enemies/combine_shield_loop3.wav" id="6_k4xx5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj03a"]

@@ -17,15 +17,18 @@ public partial class InGameUI : Control
     public void UpdateTimeLeftUI()
     {
         string timerString = "";
+        string hiddenTimerString = "";
         if (Global.gameState.gameModeManager.evacuationStarted)
         {
             timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.evacuationTimeLeft):mm\\:ss}";
+            hiddenTimerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.evacuationTimeLeft):mm\\:ss}";
         }
         else
         {
-            timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
-        }        
-        PlayerUIManager.UpdateTimeLeftUI(timerString);
+            timerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.publicRemainingRoundTime):mm\\:ss}";
+            hiddenTimerString = $"{TimeSpan.FromSeconds(Global.gameState.gameModeManager.remainingRoundTime):mm\\:ss}";
+        }
+        PlayerUIManager.UpdateTimeLeftUI(timerString, hiddenTimerString);
     }
 
     //scoreboard functions

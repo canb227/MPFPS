@@ -19,7 +19,7 @@ public static class GameObjectLoader
         {"SwarmRobotPlayer" ,(GameObjectType.SwarmRobotPlayer,"res://scenes/GameObjects/player/SwarmRobotPlayerCharacter.tscn",typeof(SwarmRobotPlayerCharacter)) },
 
         { "swarmRobot" ,(GameObjectType.SwarmRobot,"res://scenes/GameObjects/npcs/SwarmRobot.tscn",typeof(SwarmRobot)) },
-        
+        { "hordeAgent" ,(GameObjectType.HordeAgent,"res://scenes/GameObjects/npcs/HordeRobot.tscn",typeof(HordeAgent)) },
 
         //InventoryItems
         {"Hands", (GameObjectType.Hands,"res://scenes/GameObjects/items/equipment/Hands.tscn", typeof(Hands))},
@@ -181,5 +181,6 @@ public enum GameObjectType
     SniperRifleAmmo,
     AssaultRifleAmmo,
     ShotgunAmmo,
+    HordeAgent,
     DartGun,
 }

@@ -18,7 +18,7 @@ public partial class GOBaseNPC : GOBaseCharacterBody3D
     {
         if (authority == Global.steamid)
         {
-            Global.gameState.AIManager.controlledNPCs.Add(this);
+            //Global.gameState.AIManager.controlledNPCs.Add(this);
         }
 
     }

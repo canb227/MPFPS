@@ -18,6 +18,8 @@ public partial class GameModeManager : Node
     //Events
     public static event Action SwarmIncoming;
     public static event Action SwarmStarted;
+    public static event Action GeneratorUnderAttack;
+    public static event Action GeneratorSafe;
     public static event Action EvacuationStarted;
     public static event Action EvacuationEnded;
     public static event Action OnPackageOrdersUpdated;
@@ -46,6 +48,8 @@ public partial class GameModeManager : Node
     public SwarmManager swarmManager = new();
     public bool roundStarted;
     public bool evacuationStarted;
+    public GOGenerator generator;
+    public Helicopter helicopter;
 
 
    
@@ -55,6 +59,7 @@ public partial class GameModeManager : Node
     public GameModeOptions options = new();
 
     public double remainingRoundTime;
+    public double publicRemainingRoundTime;
     private int numTraitorsAlive;
     private int numInnocentsAlive;
     private int numManagersAlive;
@@ -84,6 +89,7 @@ public partial class GameModeManager : Node
         if (roundStarted)
         {
             remainingRoundTime -= delta;
+            publicRemainingRoundTime -= delta;
             if (evacuationStarted)
             {
                 evacuationTimeLeft -= delta;
@@ -98,7 +104,7 @@ public partial class GameModeManager : Node
             }
             if (Global.Lobby.bIsLobbyHost && remainingRoundTime <= 0)
             {
-                RPCManager.RPC(this, "TraitorsWin", []);
+                RPCManager.RPC(this, "StartEndOfGameEvacuation", []);
             }
             Global.ui.inGameUI.UpdateTimeLeftUI();
             if (Global.Lobby.bIsLobbyHost)
@@ -222,13 +228,22 @@ public partial class GameModeManager : Node
     public void StartEndOfGameEvacuation()
     {
         remainingRoundTime = 99999;
+        publicRemainingRoundTime = 99999;
         //switch round timers everywhere to a 95 second countdown TDOD
         evacuationStarted = true;
         evacuationTimeLeft = 95;
         EvacuationStarted?.Invoke();
         if (Global.Lobby.bIsLobbyHost)
         {
-            swarmManager.EvacuationStarted();
+            foreach(BasicPlayerCharacter bpc in basicPlayers.Values)
+            {
+                if(bpc.team == Team.Traitor && bpc.state == CharacterState.Living)
+                {
+                    bpc.TakeDamage(999, 0, PainSoundType.Generic, 0);
+                }
+            }
+            //swarmManager.EvacuationStarted();
+            Global.gameState.AIManager.EvacuationStarted();
         }
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
     }
@@ -267,12 +282,23 @@ public partial class GameModeManager : Node
         }
     }
 
+    public void TriggerGeneratorUnderAttack()
+    {
+        GeneratorUnderAttack?.Invoke();
+    }
+
+    public void TriggerGeneratorSafe()
+    {
+        GeneratorSafe?.Invoke();
+    }
+
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void StartNewRound()
     {
         if (roundNumber == 0)
         {
             Logging.Log("Starting First Round as Peer", "GameModeManager");
+            Global.gameState.AIManager.NewRound();
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
@@ -292,6 +318,7 @@ public partial class GameModeManager : Node
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
+            Global.gameState.AIManager.NewRound();
 
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)
@@ -304,6 +331,7 @@ public partial class GameModeManager : Node
         roundNumber++;
         roundStarted = true;
         remainingRoundTime = options.roundTime;
+        publicRemainingRoundTime = options.roundTime;
         evacuationStarted = false;
         evacuationTimeLeft = 9999999;
 
@@ -332,7 +360,7 @@ public partial class GameModeManager : Node
         }
         else
         {
-            ordersNeeded = Mathf.CeilToInt(options.packagePerPlayer * Global.Lobby.AllPeers().Count); //this is likely inaccurate to actual player count?
+            ordersNeeded = 8; //8 max
         }
 
         //determine our possible address details
@@ -526,10 +554,16 @@ public partial class GameModeManager : Node
     public void SetNumFinishedOrders(int numFinished)
     {
         numFinishedOrders = numFinished;
-        if (numFinishedOrders >= ordersNeeded && Global.Lobby.bIsLobbyHost)
+        if(Global.Lobby.bIsLobbyHost)
         {
-            RPCManager.RPC(this, "StartEndOfGameEvacuation", []);
+            RPCManager.RPC(this, "SetRoundTime", [remainingRoundTime-120, publicRemainingRoundTime-120]);
         }
+    }
+
+    public void SetRoundTime(double roundTime, double publicRoundTime)
+    {
+        remainingRoundTime = roundTime;
+        publicRemainingRoundTime = publicRoundTime;
     }
     public int GetNumTraitorsAlive()
     {
@@ -541,9 +575,9 @@ public partial class GameModeManager : Node
         if (Global.Lobby.bIsLobbyHost)
         {
             Logging.Log("Checking Game Status in GameModeManager as Host", "GameModeManager");
-            if (numTraitorsAlive <= 0)
+            if (numTraitorsAlive <= 0 && !evacuationStarted)
             {
-                //do something maybe
+                RPCManager.RPC(this, "InnocentsWin", []);
             }
             else if ((numInnocentsAlive + numManagersAlive + numTraitorsAlive) / numPlayers < 0.34f)
             {
@@ -625,6 +659,15 @@ public partial class GameModeManager : Node
         {
             DecreaseNumTraitorsAlive();
         }
+        if(!evacuationStarted)
+        {
+            remainingRoundTime += 60;
+        }
+    }
+
+    public void PlayerFound(ulong steamID)
+    {
+        publicRemainingRoundTime += 60;
     }
 
 

@@ -111,6 +111,11 @@ public partial class GOOrderMonitor : GOBaseStaticBody
             orderCompletedImage.Visible = true;
             backgroundColor.Color = new(0.0f, 0.187f, 0.015f, 0.25f);
         }
+        //if this is the previous order finishing then we can start displaying
+        if(this.orderNumber-2 == orderNumber)
+        {
+            MonitorScreen.Visible = true;
+        }
     }
 
     public override void _Notification(int what)
@@ -135,7 +140,7 @@ public partial class GOOrderMonitor : GOBaseStaticBody
             MonitorScreen.Visible = false;
             return;
         }
-        MonitorScreen.Visible = true;
+        MonitorScreen.Visible = false;
         PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber-1];
         // if (orderInfo.OrderIsFinished())
         // {

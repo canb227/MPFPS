@@ -45,7 +45,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float acceleration = 1;
     public float deceleration = 1;
     public float finalSpeed;
-    private Vector3 jumpVelocity = new Vector3(0, 6, 0);
+    private Vector3 jumpVelocity = new Vector3(0, 25, 0);
     private bool airbrake = false;
     //item bools
     public bool handcuffed;
@@ -286,7 +286,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                 case CharacterState.Living:
                                     if (basicPlayerCharacter.handcuffed)
                                     {
-                                        DropEquipped();
+                                        RPCManager.RPC(basicPlayerCharacter, "RemoveHandcuffs", []);
+                                        RPCManager.RPC(basicPlayerCharacter, "rpc_DropEquipped", []);
                                     }
                                     break;
 
@@ -339,14 +340,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 EquipNextFromSlot(InventoryGroupCategory.Role);
             }
-            if (input.actions.HasFlag(ActionFlags.Aim))
-            {
-                camera.Fov = Global.Config.loadedPlayerConfig.fov/2;
-            }
-            else
-            {
-                camera.Fov = Global.Config.loadedPlayerConfig.fov;
-            }
+
         }
     }
 
@@ -491,11 +485,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void rpc_DropEquipped()
     {
-        if (equipped != null && equipped.droppable)
+        if (equipped != null)
         {
             equipped.OnUnequipped(authority);
-            equipped.OnDropped(authority);
-            inventory.GetGroup(equipped.category).items.Remove(equipped);
+            if(equipped.droppable)
+            {
+                equipped.OnDropped(authority);
+                inventory.GetGroup(equipped.category).items.Remove(equipped);
+            }
             equipped = null;
             Equip(InventoryGroupCategory.Hands);
         }
@@ -664,12 +661,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             if (fallTime > safeFallTime)
             {
                 float damage = (fallTime - safeFallTime) * fallingDamagePerSecond;
-                TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
+                //TakeDamage(damage, authority, PainSoundType.Falling, ScaleDamageToVolume(damage));
             }
             if(fallTime > safeStunFallTime)
             {
                 float stunDamage = (fallTime - safeStunFallTime) * fallingDamagePerSecond * 2;
-                TakeStunDamage(stunDamage, authority, PainSoundType.Falling, ScaleDamageToVolume(stunDamage));
+                //TakeStunDamage(stunDamage, authority, PainSoundType.Falling, ScaleDamageToVolume(stunDamage));
             }
             fallTime = 0f;
         }
@@ -1015,6 +1012,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             state = CharacterState.Dead;
             Global.ui.inGameUI.ScoreBoard.PlayerFound(authority);
+            Global.gameState.gameModeManager.PlayerFound(authority);
         }
 
     }
@@ -1044,6 +1042,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     public void Handcuff(GOHandcuffs handcuffs)
     {
+        //make sure we have dropped what the hands are holding
+        if(equipped.category == InventoryGroupCategory.Hands)
+        {
+            equipped.OnUnequipped(authority);
+        }
         PickupReplace(handcuffs);
         handcuffed = true;
     }

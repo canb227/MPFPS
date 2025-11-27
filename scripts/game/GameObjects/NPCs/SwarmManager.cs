@@ -13,13 +13,13 @@ public partial class SwarmManager : Node
     public int robotSwarmMaxSize;
     public int swarmCooldownMax;
     public int swarmCooldownMin;
-    public double currentSwarmCooldown = 999;
+    public double currentSwarmCooldown =9999;
     Random rand = new Random();
     public bool announcedSwarm = false;
     private bool evacuationStarted;
     private float robotsToSpawnThisTick;
     public List<ulong> robotPlayers = new();
-    public double warehouseRobotCooldown = 30; //10 to 20
+    public double warehouseRobotCooldown = 60; //10 to 20
     public int warehouseRobotsToSpawn = 0;
     //spawn numInnocentsAlive + numManagersAlive + numTraitorsAlive robots every 10 to 20 seconds
 
@@ -45,7 +45,7 @@ public partial class SwarmManager : Node
     }
     public void PerTick(double delta)
     {
-        currentSwarmCooldown -= delta;
+        //currentSwarmCooldown -= delta;
         if(Global.gameState.gameModeManager.options.warehouseRobots)
         {
             warehouseRobotCooldown -= delta;
@@ -53,7 +53,7 @@ public partial class SwarmManager : Node
         if(warehouseRobotCooldown <= 0)
         {
             warehouseRobotsToSpawn = Global.gameState.gameModeManager.GetNumInnocentsAlive() + Global.gameState.gameModeManager.GetNumManagersAlive() + Global.gameState.gameModeManager.GetNumTraitorsAlive();
-            warehouseRobotCooldown = 10 + rand.NextSingle() * 10;
+            warehouseRobotCooldown = 20 + rand.NextSingle() * 20;
         }
         if (currentSwarmCooldown <= 30 && currentSwarmCooldown > 0 && !announcedSwarm && !evacuationStarted) //30 second warning
         {

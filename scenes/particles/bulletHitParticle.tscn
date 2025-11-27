@@ -74,6 +74,7 @@ process_material = SubResource("ParticleProcessMaterial_05moy")
 draw_pass_1 = SubResource("QuadMesh_w68xi")
 
 [node name="GPUParticles3D2" type="GPUParticles3D" parent="."]
+visible = false
 emitting = false
 amount = 2
 lifetime = 0.3

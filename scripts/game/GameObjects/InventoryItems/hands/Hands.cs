@@ -10,10 +10,13 @@ using System.Threading.Tasks;
 [GlobalClass]
 public partial class Hands : GOBaseInventoryItem
 {
+
+    private const bool HoldUsesPhysics = true;
+
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Hands; 
     public override bool droppable { get; set; } = false;
     
-    public IsHoldable holding { get; set; }
+    public IsHoldable heldObject { get; set; }
 
     private ActionFlags lastTickActions;
     private RayCast3D rayCast;
@@ -46,27 +49,29 @@ public partial class Hands : GOBaseInventoryItem
         CurrentHoldPosition.Position = HoldPosition.Position;
     }
 
-    public override void PerFrameShared(double delta)
+    public override void PerTickAuth(double delta)
     {
-        if (holding != null)
+
+        if (heldObject != null)
         {
-            if (holding is GOBaseRigidBody rb)
+            if (heldObject is GOBaseRigidBody rb)
             {
-                //rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass)) * 50f);
+                rb.ApplyCentralForce((CurrentHoldPosition.GlobalPosition - (rb.GlobalTransform * rb.CenterOfMass)) * 750f);
 
                 if (charging)
                 {
-                    if (chargeAmount<3)
+                    if (chargeAmount < 3)
                     {
                         chargeAmount += (float)delta * 3;
-                        CurrentHoldPosition.Translate(new Vector3(0, 0, .00075f));
+                        CurrentHoldPosition.Translate(new Vector3(0, 0, .0075f));
                     }
 
                 }
-                rb.GlobalPosition = CurrentHoldPosition.GlobalPosition;
-                rb.GlobalRotation = CurrentHoldPosition.GlobalRotation;
+                //rb.GlobalPosition = CurrentHoldPosition.GlobalPosition;
+                //rb.GlobalRotation = CurrentHoldPosition.GlobalRotation;
             }
         }
+        
     }
 
 
@@ -81,18 +86,19 @@ public partial class Hands : GOBaseInventoryItem
         if (charging && lastTickActions.HasFlag(ActionFlags.Fire) && !input.actions.HasFlag(ActionFlags.Fire))
         {
             //mouse released while charging
-            if(holding is RigidBody3D rb)
+            if(heldObject is RigidBody3D rb2)
             {
-                var impulse = new Vector3(chargeAmount * 20 * (rb.Mass * 0.5f), chargeAmount * 20 * (rb.Mass * 0.5f), chargeAmount * 20 * (rb.Mass * 0.5f));
+                var impulse = new Vector3(chargeAmount * 20 * (rb2.Mass * 0.5f), chargeAmount * 20 * (rb2.Mass * 0.5f), chargeAmount * 20 * (rb2.Mass * 0.5f));
                 var vectoredImpulse = (CurrentHoldPosition.GlobalPosition - HoldPosition.GlobalPosition) * -impulse;
-                RPCManager.RPCID(id, "ReleaseHeld", [rb.GlobalPosition, rb.GlobalRotation, vectoredImpulse]);
+                rb2.ApplyCentralImpulse(vectoredImpulse);
+                RPCManager.RPCID(id, "ReleaseHeld", []);
             }
             charging = false;
             chargeAmount = 0;
         }
         else if (!lastTickActions.HasFlag(ActionFlags.Fire) && input.actions.HasFlag(ActionFlags.Fire))
         {
-            if (holding == null)
+            if (heldObject == null)
             {
                 var col = rayCast.GetCollider();
                 if (col != null)
@@ -132,29 +138,29 @@ public partial class Hands : GOBaseInventoryItem
             }
         }
 
-        //if (input.actions.HasFlag(ActionFlags.Aim))
-        //    rotateMode = true;
-        //else
-        //    rotateMode = false;
+        if (input.actions.HasFlag(ActionFlags.Aim))
+            rotateMode = true;
+        else
+            rotateMode = false;
 
-        //float mouseX = input.LookInputVector.X * 5f * (float)delta;
-        //float mouseY = input.LookInputVector.Y * 5f * (float)delta;
+        float mouseX = input.LookInputVector.X * 5f * (float)delta;
+        float mouseY = input.LookInputVector.Y * 5f * (float)delta;
 
-        //if (rotateMode && holding is GOBaseRigidBody rb)
-        //{
-        //    // Apply torque based on mouse movement
-        //    float torqueStrength = 5f; // tweak sensitivity
+        if (rotateMode && heldObject is GOBaseRigidBody rb)
+        {
+            // Apply torque based on mouse movement
+            float torqueStrength = 5f; // tweak sensitivity
 
-        //    // Mouse X → yaw around world up
-        //    // Mouse Y → pitch around local X
-        //    Vector3 torque = new Vector3(
-        //        mouseY * torqueStrength,
-        //        mouseX * torqueStrength,
-        //        0
-        //    );
-        //    rb.ApplyTorque(torque);
-        //    //RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
-        //}
+            // Mouse X → yaw around world up
+            // Mouse Y → pitch around local X
+            Vector3 torque = new Vector3(
+                mouseY * torqueStrength,
+                mouseX * torqueStrength,
+                0
+            );
+            rb.ApplyTorque(torque);
+            //RPCManager.RPC(this, "ApplyRotation", [rb.id, torque]);
+        }
         lastTickActions = input.actions;
     }
 
@@ -166,36 +172,28 @@ public partial class Hands : GOBaseInventoryItem
         if (obj is IsHoldable item)
         {
             CurrentHoldPosition.Position = HoldPosition.Position;
-            holding = item;
-            holding.OnHold(equippedBySteamID);
+            heldObject = item;
+            heldObject.OnHold(equippedBySteamID);
             item.currentlyHeldBy = equippedBySteamID;
-            (holding as GameObject).sleeping = true;
-            if (holding is GOBaseRigidBody rb)
+            (heldObject as GameObject).priority *= 5;
+            (heldObject as GameObject).authority = equippedBySteamID;
+            (heldObject as RigidBody3D).AddCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
+            if (NetworkUtils.IsMe(equippedBySteamID))
             {
-                rb.DisableMode = DisableModeEnum.Remove;
-                if (rb is not GOC4)
-                {
-                    rb.ProcessMode = ProcessModeEnum.Disabled;
-                }           
+                (heldObject as Node3D).SetPhysicsProcess(true);
             }
+            
         }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void ReleaseHeld(Vector3 position, Vector3 rotation, Vector3 impulse)
+    public void ReleaseHeld()
     {
-        if (holding is GOBaseRigidBody rb)
-        {
-            Logging.Log($"Releasing object with force: {impulse}", "Hands");
-            rb.GlobalPosition = position;
-            rb.GlobalRotation = rotation;
-            rb.ProcessMode = ProcessModeEnum.Pausable;
-            rb.ApplyCentralImpulse(impulse);
-        }
-        (holding as GameObject).sleeping = false;
-        holding.OnRelease(equippedBySteamID);
-        holding.currentlyHeldBy = 0;
-        holding = null;
+        (heldObject as GameObject).priority /= 5;
+        (heldObject as RigidBody3D).RemoveCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
+        heldObject.OnRelease(equippedBySteamID);
+        heldObject.currentlyHeldBy = 0;
+        heldObject = null;
     }
 
     //[RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -215,10 +213,10 @@ public partial class Hands : GOBaseInventoryItem
             Global.ui.inGameUI.PlayerUIManager.UpdateInventorySlot(1, "");
         }        
         base.OnDropped(byID);
-        if(holding != null)
+        if(heldObject != null)
         {
-            holding.OnRelease(equippedBySteamID);
-            holding = null; 
+            heldObject.OnRelease(equippedBySteamID);
+            heldObject = null; 
         }
         Logging.Warn($"Hands Dropped?", "Hands");
     }
@@ -242,10 +240,10 @@ public partial class Hands : GOBaseInventoryItem
     public override void OnUnequipped(ulong byID)
     {
         base.OnUnequipped(byID);
-        if(holding != null)
+        if(heldObject != null)
         {
-            holding.OnRelease(equippedBySteamID);
-            holding = null; 
+            heldObject.OnRelease(equippedBySteamID);
+            heldObject = null; 
         }
         Logging.Log($"Hands Unequipped", "Hands");
     }

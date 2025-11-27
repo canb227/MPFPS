@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=4 uid="uid://ct8bxm02gdfqt"]
+[gd_scene load_steps=9 format=4 uid="uid://ct8bxm02gdfqt"]
 
 [ext_resource type="Script" uid="uid://bovhdpgrsomf" path="res://scripts/game/GameObjects/InventoryItems/accessories/GOPackageRadar.cs" id="1_xeqj4"]
 [ext_resource type="Texture2D" uid="uid://cjll6mqbutffi" path="res://assets/models/accessories/dosimeter_2_dosimeter_2.png" id="2_xeqj4"]
-[ext_resource type="AudioStream" uid="uid://c40nifrehf8u1" path="res://assets/audio/accessories/beep.wav" id="3_wyqfw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wyqfw"]
 size = Vector3(1.5795288, 0.75735474, 0.40405273)
@@ -62,7 +61,7 @@ mass = 2.0
 center_of_mass_mode = 1
 center_of_mass = Vector3(0.37, 0.1, -0.32)
 script = ExtResource("1_xeqj4")
-audioStreamPlayer = NodePath("SteamAudioPlayer")
+audioStreamPlayer = NodePath("")
 iconPath = "res://assets/ui/icons/packageradar.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
@@ -92,11 +91,3 @@ root_node = NodePath("")
 libraries = {
 &"": SubResource("AnimationLibrary_wyqfw")
 }
-
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36132288, 0.13128692, -0.30761167)
-stream = ExtResource("3_wyqfw")
-attenuation_model = 1
-volume_db = -6.0
-unit_size = 4.0
-panning_strength = 0.0
