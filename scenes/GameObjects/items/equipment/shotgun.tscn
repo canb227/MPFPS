@@ -180,8 +180,8 @@ center_of_mass_mode = 1
 center_of_mass = Vector3(0.39, 0.01, 0)
 continuous_cd = true
 script = ExtResource("1_vcw5l")
-audioStreamPlayer1 = NodePath("AudioPlayer")
-audioStreamPlayer2 = NodePath("AudioPlayer2")
+audioStreamPlayer1 = NodePath("")
+audioStreamPlayer2 = NodePath("")
 shotHitParticle = ExtResource("2_weoqn")
 fireRate = 1.5
 ammoType = 0
@@ -204,14 +204,14 @@ metadata/_custom_type_script = "uid://dl524mp8g0aei"
 transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.3900894, 0.0107421875, -0.004598178)
 shape = SubResource("BoxShape3D_pmrh1")
 
-[node name="AudioPlayer" type="SteamAudioPlayer" parent="."]
+[node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
 stream = ExtResource("3_c5mbw")
 max_db = 0.0
 max_polyphony = 4
 panning_strength = 0.0
 
-[node name="AudioPlayer2" type="SteamAudioPlayer" parent="."]
+[node name="AudioPlayer2" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
 stream = ExtResource("3_c5mbw")
 max_db = 0.0

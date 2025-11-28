@@ -391,7 +391,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         }
         else
         {
-            audioPlayer.Call("play_stream", GD.Load<AudioStream>(soundResource), 0f, 0f, 1f);
+            audioPlayer.Stream = GD.Load<AudioStream>(soundResource);
+            audioPlayer.PitchScale = pitchVariation;
+            audioPlayer.Play();
         }
     }
 

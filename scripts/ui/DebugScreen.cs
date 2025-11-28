@@ -94,7 +94,7 @@ public partial class DebugScreen : Control
 		RPCManager.ChatReceivedEvent += RPCManager_ChatReceivedEvent;
 		GameState.PlayerDataReceivedEvent += GameState_PlayerDataReceivedEvent;
 		Lobby.NewLobbyPeerAddedEvent += Lobby_NewLobbyPeerAddedEvent;
-		Lobby.LxobbyPeerRemovedEvent += Lobby_LobbyPeerRemovedEvent;
+		Lobby.LobbyPeerRemovedEvent += Lobby_LobbyPeerRemovedEvent;
 
 		foreach (string map in directLoadMap_mapNames)
 		{
