@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnrhob5llltfc"
-path.s3tc="res://.godot/imported/MetalWalkway03_diffuse_xtm-MetalWalkway03_mask_xtm.png-95d60cfc305888091145ebba648edd3d.s3tc.ctex"
+path.s3tc="res://.godot/imported/MetalWalkway03_diffuse_xtm-MetalWalkway03_mask_xtm.png-c8d9668edebb009b4680906dac729066.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/MetalWalkway03_diffuse_xtm-MetalWalkway03_mask_xtm.png"
-dest_files=["res://.godot/imported/MetalWalkway03_diffuse_xtm-MetalWalkway03_mask_xtm.png-95d60cfc305888091145ebba648edd3d.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/MetalWalkway03_diffuse_xtm-MetalWalkway03_mask_xtm.png"
+dest_files=["res://.godot/imported/MetalWalkway03_diffuse_xtm-MetalWalkway03_mask_xtm.png-c8d9668edebb009b4680906dac729066.s3tc.ctex"]
 
 [params]
 

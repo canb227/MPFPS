@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ce7hj8kw5gsfp"
-path.s3tc="res://.godot/imported/Rotorobj_Screws_Normal.1001.jpg-2fd1835d93a7078b0e7db297581ced7b.s3tc.ctex"
+path.s3tc="res://.godot/imported/Rotorobj_Screws_Normal.1001.jpg-98cb60a6b9f1e3e50e4ee89f49f6fae4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Rotorobj_Screws_Normal.1001.jpg"
-dest_files=["res://.godot/imported/Rotorobj_Screws_Normal.1001.jpg-2fd1835d93a7078b0e7db297581ced7b.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Rotorobj_Screws_Normal.1001.jpg"
+dest_files=["res://.godot/imported/Rotorobj_Screws_Normal.1001.jpg-98cb60a6b9f1e3e50e4ee89f49f6fae4.s3tc.ctex"]
 
 [params]
 

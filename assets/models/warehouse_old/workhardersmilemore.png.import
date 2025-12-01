@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://6owj70rom1yp"
-path.s3tc="res://.godot/imported/workhardersmilemore.png-b9d387e4dba1105c4f5c0197c7b313f4.s3tc.ctex"
+path.s3tc="res://.godot/imported/workhardersmilemore.png-f886c99e1066ee5b31a270da993edfe3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/workhardersmilemore.png"
-dest_files=["res://.godot/imported/workhardersmilemore.png-b9d387e4dba1105c4f5c0197c7b313f4.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/workhardersmilemore.png"
+dest_files=["res://.godot/imported/workhardersmilemore.png-f886c99e1066ee5b31a270da993edfe3.s3tc.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bx4r8hkmk0rdq"
-path.s3tc="res://.godot/imported/SurfaceImperfections001_2K_var1.png-1e2b45e7e924790f0f6c649b96b15f0d.s3tc.ctex"
+path.s3tc="res://.godot/imported/SurfaceImperfections001_2K_var1.png-239d01b9706c0f2fcbd2e3bfa471486d.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/SurfaceImperfections001_2K_var1.png"
-dest_files=["res://.godot/imported/SurfaceImperfections001_2K_var1.png-1e2b45e7e924790f0f6c649b96b15f0d.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/SurfaceImperfections001_2K_var1.png"
+dest_files=["res://.godot/imported/SurfaceImperfections001_2K_var1.png-239d01b9706c0f2fcbd2e3bfa471486d.s3tc.ctex"]
 
 [params]
 

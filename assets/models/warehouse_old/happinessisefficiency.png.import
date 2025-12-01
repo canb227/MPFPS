@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dledak8w4n2nv"
-path.s3tc="res://.godot/imported/happinessisefficiency.png-bad582f6f421ef7d15ffd8873864346e.s3tc.ctex"
+path.s3tc="res://.godot/imported/happinessisefficiency.png-50eadfcb5f4427041eca81d91653a397.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/happinessisefficiency.png"
-dest_files=["res://.godot/imported/happinessisefficiency.png-bad582f6f421ef7d15ffd8873864346e.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/happinessisefficiency.png"
+dest_files=["res://.godot/imported/happinessisefficiency.png-50eadfcb5f4427041eca81d91653a397.s3tc.ctex"]
 
 [params]
 

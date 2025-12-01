@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://caubappglqutn"
-path.s3tc="res://.godot/imported/metal_fence_hr_2_metal_hr_1.png-cc956a02b2ec5a972c6513937e2f46ba.s3tc.ctex"
+path.s3tc="res://.godot/imported/metal_fence_hr_2_metal_hr_1.png-678a6593cb7b6741007bedaddceb4194.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://assets/models/warehouse/metal_fence_hr_2_metal_hr_1.png"
-dest_files=["res://.godot/imported/metal_fence_hr_2_metal_hr_1.png-cc956a02b2ec5a972c6513937e2f46ba.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/metal_fence_hr_2_metal_hr_1.png"
+dest_files=["res://.godot/imported/metal_fence_hr_2_metal_hr_1.png-678a6593cb7b6741007bedaddceb4194.s3tc.ctex"]
 
 [params]
 

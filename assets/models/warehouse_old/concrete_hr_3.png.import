@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c8gu8oarebq3u"
-path.s3tc="res://.godot/imported/concrete_hr_3.png-cf6f5932e0d898b88c5fb3ccc1f8b719.s3tc.ctex"
+path.s3tc="res://.godot/imported/concrete_hr_3.png-9f3db0c9cf98e30b7ce6f6240dc5ebbd.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/concrete_hr_3.png"
-dest_files=["res://.godot/imported/concrete_hr_3.png-cf6f5932e0d898b88c5fb3ccc1f8b719.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/concrete_hr_3.png"
+dest_files=["res://.godot/imported/concrete_hr_3.png-9f3db0c9cf98e30b7ce6f6240dc5ebbd.s3tc.ctex"]
 
 [params]
 

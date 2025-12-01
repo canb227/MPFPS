@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://c121jsx3rbtgl"
-path="res://.godot/imported/officelight.glb-f69fa32257c208d3567d47141a12eb5d.scn"
+path="res://.godot/imported/officelight.glb-f32b9282e46bd65f95a632447a15b69c.scn"
 
 [deps]
 
-source_file="res://assets/models/warehouse/officelight.glb"
-dest_files=["res://.godot/imported/officelight.glb-f69fa32257c208d3567d47141a12eb5d.scn"]
+source_file="res://assets/models/warehouse_old/officelight.glb"
+dest_files=["res://.godot/imported/officelight.glb-f32b9282e46bd65f95a632447a15b69c.scn"]
 
 [params]
 

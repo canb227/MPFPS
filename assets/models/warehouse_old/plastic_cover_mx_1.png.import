@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bq8yvaul7us33"
-path.s3tc="res://.godot/imported/plastic_cover_mx_1.png-1af5225b82dfe0554adcdae6f583a143.s3tc.ctex"
+path.s3tc="res://.godot/imported/plastic_cover_mx_1.png-c824dcd8878ff9c743c6d8625f15f3a3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/plastic_cover_mx_1.png"
-dest_files=["res://.godot/imported/plastic_cover_mx_1.png-1af5225b82dfe0554adcdae6f583a143.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/plastic_cover_mx_1.png"
+dest_files=["res://.godot/imported/plastic_cover_mx_1.png-c824dcd8878ff9c743c6d8625f15f3a3.s3tc.ctex"]
 
 [params]
 

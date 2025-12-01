@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cv3dg3g7glmwn"
-path.s3tc="res://.godot/imported/MetalScratched007_REFL_3K.png-16ef743b1f683ce214b35182e37c6ee9.s3tc.ctex"
+path.s3tc="res://.godot/imported/MetalScratched007_REFL_3K.png-cd534f2570333b74a25c110443a7268c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/MetalScratched007_REFL_3K.png"
-dest_files=["res://.godot/imported/MetalScratched007_REFL_3K.png-16ef743b1f683ce214b35182e37c6ee9.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/MetalScratched007_REFL_3K.png"
+dest_files=["res://.godot/imported/MetalScratched007_REFL_3K.png-cd534f2570333b74a25c110443a7268c.s3tc.ctex"]
 
 [params]
 

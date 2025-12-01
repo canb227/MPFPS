@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://d4bwgxr0g3yi3"
-path="res://.godot/imported/warehouse_blender.gltf-9ff6cff594c77d512f378212ad9e1b1b.scn"
+path="res://.godot/imported/warehouse_blender.gltf-7be7769414f6fe54d1c0f485d3900fe3.scn"
 
 [deps]
 
-source_file="res://assets/models/warehouse/warehouse_blender.gltf"
-dest_files=["res://.godot/imported/warehouse_blender.gltf-9ff6cff594c77d512f378212ad9e1b1b.scn"]
+source_file="res://assets/models/warehouse_old/warehouse_blender.gltf"
+dest_files=["res://.godot/imported/warehouse_blender.gltf-7be7769414f6fe54d1c0f485d3900fe3.scn"]
 
 [params]
 

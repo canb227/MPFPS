@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvswxx1gnaxn6"
-path.s3tc="res://.godot/imported/tiles_floor_1.png-456f2c97fac5475339691cd6b6e2f4bb.s3tc.ctex"
+path.s3tc="res://.godot/imported/tiles_floor_1.png-158b54f36a3c5c4fd315ac096f44efe4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/tiles_floor_1.png"
-dest_files=["res://.godot/imported/tiles_floor_1.png-456f2c97fac5475339691cd6b6e2f4bb.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/tiles_floor_1.png"
+dest_files=["res://.godot/imported/tiles_floor_1.png-158b54f36a3c5c4fd315ac096f44efe4.s3tc.ctex"]
 
 [params]
 

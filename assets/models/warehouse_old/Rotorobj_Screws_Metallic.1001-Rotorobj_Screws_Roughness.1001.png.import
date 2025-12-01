@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d2a8gsihsc6wh"
-path.s3tc="res://.godot/imported/Rotorobj_Screws_Metallic.1001-Rotorobj_Screws_Roughness.1001.png-97dc9456391d1ee2641f3aca032948f8.s3tc.ctex"
+path.s3tc="res://.godot/imported/Rotorobj_Screws_Metallic.1001-Rotorobj_Screws_Roughness.1001.png-c9ceeff2afb0769e148a70dee2ee9a02.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Rotorobj_Screws_Metallic.1001-Rotorobj_Screws_Roughness.1001.png"
-dest_files=["res://.godot/imported/Rotorobj_Screws_Metallic.1001-Rotorobj_Screws_Roughness.1001.png-97dc9456391d1ee2641f3aca032948f8.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Rotorobj_Screws_Metallic.1001-Rotorobj_Screws_Roughness.1001.png"
+dest_files=["res://.godot/imported/Rotorobj_Screws_Metallic.1001-Rotorobj_Screws_Roughness.1001.png-c9ceeff2afb0769e148a70dee2ee9a02.s3tc.ctex"]
 
 [params]
 

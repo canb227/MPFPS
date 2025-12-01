@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpbekkerv24bh"
-path.s3tc="res://.godot/imported/MetalWalkway03_metal_xtm-MetalWalkway03_roughness_xtm.png-9c59a9534e2c6b49c9dedd8dfa547bde.s3tc.ctex"
+path.s3tc="res://.godot/imported/MetalWalkway03_metal_xtm-MetalWalkway03_roughness_xtm.png-213c891c43f8538041a6769a884f5ad9.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/MetalWalkway03_metal_xtm-MetalWalkway03_roughness_xtm.png"
-dest_files=["res://.godot/imported/MetalWalkway03_metal_xtm-MetalWalkway03_roughness_xtm.png-9c59a9534e2c6b49c9dedd8dfa547bde.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/MetalWalkway03_metal_xtm-MetalWalkway03_roughness_xtm.png"
+dest_files=["res://.godot/imported/MetalWalkway03_metal_xtm-MetalWalkway03_roughness_xtm.png-213c891c43f8538041a6769a884f5ad9.s3tc.ctex"]
 
 [params]
 

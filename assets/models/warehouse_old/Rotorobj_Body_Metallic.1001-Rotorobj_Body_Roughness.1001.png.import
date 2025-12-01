@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hd87ey2n2ui8"
-path.s3tc="res://.godot/imported/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png-55d8711f05e67ebf75d306a92989bcaa.s3tc.ctex"
+path.s3tc="res://.godot/imported/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png-ceca9ffea3c6daf275346f237fbd3d61.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png"
-dest_files=["res://.godot/imported/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png-55d8711f05e67ebf75d306a92989bcaa.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png"
+dest_files=["res://.godot/imported/Rotorobj_Body_Metallic.1001-Rotorobj_Body_Roughness.1001.png-ceca9ffea3c6daf275346f237fbd3d61.s3tc.ctex"]
 
 [params]
 

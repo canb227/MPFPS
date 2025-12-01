@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://v36r7djhnu2p"
-path="res://.godot/imported/lightprojector.glb-2718daedb0a0f0eb691bb793dc495682.scn"
+path="res://.godot/imported/lightprojector.glb-317c12048ad7949b5f90d9ba7d84121b.scn"
 
 [deps]
 
-source_file="res://assets/models/warehouse/lightprojector.glb"
-dest_files=["res://.godot/imported/lightprojector.glb-2718daedb0a0f0eb691bb793dc495682.scn"]
+source_file="res://assets/models/warehouse_old/lightprojector.glb"
+dest_files=["res://.godot/imported/lightprojector.glb-317c12048ad7949b5f90d9ba7d84121b.scn"]
 
 [params]
 

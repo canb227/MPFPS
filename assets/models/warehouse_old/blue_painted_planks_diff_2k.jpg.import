@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://chfi8dhfrmk72"
-path.s3tc="res://.godot/imported/blue_painted_planks_diff_2k.jpg-027fd78d9f0f62b91597a45f6ff12e40.s3tc.ctex"
+path.s3tc="res://.godot/imported/blue_painted_planks_diff_2k.jpg-8217c8cefcf356f04b9f08d29e732838.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/blue_painted_planks_diff_2k.jpg"
-dest_files=["res://.godot/imported/blue_painted_planks_diff_2k.jpg-027fd78d9f0f62b91597a45f6ff12e40.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/blue_painted_planks_diff_2k.jpg"
+dest_files=["res://.godot/imported/blue_painted_planks_diff_2k.jpg-8217c8cefcf356f04b9f08d29e732838.s3tc.ctex"]
 
 [params]
 

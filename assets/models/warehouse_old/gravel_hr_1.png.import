@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bowp3ftkjny05"
-path.s3tc="res://.godot/imported/gravel_hr_1.png-56c4993c887c7ee6c7d0b8707e67faf2.s3tc.ctex"
+path.s3tc="res://.godot/imported/gravel_hr_1.png-4a116dfce82312cd2569ad34a763288a.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/gravel_hr_1.png"
-dest_files=["res://.godot/imported/gravel_hr_1.png-56c4993c887c7ee6c7d0b8707e67faf2.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/gravel_hr_1.png"
+dest_files=["res://.godot/imported/gravel_hr_1.png-4a116dfce82312cd2569ad34a763288a.s3tc.ctex"]
 
 [params]
 

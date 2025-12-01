@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byb40080q50b8"
-path.s3tc="res://.godot/imported/utility_box_01_nor_gl.png-3dea4c0f4ab273539a20d29221defb84.s3tc.ctex"
+path.s3tc="res://.godot/imported/utility_box_01_nor_gl.png-450019682bb7963ebf6773e8b733b7b1.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/utility_box_01_nor_gl.png"
-dest_files=["res://.godot/imported/utility_box_01_nor_gl.png-3dea4c0f4ab273539a20d29221defb84.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/utility_box_01_nor_gl.png"
+dest_files=["res://.godot/imported/utility_box_01_nor_gl.png-450019682bb7963ebf6773e8b733b7b1.s3tc.ctex"]
 
 [params]
 

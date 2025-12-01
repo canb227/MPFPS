@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c2w808do6ns28"
-path.s3tc="res://.godot/imported/window_hy_5.png-266cde871cff55b746313b4997bf8001.s3tc.ctex"
+path.s3tc="res://.godot/imported/window_hy_5.png-8a927f67a11ab33251c4578c8aeea1b9.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/window_hy_5.png"
-dest_files=["res://.godot/imported/window_hy_5.png-266cde871cff55b746313b4997bf8001.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/window_hy_5.png"
+dest_files=["res://.godot/imported/window_hy_5.png-8a927f67a11ab33251c4578c8aeea1b9.s3tc.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byf311k7gjoe"
-path.s3tc="res://.godot/imported/radio_BaseColor.jpg-ccd5bdde6825234d2b7753ac78a4da3b.s3tc.ctex"
+path.s3tc="res://.godot/imported/radio_BaseColor.jpg-cb8c3edd67b825147435c205644c84e1.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/radio_BaseColor.jpg"
-dest_files=["res://.godot/imported/radio_BaseColor.jpg-ccd5bdde6825234d2b7753ac78a4da3b.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/radio_BaseColor.jpg"
+dest_files=["res://.godot/imported/radio_BaseColor.jpg-cb8c3edd67b825147435c205644c84e1.s3tc.ctex"]
 
 [params]
 

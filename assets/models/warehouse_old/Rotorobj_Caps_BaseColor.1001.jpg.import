@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bfst3mabyj10u"
-path.s3tc="res://.godot/imported/Rotorobj_Caps_BaseColor.1001.jpg-53a6cb3f9a9110225fad4426e7f8f8ad.s3tc.ctex"
+path.s3tc="res://.godot/imported/Rotorobj_Caps_BaseColor.1001.jpg-f439f4b73037cc49a3f41321ef882375.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Rotorobj_Caps_BaseColor.1001.jpg"
-dest_files=["res://.godot/imported/Rotorobj_Caps_BaseColor.1001.jpg-53a6cb3f9a9110225fad4426e7f8f8ad.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Rotorobj_Caps_BaseColor.1001.jpg"
+dest_files=["res://.godot/imported/Rotorobj_Caps_BaseColor.1001.jpg-f439f4b73037cc49a3f41321ef882375.s3tc.ctex"]
 
 [params]
 

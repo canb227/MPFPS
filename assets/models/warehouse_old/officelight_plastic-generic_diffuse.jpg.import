@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dsp1jy1pdmjnd"
-path.s3tc="res://.godot/imported/officelight_plastic-generic_diffuse.jpg-327a1b0a905ee7f7e763503022bd364c.s3tc.ctex"
+path.s3tc="res://.godot/imported/officelight_plastic-generic_diffuse.jpg-8a0adba137ae955898eb9dba1f17d809.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://assets/models/warehouse/officelight_plastic-generic_diffuse.jpg"
-dest_files=["res://.godot/imported/officelight_plastic-generic_diffuse.jpg-327a1b0a905ee7f7e763503022bd364c.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/officelight_plastic-generic_diffuse.jpg"
+dest_files=["res://.godot/imported/officelight_plastic-generic_diffuse.jpg-8a0adba137ae955898eb9dba1f17d809.s3tc.ctex"]
 
 [params]
 

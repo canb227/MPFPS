@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://baun1kxldx0vu"
-path.s3tc="res://.godot/imported/floor_3_metal.png-0bf5ead47b076329e2f3c93e99ce235c.s3tc.ctex"
+path.s3tc="res://.godot/imported/floor_3_metal.png-0875d612dd9c77b7fc5fe7b7cb2c77e2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/floor_3_metal.png"
-dest_files=["res://.godot/imported/floor_3_metal.png-0bf5ead47b076329e2f3c93e99ce235c.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/floor_3_metal.png"
+dest_files=["res://.godot/imported/floor_3_metal.png-0875d612dd9c77b7fc5fe7b7cb2c77e2.s3tc.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c0v3tcbgyxgaa"
-path.s3tc="res://.godot/imported/wall_rx_1.png-ed4fff26911930d8de285cd1ad6d15de.s3tc.ctex"
+path.s3tc="res://.godot/imported/wall_rx_1.png-a973667b7d749b4265aad6efdf5c164f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/wall_rx_1.png"
-dest_files=["res://.godot/imported/wall_rx_1.png-ed4fff26911930d8de285cd1ad6d15de.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/wall_rx_1.png"
+dest_files=["res://.godot/imported/wall_rx_1.png-a973667b7d749b4265aad6efdf5c164f.s3tc.ctex"]
 
 [params]
 

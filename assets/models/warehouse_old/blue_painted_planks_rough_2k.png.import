@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvub340idywtx"
-path.s3tc="res://.godot/imported/blue_painted_planks_rough_2k.png-fcc0f61e5be284e6f7a206870d13b561.s3tc.ctex"
+path.s3tc="res://.godot/imported/blue_painted_planks_rough_2k.png-e28a6768c6b61f65ae565b624ba89e78.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/blue_painted_planks_rough_2k.png"
-dest_files=["res://.godot/imported/blue_painted_planks_rough_2k.png-fcc0f61e5be284e6f7a206870d13b561.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/blue_painted_planks_rough_2k.png"
+dest_files=["res://.godot/imported/blue_painted_planks_rough_2k.png-e28a6768c6b61f65ae565b624ba89e78.s3tc.ctex"]
 
 [params]
 

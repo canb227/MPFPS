@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://5xs41nu7twtm"
-path.s3tc="res://.godot/imported/transformer_box_hr_2.png-798c9981be82ca1d9db821acc324d127.s3tc.ctex"
+path.s3tc="res://.godot/imported/transformer_box_hr_2.png-3cbe67294c4460038c4b4449c408cca7.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/transformer_box_hr_2.png"
-dest_files=["res://.godot/imported/transformer_box_hr_2.png-798c9981be82ca1d9db821acc324d127.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/transformer_box_hr_2.png"
+dest_files=["res://.godot/imported/transformer_box_hr_2.png-3cbe67294c4460038c4b4449c408cca7.s3tc.ctex"]
 
 [params]
 

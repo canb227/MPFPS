@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c0b00ewmkes2a"
-path.s3tc="res://.godot/imported/UrbanFurniture_02_Normal.jpg-e2e584c3af7f8b742907b9c694398608.s3tc.ctex"
+path.s3tc="res://.godot/imported/UrbanFurniture_02_Normal.jpg-c489b25de4ebcd04b31d17eb8b158e46.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/UrbanFurniture_02_Normal.jpg"
-dest_files=["res://.godot/imported/UrbanFurniture_02_Normal.jpg-e2e584c3af7f8b742907b9c694398608.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/UrbanFurniture_02_Normal.jpg"
+dest_files=["res://.godot/imported/UrbanFurniture_02_Normal.jpg-c489b25de4ebcd04b31d17eb8b158e46.s3tc.ctex"]
 
 [params]
 

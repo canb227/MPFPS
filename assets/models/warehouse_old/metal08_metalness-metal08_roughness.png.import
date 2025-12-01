@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dh7cu18qqvw73"
-path.s3tc="res://.godot/imported/metal08_metalness-metal08_roughness.png-c7d50a8657194f817dc3f5b5f2e0fea8.s3tc.ctex"
+path.s3tc="res://.godot/imported/metal08_metalness-metal08_roughness.png-09ce3b9d6e59ac9c7a886afdb71be3cd.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/metal08_metalness-metal08_roughness.png"
-dest_files=["res://.godot/imported/metal08_metalness-metal08_roughness.png-c7d50a8657194f817dc3f5b5f2e0fea8.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/metal08_metalness-metal08_roughness.png"
+dest_files=["res://.godot/imported/metal08_metalness-metal08_roughness.png-09ce3b9d6e59ac9c7a886afdb71be3cd.s3tc.ctex"]
 
 [params]
 

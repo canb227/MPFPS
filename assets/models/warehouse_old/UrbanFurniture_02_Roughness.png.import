@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://v0uxmy17oal2"
-path.s3tc="res://.godot/imported/UrbanFurniture_02_Roughness.png-201944af8405cba0ea6062b6b8d04a9a.s3tc.ctex"
+path.s3tc="res://.godot/imported/UrbanFurniture_02_Roughness.png-bf0bb14f60dfefb09ddea760112df537.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/UrbanFurniture_02_Roughness.png"
-dest_files=["res://.godot/imported/UrbanFurniture_02_Roughness.png-201944af8405cba0ea6062b6b8d04a9a.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/UrbanFurniture_02_Roughness.png"
+dest_files=["res://.godot/imported/UrbanFurniture_02_Roughness.png-bf0bb14f60dfefb09ddea760112df537.s3tc.ctex"]
 
 [params]
 

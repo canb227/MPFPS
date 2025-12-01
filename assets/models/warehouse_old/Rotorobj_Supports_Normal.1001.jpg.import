@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnd1s3ncfrr5b"
-path.s3tc="res://.godot/imported/Rotorobj_Supports_Normal.1001.jpg-04522473277ef7e739a34ba00f07afa9.s3tc.ctex"
+path.s3tc="res://.godot/imported/Rotorobj_Supports_Normal.1001.jpg-f38b84541d88778d274f1d7e4c3e02f0.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Rotorobj_Supports_Normal.1001.jpg"
-dest_files=["res://.godot/imported/Rotorobj_Supports_Normal.1001.jpg-04522473277ef7e739a34ba00f07afa9.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Rotorobj_Supports_Normal.1001.jpg"
+dest_files=["res://.godot/imported/Rotorobj_Supports_Normal.1001.jpg-f38b84541d88778d274f1d7e4c3e02f0.s3tc.ctex"]
 
 [params]
 

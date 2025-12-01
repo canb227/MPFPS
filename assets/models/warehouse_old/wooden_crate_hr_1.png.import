@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://diqgimb48akjf"
-path.s3tc="res://.godot/imported/wooden_crate_hr_1.png-4c99db934fa9f31bddb77256d83b4a2b.s3tc.ctex"
+path.s3tc="res://.godot/imported/wooden_crate_hr_1.png-0da1e104a626829a1e6bd4c95f0e05de.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/wooden_crate_hr_1.png"
-dest_files=["res://.godot/imported/wooden_crate_hr_1.png-4c99db934fa9f31bddb77256d83b4a2b.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/wooden_crate_hr_1.png"
+dest_files=["res://.godot/imported/wooden_crate_hr_1.png-0da1e104a626829a1e6bd4c95f0e05de.s3tc.ctex"]
 
 [params]
 

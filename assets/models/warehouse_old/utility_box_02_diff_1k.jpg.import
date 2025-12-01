@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddg1ibayahnt1"
-path.s3tc="res://.godot/imported/utility_box_02_diff_1k.jpg-f571010a29de6e6c08fc38ad25679a2b.s3tc.ctex"
+path.s3tc="res://.godot/imported/utility_box_02_diff_1k.jpg-bf6a675eb38060610a5fa5a0ec94d27e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/utility_box_02_diff_1k.jpg"
-dest_files=["res://.godot/imported/utility_box_02_diff_1k.jpg-f571010a29de6e6c08fc38ad25679a2b.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/utility_box_02_diff_1k.jpg"
+dest_files=["res://.godot/imported/utility_box_02_diff_1k.jpg-bf6a675eb38060610a5fa5a0ec94d27e.s3tc.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpb4vbeofc4ac"
-path.s3tc="res://.godot/imported/Machinery1Metalness-Machinery1Roughness.png-bc677949cf132b293cad4160112a25b8.s3tc.ctex"
+path.s3tc="res://.godot/imported/Machinery1Metalness-Machinery1Roughness.png-5481732c98e2f843132b070f67e0998c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Machinery1Metalness-Machinery1Roughness.png"
-dest_files=["res://.godot/imported/Machinery1Metalness-Machinery1Roughness.png-bc677949cf132b293cad4160112a25b8.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Machinery1Metalness-Machinery1Roughness.png"
+dest_files=["res://.godot/imported/Machinery1Metalness-Machinery1Roughness.png-5481732c98e2f843132b070f67e0998c.s3tc.ctex"]
 
 [params]
 

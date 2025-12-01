@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ck455spfcciw8"
-path.s3tc="res://.godot/imported/Main Materials_black portion_diffuse.png-57532f4e6fab1bb053b4dfb6d7490ab4.s3tc.ctex"
+path.s3tc="res://.godot/imported/Main Materials_black portion_diffuse.png-b6951739b598e360324099d5b2e5ea29.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Main Materials_black portion_diffuse.png"
-dest_files=["res://.godot/imported/Main Materials_black portion_diffuse.png-57532f4e6fab1bb053b4dfb6d7490ab4.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Main Materials_black portion_diffuse.png"
+dest_files=["res://.godot/imported/Main Materials_black portion_diffuse.png-b6951739b598e360324099d5b2e5ea29.s3tc.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pbf5lbiw2g2g"
-path.s3tc="res://.godot/imported/firehazard.png-3ee5b906a9ad8603f22e58628e6716d8.s3tc.ctex"
+path.s3tc="res://.godot/imported/firehazard.png-8a264424683ca483fcf5fe56e01e253a.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/firehazard.png"
-dest_files=["res://.godot/imported/firehazard.png-3ee5b906a9ad8603f22e58628e6716d8.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/firehazard.png"
+dest_files=["res://.godot/imported/firehazard.png-8a264424683ca483fcf5fe56e01e253a.s3tc.ctex"]
 
 [params]
 

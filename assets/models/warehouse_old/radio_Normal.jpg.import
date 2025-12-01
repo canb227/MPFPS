@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wk8h4yj5om2p"
-path.s3tc="res://.godot/imported/radio_Normal.jpg-10d30d1910c12361024d957bce2fcade.s3tc.ctex"
+path.s3tc="res://.godot/imported/radio_Normal.jpg-2a5f3ce5f5d7aa615b96d81e38a0b7d4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/radio_Normal.jpg"
-dest_files=["res://.godot/imported/radio_Normal.jpg-10d30d1910c12361024d957bce2fcade.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/radio_Normal.jpg"
+dest_files=["res://.godot/imported/radio_Normal.jpg-2a5f3ce5f5d7aa615b96d81e38a0b7d4.s3tc.ctex"]
 
 [params]
 

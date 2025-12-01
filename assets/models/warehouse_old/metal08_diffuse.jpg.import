@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ff7ch320xmb7"
-path.s3tc="res://.godot/imported/metal08_diffuse.jpg-7f58befd3915c2d4b30650a79382b5f9.s3tc.ctex"
+path.s3tc="res://.godot/imported/metal08_diffuse.jpg-1d1a3c7616a44cb3299871f0219a913f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/metal08_diffuse.jpg"
-dest_files=["res://.godot/imported/metal08_diffuse.jpg-7f58befd3915c2d4b30650a79382b5f9.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/metal08_diffuse.jpg"
+dest_files=["res://.godot/imported/metal08_diffuse.jpg-1d1a3c7616a44cb3299871f0219a913f.s3tc.ctex"]
 
 [params]
 

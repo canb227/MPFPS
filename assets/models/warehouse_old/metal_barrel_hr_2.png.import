@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8pl2cgv24vj2"
-path.s3tc="res://.godot/imported/metal_barrel_hr_2.png-a7a5b7623fadc012507c28b2eab9f2d1.s3tc.ctex"
+path.s3tc="res://.godot/imported/metal_barrel_hr_2.png-1bc66e19712485d364c57a164fa30cbd.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/metal_barrel_hr_2.png"
-dest_files=["res://.godot/imported/metal_barrel_hr_2.png-a7a5b7623fadc012507c28b2eab9f2d1.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/metal_barrel_hr_2.png"
+dest_files=["res://.godot/imported/metal_barrel_hr_2.png-1bc66e19712485d364c57a164fa30cbd.s3tc.ctex"]
 
 [params]
 

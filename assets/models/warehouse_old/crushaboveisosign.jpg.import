@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c4m2qfgcpy3vu"
-path.s3tc="res://.godot/imported/crushaboveisosign.jpg-e30387d3a4218064afef8919799f8ebb.s3tc.ctex"
+path.s3tc="res://.godot/imported/crushaboveisosign.jpg-477015688273665325ec1975bd4a1875.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/crushaboveisosign.jpg"
-dest_files=["res://.godot/imported/crushaboveisosign.jpg-e30387d3a4218064afef8919799f8ebb.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/crushaboveisosign.jpg"
+dest_files=["res://.godot/imported/crushaboveisosign.jpg-477015688273665325ec1975bd4a1875.s3tc.ctex"]
 
 [params]
 

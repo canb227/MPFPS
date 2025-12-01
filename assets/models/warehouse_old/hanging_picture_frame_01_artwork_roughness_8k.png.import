@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dw84rikvuk5mw"
-path.s3tc="res://.godot/imported/hanging_picture_frame_01_artwork_roughness_8k.png-f7d73271f2481b39aa48314994ea58b8.s3tc.ctex"
+path.s3tc="res://.godot/imported/hanging_picture_frame_01_artwork_roughness_8k.png-94c466448caf8c791ea09f0c4679aa81.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/hanging_picture_frame_01_artwork_roughness_8k.png"
-dest_files=["res://.godot/imported/hanging_picture_frame_01_artwork_roughness_8k.png-f7d73271f2481b39aa48314994ea58b8.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/hanging_picture_frame_01_artwork_roughness_8k.png"
+dest_files=["res://.godot/imported/hanging_picture_frame_01_artwork_roughness_8k.png-94c466448caf8c791ea09f0c4679aa81.s3tc.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dfhscbpqtueaa"
-path.s3tc="res://.godot/imported/plastic-smudge-smoothness copy.png-af11dd6ec3e0e092804e7bd7f04ed325.s3tc.ctex"
+path.s3tc="res://.godot/imported/plastic-smudge-smoothness copy.png-3b17be297c184a9ec7175b8325441d9d.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/plastic-smudge-smoothness copy.png"
-dest_files=["res://.godot/imported/plastic-smudge-smoothness copy.png-af11dd6ec3e0e092804e7bd7f04ed325.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/plastic-smudge-smoothness copy.png"
+dest_files=["res://.godot/imported/plastic-smudge-smoothness copy.png-3b17be297c184a9ec7175b8325441d9d.s3tc.ctex"]
 
 [params]
 

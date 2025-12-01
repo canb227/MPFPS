@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cuedt6g6gox5q"
-path.s3tc="res://.godot/imported/tiled_plane_DefaultMaterial_BaseColor.jpg-4cc4943341aff24bf7fc2fee1c0276a5.s3tc.ctex"
+path.s3tc="res://.godot/imported/tiled_plane_DefaultMaterial_BaseColor.jpg-50a700702b1842a7703f911c2375353e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/tiled_plane_DefaultMaterial_BaseColor.jpg"
-dest_files=["res://.godot/imported/tiled_plane_DefaultMaterial_BaseColor.jpg-4cc4943341aff24bf7fc2fee1c0276a5.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/tiled_plane_DefaultMaterial_BaseColor.jpg"
+dest_files=["res://.godot/imported/tiled_plane_DefaultMaterial_BaseColor.jpg-50a700702b1842a7703f911c2375353e.s3tc.ctex"]
 
 [params]
 

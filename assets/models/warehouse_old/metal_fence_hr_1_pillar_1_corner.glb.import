@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://1ml5iubnn1wp"
-path="res://.godot/imported/metal_fence_hr_1_pillar_1_corner.glb-9808432ea1d768ff6d3efdfcc7be38d2.scn"
+path="res://.godot/imported/metal_fence_hr_1_pillar_1_corner.glb-dadbd67b20dbf4c58cd0707b2c8cc483.scn"
 
 [deps]
 
-source_file="res://assets/models/warehouse/metal_fence_hr_1_pillar_1_corner.glb"
-dest_files=["res://.godot/imported/metal_fence_hr_1_pillar_1_corner.glb-9808432ea1d768ff6d3efdfcc7be38d2.scn"]
+source_file="res://assets/models/warehouse_old/metal_fence_hr_1_pillar_1_corner.glb"
+dest_files=["res://.godot/imported/metal_fence_hr_1_pillar_1_corner.glb-dadbd67b20dbf4c58cd0707b2c8cc483.scn"]
 
 [params]
 

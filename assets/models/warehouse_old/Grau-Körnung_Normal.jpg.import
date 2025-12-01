@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cons4a5di6wuu"
-path.s3tc="res://.godot/imported/Grau-Körnung_Normal.jpg-2f6bef0c773d52abf05ec31ea6c7df08.s3tc.ctex"
+path.s3tc="res://.godot/imported/Grau-Körnung_Normal.jpg-323f347a4a446d0726f0cddac0435692.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Grau-Körnung_Normal.jpg"
-dest_files=["res://.godot/imported/Grau-Körnung_Normal.jpg-2f6bef0c773d52abf05ec31ea6c7df08.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Grau-Körnung_Normal.jpg"
+dest_files=["res://.godot/imported/Grau-Körnung_Normal.jpg-323f347a4a446d0726f0cddac0435692.s3tc.ctex"]
 
 [params]
 

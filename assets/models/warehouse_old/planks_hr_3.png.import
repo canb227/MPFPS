@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://vexbhtfuhhgc"
-path.s3tc="res://.godot/imported/planks_hr_3.png-490970c0fe5d515c5a38b928c36a3539.s3tc.ctex"
+path.s3tc="res://.godot/imported/planks_hr_3.png-a87de14a440f66f038551ff990ae84f6.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/planks_hr_3.png"
-dest_files=["res://.godot/imported/planks_hr_3.png-490970c0fe5d515c5a38b928c36a3539.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/planks_hr_3.png"
+dest_files=["res://.godot/imported/planks_hr_3.png-a87de14a440f66f038551ff990ae84f6.s3tc.ctex"]
 
 [params]
 

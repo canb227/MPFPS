@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://nysva0ha0kre"
-path.s3tc="res://.godot/imported/lightprojector_Image_2.jpg-69597eaae3835852713ae94093b1f73e.s3tc.ctex"
+path.s3tc="res://.godot/imported/lightprojector_Image_2.jpg-0e8fc412cfe991a179636505ecd5ccfc.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://assets/models/warehouse/lightprojector_Image_2.jpg"
-dest_files=["res://.godot/imported/lightprojector_Image_2.jpg-69597eaae3835852713ae94093b1f73e.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/lightprojector_Image_2.jpg"
+dest_files=["res://.godot/imported/lightprojector_Image_2.jpg-0e8fc412cfe991a179636505ecd5ccfc.s3tc.ctex"]
 
 [params]
 

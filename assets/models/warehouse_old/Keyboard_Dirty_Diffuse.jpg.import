@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwc3agti008j4"
-path.s3tc="res://.godot/imported/Keyboard_Dirty_Diffuse.jpg-c42e87794d7510a0f9997eba772ad750.s3tc.ctex"
+path.s3tc="res://.godot/imported/Keyboard_Dirty_Diffuse.jpg-32edd612b2bf1d768561d16f424f3e16.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Keyboard_Dirty_Diffuse.jpg"
-dest_files=["res://.godot/imported/Keyboard_Dirty_Diffuse.jpg-c42e87794d7510a0f9997eba772ad750.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Keyboard_Dirty_Diffuse.jpg"
+dest_files=["res://.godot/imported/Keyboard_Dirty_Diffuse.jpg-32edd612b2bf1d768561d16f424f3e16.s3tc.ctex"]
 
 [params]
 

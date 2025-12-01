@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwanpqxt8rft1"
-path.s3tc="res://.godot/imported/plastic09_metallic-plastic09_glossiness.png-d5540c8a7124d0df493f5a2ec4a979a5.s3tc.ctex"
+path.s3tc="res://.godot/imported/plastic09_metallic-plastic09_glossiness.png-b56543ae12d1eb4c8c1646c647119beb.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/plastic09_metallic-plastic09_glossiness.png"
-dest_files=["res://.godot/imported/plastic09_metallic-plastic09_glossiness.png-d5540c8a7124d0df493f5a2ec4a979a5.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/plastic09_metallic-plastic09_glossiness.png"
+dest_files=["res://.godot/imported/plastic09_metallic-plastic09_glossiness.png-b56543ae12d1eb4c8c1646c647119beb.s3tc.ctex"]
 
 [params]
 

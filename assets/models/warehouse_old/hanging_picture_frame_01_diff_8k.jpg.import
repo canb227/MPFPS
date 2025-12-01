@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pry5ykldinjo"
-path.s3tc="res://.godot/imported/hanging_picture_frame_01_diff_8k.jpg-e4aa961675dc0d80fa270225e58b0767.s3tc.ctex"
+path.s3tc="res://.godot/imported/hanging_picture_frame_01_diff_8k.jpg-591f05b76b77d6f8fb9bddd63e623f20.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/hanging_picture_frame_01_diff_8k.jpg"
-dest_files=["res://.godot/imported/hanging_picture_frame_01_diff_8k.jpg-e4aa961675dc0d80fa270225e58b0767.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/hanging_picture_frame_01_diff_8k.jpg"
+dest_files=["res://.godot/imported/hanging_picture_frame_01_diff_8k.jpg-591f05b76b77d6f8fb9bddd63e623f20.s3tc.ctex"]
 
 [params]
 

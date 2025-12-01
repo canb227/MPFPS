@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bk1daxdclryl"
-path.s3tc="res://.godot/imported/Outside box_bump.png-961f4009301e3890d3920052551a7582.s3tc.ctex"
+path.s3tc="res://.godot/imported/Outside box_bump.png-1647bfa58e0de8c0af59d17b342a835e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Outside box_bump.png"
-dest_files=["res://.godot/imported/Outside box_bump.png-961f4009301e3890d3920052551a7582.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Outside box_bump.png"
+dest_files=["res://.godot/imported/Outside box_bump.png-1647bfa58e0de8c0af59d17b342a835e.s3tc.ctex"]
 
 [params]
 

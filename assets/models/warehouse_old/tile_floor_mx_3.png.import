@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jtosq8tqpw7f"
-path.s3tc="res://.godot/imported/tile_floor_mx_3.png-e501f246715731cb92532941df07980a.s3tc.ctex"
+path.s3tc="res://.godot/imported/tile_floor_mx_3.png-bcef742ff8d3136aaf62f6b4e6b1f5a5.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/tile_floor_mx_3.png"
-dest_files=["res://.godot/imported/tile_floor_mx_3.png-e501f246715731cb92532941df07980a.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/tile_floor_mx_3.png"
+dest_files=["res://.godot/imported/tile_floor_mx_3.png-bcef742ff8d3136aaf62f6b4e6b1f5a5.s3tc.ctex"]
 
 [params]
 

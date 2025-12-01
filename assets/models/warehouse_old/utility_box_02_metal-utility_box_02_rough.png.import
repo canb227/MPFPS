@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1blexa2g6kwh"
-path.s3tc="res://.godot/imported/utility_box_02_metal-utility_box_02_rough.png-c108317c44a16eb05c585a134927a103.s3tc.ctex"
+path.s3tc="res://.godot/imported/utility_box_02_metal-utility_box_02_rough.png-0e894a07c783faec8d5824be220e9261.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/utility_box_02_metal-utility_box_02_rough.png"
-dest_files=["res://.godot/imported/utility_box_02_metal-utility_box_02_rough.png-c108317c44a16eb05c585a134927a103.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/utility_box_02_metal-utility_box_02_rough.png"
+dest_files=["res://.godot/imported/utility_box_02_metal-utility_box_02_rough.png-0e894a07c783faec8d5824be220e9261.s3tc.ctex"]
 
 [params]
 

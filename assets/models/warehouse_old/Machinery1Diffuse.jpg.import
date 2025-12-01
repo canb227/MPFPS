@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cglsata16j06p"
-path.s3tc="res://.godot/imported/Machinery1Diffuse.jpg-9af6b1a0d0ab937171bcc33aeb82debf.s3tc.ctex"
+path.s3tc="res://.godot/imported/Machinery1Diffuse.jpg-1d307ff598f55fa0076203d106ff6c9e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Machinery1Diffuse.jpg"
-dest_files=["res://.godot/imported/Machinery1Diffuse.jpg-9af6b1a0d0ab937171bcc33aeb82debf.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Machinery1Diffuse.jpg"
+dest_files=["res://.godot/imported/Machinery1Diffuse.jpg-1d307ff598f55fa0076203d106ff6c9e.s3tc.ctex"]
 
 [params]
 

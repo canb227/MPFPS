@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://esuckrhs2ur"
-path.s3tc="res://.godot/imported/Metal_Rough_01_metallic-Metal_Rough_01_roughness.png-606648ebe69d41ec2a5ae1791c4feada.s3tc.ctex"
+path.s3tc="res://.godot/imported/Metal_Rough_01_metallic-Metal_Rough_01_roughness.png-f3a38d5d12864f13b84d4dd23d128bab.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Metal_Rough_01_metallic-Metal_Rough_01_roughness.png"
-dest_files=["res://.godot/imported/Metal_Rough_01_metallic-Metal_Rough_01_roughness.png-606648ebe69d41ec2a5ae1791c4feada.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Metal_Rough_01_metallic-Metal_Rough_01_roughness.png"
+dest_files=["res://.godot/imported/Metal_Rough_01_metallic-Metal_Rough_01_roughness.png-f3a38d5d12864f13b84d4dd23d128bab.s3tc.ctex"]
 
 [params]
 

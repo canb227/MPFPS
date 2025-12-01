@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://coilnxkqdgp3e"
-path.s3tc="res://.godot/imported/plastic-texture-normal-3.jpg-d051aa006b26c45951f064a50340cf74.s3tc.ctex"
+path.s3tc="res://.godot/imported/plastic-texture-normal-3.jpg-6fa4471618acad452e0509fd5479aab9.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/plastic-texture-normal-3.jpg"
-dest_files=["res://.godot/imported/plastic-texture-normal-3.jpg-d051aa006b26c45951f064a50340cf74.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/plastic-texture-normal-3.jpg"
+dest_files=["res://.godot/imported/plastic-texture-normal-3.jpg-6fa4471618acad452e0509fd5479aab9.s3tc.ctex"]
 
 [params]
 

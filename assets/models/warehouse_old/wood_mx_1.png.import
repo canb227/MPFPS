@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cjpvmqqde1s5b"
-path.s3tc="res://.godot/imported/wood_mx_1.png-570e5f540112cdbfeb6ddb110b5d3809.s3tc.ctex"
+path.s3tc="res://.godot/imported/wood_mx_1.png-5825030aa7f976ce067c16f3baa3f179.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/wood_mx_1.png"
-dest_files=["res://.godot/imported/wood_mx_1.png-570e5f540112cdbfeb6ddb110b5d3809.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/wood_mx_1.png"
+dest_files=["res://.godot/imported/wood_mx_1.png-5825030aa7f976ce067c16f3baa3f179.s3tc.ctex"]
 
 [params]
 

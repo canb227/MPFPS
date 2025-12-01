@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dys583rklhg1o"
-path.s3tc="res://.godot/imported/Arch41_017_leaf.jpg-d838d5d77a53cb06a429fa5c47eea57a.s3tc.ctex"
+path.s3tc="res://.godot/imported/Arch41_017_leaf.jpg-89aa3cce37a5e30e530277b998f4063c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/warehouse/Arch41_017_leaf.jpg"
-dest_files=["res://.godot/imported/Arch41_017_leaf.jpg-d838d5d77a53cb06a429fa5c47eea57a.s3tc.ctex"]
+source_file="res://assets/models/warehouse_old/Arch41_017_leaf.jpg"
+dest_files=["res://.godot/imported/Arch41_017_leaf.jpg-89aa3cce37a5e30e530277b998f4063c.s3tc.ctex"]
 
 [params]
 
