@@ -49,6 +49,17 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         myBucket = computeBucket++ % bucketCount;
         UpdateGridLocation();
         Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
+
+
+        //debug for stuck detection, terrible for performance, uncomment in the pathfinding also
+        // var mesh = GetNode<MeshInstance3D>("pCube1");
+
+        // // Duplicate the material so this robot has its own instance
+        // var original = mesh.GetActiveMaterial(0);
+        // var unique = (Material)original.Duplicate();
+
+        // mesh.SetSurfaceOverrideMaterial(0, unique);
+
     }
 
     public HordeAgent SpawnAgent(Vector3 spawnPosition)
@@ -258,59 +269,32 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float speed = 5;
     private float navMeshSnapTolerance = 0.1f;
     private int currentIndex = 0;
-    private float waypointThreshold = 1.5f;
+    private float waypointThreshold = 20.0f;
     private List<Vector3> path;
+    private bool stuck;
     private void MoveAgent(double delta)
     {
         float deltaF = (float)delta;
         List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(this);
 
-        //compute 3 rays for local pathfinding
-        // var space = GetWorld3D().DirectSpaceState;
-        // uint obstacleMask = (1 << 0);
-        // Vector3 origin = GlobalPosition;
+        var space = GetWorld3D().DirectSpaceState;
+
+        
+        //avoidance
+        Vector3 origin = GlobalPosition;
         // Vector3 forward = (targetPosition - GlobalPosition).Normalized();
-        // forward.Y = 0; // keep flat
-
-        // float rayLength = 1.5f; // tune for agent size
-
-        // Forward ray
+        // float rayLength = 1.5f;
+        // uint obstacleMask = (1 << 0);
         // var hitForward = space.IntersectRay(new PhysicsRayQueryParameters3D {
         //     From = origin,
         //     To = origin + forward * rayLength,
         //     CollisionMask = obstacleMask,
         // });
-
-        // // Left ray
-        // Vector3 leftDir = new Vector3(-forward.Z, 0, forward.X); // rotate 90° on XZ
-        // var hitLeft = space.IntersectRay(new PhysicsRayQueryParameters3D {
-        //     From = origin,
-        //     To = origin + leftDir * rayLength,
-        //     CollisionMask = obstacleMask,
-        // });
-
-        // // Right ray
-        // Vector3 rightDir = new Vector3(forward.Z, 0, -forward.X);
-        // var hitRight = space.IntersectRay(new PhysicsRayQueryParameters3D {
-        //     From = origin,
-        //     To = origin + rightDir * rayLength,
-        //     CollisionMask = obstacleMask,
-        // });
-
-
-        //avoidance
-        // Vector3 avoidance = Vector3.Zero;
-
-        // if (hitForward.Count > 0)
+        // Vector3 avoidance = forward;
+        // if(hitForward.Count > 0)
         // {
-        //     // Forward blocked → choose side
-        //     float leftClear = hitLeft.Count > 0 ? ((Vector3)hitLeft["position"] - origin).Length() : rayLength;
-        //     float rightClear = hitRight.Count > 0 ? ((Vector3)hitRight["position"] - origin).Length() : rayLength;
-
-        //     avoidance = (leftClear > rightClear) ? leftDir : rightDir;
+        //     avoidance = ComputeAvoidanceScoredFan(origin, forward, rayLength, 7, 60f);
         // }
-
-
 
         // 1. Path following (look-ahead)
         Vector3 target = path[Math.Min(currentIndex + lookAheadDist, path.Count - 1)];
@@ -364,23 +348,25 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             networkOrigin = targetNetworkTransform.Origin;
         }
 
+        //var wallRepulsion = ComputeWallRepulsion(origin, 0.4f, 1.0f);
+        //float wallWeight = 3.0f;
+
         // Combine forces
         Vector3 steering =
             //avoidance * avoidWeight + 
             pathDir * pathWeight +
             separation * sepWeight +
             cohesion * cohWeight +
-            networkOrigin * networkWeight; // +
-            //alignment * alignWeight;
+            networkOrigin * networkWeight;// +
+            //wallRepulsion * wallWeight;
             
 
         if (steering.LengthSquared() > 0.001f)
             steering = steering.Normalized();
 
-        var space = GetWorld3D().DirectSpaceState;
+        //var space = GetWorld3D().DirectSpaceState;
 
         Vector3 candidate = GlobalPosition + steering * deltaF * speed;
-
         // Raycast from current position to candidate
         var query = new PhysicsRayQueryParameters3D
         {
@@ -394,17 +380,33 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         if (hit.Count > 0)
         {
             // Obstacle detected: clamp to hit position
-            //targetPosition = (Vector3)hit["position"];
+            targetPosition =  GlobalPosition - steering * deltaF * speed * 3;
+            // if(!stuck)
+            // {
+            //     SetAgentColor(Colors.Yellow);
+            //     stuck = true; 
+            // }
         }
         else
         {
             // Free path
+            // if(stuck)
+            // {
+            //     SetAgentColor(Colors.Red);
+            //     stuck = false;
+            // }
             targetPosition = candidate;
         }
 
+
+        //targetPosition = candidate;
+
         if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold && currentIndex < path.Count - 1)
         {
-            currentIndex++;
+            if(HasLineOfSight(origin, path[currentIndex+1]))
+            {
+                currentIndex++;
+            }
         }
         Vector3 moveDir = (targetPosition - GlobalPosition).Normalized();
         if (moveDir.LengthSquared() > 0.001f)
@@ -578,6 +580,120 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         rpc_TakeDamage(damage, byID, soundType, VolumeDb);
     }
+
+    void SetAgentColor(Color color)
+    {
+        var mesh = GetNode<MeshInstance3D>("pCube1");
+        var mat = mesh.GetActiveMaterial(0) as StandardMaterial3D;
+
+        if (mat != null)
+        {
+            mat.AlbedoColor = color;
+        }
+    }
+
+    Vector3 ComputeAvoidanceScoredFan(
+        Vector3 origin,
+        Vector3 forward,
+        float rayLength,
+        int rays,
+        float maxAngleDeg)
+    {
+        var space = GetWorld3D().DirectSpaceState;
+        uint obstacleMask = 1 << 0;
+
+        float bestScore = -Mathf.Inf;
+        Vector3 bestDir = -forward; // fallback
+
+        for (int i = 0; i < rays; i++)
+        {
+            float t = (float)i / (rays - 1); // 0 → 1
+            float angle = Mathf.Lerp(0, maxAngleDeg, t);
+
+            foreach (float sign in new float[] { 1f, -1f })
+            {
+                float ang = angle * sign;
+                Vector3 dir = forward.Rotated(Vector3.Up, Mathf.DegToRad(ang));
+
+                var hit = space.IntersectRay(new PhysicsRayQueryParameters3D {
+                    From = origin,
+                    To = origin + dir * rayLength,
+                    CollisionMask = obstacleMask,
+                });
+
+                float hitDist = hit.Count > 0
+                    ? ((Vector3)hit["position"] - origin).Length()
+                    : rayLength;
+
+                float anglePenalty = Mathf.Abs(ang) * 0.02f; // tune weight
+
+                float score = hitDist - anglePenalty;
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestDir = dir;
+                }
+            }
+        }
+
+        return bestDir;
+    }
+
+    Vector3 ComputeWallRepulsion(Vector3 origin, float radius, float pushStrength)
+    {
+        var space = GetWorld3D().DirectSpaceState;
+        uint obstacleMask = 1 << 0;
+
+        // Create a small sphere shape
+        SphereShape3D sphere = new SphereShape3D();
+        sphere.Radius = radius;
+
+        var shapeParams = new PhysicsShapeQueryParameters3D
+        {
+            Shape = sphere,
+            Transform = new Transform3D(Basis.Identity, origin),
+            CollisionMask = obstacleMask,
+            CollideWithBodies = true,
+            CollideWithAreas = true
+        };
+
+        // Query for overlaps
+        var results = space.IntersectShape(shapeParams, 8);
+
+        if (results.Count == 0)
+            return Vector3.Zero;
+
+        // Compute push direction
+        Vector3 push = Vector3.Zero;
+
+        foreach (var hit in results)
+        {
+            Vector3 point = (Vector3)hit["point"];
+            Vector3 normal = (Vector3)hit["normal"];
+
+            // Push away from the wall
+            push += normal * pushStrength;
+        }
+
+        return push;
+    }
+    bool HasLineOfSight(Vector3 from, Vector3 to)
+    {
+        var space = GetWorld3D().DirectSpaceState;
+        uint obstacleMask = 1 << 0;
+
+        var hit = space.IntersectRay(new PhysicsRayQueryParameters3D {
+            From = from,
+            To = to,
+            CollisionMask = obstacleMask,
+        });
+
+        return hit.Count == 0;
+    }
+
+
+
 
 }
 

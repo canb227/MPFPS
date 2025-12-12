@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://o7551ne75pc3"]
+[gd_scene load_steps=14 format=4 uid="uid://o7551ne75pc3"]
 
 [ext_resource type="Script" uid="uid://b622rqeq2sjow" path="res://scripts/game/GameObjects/NPCs/HordeAgent.cs" id="1_l3ql2"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="2_l3ql2"]
@@ -103,6 +103,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_1fq2r")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgtv0"]
+albedo_color = Color(1, 0, 0, 1)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3tng0"]
 radius = 1.5991211
 height = 3.1982422
@@ -143,6 +146,7 @@ libraries = {
 transform = Transform3D(-8, 0, 6.993822e-07, 0, 8, 0, -6.993822e-07, 0, -8, 0, -0.80275226, 0)
 mesh = SubResource("ArrayMesh_jfk1n")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_fgtv0")
 
 [node name="AttackAoe" type="Area3D" parent="."]
 collision_layer = 0
