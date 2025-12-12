@@ -45,6 +45,7 @@ public partial class AIManager : Node3D
             }
             else
             {
+                GD.PushError("GENERATOR IS NULL");
                 targetLocation = new Vector3(20, 0, 28); //just for debug
             }
         }
