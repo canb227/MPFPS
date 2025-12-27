@@ -20,8 +20,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     [Export] private Area3D meleeArea;
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D genericSFX;
-    public float maxHealth { get; set; } = 25;
-    public float currentHealth { get; set; } = 25;
+    public float maxHealth { get; set; } = 20;
+    public float currentHealth { get; set; } = 20;
     private Transform3D targetNetworkTransform;
     private Vector3 targetPosition;
     private float stateUpdateAge;
