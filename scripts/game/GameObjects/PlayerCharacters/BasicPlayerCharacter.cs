@@ -45,7 +45,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float acceleration = 1;
     public float deceleration = 1;
     public float finalSpeed;
-    private Vector3 jumpVelocity = new Vector3(0, 25, 0);
+    private Vector3 jumpVelocity = new Vector3(0, 5, 0);
     private bool airbrake = false;
     //item bools
     public bool handcuffed;

@@ -33,6 +33,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     [Export] public float physDamagePerShot = 5;
     [Export] public float stunDamagePerShot = 5;
     [Export] public int maxPenetrations = 2;
+    [Export] public float headshotMultiplier = 1.67f;
 
     public float reloadTimeLeft { get; set; }
     public override InventoryGroupCategory category { get; set; } = InventoryGroupCategory.Weapon;
@@ -195,7 +196,9 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     {
         Random rand = new();
         waitingToFire = false;
-
+        float currentPhysDamage = physDamagePerShot;
+        float currentStunDamage = stunDamagePerShot;
+        bool headshot = false;
         for (int i = 0; i < bulletsPerShot; i++)
         {
             var exclude = new Array<Rid>();
@@ -250,16 +253,18 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                         CollisionShape3D shapeNode = collider.GetChild(shapeIndex) as CollisionShape3D;
                         if (shapeNode != null && shapeNode.IsInGroup("headshotcollider"))
                         {
-                            RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot*1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
-                            RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot * 1.67f, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            headshot = true;
+                            RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { currentPhysDamage*headshotMultiplier, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { currentStunDamage *headshotMultiplier, equippedBySteamID, PainSoundType.Bullet, 0 });
                             //rifle does 33.4 stun (3 to knock) 15.03 dmg (7 to kill)
                             //sniper does 133.6 stun (1 to knock) 58.45 (2 to kill)
                             //shotgun :) does 13.36 per bullet total 106.88 stun (1 to knock) | does 6.68 per pullet total 53.44 dmg (2 to kill)
                         }
                         else
                         {
-                            RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { physDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
-                            RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { stunDamagePerShot, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            headshot = false;
+                            RPCManager.RPC((Node)target, "rpc_TakeDamage", new object[] { currentPhysDamage, equippedBySteamID, PainSoundType.Bullet, 0 });
+                            RPCManager.RPC((Node)target, "rpc_TakeStunDamage", new object[] { currentStunDamage, equippedBySteamID, PainSoundType.Bullet, 0 });
                             //rifle does 20 stun (5 to knock) 9 dmg (12 to kill)
                             //sniper does 80 stun (2 to knock) 35 dmg (3 to kill)
                             //shotgun :) does 8 per bullet total 64 stun (2 to knock) | does 4 per pullet total 32 dmg (4 to kill)
@@ -268,13 +273,71 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     }
 
                     // check if it's a SwarmRobot
-                    if (current is SwarmRobot && penetrations < maxPenetrations)
+                    if ((current is SwarmRobot || current is HordeAgent)&& penetrations < maxPenetrations)
                     {
                         penetrations++;
 
                         exclude.Add(collider.GetRid()); // skip this collider next time
                         rayOrigin = hitPos + camForward * 0.05f; // continue just past hit
                         continue; // loop again
+                    }
+                    else if(current is SwarmRobot sr)
+                    {
+                        //we have run out of penetration so we will reduce our damage by how much we dealt and if we have remaining damage continue
+                        float targetHealthRemaining = sr.currentHealth;
+                        if(headshot)
+                        {
+                            float effectiveHealth = targetHealthRemaining / headshotMultiplier;
+                            if(effectiveHealth <= currentPhysDamage)
+                            {
+                                currentPhysDamage -= effectiveHealth;
+                            }
+                            else
+                            {
+                                effectiveHealth -= currentPhysDamage;
+                                currentPhysDamage = 0;
+                            }
+
+                            if(effectiveHealth <= currentStunDamage)
+                            {
+                                currentStunDamage -= effectiveHealth;
+                            }
+                            else
+                            {
+                                currentStunDamage = 0;
+                            }
+                        }
+                        else
+                        {
+                            if(targetHealthRemaining <= currentPhysDamage )
+                            {
+                                currentPhysDamage -= targetHealthRemaining;
+                            }
+                            else
+                            {
+                                targetHealthRemaining -= currentPhysDamage;
+                                currentPhysDamage = 0;
+                            }
+
+                            if(targetHealthRemaining <= currentStunDamage)
+                            {
+                                currentStunDamage -= targetHealthRemaining;
+                            }
+                            else
+                            {
+                                currentStunDamage = 0;
+                            }
+                        }
+                        if(currentPhysDamage + currentStunDamage > 0)
+                        {
+                            exclude.Add(collider.GetRid()); // skip this collider next time
+                            rayOrigin = hitPos + camForward * 0.05f; // continue just past hit
+                            continue; // loop again
+                        }
+                    }
+                    else if(current is HordeAgent ha)
+                    {
+                        
                     }
                 }
 

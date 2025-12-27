@@ -21,8 +21,7 @@ public partial class AIManager : Node3D
         options = Global.gameState.gameModeManager.options;
     }
 
-    public int hordeSize = 100;
-    public void SpawnHorde()
+    public void SpawnHorde(int hordeSize)
     {
         var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
         Vector3 targetLocation = new();
@@ -34,6 +33,7 @@ public partial class AIManager : Node3D
             }
             else
             {
+                GD.PushError("HELICOPTER IS NULL");
                 targetLocation = new Vector3(20, 0, 28); //just for debug
             }
         }
@@ -152,9 +152,10 @@ public partial class AIManager : Node3D
 
     bool evacuationStarted;
     double currentHordeCooldown = 9999;
-    double hordeCooldown = 20;
+    double hordeCooldown = 120;
     double evacuationHordeCooldown = 10;
     bool announcedHorde = false;
+    int hordeSize = 0;
     public override void _PhysicsProcess(double delta)
     {
         if(Global.gameState.gameModeManager.options.warehouseRobots)
@@ -173,15 +174,26 @@ public partial class AIManager : Node3D
                     Logging.Log("Spawn Horde", "AIManager");
                     //we should play a sound like L4D
                     Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
-                    SpawnHorde();
-                    if(evacuationStarted)
+                    if(Global.gameState.gameModeManager.evacuationStarted)
                     {
                         currentHordeCooldown = evacuationHordeCooldown;
+                        hordeSize = 5 + Global.gameState.gameModeManager.numPlayers * 3;
                     }
                     else
                     {
                         currentHordeCooldown = hordeCooldown;
+                        hordeSize = 200 + Global.gameState.gameModeManager.numPlayers * 10; //TODO testing
                     }
+
+                    int maxChunkSize = 50;
+
+                    int chunkCount = (hordeSize + maxChunkSize - 1) / maxChunkSize;
+                    int chunkSize = hordeSize/chunkCount;
+                    for (int i = 0; i < chunkCount; i++)
+                    {
+                        SpawnHorde(chunkSize);
+                    }
+
                     announcedHorde = false;
                 }
             }

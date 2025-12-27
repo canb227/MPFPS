@@ -266,14 +266,31 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float sepWeight = 2;
     private float avoidWeight = 30;
     private float networkWeight = 2;
-    private float speed = 5;
+    private float speed = 4;
     private float navMeshSnapTolerance = 0.1f;
     private int currentIndex = 0;
     private float waypointThreshold = 20.0f;
     private List<Vector3> path;
     private bool stuck;
+    private Vector3 positionOneSecondAgo;
+    private float positionTimer;
+    private float distanceLastCheck = 999;
+
     private void MoveAgent(double delta)
     {
+        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 10)
+        {
+            GD.Print("Stuck");
+            state = HordeAgentState.IDLE;
+            return;
+        }
+        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 10)
+        {
+            GD.Print("GO IDLE");
+            state = HordeAgentState.IDLE;
+            //TODO change behavior to generator behavior
+            return;
+        }
         float deltaF = (float)delta;
         List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(this);
 
@@ -380,21 +397,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         if (hit.Count > 0)
         {
             // Obstacle detected: clamp to hit position
-            targetPosition =  GlobalPosition - steering * deltaF * speed * 3;
-            // if(!stuck)
-            // {
-            //     SetAgentColor(Colors.Yellow);
-            //     stuck = true; 
-            // }
+            targetPosition =  GlobalPosition - steering * deltaF * speed * 5;
         }
         else
         {
             // Free path
-            // if(stuck)
-            // {
-            //     SetAgentColor(Colors.Red);
-            //     stuck = false;
-            // }
             targetPosition = candidate;
         }
 
@@ -417,7 +424,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
             LookAt(GlobalPosition + newForward, Vector3.Up);
         }
-
+        positionTimer += (float)delta;
+        if(positionTimer >= 3f)
+        {
+            positionTimer = 0;
+            distanceLastCheck = positionOneSecondAgo.DistanceSquaredTo(GlobalPosition);
+            positionOneSecondAgo = GlobalPosition;
+        }
 
     }
     
@@ -471,7 +484,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 {
                     AttackBody(body);
                 } 
-            }
+            }       
         }
     }
 
