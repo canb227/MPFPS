@@ -81,6 +81,9 @@ public partial class AIManager : Node3D
     {
         evacuationStarted = false;
         currentHordeCooldown = 10;
+        grid = new();
+        agentPool = new();
+        controlledNPCs = new();
         CreateAgentPool();
     }
 

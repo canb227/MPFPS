@@ -44,25 +44,25 @@ public partial class DebugScreen : Control
 
 	public static List<string> directLoadMap_mapPaths = new()
 	{
-		"res://scenes/world/ai_testscene.tscn",
 		"res://scenes/world/tutorial.tscn",
 		"res://scenes/world/warehouse.tscn",
+		"res://scenes/world/ai_testscene.tscn",
 		"res://scenes/world/devLevel.tscn",
 	};
 
 	public static List<string> directLoadMap_mapIconPaths = new()
 	{
 		"res://assets/ui/tutorial_1.png",
-		"res://assets/ui/tutorial_1.png",
 		"res://assets/ui/mainmenu_1.png",
+		"res://assets/ui/tutorial_1.png",
 		"res://assets/ui/img/devMapScreenie.png",
 	};
 
 	public static List<string> directLoadMap_mapNames = new()
 	{
-		"aitest",
 		"tutorial",
 		"warehouse",
+		"aitest",
 		"dev",
 	};
 

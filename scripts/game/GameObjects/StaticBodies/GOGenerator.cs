@@ -13,13 +13,13 @@ public partial class GOGenerator : GOBaseStaticBody
 	{
 		base._Ready();
 		Global.gameState.gameModeManager.generator = this;
-		generatorArea.BodyEntered += OnBodyEntered;
-		generatorArea.BodyExited += OnBodyExited;
+		generatorArea.AreaEntered += OnBodyEntered;
+		generatorArea.AreaExited += OnBodyExited;
 	}
 	private int robotsInArea = 0;
 	private void OnBodyEntered(Node3D body)
 	{
-		if (body.IsInGroup("enemies")) // or body.IsInGroup("robots")
+		if (body.IsInGroup("enemies"))
 		{
 			robotsInArea++;
 		}
@@ -47,7 +47,7 @@ public partial class GOGenerator : GOBaseStaticBody
 				if(generatorHealthInSeconds <= 0)
 				{
 					//ignore generator if we have started end of round evacuation
-					if(!Global.gameState.gameModeManager.evacuationStarted)
+					if(!Global.gameState.gameModeManager.evacuationStarted && Global.gameState.gameModeManager.roundStarted)
 					{
 						//traitors win
 						RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
@@ -57,7 +57,7 @@ public partial class GOGenerator : GOBaseStaticBody
 				{
 					//announcer alert
 					announcedAttacked = true;
-					Global.gameState.gameModeManager.TriggerGeneratorUnderAttack();
+					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorUnderAttack", []);
 				}
 			}
 			else
@@ -67,7 +67,7 @@ public partial class GOGenerator : GOBaseStaticBody
 				if(announcedAttacked && timeSinceNoEnemy > 1)
 				{
 					announcedAttacked = false;
-					Global.gameState.gameModeManager.TriggerGeneratorSafe();
+					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorSafe", []);
 				}
 				if (generatorHealthInSeconds > generatorMaxHealth)
 					generatorHealthInSeconds = generatorMaxHealth;

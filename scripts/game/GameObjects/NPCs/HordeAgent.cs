@@ -280,13 +280,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 10)
         {
-            GD.Print("Stuck");
+            //GD.Print("Stuck");
             state = HordeAgentState.IDLE;
             return;
         }
         else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 10)
         {
-            GD.Print("GO IDLE");
+            //GD.Print("GO IDLE");
             state = HordeAgentState.IDLE;
             //TODO change behavior to generator behavior
             return;

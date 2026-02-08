@@ -282,11 +282,13 @@ public partial class GameModeManager : Node
         }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TriggerGeneratorUnderAttack()
     {
         GeneratorUnderAttack?.Invoke();
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TriggerGeneratorSafe()
     {
         GeneratorSafe?.Invoke();
