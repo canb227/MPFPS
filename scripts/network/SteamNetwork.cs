@@ -240,7 +240,7 @@ public class SteamNetwork
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
-            Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
+            //Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         }
         return result;
     }
