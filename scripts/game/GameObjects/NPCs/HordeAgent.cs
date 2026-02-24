@@ -565,10 +565,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public void OnDeath(ulong byID)
     {
         //only the authority can tell people they died (host is auth for robots)
-        if (Global.steamid == authority)
-        {
-            RPCManager.RPC(this, "rpc_OnDeath", [byID]);
-        }
+        // if (Global.steamid == authority)
+        // {
+        RPCManager.RPC(this, "rpc_OnDeath", [byID]);
+        // }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
