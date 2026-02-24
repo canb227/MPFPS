@@ -289,7 +289,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
         else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
         {
-            GD.Print("GO IDLE");
+            //GD.Print("GO IDLE");
             state = HordeAgentState.IDLE;
             //TODO change behavior to generator behavior
             return;
@@ -554,7 +554,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         currentHealth -= damage;
         //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
-        if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
+        //&& Global.steamid == authority) //only authority can say it died
+        if (currentHealth <= 0) //we now allow anybody to publish damage because each client manages the swarm robots locally, very easy to cheat WARNING
         {
             Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
             OnDeath(byID);
