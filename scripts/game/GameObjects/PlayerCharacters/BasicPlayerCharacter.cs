@@ -91,6 +91,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         interactRayCast.CollideWithAreas = true;
         interactRayCast.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3); //layer 1, 2, 3, 4, world, entities, players(hitboxes), items, 
         camera.AddChild(interactRayCast);
+        camera.Fov = Global.Config.loadedPlayerConfig.fov;
 
         //we scale ourselves
         Scale = new(0.75f, 0.75f, 0.75f);
