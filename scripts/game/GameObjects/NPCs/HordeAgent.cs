@@ -280,16 +280,23 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 10)
         {
-            //GD.Print("Stuck");
-            state = HordeAgentState.IDLE;
-            return;
+            GD.Print("Stuck");
+            //state = HordeAgentState.IDLE;
+            stuck = true;
+            //positionOneSecondAgo = new();
+            //distanceLastCheck = 1;
+            //currentIndex--;
         }
-        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 10)
+        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 15)
         {
-            //GD.Print("GO IDLE");
+            GD.Print("GO IDLE");
             state = HordeAgentState.IDLE;
             //TODO change behavior to generator behavior
             return;
+        }
+        else
+        {
+            stuck = false;
         }
         float deltaF = (float)delta;
         List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(this);
@@ -394,10 +401,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         var hit = space.IntersectRay(query);
 
-        if (hit.Count > 0)
+        if (hit.Count > 0 && !stuck)
         {
             // Obstacle detected: clamp to hit position
-            targetPosition =  GlobalPosition - steering * deltaF * speed * 5;
+            targetPosition =  GlobalPosition; //- steering * deltaF * speed * 1;
         }
         else
         {

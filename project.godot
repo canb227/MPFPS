@@ -8,19 +8,27 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="MPFPS"
 run/main_scene="uid://cuplkb2gi3joo"
-config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="uid://b7uxn0pxlv44a"
 
 [autoload]
 
 Global="*res://scripts/Global.cs"
-LimboConsole="*res://addons/limbo_console/limbo_console.gd"
-ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
+LimboConsole="*uid://dyxornv8vwibg"
+ImGuiRoot="*uid://dugmpnsxaagba"
 
 [display]
 
@@ -94,9 +102,9 @@ common/physics_interpolation=true
 textures/canvas_textures/default_texture_filter=2
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=3
-environment/screen_space_reflection/roughness_quality=2
 environment/subsurface_scattering/subsurface_scattering_quality=2
 global_illumination/sdfgi/probe_ray_count=2
+environment/screen_space_reflection/roughness_quality=2
 
 [shader_globals]
 
