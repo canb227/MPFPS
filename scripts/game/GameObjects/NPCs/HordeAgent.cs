@@ -278,16 +278,16 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     private void MoveAgent(double delta)
     {
-        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 10)
+        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
         {
-            GD.Print("Stuck");
+            //GD.Print("Stuck");
             //state = HordeAgentState.IDLE;
             stuck = true;
             //positionOneSecondAgo = new();
             //distanceLastCheck = 1;
             //currentIndex--;
         }
-        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 15)
+        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
         {
             GD.Print("GO IDLE");
             state = HordeAgentState.IDLE;

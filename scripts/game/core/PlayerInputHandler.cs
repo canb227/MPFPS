@@ -61,7 +61,8 @@ public partial class PlayerInputHandler : Node
 
     public override void _Process(double delta)
     {
-        if (SteamUser.GetAvailableVoice(out uint numBytes) == EVoiceResult.k_EVoiceResultOK)
+        //VOICE PROXY CHAT DISABLED HERE TODO THERE IS A FALSE IN THIS STATEMENT
+        if (false && SteamUser.GetAvailableVoice(out uint numBytes) == EVoiceResult.k_EVoiceResultOK)
         {
             byte[] voiceBytes = new byte[numBytes];
             var result = SteamUser.GetVoice(true, voiceBytes, numBytes, out uint bytesWritten);

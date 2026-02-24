@@ -21,6 +21,7 @@ public partial class AIManager : Node3D
         options = Global.gameState.gameModeManager.options;
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void SpawnHorde(int hordeSize)
     {
         var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
@@ -194,7 +195,7 @@ public partial class AIManager : Node3D
                     int chunkSize = hordeSize/chunkCount;
                     for (int i = 0; i < chunkCount; i++)
                     {
-                        SpawnHorde(chunkSize);
+                        RPCManager.RPC(this, "SpawnHorde", [chunkSize]);
                     }
 
                     announcedHorde = false;
