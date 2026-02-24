@@ -30,7 +30,7 @@ public partial class AIManager : Node3D
         {
             if(Global.gameState.gameModeManager.helicopter != null)
             {
-                targetLocation = Global.gameState.gameModeManager.helicopter.Position;
+                targetLocation = Global.gameState.gameModeManager.helicopter.GlobalPosition;
             }
             else
             {
@@ -42,7 +42,7 @@ public partial class AIManager : Node3D
         {
             if(Global.gameState.gameModeManager.generator != null)
             {
-                targetLocation = Global.gameState.gameModeManager.generator.Position;
+                targetLocation = Global.gameState.gameModeManager.generator.GlobalPosition;
             }
             else
             {
@@ -129,7 +129,7 @@ public partial class AIManager : Node3D
                         foreach (var other in grid[neighborCell])
                         {
                             if (other == agent) continue;
-                            float dist = (other.Position - agent.Position).Length();
+                            float dist = (other.GlobalPosition - agent.GlobalPosition).Length();
                             neighbors.Add(other);
                         }
                     }
@@ -139,7 +139,7 @@ public partial class AIManager : Node3D
 
     public void UpdateAllAgentPaths()
     {
-        Vector3 targetPosition = Global.gameState.gameModeManager.generator.Position;
+        Vector3 targetPosition = Global.gameState.gameModeManager.generator.GlobalPosition;
 
         RPCManager.RPC(this, "UpdateAgentsPathOnClient", [targetPosition.X,targetPosition.Z]);
     }

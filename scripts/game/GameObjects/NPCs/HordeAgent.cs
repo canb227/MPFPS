@@ -82,7 +82,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             ImGui.Begin("path");
             ImGui.Text($"Pathfinding Debug for: {Name}");
-            ImGui.Text($"Self Pos: {Transform.Origin}");
+            ImGui.Text($"Self Pos: {GlobalPosition}");
             ImGui.Text($"");
             ImGui.End();
         }
@@ -145,14 +145,14 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private void RecalculatePath(double delta)
     {
         //Distance to target
-        BasicPlayerCharacter bpc = GetNearestAlivePlayer(Transform.Origin);
+        BasicPlayerCharacter bpc = GetNearestAlivePlayer(GlobalPosition);
         if (bpc == null) return;
 
-        float distToTarget = (bpc.Transform.Origin - Transform.Origin).Length();
+        float distToTarget = (bpc.GlobalPosition - GlobalPosition).Length();
 
         //Distance between path endpoint and player
         float distPathEndToPlayer = path.Count > 0
-            ? (path[path.Count - 1] - bpc.Transform.Origin).Length()
+            ? (path[path.Count - 1] - bpc.GlobalPosition).Length()
             : distToTarget;
         pathUpdateRate = Mathf.Clamp(
             distToTarget * 0.05f + distPathEndToPlayer * 0.1f,
@@ -166,8 +166,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             var navMap = GetWorld3D().NavigationMap;
             var pathPoints = NavigationServer3D.MapGetPath(
                 navMap,
-                Transform.Origin,
-                bpc.Transform.Origin,
+                GlobalPosition,
+                bpc.GlobalPosition,
                 true
             );
             path = new List<Vector3>(pathPoints);
@@ -179,8 +179,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         stateUpdateAge += (float)delta;
         base.PerTickShared(delta);
         // Distance to local player
-        Vector3 playerPos = Global.gameState.AIManager.localPlayer.Transform.Origin;
-        float dist = (Transform.Origin - playerPos).Length();
+        Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
+        float dist = (GlobalPosition - playerPos).Length();
 
         // Decide update frequency
         if (dist > midRange)
@@ -206,8 +206,20 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         updateCounter = 0;
         if(path != null)
         {
-            MoveAgent(deltaAccumulator);
-            UpdateGridLocation();
+            //if our location is too far from the fresh networked state we teleport to the correct origin once
+            if(!triedApplyStatePacket)
+            {
+                triedApplyStatePacket = true;
+                if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
+                {
+                    Transform = targetNetworkTransform;
+                }
+            }
+            else
+            {
+                MoveAgent(deltaAccumulator);
+                UpdateGridLocation();
+            }
         }
         //attempt to attack, look for overlapping bodies and attack if off cooldown
         if(meleeArea.Monitoring)
@@ -235,7 +247,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             var player = kv.Value;
             if (player.state != CharacterState.Living) continue; // skip dead
 
-            float distSq = (player.Transform.Origin - agentPos).LengthSquared();
+            float distSq = (player.GlobalPosition - agentPos).LengthSquared();
             if (distSq < nearestDistSq)
             {
                 nearestDistSq = distSq;
@@ -266,7 +278,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     private void MoveAgent(double delta)
     {
-        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(Transform.Origin) > 20)
+        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
         {
             //GD.Print("Stuck");
             //state = HordeAgentState.IDLE;
@@ -275,7 +287,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             //distanceLastCheck = 1;
             //currentIndex--;
         }
-        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(Transform.Origin) < 20)
+        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
         {
             //GD.Print("GO IDLE");
             state = HordeAgentState.IDLE;
@@ -293,8 +305,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         
         //avoidance
-        Vector3 origin = Transform.Origin;
-        // Vector3 forward = (targetPosition - Transform.Origin).Normalized();
+        Vector3 origin = GlobalPosition;
+        // Vector3 forward = (targetPosition - GlobalPosition).Normalized();
         // float rayLength = 1.5f;
         // uint obstacleMask = (1 << 0);
         // var hitForward = space.IntersectRay(new PhysicsRayQueryParameters3D {
@@ -310,13 +322,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         // 1. Path following (look-ahead)
         Vector3 target = path[Math.Min(currentIndex + lookAheadDist, path.Count - 1)];
-        Vector3 pathDir = (target - Transform.Origin).Normalized();
+        Vector3 pathDir = (target - GlobalPosition).Normalized();
 
         // Separation
         Vector3 separation = Vector3.Zero;
         foreach (var neighbor in neighbors)
         {
-            Vector3 diff = Transform.Origin - neighbor.Transform.Origin;
+            Vector3 diff = GlobalPosition - neighbor.GlobalPosition;
             diff.Y = 0; //we dont want them flying away to spread out
             float neighbordist = diff.Length();
             if (neighbordist < separationRadius && neighbordist > 0)
@@ -347,9 +359,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             Vector3 center = Vector3.Zero;
             foreach (var neighbor in neighbors)
-                center += neighbor.Transform.Origin;
+                center += neighbor.GlobalPosition;
             center /= neighbors.Count;
-            cohesion = (center - Transform.Origin).Normalized();
+            cohesion = (center - GlobalPosition).Normalized();
         }
 
         //we track state update freshness
@@ -368,7 +380,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             //avoidance * avoidWeight + 
             pathDir * pathWeight +
             separation * sepWeight +
-            cohesion * cohWeight + 
+            cohesion * cohWeight +
             networkOrigin * networkWeight;// +
             //wallRepulsion * wallWeight;
             
@@ -378,11 +390,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         //var space = GetWorld3D().DirectSpaceState;
 
-        Vector3 candidate = Transform.Origin + steering * deltaF * speed;
+        Vector3 candidate = GlobalPosition + steering * deltaF * speed;
         // Raycast from current position to candidate
         var query = new PhysicsRayQueryParameters3D
         {
-            From = Transform.Origin,
+            From = GlobalPosition,
             To = candidate,
             CollisionMask = (1 << 0), // set to walls/obstacles only
         };
@@ -392,7 +404,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         if (hit.Count > 0 && !stuck)
         {
             // Obstacle detected: clamp to hit position
-            targetPosition =  Transform.Origin; //- steering * deltaF * speed * 1;
+            targetPosition =  GlobalPosition; //- steering * deltaF * speed * 1;
         }
         else
         {
@@ -403,28 +415,28 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         //targetPosition = candidate;
 
-        if ((path[currentIndex] - Transform.Origin).LengthSquared() < waypointThreshold && currentIndex < path.Count - 1)
+        if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold && currentIndex < path.Count - 1)
         {
             if(HasLineOfSight(origin, path[currentIndex+1]))
             {
                 currentIndex++;
             }
         }
-        Vector3 moveDir = (targetPosition - Transform.Origin).Normalized();
+        Vector3 moveDir = (targetPosition - GlobalPosition).Normalized();
         if (moveDir.LengthSquared() > 0.001f)
         {
             Vector3 targetForward = moveDir;
             Vector3 currentForward = -GlobalTransform.Basis.Z; // forward in Godot
             Vector3 newForward = currentForward.Lerp(targetForward, 0.1f).Normalized();
 
-            LookAt(Transform.Origin + newForward, Vector3.Up);
+            LookAt(GlobalPosition + newForward, Vector3.Up);
         }
         positionTimer += (float)delta;
         if(positionTimer >= 3f)
         {
             positionTimer = 0;
-            distanceLastCheck = positionOneSecondAgo.DistanceSquaredTo(Transform.Origin);
-            positionOneSecondAgo = Transform.Origin;
+            distanceLastCheck = positionOneSecondAgo.DistanceSquaredTo(GlobalPosition);
+            positionOneSecondAgo = GlobalPosition;
         }
 
     }
@@ -439,9 +451,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private void UpdateGridLocation()
     {
         Vector3I cell = new Vector3I(
-            Mathf.FloorToInt(Transform.Origin.X / cellSize),
-            Mathf.FloorToInt(Transform.Origin.Y / cellSize),
-            Mathf.FloorToInt(Transform.Origin.Z / cellSize)
+            Mathf.FloorToInt(GlobalPosition.X / cellSize),
+            Mathf.FloorToInt(GlobalPosition.Y / cellSize),
+            Mathf.FloorToInt(GlobalPosition.Z / cellSize)
         );
 
         if (cell != currentCell)
