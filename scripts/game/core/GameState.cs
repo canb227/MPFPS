@@ -342,6 +342,7 @@ public partial class GameState : Node3D
             newObj.id = data.id;
             newObj.authority = data.authority;
             newObj.type = data.type;
+            newObj.tickOfLastUpdate = tick;
             if (newObj.InitFromData(data))
             {
                 if (newObj is Node n)
@@ -395,6 +396,7 @@ public partial class GameState : Node3D
         gameObject.id = id;
         gameObject.authority = authority;
         gameObject.type = type;
+        gameObject.tickOfLastUpdate = tick;
         GameObjects[gameObject.id] = gameObject;
         return gameObject;
     }
