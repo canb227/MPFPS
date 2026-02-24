@@ -88,9 +88,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             MixRate = (int)SteamUser.GetVoiceOptimalSampleRate(),
             BufferLength = 0.5f // Half a second buffer
         };
-        voicePlayer.Stream = generator;
-        voicePlayer.Play();
-        playback = voicePlayer.GetStreamPlayback() as AudioStreamGeneratorPlayback;
+        //voicePlayer.Stream = generator;
+        //voicePlayer.Play();
+        //playback = voicePlayer.GetStreamPlayback() as AudioStreamGeneratorPlayback;
 
         if (IsMe())
         {

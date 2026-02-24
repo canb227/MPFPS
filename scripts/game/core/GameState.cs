@@ -495,7 +495,7 @@ public partial class GameState : Node3D
                 }
                 if (updateObj.tickOfLastUpdate>stateUpdate.tick)
                 {
-                    Logging.Warn($"Ignoring stale state update for object {updateObj.id}", "GameState");
+                    //Logging.Warn($"Ignoring stale state update for object {updateObj.id} {updateObj.tickOfLastUpdate} {stateUpdate.tick}", "GameState");
                     return;
                 }
                 updateObj.tickOfLastUpdate = tick;
