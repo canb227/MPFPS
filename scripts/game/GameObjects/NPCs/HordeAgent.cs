@@ -206,20 +206,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         updateCounter = 0;
         if(path != null)
         {
-            //if our location is too far from the fresh networked state we teleport to the correct origin once
-            if(!triedApplyStatePacket)
-            {
-                triedApplyStatePacket = true;
-                if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
-                {
-                    Transform = targetNetworkTransform;
-                }
-            }
-            else
-            {
-                MoveAgent(deltaAccumulator);
-                UpdateGridLocation();
-            }
+            MoveAgent(deltaAccumulator);
+            UpdateGridLocation();
         }
         //attempt to attack, look for overlapping bodies and attack if off cooldown
         if(meleeArea.Monitoring)
@@ -366,11 +354,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         //we track state update freshness
         //if the stateupdate is new enough we add it in as a weighting for target location
-        Vector3 networkOrigin = Vector3.Zero;
-        if(stateUpdateAge < 0.10f)
-        {
-            networkOrigin = targetNetworkTransform.Origin;
-        }
+        // Vector3 networkOrigin = Vector3.Zero;
+        // if(stateUpdateAge < 0.10f)
+        // {
+        //     networkOrigin = targetNetworkTransform.Origin;
+        // }
 
         //var wallRepulsion = ComputeWallRepulsion(origin, 0.4f, 1.0f);
         //float wallWeight = 3.0f;
@@ -380,8 +368,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             //avoidance * avoidWeight + 
             pathDir * pathWeight +
             separation * sepWeight +
-            cohesion * cohWeight +
-            networkOrigin * networkWeight;// +
+            cohesion * cohWeight;
+            //networkOrigin * networkWeight;// +
             //wallRepulsion * wallWeight;
             
 
@@ -523,25 +511,25 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         return true;
     }
 
-    public override byte[] GenerateStateUpdate()
-    {
-        HordeAgentStateMessage message = new HordeAgentStateMessage();
-        message.transform = this.GlobalTransform;
-        //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
-        message.state = this.state;
+    // public override byte[] GenerateStateUpdate()
+    // {
+    //     HordeAgentStateMessage message = new HordeAgentStateMessage();
+    //     message.transform = this.GlobalTransform;
+    //     //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
+    //     message.state = this.state;
 
-        return MessagePackSerializer.Serialize(message);   
-    }
+    //     return MessagePackSerializer.Serialize(message);   
+    // }
 
-    public override void ProcessStateUpdate(byte[] update)
-    {
-        HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        this.targetNetworkTransform = message.transform;
-        stateUpdateAge = 0;
-        triedApplyStatePacket = false;
-        //this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
-        this.state = message.state;
-    }
+    // public override void ProcessStateUpdate(byte[] update)
+    // {
+    //     HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
+    //     this.targetNetworkTransform = message.transform;
+    //     stateUpdateAge = 0;
+    //     triedApplyStatePacket = false;
+    //     //this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
+    //     this.state = message.state;
+    // }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
     {
