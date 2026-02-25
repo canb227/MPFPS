@@ -145,9 +145,9 @@ public partial class GameState : Node3D
 
         menuMusicStreamPlayer.Stop();
 
-        AIManager = new();
-        AIManager.Name = "AI Manager";
-        AddChild(AIManager);
+        // AIManager = new();
+        // AIManager.Name = "AI Manager";
+        // AddChild(AIManager);
 
         gameModeManager.StartGameMode(scenePath, gameMode);
         gameStarted = true;
