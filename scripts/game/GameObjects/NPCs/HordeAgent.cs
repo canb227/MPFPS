@@ -93,56 +93,31 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
     }
 
-    public override void PerTickAuth(double delta)
-    {
-        base.PerTickAuth(delta);
-        switch (state)
-        {
-            case HordeAgentState.NONE:
-                break;
-            case HordeAgentState.IDLE:
-                break;
-            case HordeAgentState.SWARM:
-                break;
-            case HordeAgentState.SIMPLECHASE:
-                break;
-            default:
-                break;
-        }
-    }
+    // public override void PerTickAuth(double delta)
+    // {
+    //     base.PerTickAuth(delta);
+    //     switch (state)
+    //     {
+    //         case HordeAgentState.NONE:
+    //             break;
+    //         case HordeAgentState.IDLE:
+    //             break;
+    //         case HordeAgentState.SWARM:
+    //             break;
+    //         case HordeAgentState.SIMPLECHASE:
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
     private double deltaAccumulator = 0;
     private bool triedApplyStatePacket;
     private double timeSincePathUpdate = 0;
     private double pathUpdateRate = 3;
     private int tickIndex;
-    public override void PerTickShared(double delta)
-    {
-        tickIndex++;
-        switch (state)
-        {
-            case HordeAgentState.NONE:
-                break;
-            case HordeAgentState.IDLE:
-                break;
-            case HordeAgentState.SWARM:
-                PerTickAgent(delta);
-                break;
-            case HordeAgentState.SIMPLECHASE:
-                timeSincePathUpdate += (float)delta;
-                //bucket scheduling
-                if (tickIndex % bucketCount == myBucket)
-                {
-                    RecalculatePath(delta);
-                }
-                PerTickAgent(delta);
-                break;
-            default:
-                break;
-        }
-        
-    }
 
+    
     private void RecalculatePath(double delta)
     {
         //Distance to target
@@ -175,10 +150,37 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
     }
 
+    public override void PerTickAuth(double delta)
+    {
+        tickIndex++;
+        switch (state)
+        {
+            case HordeAgentState.NONE:
+                break;
+            case HordeAgentState.IDLE:
+                break;
+            case HordeAgentState.SWARM:
+                PerTickAgent(delta);
+                break;
+            case HordeAgentState.SIMPLECHASE:
+                timeSincePathUpdate += (float)delta;
+                //bucket scheduling
+                if (tickIndex % bucketCount == myBucket)
+                {
+                    RecalculatePath(delta);
+                }
+                PerTickAgent(delta);
+                break;
+            default:
+                break;
+        }
+        
+    }
+
     private void PerTickAgent(double delta)
     {
         stateUpdateAge += (float)delta;
-        base.PerTickShared(delta);
+        base.PerTickAuth(delta);
         // Distance to local player
         Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
         float dist = (GlobalPosition - playerPos).Length();
@@ -538,11 +540,14 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        this.targetNetworkTransform = message.transform;
-        stateUpdateAge = 0;
-        triedApplyStatePacket = false;
-        //this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
+        this.Transform = message.transform;
         this.state = message.state;
+        // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
+        // this.targetNetworkTransform = message.transform;
+        // stateUpdateAge = 0;
+        // triedApplyStatePacket = false;
+        // //this.MovementTarget = Global.instance.GetNode<Node3D>(message.targetNodePath);
+        // this.state = message.state;
     }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)

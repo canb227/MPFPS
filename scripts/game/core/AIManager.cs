@@ -22,7 +22,6 @@ public partial class AIManager : Node3D
         options = Global.gameState.gameModeManager.options;
     }
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void SpawnHorde(int hordeSize)
     {
         var hordeSpawnLocation = MapManager.GetHordeSpawnTransform();
@@ -71,7 +70,7 @@ public partial class AIManager : Node3D
             data.spawnTransform = Transform3D.Identity;
             data.spawnTransform.Origin = new Vector3(0,0,0);
             data.paramList.Add(HordeAgentState.NONE);
-            Global.gameState.Local_SpawnObject_Raw(GameObjectType.HordeAgent, data);
+            Global.gameState.Auth_SpawnObject(GameObjectType.HordeAgent, data);
         }
     }
     public override void _Ready()
@@ -196,7 +195,7 @@ public partial class AIManager : Node3D
                     int chunkSize = hordeSize/chunkCount;
                     for (int i = 0; i < chunkCount; i++)
                     {
-                        RPCManager.RPC(this, "SpawnHorde", [chunkSize]);
+                        SpawnHorde(chunkSize);
                     }
 
                     announcedHorde = false;
