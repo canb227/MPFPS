@@ -294,10 +294,6 @@ public class SteamNetwork
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
             int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
-            if(messageCount >= maxMessagePerFramePerChannel-1)
-            {
-                GD.Print("MAX MESSAGES THIS FRAME");
-            }
             for (int k = 0; k < messageCount; k++)
             {
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
