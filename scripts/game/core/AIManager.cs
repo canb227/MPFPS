@@ -86,7 +86,7 @@ public partial class AIManager : Node3D
         grid = new();
         agentPool = new();
         controlledNPCs = new();
-        //CreateAgentPool();
+        CreateAgentPool();
     }
 
 
@@ -196,7 +196,7 @@ public partial class AIManager : Node3D
                     int chunkSize = hordeSize/chunkCount;
                     for (int i = 0; i < chunkCount; i++)
                     {
-                        //RPCManager.RPC(this, "SpawnHorde", [chunkSize]);
+                        RPCManager.RPC(this, "SpawnHorde", [chunkSize]);
                     }
 
                     announcedHorde = false;
