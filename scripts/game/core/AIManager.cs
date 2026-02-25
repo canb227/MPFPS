@@ -86,7 +86,7 @@ public partial class AIManager : Node3D
         grid = new();
         agentPool = new();
         controlledNPCs = new();
-        CreateAgentPool();
+        //CreateAgentPool();
     }
 
 
