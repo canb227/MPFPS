@@ -213,6 +213,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 triedApplyStatePacket = true;
                 if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
                 {
+                    GD.Print("TELEPORT TO NETWORK TRANSFORM");
                     Transform = targetNetworkTransform;
                 }
             }
