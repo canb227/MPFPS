@@ -238,7 +238,7 @@ public static class RPCManager
             //        Logging.Log($"Secondary payload detected: {MessagePackSerializer.ConvertToJson(arr)}", "RPCManagerWire"); 
             //    }
             //}
-            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle);
+            Global.network.BroadcastData(bytes, Channel.RPC, Global.Lobby.AllPeers(), NetworkUtils.k_nSteamNetworkingSend_Reliable);
         }
     }
 

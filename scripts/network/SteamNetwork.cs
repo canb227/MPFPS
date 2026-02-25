@@ -254,7 +254,7 @@ public class SteamNetwork
     /// <param name="type"></param>
     /// <param name="remoteIdentities"></param>
     /// <returns></returns>
-    public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
+    public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_Reliable)
     {
         List<EResult> retval = new List<EResult>();
         bool loopbackCheck = false;
