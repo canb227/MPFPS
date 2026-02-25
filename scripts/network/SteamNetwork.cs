@@ -57,7 +57,7 @@ public class SteamNetwork
     /// <summary>
     /// Max number of messages to attempt to process per frame. If we get frame delays because of spiky network traffic this needs turned down
     /// </summary>
-    private int maxMessagePerFramePerChannel = 200;
+    private int maxMessagePerFramePerChannel = 20000;
 
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
