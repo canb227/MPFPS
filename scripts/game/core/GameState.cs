@@ -330,11 +330,8 @@ public partial class GameState : Node3D
         RPCManager.RPC(this, "Local_SpawnObject", [gameObjectType, MessagePackSerializer.Serialize(data)]);
     }
 
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void Local_SpawnObject(GameObjectType type, byte[] _data)
+    public void Local_SpawnObject_Raw(GameObjectType type, GameObjectConstructorData data)
     {
-        
-        GameObjectConstructorData data = MessagePackSerializer.Deserialize<GameObjectConstructorData>(_data);
         GameObject newObj = GameObjectLoader.LoadObjectByType(type);
         Logging.Log($"Spawning {type} on local machine with ID: {data.id} and authority {data.authority}", "GameState");
         if (newObj != null)
@@ -357,6 +354,13 @@ public partial class GameState : Node3D
                 Logging.Error($"Failed to init object from data: Type:{newObj.type} Params:{string.Join(",",data.paramList)}", "GameState");
             }
         }
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void Local_SpawnObject(GameObjectType type, byte[] _data)
+    {
+        GameObjectConstructorData data = MessagePackSerializer.Deserialize<GameObjectConstructorData>(_data);
+        Local_SpawnObject_Raw(type, data);
     }
 
 

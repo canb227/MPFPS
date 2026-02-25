@@ -1,4 +1,5 @@
 using Godot;
+using MessagePack;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ public partial class AIManager : Node3D
             data.spawnTransform = Transform3D.Identity;
             data.spawnTransform.Origin = new Vector3(0,0,0);
             data.paramList.Add(HordeAgentState.NONE);
-            Global.gameState.Auth_SpawnObject(GameObjectType.HordeAgent, data);
+            Global.gameState.Local_SpawnObject_Raw(GameObjectType.HordeAgent, data);
         }
     }
     public override void _Ready()
