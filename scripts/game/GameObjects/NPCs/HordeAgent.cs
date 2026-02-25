@@ -46,6 +46,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
         Position = new Vector3(0, 1, 0);
+        priority = 1;
         myBucket = computeBucket++ % bucketCount;
         UpdateGridLocation();
         Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
