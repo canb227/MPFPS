@@ -475,8 +475,7 @@ public partial class GameState : Node3D
 
     private void HandleStateUpdateQueue()
     {
-        bool processStateUpdates = StateUpdatePacketBuffer.Count > 0;
-        while (processStateUpdates)
+        while (StateUpdatePacketBuffer.Count > 0)
         {
             StateUpdatePacket stateUpdate = StateUpdatePacketBuffer.Dequeue();
 
@@ -485,22 +484,22 @@ public partial class GameState : Node3D
                 if (updateObj.authority != stateUpdate.sender)
                 {
                     Logging.Error($"Peer: {stateUpdate.sender} is making claims on an object ({updateObj.id}) they are not authority of!", "GameState");
-                    return;
+                    continue;
                 }
                 if (updateObj.type != updateObj.type)
                 {
                     Logging.Error($"Peer: {stateUpdate.sender} sent a state update with type mismatch on object {updateObj.id} (obj type: {updateObj.type}, packet type: {stateUpdate.type})", "GameState");
-                    return;
+                    continue;
                 }
                 if (updateObj.sleeping)
                 {
-                    Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
-                    return;
+                    //Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
+                    continue;
                 }
                 if (updateObj.tickOfLastUpdate>stateUpdate.tick)
                 {
-                    Logging.Warn($"Ignoring stale state update for object {updateObj.id} {updateObj.tickOfLastUpdate} {stateUpdate.tick}", "GameState");
-                    return;
+                    //Logging.Warn($"Ignoring stale state update for object {updateObj.id} {updateObj.tickOfLastUpdate} {stateUpdate.tick}", "GameState");
+                    continue;
                 }
                 updateObj.tickOfLastUpdate = tick;
                 updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
@@ -511,16 +510,6 @@ public partial class GameState : Node3D
                 //GameObject fixObj = GameObjectLoader.LoadObjectByType(stateUpdate.type);
                 //Local_SpawnObject(fixObj, stateUpdate.objectID, stateUpdate.sender, stateUpdate.type);
                 //fixObj.ProcessStateUpdate(stateUpdate.data);
-            }
-
-            
-            if (StateUpdatePacketBuffer.Count>0)
-            {
-                processStateUpdates = true;
-            }
-            else
-            {
-                processStateUpdates = false;
             }
         }
     }
