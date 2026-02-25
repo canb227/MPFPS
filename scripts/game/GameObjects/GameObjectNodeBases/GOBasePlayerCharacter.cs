@@ -135,7 +135,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         }
         else if (Global.gameState.PlayerIDToControlledCharacter.TryGetValue(playerID, out ulong charID) && charID != 0)
         {
-            Logging.Error($"Player {playerID} Cannot take control of player character {id}, that player is already controlling character: {Global.gameState.GetCharacterControlledBy(controllingPlayerID).id} ", "PlayerCharacter");
+            Logging.Error($"Player {playerID} Cannot take control of player character {id}, that player is already controlling character: {Global.gameState.GetCharacterControlledBy(playerID).id} ", "PlayerCharacter");
         }
         else
         {
