@@ -57,7 +57,7 @@ public class SteamNetwork
     /// <summary>
     /// Max number of messages to attempt to process per frame. If we get frame delays because of spiky network traffic this needs turned down
     /// </summary>
-    private int maxMessagePerFramePerChannel = 1000;
+    private int maxMessagePerFramePerChannel = 200;
 
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
@@ -294,6 +294,10 @@ public class SteamNetwork
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
             int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
+            if(messageCount >= maxMessagePerFramePerChannel-1)
+            {
+                GD.Print("MAX MESSAGES THIS FRAME");
+            }
             for (int k = 0; k < messageCount; k++)
             {
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
