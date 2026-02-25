@@ -493,14 +493,14 @@ public partial class GameState : Node3D
                 }
                 if (updateObj.sleeping)
                 {
-                    //Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
+                    Logging.Warn($"Ignoring state update for slept object {updateObj.id}", "GameState");
                     continue;
                 }
-                if (updateObj.tickOfLastUpdate>stateUpdate.tick)
-                {
-                    //Logging.Warn($"Ignoring stale state update for object {updateObj.id} {updateObj.tickOfLastUpdate} {stateUpdate.tick}", "GameState");
-                    //continue;
-                }
+                // if (updateObj.tickOfLastUpdate>stateUpdate.tick)
+                // {
+                //     Logging.Warn($"Ignoring stale state update for object {updateObj.id} {updateObj.tickOfLastUpdate} {stateUpdate.tick}", "GameState");
+                //     continue;
+                // }
                 updateObj.tickOfLastUpdate = tick;
                 updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
             }
