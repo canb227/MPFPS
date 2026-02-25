@@ -100,7 +100,7 @@ public partial class GameState : Node3D
 
 
     private GameObject debugTarget;
-    private int numUpdatesPerFrame = 20;
+    private int numUpdatesPerTick = 200;
     //private ulong StateFreshnessThreshold { get; set; } = 60;
     private Queue<StateUpdatePacket> StateUpdatePacketBuffer = new();
     private Queue<PlayerInputData> PlayerInputPacketBuffer = new();
@@ -269,7 +269,7 @@ public partial class GameState : Node3D
         {
             bool continueUpdating = true;
             int numUpdates = 0;
-            while (continueUpdating && numUpdates < numUpdatesPerFrame && numUpdates < sortedDescending.Count)
+            while (continueUpdating && numUpdates < numUpdatesPerTick && numUpdates < sortedDescending.Count)
             {
                 ulong objID = sortedDescending.First().Key;
                 sortedDescending.RemoveAt(0);
