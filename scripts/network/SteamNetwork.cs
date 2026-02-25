@@ -288,12 +288,26 @@ public class SteamNetwork
     /// Message queue pump that pulls up to a set number of messages off the queue per frame.
     /// </summary>
     /// <param name="delta"></param>
+    int printUp = 0;
     public void PerFrame(double delta)
     {
+        if(printUp == 60)
+        {
+            
+        }
+        printUp++;
+        if(printUp == 60)
+        {
+            GD.Print("Message Nums: ");
+        }
         foreach (Channel channel in Enum.GetValues(typeof(Channel)))
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
             int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
+            if(printUp == 60)
+            {
+                GD.Print((int)channel + " " + messageCount);
+            }
             for (int k = 0; k < messageCount; k++)
             {
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
