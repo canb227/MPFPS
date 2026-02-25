@@ -57,7 +57,7 @@ public class SteamNetwork
     /// <summary>
     /// Max number of messages to attempt to process per frame. If we get frame delays because of spiky network traffic this needs turned down
     /// </summary>
-    private int maxMessagePerFramePerChannel = 20;
+    private int maxMessagePerFramePerChannel = 1000;
 
     /// <summary>
     /// if true, messages we send to ourself  get processed as if they had been sent over the network. If false, messages sent to ourself are discarded.
@@ -240,7 +240,7 @@ public class SteamNetwork
             nint ptr = NetworkUtils.BytesToPtr(data);
             SteamNetworkingIdentity identity = NetworkUtils.SteamIDToIdentity(remoteSteamID);
             result = SteamNetworkingMessages.SendMessageToUser(ref identity, ptr, (uint)data.Length, sendFlags, (int)channel);
-            //Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
+            Logging.Log($" MSGSND | TO: {SteamFriends.GetFriendPersonaName(identity.GetSteamID())}({identity.GetSteamID64()}) | SIZE: {data.Length} | RESULT: {result.ToString()}", "NetworkWire");
         }
         return result;
     }
@@ -254,7 +254,7 @@ public class SteamNetwork
     /// <param name="type"></param>
     /// <param name="remoteIdentities"></param>
     /// <returns></returns>
-    public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_Reliable)
+    public List<EResult> BroadcastData(byte[] data, Channel channel, List<ulong> remoteSteamIDs, int sendFlags = NetworkUtils.k_nSteamNetworkingSend_ReliableNoNagle)
     {
         List<EResult> retval = new List<EResult>();
         bool loopbackCheck = false;
