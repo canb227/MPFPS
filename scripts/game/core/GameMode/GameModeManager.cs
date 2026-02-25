@@ -243,7 +243,7 @@ public partial class GameModeManager : Node
                 }
             }
             //swarmManager.EvacuationStarted();
-            Global.gameState.AIManager.EvacuationStarted();
+            //Global.gameState.AIManager.EvacuationStarted();
         }
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
     }
@@ -300,7 +300,7 @@ public partial class GameModeManager : Node
         if (roundNumber == 0)
         {
             Logging.Log("Starting First Round as Peer", "GameModeManager");
-            Global.gameState.AIManager.NewRound();
+            //Global.gameState.AIManager.NewRound();
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
@@ -320,7 +320,7 @@ public partial class GameModeManager : Node
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
-            Global.gameState.AIManager.NewRound();
+            //Global.gameState.AIManager.NewRound();
 
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)
