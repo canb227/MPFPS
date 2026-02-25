@@ -339,7 +339,6 @@ public partial class GameState : Node3D
             newObj.id = data.id;
             newObj.authority = data.authority;
             newObj.type = data.type;
-            newObj.tickOfLastUpdate = 0;
             if (newObj.InitFromData(data))
             {
                 if (newObj is Node n)
@@ -400,7 +399,6 @@ public partial class GameState : Node3D
         gameObject.id = id;
         gameObject.authority = authority;
         gameObject.type = type;
-        gameObject.tickOfLastUpdate = 0;
         GameObjects[gameObject.id] = gameObject;
         return gameObject;
     }
@@ -504,7 +502,7 @@ public partial class GameState : Node3D
                     Logging.Warn($"Ignoring stale state update for object {updateObj.id} {updateObj.tickOfLastUpdate} {stateUpdate.tick}", "GameState");
                     return;
                 }
-                updateObj.tickOfLastUpdate = stateUpdate.tick;
+                updateObj.tickOfLastUpdate = tick;
                 updateObj.ProcessStateUpdate(stateUpdate.data.ToArray());
             }
             else
