@@ -293,7 +293,7 @@ public class SteamNetwork
     {
         if(printUp == 60)
         {
-            
+            printUp = 0;
         }
         printUp++;
         if(printUp == 60)
