@@ -23,6 +23,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         {
             SetPhysicsProcess(false);
         }
+        priority = 10;
     }
     public override void ProcessStateUpdate(byte[] update)
     {

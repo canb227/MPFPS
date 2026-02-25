@@ -175,7 +175,7 @@ public partial class Hands : GOBaseInventoryItem
             heldObject = item;
             heldObject.OnHold(equippedBySteamID);
             item.currentlyHeldBy = equippedBySteamID;
-            (heldObject as GameObject).priority *= 5;
+            (heldObject as GameObject).priority = 30;
             (heldObject as GameObject).authority = equippedBySteamID;
             (heldObject as RigidBody3D).AddCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
             if (NetworkUtils.IsMe(equippedBySteamID))
@@ -189,7 +189,7 @@ public partial class Hands : GOBaseInventoryItem
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void ReleaseHeld()
     {
-        (heldObject as GameObject).priority /= 5;
+        (heldObject as GameObject).priority = 10;
         (heldObject as RigidBody3D).RemoveCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
         heldObject.OnRelease(equippedBySteamID);
         heldObject.currentlyHeldBy = 0;
