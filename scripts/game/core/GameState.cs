@@ -100,7 +100,7 @@ public partial class GameState : Node3D
 
 
     private GameObject debugTarget;
-    private int numUpdatesPerFrame = 200;
+    private int numUpdatesPerFrame = 20000;
     //private ulong StateFreshnessThreshold { get; set; } = 60;
     private Queue<StateUpdatePacket> StateUpdatePacketBuffer = new();
     private Queue<PlayerInputData> PlayerInputPacketBuffer = new();
