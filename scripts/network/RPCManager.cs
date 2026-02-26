@@ -140,7 +140,7 @@ public static class RPCManager
     {
         bool log = sender != Global.steamid;
 
-        if (log) Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message).Substr(0,50)}", "RPCManagerWire");
+        //if (log) Logging.Log($"RPC received with payload: {MessagePackSerializer.ConvertToJson(message).Substr(0,50)}", "RPCManagerWire");
         RPCMessage packet = MessagePackSerializer.Deserialize<RPCMessage>(message);
 
         //if (log) Logging.Log($"Successfully parsed payload. Parameter list has {packet.parameters.Length} values:", "RPCManagerWire");

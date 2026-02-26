@@ -44,7 +44,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         characterSoundManager = new();
         navAgent.PathDesiredDistance = 0.5f;
         navAgent.TargetDesiredDistance = 0.5f;
-        Logging.Log($"Spawned new SwarmRobot with initial state: {state} and target: {MovementTarget.Name}", "SwarmRobot");
+        //Logging.Log($"Spawned new SwarmRobot with initial state: {state} and target: {MovementTarget.Name}", "SwarmRobot");
 
     }
 

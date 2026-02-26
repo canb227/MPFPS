@@ -49,7 +49,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         priority = 1;
         myBucket = computeBucket++ % bucketCount;
         UpdateGridLocation();
-        Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
+        //Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
 
 
         //debug for stuck detection, terrible for performance, uncomment in the pathfinding also
@@ -65,6 +65,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public HordeAgent SpawnAgent(Vector3 spawnPosition)
     {
+        GD.Print("Spawn Agent at: " + spawnPosition);
         state = HordeAgentState.SWARM;
         currentHealth = maxHealth;
         root.Visible = true;
