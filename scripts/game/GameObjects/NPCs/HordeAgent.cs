@@ -80,7 +80,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         Global.gameState.AIManager.controlledNPCs.Add(this);
         //GlobalTransform = new Transform3D(Basis.Identity, spawnPosition);
         //ResetPhysicsInterpolation();
-        targetPosition = spawnPosition;
+        GlobalPosition = spawnPosition;
         UpdateGridLocation();
         return this;
     }
