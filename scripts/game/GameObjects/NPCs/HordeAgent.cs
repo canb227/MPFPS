@@ -371,21 +371,23 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
 
     Vector3 velocity = Vector3.Zero;
-    float accel = 7.0f;
-    float followSpeed = 14.0f;
+    float accel = 9.0f;
+    float followSpeed = 24.0f;
 
     private void LerpAgent(float deltaF, float ticksPerUpdate)
     {
         //face the direction we are moving
-        Vector3 moveDir = (targetPosition - GlobalPosition).Normalized();
-        if (moveDir.LengthSquared() > 0.001f)
-        {
-            Vector3 targetForward = moveDir;
-            Vector3 currentForward = -GlobalTransform.Basis.Z; // forward in Godot
-            Vector3 newForward = currentForward.Lerp(targetForward, 0.1f).Normalized();
+        Vector3 forward = -GlobalTransform.Basis.Z;
+        Vector3 desired = velocity.Normalized();
 
-            LookAt(GlobalPosition + newForward, Vector3.Up);
-        }
+        // rotation smoothing strength
+        float turnSharpness = 6f; // lower = smoother, higher = snappier
+
+        float t = 1f - Mathf.Exp(-turnSharpness * deltaF);
+        Vector3 newForward = forward.Lerp(desired, t).Normalized();
+
+        LookAt(GlobalPosition + newForward, Vector3.Up);
+
 
         //lerp towards targetPosition
         Vector3 desiredVel = (targetPosition - GlobalPosition) * followSpeed;
