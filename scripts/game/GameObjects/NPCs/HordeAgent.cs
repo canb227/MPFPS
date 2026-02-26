@@ -65,7 +65,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public HordeAgent SpawnAgent(Vector3 spawnPosition)
     {
-        GD.Print("Spawn Agent at: " + spawnPosition);
         state = HordeAgentState.SWARM;
         currentHealth = maxHealth;
         root.Visible = true;
@@ -93,24 +92,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             attackCooldown -= delta;
         }
     }
-
-    // public override void PerTickAuth(double delta)
-    // {
-    //     base.PerTickAuth(delta);
-    //     switch (state)
-    //     {
-    //         case HordeAgentState.NONE:
-    //             break;
-    //         case HordeAgentState.IDLE:
-    //             break;
-    //         case HordeAgentState.SWARM:
-    //             break;
-    //         case HordeAgentState.SIMPLECHASE:
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
 
     private double deltaAccumulator = 0;
     private bool triedApplyStatePacket;
@@ -185,6 +166,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         
     }
 
+    public override void PerFrameShared(double delta)
+    {
+        base.PerFrameShared(delta);
+    }
+
+
     private void PerTickAgentShared(double delta)
     {
         Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
@@ -215,7 +202,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             AttackTick();
         }
+        LerpAgent((float)delta, 1);
     }
+    
 
     private void PerTickAgentAuth(double delta)
     {
@@ -256,11 +245,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             if(!triedApplyStatePacket)
             {
                 triedApplyStatePacket = true;
-                if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
-                {
-                    GD.Print("TELEPORT TO NETWORK TRANSFORM");
-                    Transform = targetNetworkTransform;
-                }
+                // if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
+                // {
+                //     GD.Print("TELEPORT TO NETWORK TRANSFORM");
+                //     Transform = targetNetworkTransform;
+                // }
             }
             else
             {
@@ -270,13 +259,23 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
 
         deltaAccumulator = 0;
-        LerpAgent((float)delta, 1);
     }
 
     private void LerpAgent(float deltaF, float ticksPerUpdate)
     {
+        //face the direction we are moving
+        Vector3 moveDir = (targetPosition - GlobalPosition).Normalized();
+        if (moveDir.LengthSquared() > 0.001f)
+        {
+            Vector3 targetForward = moveDir;
+            Vector3 currentForward = -GlobalTransform.Basis.Z; // forward in Godot
+            Vector3 newForward = currentForward.Lerp(targetForward, 0.1f).Normalized();
+
+            LookAt(GlobalPosition + newForward, Vector3.Up);
+        }
+
         //lerp towards targetPosition
-        Position = Position.Lerp(targetPosition, 60.0f * deltaF * (1/ticksPerUpdate));
+        Position = Position.Lerp(targetPosition, 60.0f * deltaF * (1f/ticksPerUpdate));
     }
 
     public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
@@ -409,10 +408,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         //we track state update freshness
         //if the stateupdate is new enough we add it in as a weighting for target location
         Vector3 networkOrigin = Vector3.Zero;
-        if(stateUpdateAge < 0.10f)
-        {
-            networkOrigin = targetNetworkTransform.Origin;
-        }
+        // if(stateUpdateAge < 0.10f)
+        // {
+        //     networkOrigin = targetNetworkTransform.Origin;
+        // }
 
         //var wallRepulsion = ComputeWallRepulsion(origin, 0.4f, 1.0f);
         //float wallWeight = 3.0f;
@@ -422,8 +421,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             //avoidance * avoidWeight + 
             pathDir * pathWeight +
             separation * sepWeight +
-            cohesion * cohWeight +
-            networkOrigin * networkWeight;// +
+            cohesion * cohWeight ;//+
+            //networkOrigin * networkWeight;// +
             //wallRepulsion * wallWeight;
             
 
@@ -464,15 +463,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 currentIndex++;
             }
         }
-        Vector3 moveDir = (targetPosition - GlobalPosition).Normalized();
-        if (moveDir.LengthSquared() > 0.001f)
-        {
-            Vector3 targetForward = moveDir;
-            Vector3 currentForward = -GlobalTransform.Basis.Z; // forward in Godot
-            Vector3 newForward = currentForward.Lerp(targetForward, 0.1f).Normalized();
 
-            LookAt(GlobalPosition + newForward, Vector3.Up);
-        }
         positionTimer += (float)delta;
         if(positionTimer >= 3f)
         {
@@ -578,7 +569,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        this.Transform = message.transform;
+        this.targetPosition = message.transform.Origin;
         this.state = message.state;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
