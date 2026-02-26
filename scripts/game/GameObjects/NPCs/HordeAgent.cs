@@ -294,6 +294,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
 
         deltaAccumulator = 0;
+        LerpAgent((float)delta, 1); //must move on host
     }
     private const ulong INTERPOLATION_TICK_DELAY = 3; // render 3 ticks behind
     private const int BUFFER_SIZE = 64;
