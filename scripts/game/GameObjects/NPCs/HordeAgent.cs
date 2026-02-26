@@ -237,7 +237,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             AttackTick();
         }
-        LerpAgent((float)delta, 1);
+        //LerpAgent((float)delta, 1);
     }
     
 
