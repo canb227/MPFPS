@@ -66,6 +66,8 @@ public static class Logging
     /// <param name="timestamp">If true a system timestamp is added to the message.</param>
     public static void Log(string message, string prefix, bool timestamp = true, bool codeTrace = false, [CallerLineNumber] int line = 0, [CallerMemberName] string caller = "", [CallerFilePath] string callerFile = "")
     {
+        bool release = true; //TODO turn on/off all logging
+        if(release) return;
         if (!IsStarted) return;
         if (categories.TryGetValue(prefix,out var category))
         {

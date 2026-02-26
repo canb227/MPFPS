@@ -151,6 +151,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
     }
 
+    public override void PerTickShared(double delta)
+    {
+        base.PerFrameShared(delta);
+        PerTickAgentShared(delta);
+    }
+
+
     public override void PerTickAuth(double delta)
     {
         tickIndex++;
@@ -161,7 +168,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             case HordeAgentState.IDLE:
                 break;
             case HordeAgentState.SWARM:
-                PerTickAgent(delta);
+                PerTickAgentAuth(delta);
                 break;
             case HordeAgentState.SIMPLECHASE:
                 timeSincePathUpdate += (float)delta;
@@ -170,7 +177,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 {
                     RecalculatePath(delta);
                 }
-                PerTickAgent(delta);
+                PerTickAgentAuth(delta);
                 break;
             default:
                 break;
@@ -178,11 +185,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         
     }
 
-    private void PerTickAgent(double delta)
+    private void PerTickAgentShared(double delta)
     {
-        stateUpdateAge += (float)delta;
-        base.PerTickAuth(delta);
-        // Distance to local player
         Vector3 playerPos = Global.gameState.AIManager.localPlayer.GlobalPosition;
         float dist = (GlobalPosition - playerPos).Length();
 
@@ -206,6 +210,44 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             meleeArea.Monitoring = true;
         }
 
+        //attempt to attack, look for overlapping bodies and attack if off cooldown
+        if(meleeArea.Monitoring)
+        {
+            AttackTick();
+        }
+    }
+
+    private void PerTickAgentAuth(double delta)
+    {
+        stateUpdateAge += (float)delta;
+        base.PerTickAuth(delta);
+
+        // Distance to all players for priority assignment
+        float dist = 999;
+        foreach(BasicPlayerCharacter playerCharacter in Global.gameState.gameModeManager.basicPlayers.Values)
+        {
+            float tempDist = (GlobalPosition - playerCharacter.GlobalPosition).Length();
+            if(tempDist < dist)
+            {
+                dist = tempDist;
+            }
+        }
+        
+
+        // Decide update frequency
+        if (dist > midRange)
+        {
+            priority = 1;
+        } 
+        else if (dist > nearRange)
+        {
+            priority = 5;
+        } 
+        else 
+        {
+            priority = 10;
+        }
+
         deltaAccumulator += delta;
         updateCounter = 0;
         if(path != null)
@@ -225,11 +267,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 MoveAgent(deltaAccumulator);
                 UpdateGridLocation();
             }
-        }
-        //attempt to attack, look for overlapping bodies and attack if off cooldown
-        if(meleeArea.Monitoring)
-        {
-            AttackTick();
         }
 
         deltaAccumulator = 0;

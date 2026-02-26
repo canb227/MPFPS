@@ -335,7 +335,10 @@ public partial class GameState : Node3D
     {
         GameObjectConstructorData data = MessagePackSerializer.Deserialize<GameObjectConstructorData>(_data);
         GameObject newObj = GameObjectLoader.LoadObjectByType(type);
-        Logging.Log($"Spawning {type} on local machine with ID: {data.id} and authority {data.authority}", "GameState");
+        if(type != GameObjectType.HordeAgent)
+        {
+            Logging.Log($"Spawning {type} on local machine with ID: {data.id} and authority {data.authority}", "GameState");
+        }
         if (newObj != null)
         {
             newObj.id = data.id;
