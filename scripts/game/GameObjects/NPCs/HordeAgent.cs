@@ -136,6 +136,32 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         base.PerFrameShared(delta);
         PerTickAgentShared(delta);
+
+        switch (state)
+        {
+            case HordeAgentState.NONE:
+                root.Visible = false;
+                break;
+            case HordeAgentState.IDLE:
+                root.Visible = false;
+                break;
+            case HordeAgentState.SWARM:
+                root.Visible = true;
+                PerTickAgentAuth(delta);
+                break;
+            case HordeAgentState.SIMPLECHASE:
+                root.Visible = true;
+                timeSincePathUpdate += (float)delta;
+                //bucket scheduling
+                if (tickIndex % bucketCount == myBucket)
+                {
+                    RecalculatePath(delta);
+                }
+                PerTickAgentAuth(delta);
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -611,16 +637,16 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public void rpc_OnDeath(ulong byID)
     {
         // ProcessMode = ProcessModeEnum.Disabled;
-        currentHealth = 0;
         root.Visible = false;
         bodyArea.Monitorable = false;
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
+        currentHealth = maxHealth;
         if (byID != 0)
         {
             Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         }
-        Position = new Vector3(-999, -999, -999);
+        Position = new Vector3(0, -10, 0);
         UpdateGridLocation();
         Global.gameState.AIManager.agentPool.Add(this);
         Global.gameState.AIManager.controlledNPCs.Remove(this);
