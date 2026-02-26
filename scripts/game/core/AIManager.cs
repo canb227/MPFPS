@@ -52,6 +52,12 @@ public partial class AIManager : Node3D
         }
         path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
 
+        RPCManager.RPC(this, "SpawnAgents", [hordeSpawnLocation]);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void SpawnAgents(Transform3D hordeSpawnLocation)
+    {
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {

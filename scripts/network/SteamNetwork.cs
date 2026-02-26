@@ -291,23 +291,23 @@ public class SteamNetwork
     int printUp = 0;
     public void PerFrame(double delta)
     {
-        if(printUp == 60)
-        {
-            printUp = 0;
-        }
-        printUp++;
-        if(printUp == 60)
-        {
-            GD.Print("Message Nums: ");
-        }
+        // if(printUp == 60)
+        // {
+        //     printUp = 0;
+        // }
+        // printUp++;
+        // if(printUp == 60)
+        // {
+        //     GD.Print("Message Nums: ");
+        // }
         foreach (Channel channel in Enum.GetValues(typeof(Channel)))
         {
             nint[] messages = new nint[maxMessagePerFramePerChannel];
             int messageCount = SteamNetworkingMessages.ReceiveMessagesOnChannel((int)channel, messages, maxMessagePerFramePerChannel);
-            if(printUp == 60)
-            {
-                GD.Print((int)channel + " " + messageCount);
-            }
+            // if(printUp == 60)
+            // {
+            //     GD.Print((int)channel + " " + messageCount);
+            // }
             for (int k = 0; k < messageCount; k++)
             {
                 SteamNetworkingMessage_t steamMessage = SteamNetworkingMessage_t.FromIntPtr(messages[k]);
