@@ -127,7 +127,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         Logging.Log($"Player {playerID} is taking control of character {id}", "GameModeManager");
         if(playerID == Global.steamid)
         {
-            //Global.gameState.AIManager.UpdateLocalPlayer(this);
+            Global.gameState.AIManager.UpdateLocalPlayer(this);
         }
         if (controllingPlayerID != 0)
         {
