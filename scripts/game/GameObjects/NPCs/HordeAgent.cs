@@ -8,6 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//used for experimental interpolation code
+public struct NetState
+{
+    public Vector3 Position;
+    public ulong tick;
+}
+
+
 
 [GlobalClass]
 public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
@@ -195,6 +203,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void PerFrameShared(double delta)
     {
         base.PerFrameShared(delta);
+        PerFrameStateInterpolation(delta);
     }
 
 
@@ -286,6 +295,80 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         deltaAccumulator = 0;
     }
+    private const ulong INTERPOLATION_TICK_DELAY = 3; // render 3 ticks behind
+    private const int BUFFER_SIZE = 64;
+
+    private NetState[] buffer = new NetState[BUFFER_SIZE];
+    private int bufferCount = 0;
+
+    private Vector3 lastInterpPos;
+
+    public void PerFrameStateInterpolation(double delta)
+    {
+        ulong renderTick = Global.gameState.tick - INTERPOLATION_TICK_DELAY;
+
+        if (bufferCount < 2)
+            return;
+
+        NetState stateA = new NetState();
+        NetState stateB = new NetState();
+        bool found = false;
+
+        // Find two buffered states around renderTick
+        for (int i = 0; i < bufferCount - 1; i++)
+        {
+            if (buffer[i].tick <= renderTick && buffer[i + 1].tick >= renderTick)
+            {
+                stateA = buffer[i];
+                stateB = buffer[i + 1];
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            // If renderTick is ahead of our buffer, snap to newest
+            GlobalPosition = buffer[0].Position;
+            return;
+        }
+
+        // Interpolation factor based on ticks
+        float t = Mathf.InverseLerp(stateA.tick, stateB.tick, renderTick);
+
+        // Interpolated position
+        Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
+        GlobalPosition = interpPos;
+
+        // Smooth facing using velocity between interpolated frames
+        Vector3 vel = interpPos - lastInterpPos;
+        if (vel.LengthSquared() > 0.0001f)
+        {
+            Vector3 forward = -GlobalTransform.Basis.Z;
+            Vector3 newForward = forward.Lerp(vel.Normalized(), 0.15f);
+            LookAt(GlobalPosition + newForward, Vector3.Up);
+        }
+
+        lastInterpPos = interpPos;
+    }
+
+    // Called when a network update arrives
+    public void AddNetworkState(Vector3 pos, ulong netTick)
+    {
+        // Shift buffer down
+        for (int i = BUFFER_SIZE - 1; i > 0; i--)
+            buffer[i] = buffer[i - 1];
+
+        buffer[0] = new NetState
+        {
+            Position = pos,
+            tick = netTick
+        };
+
+        bufferCount = Mathf.Min(bufferCount + 1, BUFFER_SIZE);
+    }
+
+
 
     private void LerpAgent(float deltaF, float ticksPerUpdate)
     {
@@ -585,7 +668,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override byte[] GenerateStateUpdate()
     {
         HordeAgentStateMessage message = new HordeAgentStateMessage();
-        message.transform = this.GlobalTransform;
+        message.transformOrigin = this.GlobalTransform.Origin;
+        message.tick = Global.gameState.tick;
         //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
         message.state = this.state;
 
@@ -595,7 +679,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        this.targetPosition = message.transform.Origin;
+        AddNetworkState(message.transformOrigin, message.tick);
+        this.targetPosition = message.transformOrigin;
         this.state = message.state;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
@@ -784,10 +869,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 public struct HordeAgentStateMessage
 {
     [Key(0)]
-    public Transform3D transform;
+    public Vector3 transformOrigin;
 
     [Key(1)]
     public HordeAgentState state;
+    [Key(2)]
+    public ulong tick;
 
 }
 
