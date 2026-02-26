@@ -300,7 +300,7 @@ public partial class SwarmRobot : GOBaseNPC, IsDamagable
         //Logging.Log($"{damage} Damage Taken, {currentHealth} Health Remains", "SwarmRobot");
         if (currentHealth <= 0 && Global.steamid == authority) //only authority can say it died
         {
-            Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
+            //Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
             OnDeath(byID);
         }
     }

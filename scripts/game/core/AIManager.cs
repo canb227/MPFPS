@@ -50,14 +50,15 @@ public partial class AIManager : Node3D
                 targetLocation = new Vector3(20, 0, 28); //just for debug
             }
         }
-        path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
-
-        RPCManager.RPC(this, "SpawnAgents", [hordeSpawnLocation]);
+        
+        RPCManager.RPC(this, "SpawnAgents", [hordeSpawnLocation, targetLocation]);
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void SpawnAgents(Transform3D hordeSpawnLocation)
+    public void SpawnAgents(Transform3D hordeSpawnLocation, Vector3 targetLocation)
     {
+        GD.Print("SpawnAgents RPC");
+        path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
@@ -70,13 +71,16 @@ public partial class AIManager : Node3D
     {
         agentPool.Clear();
         controlledNPCs.Clear();
-        for(int i = 0; i < agentPoolCount; i++)
+        if(Global.Lobby.bIsLobbyHost)
         {
-            GameObjectConstructorData data = new(GameObjectType.HordeAgent);
-            data.spawnTransform = Transform3D.Identity;
-            data.spawnTransform.Origin = new Vector3(0,0,0);
-            data.paramList.Add(HordeAgentState.NONE);
-            Global.gameState.Auth_SpawnObject(GameObjectType.HordeAgent, data);
+            for(int i = 0; i < agentPoolCount; i++)
+            {
+                GameObjectConstructorData data = new(GameObjectType.HordeAgent);
+                data.spawnTransform = Transform3D.Identity;
+                data.spawnTransform.Origin = new Vector3(0,0,0);
+                data.paramList.Add(HordeAgentState.NONE);
+                Global.gameState.Auth_SpawnObject(GameObjectType.HordeAgent, data);
+            }
         }
     }
     public override void _Ready()
@@ -87,7 +91,7 @@ public partial class AIManager : Node3D
     public void NewRound()
     {
         evacuationStarted = false;
-        currentHordeCooldown = 10;
+        currentHordeCooldown = 10; //TODO set this to a real number
         grid = new();
         agentPool = new();
         controlledNPCs = new();
@@ -146,7 +150,6 @@ public partial class AIManager : Node3D
     public void UpdateAllAgentPaths()
     {
         Vector3 targetPosition = Global.gameState.gameModeManager.generator.GlobalPosition;
-
         RPCManager.RPC(this, "UpdateAgentsPathOnClient", [targetPosition.X,targetPosition.Z]);
     }
 

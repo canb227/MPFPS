@@ -565,7 +565,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         //&& Global.steamid == authority) //only authority can say it died
         if (currentHealth <= 0) //we now allow anybody to publish damage because each client manages the swarm robots locally, very easy to cheat WARNING
         {
-            Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
+            //Logging.Log($"{id} SwarmRobot has died", "SwarmRobot");
             OnDeath(byID);
         }
     }
