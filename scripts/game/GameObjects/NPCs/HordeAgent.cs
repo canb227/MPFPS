@@ -200,7 +200,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         
     }
 
-    public override void PerFrameShared(double delta)
+    public override void PerFrameLocal(double delta)
     {
         base.PerFrameShared(delta);
         PerFrameStateInterpolation(delta);
@@ -370,6 +370,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     }
 
 
+    Vector3 velocity = Vector3.Zero;
+    float accel = 7.0f;
+    float followSpeed = 14.0f;
 
     private void LerpAgent(float deltaF, float ticksPerUpdate)
     {
@@ -385,8 +388,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
 
         //lerp towards targetPosition
-        Position = Position.Lerp(targetPosition, 60.0f * deltaF * (1f/ticksPerUpdate));
+        Vector3 desiredVel = (targetPosition - GlobalPosition) * followSpeed;
+        velocity = velocity.Lerp(desiredVel, 1f - Mathf.Exp(-accel * deltaF));
+        GlobalPosition += velocity * deltaF;
     }
+
 
     public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
     {
