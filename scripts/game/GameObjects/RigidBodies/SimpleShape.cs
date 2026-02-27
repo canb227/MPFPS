@@ -19,10 +19,10 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
     public override void _Ready()
     {
         base._Ready();
-        if (authority != Global.steamid)
-        {
-            SetPhysicsProcess(false);
-        }
+        // if (authority != Global.steamid)
+        // {
+        //     SetPhysicsProcess(false);
+        // }
         priority = 10;
     }
     public override void ProcessStateUpdate(byte[] update)
@@ -31,7 +31,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         //LinearVelocity = sssu.velocity;
         //desiredPosition = sssu.position;
         //desiredQuaternion = sssu.quaternion;
-        Position = sssu.position;
+        GlobalPosition = sssu.position;
         Quaternion = sssu.quaternion;
     }
 
@@ -51,7 +51,7 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        //Position = Position.Lerp(desiredPosition, (float)(delta * 8f));
+        // Position = Position.Lerp(desiredPosition, (float)(delta * 8f));
         // Godot.Quaternion temp = desiredQuaternion.Normalized();
         // if (temp.IsNormalized())
         // {
