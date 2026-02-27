@@ -61,7 +61,7 @@ public partial class AIManager : Node3D
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
             //spawn the agent and set its path
-            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin).UpdatePath(path);
+            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin, i).UpdatePath(path);
         }
     }
 

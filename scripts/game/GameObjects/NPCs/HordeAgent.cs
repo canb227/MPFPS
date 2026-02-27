@@ -71,7 +71,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     }
 
-    public HordeAgent SpawnAgent(Vector3 spawnPosition)
+    public HordeAgent SpawnAgent(Vector3 spawnPosition, int index)
     {
         state = HordeAgentState.SWARM;
         currentHealth = maxHealth;
@@ -80,7 +80,22 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         Global.gameState.AIManager.controlledNPCs.Add(this);
         //GlobalTransform = new Transform3D(Basis.Identity, spawnPosition);
         //ResetPhysicsInterpolation();
-        GlobalPosition = spawnPosition;
+            // Tuning parameters
+        float spacing = 0.5f; // Distance between agents
+        float goldenAngle = 2.39996f; // Radians (~137.5 degrees)
+
+        // Calculate offset based on index
+        float radius = spacing * Mathf.Sqrt(index);
+        float angle = index * goldenAngle;
+
+        Vector3 offset = new Vector3(
+            Mathf.Cos(angle) * radius,
+            0, // Keep them on the same floor level
+            Mathf.Sin(angle) * radius
+        );
+
+        // Apply the offset to the base spawn position
+        GlobalPosition = spawnPosition + offset;
         UpdateGridLocation();
         return this;
     }
@@ -143,7 +158,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void PerTickShared(double delta)
     {
         base.PerFrameShared(delta);
-        PerTickAgentShared(delta);
+
 
         switch (state)
         {
@@ -155,17 +170,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 break;
             case HordeAgentState.SWARM:
                 root.Visible = true;
-                PerTickAgentAuth(delta);
+                PerTickAgentShared(delta);
                 break;
             case HordeAgentState.SIMPLECHASE:
                 root.Visible = true;
-                timeSincePathUpdate += (float)delta;
-                //bucket scheduling
-                if (tickIndex % bucketCount == myBucket)
-                {
-                    RecalculatePath(delta);
-                }
-                PerTickAgentAuth(delta);
+                PerTickAgentShared(delta);
                 break;
             default:
                 break;
@@ -276,25 +285,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         updateCounter = 0;
         if(path != null)
         {
-            //if our location is too far from the fresh networked state we teleport to the correct origin once
-            if(!triedApplyStatePacket)
-            {
-                triedApplyStatePacket = true;
-                // if(Transform.Origin.DistanceSquaredTo(targetNetworkTransform.Origin) > 5)
-                // {
-                //     GD.Print("TELEPORT TO NETWORK TRANSFORM");
-                //     Transform = targetNetworkTransform;
-                // }
-            }
-            else
-            {
-                MoveAgent(deltaAccumulator);
-                UpdateGridLocation();
-            }
+            MoveAgent(deltaAccumulator);
+            UpdateGridLocation();
         }
 
         deltaAccumulator = 0;
-        LerpAgent((float)delta, 1); //must move on host
+        //LerpAgent((float)delta, 1); //must move on host
     }
     private const ulong INTERPOLATION_TICK_DELAY = 3; // render 3 ticks behind
     private const int BUFFER_SIZE = 64;
@@ -343,12 +339,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         // Smooth facing using velocity between interpolated frames
         Vector3 vel = interpPos - lastInterpPos;
-        if (vel.LengthSquared() > 0.0001f)
-        {
-            Vector3 forward = -GlobalTransform.Basis.Z;
-            Vector3 newForward = forward.Lerp(vel.Normalized(), 0.15f);
-            LookAt(GlobalPosition + newForward, Vector3.Up);
-        }
+        SmoothRotateY(vel, (float)delta);
 
         lastInterpPos = interpPos;
     }
@@ -368,33 +359,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         bufferCount = Mathf.Min(bufferCount + 1, BUFFER_SIZE);
     }
-
-
-    Vector3 velocity = Vector3.Zero;
-    float accel = 9.0f;
-    float followSpeed = 24.0f;
-
-    private void LerpAgent(float deltaF, float ticksPerUpdate)
-    {
-        //face the direction we are moving
-        Vector3 forward = -GlobalTransform.Basis.Z;
-        Vector3 desired = velocity.Normalized();
-
-        // rotation smoothing strength
-        float turnSharpness = 6f; // lower = smoother, higher = snappier
-
-        float t = 1f - Mathf.Exp(-turnSharpness * deltaF);
-        Vector3 newForward = forward.Lerp(desired, t).Normalized();
-
-        LookAt(GlobalPosition + newForward, Vector3.Up);
-
-
-        //lerp towards targetPosition
-        Vector3 desiredVel = (targetPosition - GlobalPosition) * followSpeed;
-        velocity = velocity.Lerp(desiredVel, 1f - Mathf.Exp(-accel * deltaF));
-        GlobalPosition += velocity * deltaF;
-    }
-
 
     public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
     {
@@ -425,7 +389,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float sepWeight = 2;
     private float avoidWeight = 30;
     private float networkWeight = 2;
-    private float speed = 4;
     private float navMeshSnapTolerance = 0.1f;
     private int currentIndex = 0;
     private float waypointThreshold = 20.0f;
@@ -434,7 +397,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private Vector3 positionOneSecondAgo;
     private float positionTimer;
     private float distanceLastCheck = 999;
-
+    private Vector3 velocity = Vector3.Zero;
     private void MoveAgent(double delta)
     {
         if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
@@ -548,8 +511,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             steering = steering.Normalized();
 
         //var space = GetWorld3D().DirectSpaceState;
+        float accel = 5.0f;
+        float speed = 30.0f;
+        float followSpeed = 11.0f;
 
-        Vector3 candidate = GlobalPosition + steering * deltaF * speed;
+        Vector3 candidate = GlobalPosition + steering.Normalized() * deltaF * speed;
         // Raycast from current position to candidate
         var query = new PhysicsRayQueryParameters3D
         {
@@ -559,20 +525,23 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         };
 
         var hit = space.IntersectRay(query);
+        targetPosition = candidate;
+        
+        //calculate desiredVel
+        Vector3 desiredVel = (targetPosition - GlobalPosition) * followSpeed;
+        velocity = velocity.Lerp(desiredVel, 1f - Mathf.Exp(-accel * deltaF));
 
         if (hit.Count > 0 && !stuck)
         {
-            // Obstacle detected: clamp to hit position
-            targetPosition =  GlobalPosition; //- steering * deltaF * speed * 1;
+            Vector3 wallNormal = (Vector3)hit["normal"];
+            velocity = velocity.Slide(wallNormal) + (wallNormal * 0.2f);
+            //GD.Print("SLIDE TIME");
         }
-        else
-        {
-            // Free path
-            targetPosition = candidate;
-        }
+        //rotate
+        SmoothRotateY(velocity, deltaF);
 
-
-        //targetPosition = candidate;
+        //move towards targetPosition
+        GlobalPosition += velocity * deltaF;
 
         if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold && currentIndex < path.Count - 1)
         {
@@ -581,15 +550,19 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 currentIndex++;
             }
         }
+    }
 
-        positionTimer += (float)delta;
-        if(positionTimer >= 3f)
+    public float TurnSpeed = 1.0f; // Higher = snappier
+
+    public void SmoothRotateY(Vector3 velocity, float deltaF)
+    {
+        if (velocity.LengthSquared() > 0.01f)
         {
-            positionTimer = 0;
-            distanceLastCheck = positionOneSecondAgo.DistanceSquaredTo(GlobalPosition);
-            positionOneSecondAgo = GlobalPosition;
+            float targetAngle = (float)Math.PI + Mathf.Atan2(velocity.X, velocity.Z);
+            float currentAngle = Rotation.Y;
+            float nextAngle = Mathf.LerpAngle(currentAngle, targetAngle, (float)deltaF * TurnSpeed);
+            Rotation = new Vector3(0, targetAngle, 0);
         }
-
     }
     
     public void UpdatePath(List<Vector3> path)
