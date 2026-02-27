@@ -177,6 +177,17 @@ public partial class Hands : GOBaseInventoryItem
             item.currentlyHeldBy = equippedBySteamID;
             (heldObject as GameObject).priority = 30;
             (heldObject as GameObject).authority = equippedBySteamID;
+            if(NetworkUtils.IsMe(equippedBySteamID))
+            {
+                (heldObject as SimpleShape).Freeze = false;
+                (heldObject as SimpleShape).SetPhysicsProcess(true);
+            }
+            else
+            {
+                (heldObject as SimpleShape).Freeze = true;
+                (heldObject as SimpleShape).SetPhysicsProcess(false);
+            }
+
             (heldObject as RigidBody3D).AddCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
             if (NetworkUtils.IsMe(equippedBySteamID))
             {
