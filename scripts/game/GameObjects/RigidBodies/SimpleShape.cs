@@ -29,8 +29,10 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
     {
         SimpleShapeStateUpdate sssu = MessagePackSerializer.Deserialize<SimpleShapeStateUpdate>(update);
         //LinearVelocity = sssu.velocity;
-        desiredPosition = sssu.position;
-        desiredQuaternion = sssu.quaternion;
+        //desiredPosition = sssu.position;
+        //desiredQuaternion = sssu.quaternion;
+        Position = sssu.position;
+        Quaternion = sssu.quaternion;
     }
 
     public override byte[] GenerateStateUpdate()
@@ -49,14 +51,12 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        float lerpWeight = (float)(delta * 10f); 
-
-        GlobalPosition = GlobalPosition.Lerp(desiredPosition, lerpWeight);
-        
-        if (desiredQuaternion.LengthSquared() > 0.001f) 
-        {
-            Quaternion = Quaternion.Slerp(desiredQuaternion, lerpWeight);
-        }
+        //Position = Position.Lerp(desiredPosition, (float)(delta * 8f));
+        // Godot.Quaternion temp = desiredQuaternion.Normalized();
+        // if (temp.IsNormalized())
+        // {
+        //     Quaternion = Quaternion.Slerp(temp, (float)(delta * 8f));
+        // }
     }
 
     public override void PerFrameLocal(double delta)
