@@ -308,25 +308,20 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         if (bufferCount < 2) return;
 
-        // 1. Advance a 'local' playback clock that supports decimals
-        // This allows smooth movement between integer ticks
         fractionalTick += delta * 60.0f; 
         
-        // Stay synced with the master game state, but with our delay
         double targetRenderTick = (double)Global.gameState.tick - INTERPOLATION_TICK_DELAY;
 
-        // 2. Find states (Assuming buffer[0] is NEWEST)
         NetState stateA = default;
         NetState stateB = default;
         bool found = false;
 
         for (int i = 0; i < bufferCount - 1; i++)
         {
-            // We want stateB to be newer than target, and stateA to be older
             if (buffer[i].tick >= targetRenderTick && buffer[i + 1].tick <= targetRenderTick)
             {
-                stateB = buffer[i]; // Newer
-                stateA = buffer[i + 1]; // Older
+                stateB = buffer[i];
+                stateA = buffer[i + 1];
                 found = true;
                 break;
             }
@@ -334,13 +329,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         if (found)
         {
-            // 3. Calculate 't' using floating point targetRenderTick
             float t = (float)((targetRenderTick - stateA.tick) / (stateB.tick - stateA.tick));
             t = Mathf.Clamp(t,0,1);
 
             Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
             
-            // Calculate velocity for rotation based on the change in position
             Vector3 vel = (interpPos - GlobalPosition) / (float)delta;
             GlobalPosition = interpPos;
 
@@ -349,15 +342,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
         else if (targetRenderTick > buffer[0].tick)
         {
-            // Extrapolation Logic: Buffer exhausted, move based on velocity
             GlobalPosition += lastVelocity * (float)delta;
         }
     }
 
-    // Called when a network update arrives
     public void AddNetworkState(Vector3 pos, ulong netTick)
     {
-        // Shift buffer down
         for (int i = BUFFER_SIZE - 1; i > 0; i--)
             buffer[i] = buffer[i - 1];
 

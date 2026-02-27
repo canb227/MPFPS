@@ -21,8 +21,11 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         base._Ready();
         if (authority != Global.steamid)
         {
+            Freeze = true;
+            FreezeMode = FreezeModeEnum.Kinematic;
             SetPhysicsProcess(false);
         }
+
         priority = 10;
     }
     public override void ProcessStateUpdate(byte[] update)
