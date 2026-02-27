@@ -300,48 +300,58 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     private Vector3 lastInterpPos;
 
+    // Store this globally or per-entity to keep track of fractional time
+    private double fractionalTick; 
+    private Vector3 lastVelocity;
+
     public void PerFrameStateInterpolation(double delta)
     {
-        ulong renderTick = Global.gameState.tick - INTERPOLATION_TICK_DELAY;
+        if (bufferCount < 2) return;
 
-        if (bufferCount < 2)
-            return;
+        // 1. Advance a 'local' playback clock that supports decimals
+        // This allows smooth movement between integer ticks
+        fractionalTick += delta * 60.0f; 
+        
+        // Stay synced with the master game state, but with our delay
+        double targetRenderTick = (double)Global.gameState.tick - INTERPOLATION_TICK_DELAY;
 
-        NetState stateA = new NetState();
-        NetState stateB = new NetState();
+        // 2. Find states (Assuming buffer[0] is NEWEST)
+        NetState stateA = default;
+        NetState stateB = default;
         bool found = false;
 
-        // Find two buffered states around renderTick
         for (int i = 0; i < bufferCount - 1; i++)
         {
-            if (buffer[i].tick <= renderTick && buffer[i + 1].tick >= renderTick)
+            // We want stateB to be newer than target, and stateA to be older
+            if (buffer[i].tick >= targetRenderTick && buffer[i + 1].tick <= targetRenderTick)
             {
-                stateA = buffer[i];
-                stateB = buffer[i + 1];
+                stateB = buffer[i]; // Newer
+                stateA = buffer[i + 1]; // Older
                 found = true;
                 break;
             }
         }
 
-        if (!found)
+        if (found)
         {
-            // If renderTick is ahead of our buffer, snap to newest
-            GlobalPosition = buffer[0].Position;
-            return;
+            // 3. Calculate 't' using floating point targetRenderTick
+            float t = (float)((targetRenderTick - stateA.tick) / (stateB.tick - stateA.tick));
+            t = Mathf.Clamp(t,0,1);
+
+            Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
+            
+            // Calculate velocity for rotation based on the change in position
+            Vector3 vel = (interpPos - GlobalPosition) / (float)delta;
+            GlobalPosition = interpPos;
+
+            if (vel.LengthSquared() > 0.01f)
+                SmoothRotateY(vel, (float)delta);
         }
-
-        // Interpolation factor based on ticks
-        float t = Mathf.InverseLerp(stateA.tick, stateB.tick, renderTick);
-
-        // Interpolated position
-        Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
-        GlobalPosition = interpPos;
-
-        // Smooth facing using velocity between interpolated frames
-        Vector3 vel = interpPos - lastInterpPos;
-        SmoothRotateY(vel, (float)delta);
-
-        lastInterpPos = interpPos;
+        else if (targetRenderTick > buffer[0].tick)
+        {
+            // Extrapolation Logic: Buffer exhausted, move based on velocity
+            GlobalPosition += lastVelocity * (float)delta;
+        }
     }
 
     // Called when a network update arrives
@@ -654,6 +664,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         message.tick = Global.gameState.tick;
         //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
         message.state = this.state;
+        message.velocity = this.velocity;
 
         return MessagePackSerializer.Serialize(message);   
     }
@@ -664,6 +675,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         AddNetworkState(message.transformOrigin, message.tick);
         this.targetPosition = message.transformOrigin;
         this.state = message.state;
+        this.lastVelocity = message.velocity;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
         // stateUpdateAge = 0;
@@ -857,6 +869,8 @@ public struct HordeAgentStateMessage
     public HordeAgentState state;
     [Key(2)]
     public ulong tick;
+    [Key(3)]
+    public Vector3 velocity;
 
 }
 
