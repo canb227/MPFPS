@@ -49,11 +49,13 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
 
     public override void PerTickLocal(double delta)
     {
-        Position = Position.Lerp(desiredPosition, (float)(delta * 8f));
-        Godot.Quaternion temp = desiredQuaternion.Normalized();
-        if (temp.IsNormalized())
+        float lerpWeight = (float)(delta * 10f); 
+
+        GlobalPosition = GlobalPosition.Lerp(desiredPosition, lerpWeight);
+        
+        if (desiredQuaternion.LengthSquared() > 0.001f) 
         {
-            Quaternion = Quaternion.Slerp(temp, (float)(delta * 8f));
+            Quaternion = Quaternion.Slerp(desiredQuaternion, lerpWeight);
         }
     }
 
