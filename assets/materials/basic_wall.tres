@@ -1,7 +1,9 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://ksxtasgoycp6"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ksxtasgoycp6"]
 
-[ext_resource type="Texture2D" uid="uid://b6yr8bnoxhqif" path="res://assets/models/warehouse/wall_3.png" id="1_clyg1"]
+[ext_resource type="Texture2D" uid="uid://b6yr8bnoxhqif" path="res://assets/models/warehouse_old/wall_3.png" id="1_clyg1"]
 
 [resource]
 albedo_texture = ExtResource("1_clyg1")
 metallic_specular = 0.15
+uv1_scale = Vector3(1, 2.005, 1)
+uv1_offset = Vector3(0, -0.055, 0)
