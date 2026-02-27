@@ -340,10 +340,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             if (vel.LengthSquared() > 0.01f)
                 SmoothRotateY(vel, (float)delta);
         }
-        else if (targetRenderTick > buffer[0].tick)
-        {
-            GlobalPosition += lastVelocity * (float)delta;
-        }
+        // else if (targetRenderTick > buffer[0].tick)
+        // {
+        //     GlobalPosition += lastVelocity * (float)delta;
+        // }
     }
 
     public void AddNetworkState(Vector3 pos, ulong netTick)
