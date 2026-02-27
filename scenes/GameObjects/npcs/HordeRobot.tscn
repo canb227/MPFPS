@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://o7551ne75pc3"]
+[gd_scene format=4 uid="uid://o7551ne75pc3"]
 
 [ext_resource type="Script" uid="uid://b622rqeq2sjow" path="res://scripts/game/GameObjects/NPCs/HordeAgent.cs" id="1_l3ql2"]
 [ext_resource type="AudioStream" uid="uid://b24x81cu6vw8o" path="res://assets/audio/enemies/superphys_launch1.wav" id="2_l3ql2"]
@@ -108,7 +108,7 @@ shadow_mesh = SubResource("ArrayMesh_1fq2r")
 radius = 1.1998291
 height = 2.3996582
 
-[node name="HordeRobot" type="Node3D" node_paths=PackedStringArray("root", "headArea", "bodyArea", "meleeArea", "animationPlayer", "genericSFX") groups=["enemies"]]
+[node name="HordeRobot" type="Node3D" unique_id=1840715522 node_paths=PackedStringArray("root", "headArea", "bodyArea", "meleeArea", "animationPlayer", "genericSFX") groups=["enemies"]]
 script = ExtResource("1_l3ql2")
 root = NodePath(".")
 headArea = NodePath("headHitArea")
@@ -117,46 +117,44 @@ meleeArea = NodePath("AttackAoe")
 animationPlayer = NodePath("AnimationPlayer")
 genericSFX = NodePath("AudioStreamPlayer3D")
 
-[node name="headHitArea" type="Area3D" parent="." groups=["enemies", "headshotcollider"]]
+[node name="headHitArea" type="Area3D" parent="." unique_id=379222106 groups=["enemies", "headshotcollider"]]
 collision_layer = 4
 collision_mask = 0
 monitoring = false
 
-[node name="headBox" type="CollisionShape3D" parent="headHitArea" groups=["headshotcollider"]]
+[node name="headBox" type="CollisionShape3D" parent="headHitArea" unique_id=1937112069 groups=["headshotcollider"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0032348633, 0.56755614, -0.005126953)
 shape = SubResource("BoxShape3D_1fq2r")
 
-[node name="bodyHitArea" type="Area3D" parent="." groups=["enemies"]]
+[node name="bodyHitArea" type="Area3D" parent="." unique_id=161079100 groups=["enemies"]]
 collision_layer = 4
 collision_mask = 0
 monitoring = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="bodyHitArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="bodyHitArea" unique_id=1772725229]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22342551, 0)
 shape = SubResource("CapsuleShape3D_1fq2r")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_1fq2r")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=896961028]
+libraries/ = SubResource("AnimationLibrary_1fq2r")
 
-[node name="pCube1" type="MeshInstance3D" parent="."]
+[node name="pCube1" type="MeshInstance3D" parent="." unique_id=15909305]
 transform = Transform3D(-6, 0, 1.2079664e-06, 0, 8, 0, -9.0597484e-07, 0, -8, 0, -0.80275226, 0)
 mesh = SubResource("ArrayMesh_jfk1n")
 skeleton = NodePath("")
 
-[node name="AttackAoe" type="Area3D" parent="."]
+[node name="AttackAoe" type="Area3D" parent="." unique_id=309119038]
 collision_layer = 0
 collision_mask = 16
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackAoe"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackAoe" unique_id=220330910]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.003540039, 0)
 shape = SubResource("CapsuleShape3D_3tng0")
 debug_color = Color(0.992019, 0, 0.26401922, 0.41960785)
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=359931598]
 stream = ExtResource("2_l3ql2")
 volume_db = -3.0
 unit_size = 5.0
