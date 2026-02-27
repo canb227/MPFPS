@@ -302,7 +302,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     // Store this globally or per-entity to keep track of fractional time
     private double fractionalTick; 
-    private Vector3 lastVelocity;
+    private Vector3 vel;
 
     public void PerFrameStateInterpolation(double delta)
     {
@@ -334,16 +334,16 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
             Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
             
-            Vector3 vel = (interpPos - GlobalPosition) / (float)delta;
+            vel = (interpPos - GlobalPosition) / (float)delta;
             GlobalPosition = interpPos;
 
             if (vel.LengthSquared() > 0.01f)
                 SmoothRotateY(vel, (float)delta);
         }
-        // else if (targetRenderTick > buffer[0].tick)
-        // {
-        //     GlobalPosition += lastVelocity * (float)delta;
-        // }
+        else if (targetRenderTick > buffer[0].tick)
+        {
+            GlobalPosition += vel * (float)delta;
+        }
     }
 
     public void AddNetworkState(Vector3 pos, ulong netTick)
@@ -654,7 +654,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         message.tick = Global.gameState.tick;
         //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
         message.state = this.state;
-        message.velocity = this.velocity;
 
         return MessagePackSerializer.Serialize(message);   
     }
@@ -665,7 +664,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         AddNetworkState(message.transformOrigin, message.tick);
         this.targetPosition = message.transformOrigin;
         this.state = message.state;
-        this.lastVelocity = message.velocity;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
         // stateUpdateAge = 0;
@@ -854,14 +852,10 @@ public struct HordeAgentStateMessage
 {
     [Key(0)]
     public Vector3 transformOrigin;
-
     [Key(1)]
     public HordeAgentState state;
     [Key(2)]
     public ulong tick;
-    [Key(3)]
-    public Vector3 velocity;
-
 }
 
 

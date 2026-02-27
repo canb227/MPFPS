@@ -75,7 +75,7 @@ public partial class AIManager : Node3D
             {
                 GameObjectConstructorData data = new(GameObjectType.HordeAgent);
                 data.spawnTransform = Transform3D.Identity;
-                data.spawnTransform.Origin = new Vector3(0,0,0);
+                data.spawnTransform.Origin = new Vector3(0,-10,0);
                 data.paramList.Add(HordeAgentState.NONE);
                 Global.gameState.Auth_SpawnObject(GameObjectType.HordeAgent, data);
             }
