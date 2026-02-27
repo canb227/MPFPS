@@ -904,6 +904,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         collider.RotationDegrees = new Vector3(90, 0, 0);
         collider.Position = new Vector3(0, -0.634f, 0);
         ((CapsuleShape3D)collider.Shape).Radius = 0.186f;
+        CollisionLayer = 0;
 
         //adjust camera
         camera.Position = new Vector3(0, -2.259f, 1.01f);
@@ -918,6 +919,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         collider.RotationDegrees = new Vector3(0, 0, 0);
         collider.Position = new Vector3(0, 0.442f, 0);
         ((CapsuleShape3D)collider.Shape).Radius = 0.5f;
+        CollisionLayer = 1 << 4;
 
         camera.Position = new Vector3(0, -0.259f, -0.08f);
         camera.RotationDegrees = new Vector3(0, 0, 0);
