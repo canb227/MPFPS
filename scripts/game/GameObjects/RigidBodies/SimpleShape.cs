@@ -86,6 +86,8 @@ public partial class SimpleShape : GOBaseRigidBody, IsHoldable
         GravityScale = 0.1f;
         LinearDamp = 20;
         AngularDamp = 5;
+        priority = 30;
+        authority = byID;
     }
 
     public virtual void OnRelease(ulong byID)

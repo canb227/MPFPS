@@ -175,8 +175,6 @@ public partial class Hands : GOBaseInventoryItem
             heldObject = item;
             heldObject.OnHold(equippedBySteamID);
             item.currentlyHeldBy = equippedBySteamID;
-            (heldObject as GameObject).priority = 30;
-            (heldObject as GameObject).authority = equippedBySteamID;
             (heldObject as RigidBody3D).AddCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
             if (NetworkUtils.IsMe(equippedBySteamID))
             {

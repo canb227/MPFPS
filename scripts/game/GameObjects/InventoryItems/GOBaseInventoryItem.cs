@@ -59,6 +59,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         this.CollisionLayer = 0;
         Freeze = true;
         equippedBySteamID = bySteamID;
+        authority = bySteamID;
         inInventoryOf = 0;
         if (bySteamID == Global.steamid)
         {
