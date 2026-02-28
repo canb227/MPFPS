@@ -443,6 +443,10 @@ public partial class GameState : Node3D
             ImGui.Text($"Actions: {entry.Value.actions.ToString()}");
         }
         ImGui.End();
+
+        ImGui.Begin("Tick");
+        ImGui.Text($"{tick}");
+        ImGui.End();
     }
 
     private void HandleInputQueue()

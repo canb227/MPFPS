@@ -101,14 +101,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public override void _Process(double delta)
     {
-        if (Global.DrawDebugScreens)
-        {
-            ImGui.Begin("path");
-            ImGui.Text($"Pathfinding Debug for: {Name}");
-            ImGui.Text($"Self Pos: {GlobalPosition}");
-            ImGui.Text($"");
-            ImGui.End();
-        }
         if(attackCooldown > 0)
         {
             attackCooldown -= delta;
