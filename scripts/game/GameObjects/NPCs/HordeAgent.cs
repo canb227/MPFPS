@@ -156,7 +156,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public override void PerTickShared(double delta)
     {
-        base.PerTickShared(delta);
+        base.PerFrameShared(delta);
 
 
         switch (state)
@@ -211,7 +211,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void PerFrameLocal(double delta)
     {
         base.PerFrameShared(delta);
-        PerFrameLocalUpdate(delta);
+        PerFrameStateInterpolation(delta);
     }
 
 
@@ -291,68 +291,72 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         deltaAccumulator = 0;
         //LerpAgent((float)delta, 1); //must move on host
     }
+    private const ulong INTERPOLATION_TICK_DELAY = 3; // render 3 ticks behind
+    private const int BUFFER_SIZE = 64;
+
+    private NetState[] buffer = new NetState[BUFFER_SIZE];
     private int bufferCount = 0;
 
-    private Queue<NetState> packetQueue = new Queue<NetState>();
-    private Vector3 startPos;
-    private Vector3 targetPos;
-    private float interpolationFactor = 0f;
-    private Vector3 currentVelocity;
+    private Vector3 lastInterpPos;
 
-    public void AddNetworkState(Vector3 pos)
+    // Store this globally or per-entity to keep track of fractional time
+    private double fractionalTick; 
+    private Vector3 vel;
+
+    public void PerFrameStateInterpolation(double delta)
     {
-        packetQueue.Enqueue(new NetState { Position = pos });
+        if (bufferCount < 2) return;
+
+        fractionalTick += delta * 60.0f; 
+        
+        double targetRenderTick = (double)Global.gameState.tick - INTERPOLATION_TICK_DELAY;
+
+        NetState stateA = default;
+        NetState stateB = default;
+        bool found = false;
+
+        for (int i = 0; i < bufferCount - 1; i++)
+        {
+            if (buffer[i].tick >= targetRenderTick && buffer[i + 1].tick <= targetRenderTick)
+            {
+                stateB = buffer[i];
+                stateA = buffer[i + 1];
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            float t = (float)((targetRenderTick - stateA.tick) / (stateB.tick - stateA.tick));
+            t = Mathf.Clamp(t,0,1);
+
+            Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
+            
+            vel = (interpPos - GlobalPosition) / (float)delta;
+            GlobalPosition = interpPos;
+
+            if (vel.LengthSquared() > 0.01f)
+                SmoothRotateY(vel, (float)delta);
+        }
+        else if (targetRenderTick > buffer[0].tick)
+        {
+            GlobalPosition += vel * (float)delta;
+        }
     }
 
-    public override void PerTickLocal(double delta)
+    public void AddNetworkState(Vector3 pos, ulong netTick)
     {
-        base.PerTickLocal(delta);
-        if (packetQueue.Count >= 2)
-        {
-            // Pop the oldest as our starting point
-            startPos = packetQueue.Dequeue().Position;
-            // Peek at the next one as our goal
-            targetPos = packetQueue.Peek().Position;
-            
-            // Calculate velocity: (Distance / Time for 1 tick)
-            // Assuming 60 ticks per second, time = 1/60
-            currentVelocity = (targetPos - startPos) * 60f;
-            
-            // Reset our frame-by-frame progress
-            interpolationFactor = 0f; 
-        }
-        else if (packetQueue.Count == 1)
-        {
-            // We only have one packet left. 
-            // We can't interpolate, so we just prep for the next one.
-            startPos = GlobalPosition;
-            targetPos = packetQueue.Peek().Position;
-            currentVelocity = (targetPos - startPos) * 60f;
-            interpolationFactor = 0f;
-        }
-    }
+        for (int i = BUFFER_SIZE - 1; i > 0; i--)
+            buffer[i] = buffer[i - 1];
 
-    public void PerFrameLocalUpdate(double delta)
-    {
-        // Advance progress: delta is ~0.016, so it takes 1 tick to reach 1.0
-        interpolationFactor += (float)delta * 60f;
+        buffer[0] = new NetState
+        {
+            Position = pos,
+            tick = netTick
+        };
 
-        if (interpolationFactor <= 1.0f)
-        {
-            // Normal Interpolation
-            GlobalPosition = startPos.Lerp(targetPos, interpolationFactor);
-        }
-        else
-        {
-            // Extrapolation: We ran out of "track," so keep moving with velocity
-            GlobalPosition += currentVelocity * (float)delta;
-        }
-
-        // Rotation based on the velocity we calculated
-        if (currentVelocity.LengthSquared() > 0.01f)
-        {
-            SmoothRotateY(currentVelocity, (float)delta);
-        }
+        bufferCount = Mathf.Min(bufferCount + 1, BUFFER_SIZE);
     }
 
     public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
@@ -646,6 +650,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         HordeAgentStateMessage message = new HordeAgentStateMessage();
         message.transformOrigin = this.GlobalTransform.Origin;
+        message.tick = Global.gameState.tick;
         //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
         message.state = this.state;
 
@@ -655,9 +660,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        AddNetworkState(message.transformOrigin);
-        //this.targetPosition = message.transformOrigin;
-        //this.GlobalPosition = message.transformOrigin;
+        AddNetworkState(message.transformOrigin, message.tick);
+        this.targetPosition = message.transformOrigin;
         this.state = message.state;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
@@ -849,6 +853,8 @@ public struct HordeAgentStateMessage
     public Vector3 transformOrigin;
     [Key(1)]
     public HordeAgentState state;
+    [Key(2)]
+    public ulong tick;
 }
 
 
