@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 public struct NetState
 {
     public Vector3 Position;
-    public ulong tick;
+    public double arrivalTime;
 }
 
 
@@ -283,7 +283,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         deltaAccumulator = 0;
         //LerpAgent((float)delta, 1); //must move on host
     }
-    private const ulong INTERPOLATION_TICK_DELAY = 3; // render 3 ticks behind
+    private double interpolationDelay = 0.1; // 100ms delay
     private const int BUFFER_SIZE = 64;
 
     private NetState[] buffer = new NetState[BUFFER_SIZE];
@@ -297,19 +297,22 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public void PerFrameStateInterpolation(double delta)
     {
+        // Need at least 2 points to draw a line between them
         if (bufferCount < 2) return;
 
-        fractionalTick += delta * 60.0f; 
-        
-        double targetRenderTick = (double)Global.gameState.tick - INTERPOLATION_TICK_DELAY;
+        // The time we want to visualize right now
+        double currentTime = Time.GetUnixTimeFromSystem(); 
+        double targetRenderTime = currentTime - interpolationDelay;
 
-        NetState stateA = default;
-        NetState stateB = default;
+        NetState stateA = default; // The older state
+        NetState stateB = default; // The newer state
         bool found = false;
 
+        // Search the buffer for the two states that "sandwich" our target time
         for (int i = 0; i < bufferCount - 1; i++)
         {
-            if (buffer[i].tick >= targetRenderTick && buffer[i + 1].tick <= targetRenderTick)
+            // buffer[i] is newer, buffer[i+1] is older because of your AddNetworkState logic
+            if (buffer[i].arrivalTime >= targetRenderTime && buffer[i + 1].arrivalTime <= targetRenderTime)
             {
                 stateB = buffer[i];
                 stateA = buffer[i + 1];
@@ -320,24 +323,29 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         if (found)
         {
-            float t = (float)((targetRenderTick - stateA.tick) / (stateB.tick - stateA.tick));
-            t = Mathf.Clamp(t,0,1);
+            // Calculate progress (0 to 1) between stateA and stateB
+            double timeGap = stateB.arrivalTime - stateA.arrivalTime;
+            float t = (float)((targetRenderTime - stateA.arrivalTime) / timeGap);
+            t = Mathf.Clamp(t, 0, 1);
 
             Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
             
+            // Calculate velocity for rotation and potential extrapolation
             vel = (interpPos - GlobalPosition) / (float)delta;
             GlobalPosition = interpPos;
 
             if (vel.LengthSquared() > 0.01f)
                 SmoothRotateY(vel, (float)delta);
         }
-        else if (targetRenderTick > buffer[0].tick)
+        else if (targetRenderTime > buffer[0].arrivalTime)
         {
+            // EXTRAPOLATION: We've run out of buffer
+            // Keep moving in the last known direction so the entity doesn't freeze
             GlobalPosition += vel * (float)delta;
         }
     }
 
-    public void AddNetworkState(Vector3 pos, ulong netTick)
+    public void AddNetworkState(Vector3 pos, double incomingArrivalTime)
     {
         for (int i = BUFFER_SIZE - 1; i > 0; i--)
             buffer[i] = buffer[i - 1];
@@ -345,7 +353,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         buffer[0] = new NetState
         {
             Position = pos,
-            tick = netTick
+            arrivalTime = incomingArrivalTime
         };
 
         bufferCount = Mathf.Min(bufferCount + 1, BUFFER_SIZE);
@@ -642,7 +650,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         HordeAgentStateMessage message = new HordeAgentStateMessage();
         message.transformOrigin = this.GlobalTransform.Origin;
-        message.tick = Global.gameState.tick;
         //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
         message.state = this.state;
 
@@ -652,7 +659,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        AddNetworkState(message.transformOrigin, message.tick);
+        AddNetworkState(message.transformOrigin, Time.GetUnixTimeFromSystem());
         this.targetPosition = message.transformOrigin;
         this.state = message.state;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
@@ -845,8 +852,6 @@ public struct HordeAgentStateMessage
     public Vector3 transformOrigin;
     [Key(1)]
     public HordeAgentState state;
-    [Key(2)]
-    public ulong tick;
 }
 
 
