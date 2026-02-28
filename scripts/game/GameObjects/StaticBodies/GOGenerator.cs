@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
@@ -7,12 +8,13 @@ using MessagePack;
 public partial class GOGenerator : GOBaseStaticBody
 {
 	[Export] Area3D generatorArea;
-	public float generatorHealthInSeconds = 0.0f;
-	public float generatorMaxHealth = 45.0f;
+	public float generatorHealthInSecondsPerRobot = 0.0f;
+	public float generatorMaxHealth = 900.0f;
 	public override void _Ready()
 	{
 		base._Ready();
 		Global.gameState.gameModeManager.generator = this;
+		generatorHealthInSecondsPerRobot = generatorMaxHealth;
 		generatorArea.AreaEntered += OnBodyEntered;
 		generatorArea.AreaExited += OnBodyExited;
 	}
@@ -42,9 +44,10 @@ public partial class GOGenerator : GOBaseStaticBody
 		{
 			if (robotsInArea > 0)
 			{
-				generatorHealthInSeconds -= (float)delta;
+				int cappedRobotsInArea = Math.Max(20, robotsInArea);
+				generatorHealthInSecondsPerRobot -= (float)delta * cappedRobotsInArea; //max 20 robots deal damage
 				timeSinceNoEnemy = 0;
-				if(generatorHealthInSeconds <= 0)
+				if(generatorHealthInSecondsPerRobot <= 0)
 				{
 					//ignore generator if we have started end of round evacuation
 					if(!Global.gameState.gameModeManager.evacuationStarted && Global.gameState.gameModeManager.roundStarted)
@@ -53,7 +56,7 @@ public partial class GOGenerator : GOBaseStaticBody
 						RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
 					}
 				}
-				else if(generatorHealthInSeconds <= 30 && !announcedAttacked)
+				else if(generatorHealthInSecondsPerRobot <= 30 && !announcedAttacked)
 				{
 					//announcer alert
 					announcedAttacked = true;
@@ -69,10 +72,10 @@ public partial class GOGenerator : GOBaseStaticBody
 					announcedAttacked = false;
 					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorSafe", []);
 				}
-				if (generatorHealthInSeconds > generatorMaxHealth)
-					generatorHealthInSeconds = generatorMaxHealth;
+				if (generatorHealthInSecondsPerRobot > generatorMaxHealth)
+					generatorHealthInSecondsPerRobot = generatorMaxHealth;
 				else
-					generatorHealthInSeconds += (float)delta;
+					generatorHealthInSecondsPerRobot += (float)delta;
 			}
 		}
 	}

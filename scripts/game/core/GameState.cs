@@ -130,7 +130,7 @@ public partial class GameState : Node3D
         AddChild(gmm);
         gameModeManager = gmm;
 
-        menuMusicStreamPlayer.Stream = GD.Load<AudioStream>("res://assets/audio/music/hl1_song6.mp3");
+        menuMusicStreamPlayer.Stream = GD.Load<AudioStream>("res://assets/audio/music/ddopening.mp3");
         AddChild(menuMusicStreamPlayer);
         menuMusicStreamPlayer.Play();
         menuMusicStreamPlayer.VolumeDb = -6.0f;

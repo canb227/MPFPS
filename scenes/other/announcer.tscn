@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bqx27c5btqov2"]
+[gd_scene format=3 uid="uid://bqx27c5btqov2"]
 
 [ext_resource type="Script" uid="uid://c8bdsd63biy5x" path="res://scripts/game/other/Announcer.cs" id="1_hcg5s"]
 [ext_resource type="AudioStream" uid="uid://dtwokj2y663h8" path="res://assets/audio/announcer/evacuate_area.wav" id="2_aage6"]
@@ -84,10 +84,6 @@ tracks/0/keys = {
 }
 tracks/0/use_blend = true
 
-[sub_resource type="Animation" id="Animation_ovm81"]
-resource_name = "swarmIncoming"
-length = 60.0
-
 [sub_resource type="Animation" id="Animation_onj7a"]
 resource_name = "generatorUnderAttack"
 tracks/0/type = "audio"
@@ -106,6 +102,10 @@ tracks/0/keys = {
 }
 tracks/0/use_blend = true
 
+[sub_resource type="Animation" id="Animation_ovm81"]
+resource_name = "swarmIncoming"
+length = 60.0
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_084sx"]
 _data = {
 &"evacuationStart": SubResource("Animation_hcg5s"),
@@ -113,30 +113,38 @@ _data = {
 &"swarmIncoming": SubResource("Animation_ovm81")
 }
 
-[node name="Announcer" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "audioStreamPlayerSiren")]
+[node name="Announcer" type="StaticBody3D" unique_id=1912642969 node_paths=PackedStringArray("animationPlayer", "audioStreamPlayerSiren", "audioStreamPlayerMusic", "audioStreamPlayerAlert")]
 script = ExtResource("1_hcg5s")
 animationPlayer = NodePath("AnimationPlayer")
 audioStreamPlayerSiren = NodePath("AudioStreamPlayerSiren")
+audioStreamPlayerMusic = NodePath("AudioStreamPlayer2")
+audioStreamPlayerAlert = NodePath("AudioStreamPlayer3")
 metadata/_custom_type_script = "uid://c8bdsd63biy5x"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=412627634]
 transform = Transform3D(0.3296349, 0, 0, 0, 0.3296349, 0, 0, 0, 0.3296349, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_i7kdg")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=277281663]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.006286621, 0)
 shape = SubResource("CapsuleShape3D_nnfe1")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_084sx")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=336785932]
+libraries/ = SubResource("AnimationLibrary_084sx")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1369024596]
 attenuation_model = 3
 panning_strength = 0.0
 
-[node name="AudioStreamPlayerSiren" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioStreamPlayerSiren" type="AudioStreamPlayer3D" parent="." unique_id=1036786762]
+attenuation_model = 3
+panning_strength = 0.0
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer3D" parent="." unique_id=325019242]
+attenuation_model = 3
+panning_strength = 0.0
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer3D" parent="." unique_id=496429732]
 attenuation_model = 3
 panning_strength = 0.0

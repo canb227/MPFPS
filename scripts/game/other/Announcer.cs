@@ -9,6 +9,8 @@ public partial class Announcer : GOBaseStaticBody
 {
     [Export] public AnimationPlayer animationPlayer;
     [Export] public AudioStreamPlayer3D audioStreamPlayerSiren;
+    [Export] public AudioStreamPlayer3D audioStreamPlayerMusic;
+    [Export] public AudioStreamPlayer3D audioStreamPlayerAlert;
     bool evacuationStarted;
     public AnnouncerState announcerState;
     public override void _Ready()
@@ -17,6 +19,7 @@ public partial class Announcer : GOBaseStaticBody
         GameModeManager.EvacuationStarted += EvacuationStarted;
         GameModeManager.SwarmIncoming += SwarmIncoming;
         GameModeManager.SwarmStarted += SwarmStarted;
+        GameModeManager.SwarmDefeated += SwarmDefeated;
         GameModeManager.GeneratorSafe += GeneratorSafe;
         GameModeManager.GeneratorUnderAttack += GeneratorUnderAttack;
     }
@@ -27,6 +30,7 @@ public partial class Announcer : GOBaseStaticBody
             GameModeManager.EvacuationStarted -= EvacuationStarted;
             GameModeManager.SwarmIncoming -= SwarmIncoming;
             GameModeManager.SwarmStarted -= SwarmStarted;
+            GameModeManager.SwarmDefeated -= SwarmDefeated;
             GameModeManager.GeneratorSafe -= GeneratorSafe;
             GameModeManager.GeneratorUnderAttack -= GeneratorUnderAttack;
         }
@@ -50,6 +54,13 @@ public partial class Announcer : GOBaseStaticBody
             animationPlayer.Stop();
             audioStreamPlayerSiren.Stop();
         }
+        audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/Hordedrums.mp3");
+        audioStreamPlayerMusic.Play();
+    }
+
+    public void SwarmDefeated()
+    {
+        audioStreamPlayerMusic.Stop();
     }
 
     public void EvacuationStarted()
@@ -72,8 +83,9 @@ public partial class Announcer : GOBaseStaticBody
         if(announcerState != AnnouncerState.EVACUATION)
         {
             announcerState = AnnouncerState.GENERATOR;
-            animationPlayer.Play("generatorUnderAttack");
-            audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
+            //animationPlayer.Play("generatorUnderAttack");
+            //audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
+            audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/baseunderattacksc.mp3");
             audioStreamPlayerSiren.Play();
         }
     }

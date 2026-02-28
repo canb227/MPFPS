@@ -717,6 +717,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         UpdateGridLocation();
         Global.gameState.AIManager.agentPool.Add(this);
         Global.gameState.AIManager.controlledNPCs.Remove(this);
+        Global.gameState.AIManager.currentHordeSize--;
         //add a timed ragdoll
     }
 

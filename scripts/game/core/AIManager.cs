@@ -60,6 +60,7 @@ public partial class AIManager : Node3D
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
+            currentHordeSize++;
             //spawn the agent and set its path
             agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin, i).UpdatePath(path);
         }
@@ -167,6 +168,8 @@ public partial class AIManager : Node3D
     double evacuationHordeCooldown = 10;
     bool announcedHorde = false;
     int hordeSize = 0;
+    bool hordeActive = false;
+    public int currentHordeSize = 0;
     public override void _PhysicsProcess(double delta)
     {
         if(Global.gameState.gameModeManager.options.warehouseRobots)
@@ -177,14 +180,16 @@ public partial class AIManager : Node3D
                 //decide if we want to updatepath and set target and start
                 if(currentHordeCooldown <= 30 && currentHordeCooldown > 0 && !announcedHorde && !Global.gameState.gameModeManager.evacuationStarted)
                 {
-                    Global.gameState.gameModeManager.TriggerSwarmIncomingEvent();
+                    RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmIncomingEvent", []);
                     announcedHorde = true;
                 }
                 if(currentHordeCooldown <= 0)
                 {
                     Logging.Log("Spawn Horde", "AIManager");
+                    hordeActive = true;
                     //we should play a sound like L4D
-                    Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
+                    RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmStartedEvent", []);
+                    //Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
                     if(Global.gameState.gameModeManager.evacuationStarted)
                     {
                         currentHordeCooldown = evacuationHordeCooldown;
@@ -206,6 +211,12 @@ public partial class AIManager : Node3D
                     }
 
                     announcedHorde = false;
+                }
+                //TODO
+                if(currentHordeSize <= 10 && hordeActive)
+                {
+                    hordeActive = false;
+                    RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmDefeatedEvent", []);
                 }
             }
         }

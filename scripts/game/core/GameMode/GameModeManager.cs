@@ -18,6 +18,7 @@ public partial class GameModeManager : Node
     //Events
     public static event Action SwarmIncoming;
     public static event Action SwarmStarted;
+    public static event Action SwarmDefeated;
     public static event Action GeneratorUnderAttack;
     public static event Action GeneratorSafe;
     public static event Action EvacuationStarted;
@@ -719,14 +720,22 @@ public partial class GameModeManager : Node
         }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TriggerSwarmIncomingEvent()
     {
         SwarmIncoming?.Invoke();
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TriggerSwarmStartedEvent()
     {
         SwarmStarted?.Invoke();
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void TriggerSwarmDefeatedEvent()
+    {
+        SwarmDefeated?.Invoke();
     }
 
     public void SpawnNewLocalPlayerCharacter(GameObjectType pcType)
