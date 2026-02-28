@@ -305,44 +305,44 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public void PerFrameStateInterpolation(double delta)
     {
-        if (bufferCount < 2) return;
+        // if (bufferCount < 2) return;
 
-        fractionalTick += delta * 60.0f; 
+        // fractionalTick += delta * 60.0f; 
         
-        double targetRenderTick = (double)Global.gameState.tick - INTERPOLATION_TICK_DELAY;
+        // double targetRenderTick = (double)Global.gameState.tick - INTERPOLATION_TICK_DELAY;
 
-        NetState stateA = default;
-        NetState stateB = default;
-        bool found = false;
+        // NetState stateA = default;
+        // NetState stateB = default;
+        // bool found = false;
 
-        for (int i = 0; i < bufferCount - 1; i++)
-        {
-            if (buffer[i].tick >= targetRenderTick && buffer[i + 1].tick <= targetRenderTick)
-            {
-                stateB = buffer[i];
-                stateA = buffer[i + 1];
-                found = true;
-                break;
-            }
-        }
+        // for (int i = 0; i < bufferCount - 1; i++)
+        // {
+        //     if (buffer[i].tick >= targetRenderTick && buffer[i + 1].tick <= targetRenderTick)
+        //     {
+        //         stateB = buffer[i];
+        //         stateA = buffer[i + 1];
+        //         found = true;
+        //         break;
+        //     }
+        // }
 
-        if (found)
-        {
-            float t = (float)((targetRenderTick - stateA.tick) / (stateB.tick - stateA.tick));
-            t = Mathf.Clamp(t,0,1);
+        // if (found)
+        // {
+        //     float t = (float)((targetRenderTick - stateA.tick) / (stateB.tick - stateA.tick));
+        //     t = Mathf.Clamp(t,0,1);
 
-            Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
+        //     Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
             
-            vel = (interpPos - GlobalPosition) / (float)delta;
-            GlobalPosition = interpPos;
+        //     vel = (interpPos - GlobalPosition) / (float)delta;
+        //     GlobalPosition = interpPos;
 
-            if (vel.LengthSquared() > 0.01f)
-                SmoothRotateY(vel, (float)delta);
-        }
-        else if (targetRenderTick > buffer[0].tick)
-        {
-            GlobalPosition += vel * (float)delta;
-        }
+        //     if (vel.LengthSquared() > 0.01f)
+        //         SmoothRotateY(vel, (float)delta);
+        // }
+        // else if (targetRenderTick > buffer[0].tick)
+        // {
+        //     GlobalPosition += vel * (float)delta;
+        // }
     }
 
     public void AddNetworkState(Vector3 pos, ulong netTick)
@@ -660,8 +660,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override void ProcessStateUpdate(byte[] update)
     {
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
-        AddNetworkState(message.transformOrigin, message.tick);
-        this.targetPosition = message.transformOrigin;
+        //AddNetworkState(message.transformOrigin, message.tick);
+        //this.targetPosition = message.transformOrigin;
+        this.GlobalPosition = message.transformOrigin;
         this.state = message.state;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
