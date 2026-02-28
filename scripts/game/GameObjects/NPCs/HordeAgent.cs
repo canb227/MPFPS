@@ -156,7 +156,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public override void PerTickShared(double delta)
     {
-        base.PerFrameShared(delta);
+        base.PerTickShared(delta);
 
 
         switch (state)
@@ -304,8 +304,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         packetQueue.Enqueue(new NetState { Position = pos });
     }
 
-    public void PerTickLocal()
+    public override void PerTickLocal(double delta)
     {
+        base.PerTickLocal(delta);
         if (packetQueue.Count >= 2)
         {
             // Pop the oldest as our starting point
