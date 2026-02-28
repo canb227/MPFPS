@@ -283,39 +283,56 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         deltaAccumulator = 0;
         //LerpAgent((float)delta, 1); //must move on host
     }
-    private double interpolationDelay = 0.1; // 100ms delay
-    private const int BUFFER_SIZE = 64;
-
-    private NetState[] buffer = new NetState[BUFFER_SIZE];
-    private int bufferCount = 0;
-
+    
     private Vector3 lastInterpPos;
 
     // Store this globally or per-entity to keep track of fractional time
     private double fractionalTick; 
     private Vector3 vel;
+    private Queue<NetState> buffer = new Queue<NetState>();
+    private const int MAX_BUFFER_SIZE = 32;
+    private double interpolationDelay = 0.1; 
+
+    public void AddNetworkState(Vector3 pos, double incomingArrivalTime)
+    {
+        buffer.Enqueue(new NetState
+        {
+            Position = pos,
+            arrivalTime = incomingArrivalTime
+        });
+
+        // Keep the queue size under control
+        while (buffer.Count > MAX_BUFFER_SIZE)
+        {
+            GD.PushWarning("HordeAgent Buffer flooded!");
+        }
+    }
 
     public void PerFrameStateInterpolation(double delta)
     {
-        // Need at least 2 points to draw a line between them
-        if (bufferCount < 2) return;
+        if (buffer.Count < 2) return;
 
-        // The time we want to visualize right now
-        double currentTime = Time.GetUnixTimeFromSystem(); 
+        double currentTime = Time.GetUnixTimeFromSystem();
         double targetRenderTime = currentTime - interpolationDelay;
 
-        NetState stateA = default; // The older state
-        NetState stateB = default; // The newer state
+        // Convert to list for easy index access during search
+        // (In high-performance scenarios, a circular buffer array is faster than converting to list)
+        var states = buffer.ToList();
+
+        NetState stateA = default; 
+        NetState stateB = default; 
         bool found = false;
 
-        // Search the buffer for the two states that "sandwich" our target time
-        for (int i = 0; i < bufferCount - 1; i++)
+        // Search from newest (back) to oldest (front)
+        for (int i = states.Count - 1; i >= 1; i--)
         {
-            // buffer[i] is newer, buffer[i+1] is older because of your AddNetworkState logic
-            if (buffer[i].arrivalTime >= targetRenderTime && buffer[i + 1].arrivalTime <= targetRenderTime)
+            NetState newer = states[i];
+            NetState older = states[i - 1];
+
+            if (newer.arrivalTime >= targetRenderTime && older.arrivalTime <= targetRenderTime)
             {
-                stateB = buffer[i];
-                stateA = buffer[i + 1];
+                stateB = newer;
+                stateA = older;
                 found = true;
                 break;
             }
@@ -323,42 +340,32 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         if (found)
         {
-            // Calculate progress (0 to 1) between stateA and stateB
             double timeGap = stateB.arrivalTime - stateA.arrivalTime;
-            float t = (float)((targetRenderTime - stateA.arrivalTime) / timeGap);
+            // Avoid division by zero if two packets arrive at the same time
+            float t = timeGap > 0 ? (float)((targetRenderTime - stateA.arrivalTime) / timeGap) : 1f;
             t = Mathf.Clamp(t, 0, 1);
 
             Vector3 interpPos = stateA.Position.Lerp(stateB.Position, t);
             
-            // Calculate velocity for rotation and potential extrapolation
             vel = (interpPos - GlobalPosition) / (float)delta;
             GlobalPosition = interpPos;
 
             if (vel.LengthSquared() > 0.01f)
                 SmoothRotateY(vel, (float)delta);
+
+            // OPTIONAL: Clean up the queue
+            // Remove states that are older than stateA, as we won't need them anymore
+            while (buffer.Count > 0 && buffer.Peek().arrivalTime < stateA.arrivalTime)
+            {
+                buffer.Dequeue();
+            }
         }
-        else if (targetRenderTime > buffer[0].arrivalTime)
+        else if (targetRenderTime > states.Last().arrivalTime)
         {
-            // EXTRAPOLATION: We've run out of buffer
-            // Keep moving in the last known direction so the entity doesn't freeze
-            GlobalPosition += vel * (float)delta;
+            // Extrapolation: Target time is ahead of our latest packet
+            //GlobalPosition += vel * (float)delta;
         }
     }
-
-    public void AddNetworkState(Vector3 pos, double incomingArrivalTime)
-    {
-        for (int i = BUFFER_SIZE - 1; i > 0; i--)
-            buffer[i] = buffer[i - 1];
-
-        buffer[0] = new NetState
-        {
-            Position = pos,
-            arrivalTime = incomingArrivalTime
-        };
-
-        bufferCount = Mathf.Min(bufferCount + 1, BUFFER_SIZE);
-    }
-
     public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
     {
         BasicPlayerCharacter nearest = null;
