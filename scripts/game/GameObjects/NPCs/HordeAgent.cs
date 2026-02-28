@@ -291,7 +291,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private Vector3 vel;
     private Queue<NetState> buffer = new Queue<NetState>();
     private const int MAX_BUFFER_SIZE = 32;
-    private double interpolationDelay = 0.3; 
+    private double interpolationDelay = 0.3; //300ms delay TODO tweak or make dynamic based on queue?
 
     public void AddNetworkState(Vector3 pos, double incomingArrivalTime)
     {
@@ -316,14 +316,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         double targetRenderTime = currentTime - interpolationDelay;
 
         // Convert to list for easy index access during search
-        // (In high-performance scenarios, a circular buffer array is faster than converting to list)
         var states = buffer.ToList();
 
         NetState stateA = default; 
         NetState stateB = default; 
         bool found = false;
 
-        // Search from newest (back) to oldest (front)
         for (int i = states.Count - 1; i >= 1; i--)
         {
             NetState newer = states[i];
@@ -341,7 +339,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         if (found)
         {
             double timeGap = stateB.arrivalTime - stateA.arrivalTime;
-            // Avoid division by zero if two packets arrive at the same time
             float t = timeGap > 0 ? (float)((targetRenderTime - stateA.arrivalTime) / timeGap) : 1f;
             t = Mathf.Clamp(t, 0, 1);
 
@@ -353,8 +350,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             if (vel.LengthSquared() > 0.01f)
                 SmoothRotateY(vel, (float)delta);
 
-            // OPTIONAL: Clean up the queue
-            // Remove states that are older than stateA, as we won't need them anymore
+            //remove states that are older than stateA, as we won't need them anymore
             while (buffer.Count > 0 && buffer.Peek().arrivalTime < stateA.arrivalTime)
             {
                 buffer.Dequeue();
@@ -362,8 +358,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
         else if (targetRenderTime > states.Last().arrivalTime)
         {
-            // Extrapolation: Target time is ahead of our latest packet
-            //GlobalPosition += vel * (float)delta;
+            GlobalPosition += vel * (float)delta;
         }
     }
     public BasicPlayerCharacter GetNearestAlivePlayer(Vector3 agentPos)
