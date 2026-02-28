@@ -656,7 +656,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         AddNetworkState(message.transformOrigin);
         //this.targetPosition = message.transformOrigin;
-        this.GlobalPosition = message.transformOrigin;
+        //this.GlobalPosition = message.transformOrigin;
         this.state = message.state;
         // HordeAgentStateMessage message = MessagePackSerializer.Deserialize<HordeAgentStateMessage>(update);
         // this.targetNetworkTransform = message.transform;
