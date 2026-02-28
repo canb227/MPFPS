@@ -47,6 +47,9 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         Freeze = false;
         equippedBySteamID = 0;
         inInventoryOf = 0;
+        
+        priority = 5;
+
         if (currentParent != null)
         {
             DetachFromPlayer(currentParent);
@@ -59,8 +62,8 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         this.CollisionLayer = 0;
         Freeze = true;
         equippedBySteamID = bySteamID;
-        authority = bySteamID;
         inInventoryOf = 0;
+
         if (bySteamID == Global.steamid)
         {
             firstPersonScene.Show();
@@ -78,6 +81,9 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         firstPersonScene.Hide();
         thirdPersonScene.Hide();
         inInventoryOf = bySteamID;
+
+        authority = bySteamID;
+        priority = 1;
     }
     public virtual void OnUnequipped(ulong bySteamID)
     {
