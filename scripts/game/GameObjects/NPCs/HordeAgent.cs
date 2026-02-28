@@ -291,7 +291,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private Vector3 vel;
     private Queue<NetState> buffer = new Queue<NetState>();
     private const int MAX_BUFFER_SIZE = 32;
-    private double interpolationDelay = 0.1; 
+    private double interpolationDelay = 0.3; 
 
     public void AddNetworkState(Vector3 pos, double incomingArrivalTime)
     {
