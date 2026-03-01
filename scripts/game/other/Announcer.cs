@@ -74,9 +74,9 @@ public partial class Announcer : GOBaseStaticBody
 
     public void GeneratorSafe()
     {
-        announcerState = AnnouncerState.NONE;
-        animationPlayer.Stop();
-        audioStreamPlayerSiren.Stop();
+        // announcerState = AnnouncerState.NONE;
+        // animationPlayer.Stop();
+        // audioStreamPlayerSiren.Stop();
     }
     public void GeneratorUnderAttack()
     {

@@ -37,6 +37,7 @@ public partial class GOGenerator : GOBaseStaticBody
 	}
 
 	private bool announcedAttacked;
+	private bool announcedCritical;
 	private float timeSinceNoEnemy;
 	public override void _PhysicsProcess(double delta)
 	{
@@ -56,10 +57,15 @@ public partial class GOGenerator : GOBaseStaticBody
 						RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
 					}
 				}
-				else if(generatorHealthInSecondsPerRobot <= 30 && !announcedAttacked)
+				else if(generatorHealthInSecondsPerRobot <= (generatorMaxHealth*0.8) && !announcedAttacked)
 				{
 					//announcer alert
 					announcedAttacked = true;
+					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorUnderAttack", []);
+				}
+				else if(generatorHealthInSecondsPerRobot <= (generatorMaxHealth*0.8) && !announcedCritical)
+				{
+					announcedCritical = true;
 					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorUnderAttack", []);
 				}
 			}
@@ -71,6 +77,10 @@ public partial class GOGenerator : GOBaseStaticBody
 				{
 					announcedAttacked = false;
 					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorSafe", []);
+				}
+				if(announcedCritical && timeSinceNoEnemy > 1)
+				{
+					announcedCritical = false;
 				}
 				if (generatorHealthInSecondsPerRobot > generatorMaxHealth)
 					generatorHealthInSecondsPerRobot = generatorMaxHealth;
