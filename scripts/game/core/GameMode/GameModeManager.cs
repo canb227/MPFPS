@@ -729,6 +729,7 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TriggerSwarmStartedEvent()
     {
+        GD.Print("RPC swarm started trigger");
         SwarmStarted?.Invoke();
     }
 

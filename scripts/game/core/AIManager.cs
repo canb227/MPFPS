@@ -172,53 +172,56 @@ public partial class AIManager : Node3D
     public int currentHordeSize = 0;
     public override void _PhysicsProcess(double delta)
     {
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            currentHordeCooldown -= delta;
+            //decide if we want to updatepath and set target and start
+            if(currentHordeCooldown <= 30 && currentHordeCooldown > 0 && !announcedHorde && !Global.gameState.gameModeManager.evacuationStarted)
+            {
+                RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmIncomingEvent", []);
+                announcedHorde = true;
+            }
+            if(currentHordeCooldown <= 0)
+            {
+                Logging.Log("Spawn Horde", "AIManager");
+                hordeActive = true;
+                //we should play a sound like L4D
+                GD.Print("RPC swarm started");
+                RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmStartedEvent", []);
+                //Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
+                if(Global.gameState.gameModeManager.evacuationStarted)
+                {
+                    currentHordeCooldown = evacuationHordeCooldown;
+                    hordeSize = 5 + Global.gameState.gameModeManager.numPlayers * 3;
+                }
+                else
+                {
+                    currentHordeCooldown = hordeCooldown;
+                    hordeSize = 200 + Global.gameState.gameModeManager.numPlayers * 10; //TODO testing
+                }
+
+                int maxChunkSize = 50;
+
+                int chunkCount = (hordeSize + maxChunkSize - 1) / maxChunkSize;
+                int chunkSize = hordeSize/chunkCount;
+                for (int i = 0; i < chunkCount; i++)
+                {
+                    SpawnHorde(chunkSize);
+                }
+
+                announcedHorde = false;
+            }
+            //TODO
+            if(currentHordeSize <= 10 && hordeActive)
+            {
+                hordeActive = false;
+                GD.Print("Swarm Ended: " + currentHordeSize);
+                RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmDefeatedEvent", []);
+            }
+        }
         if(Global.gameState.gameModeManager.options.warehouseRobots)
         {
-            if(Global.Lobby.bIsLobbyHost)
-            {
-                currentHordeCooldown -= delta;
-                //decide if we want to updatepath and set target and start
-                if(currentHordeCooldown <= 30 && currentHordeCooldown > 0 && !announcedHorde && !Global.gameState.gameModeManager.evacuationStarted)
-                {
-                    RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmIncomingEvent", []);
-                    announcedHorde = true;
-                }
-                if(currentHordeCooldown <= 0)
-                {
-                    Logging.Log("Spawn Horde", "AIManager");
-                    hordeActive = true;
-                    //we should play a sound like L4D
-                    RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmStartedEvent", []);
-                    //Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
-                    if(Global.gameState.gameModeManager.evacuationStarted)
-                    {
-                        currentHordeCooldown = evacuationHordeCooldown;
-                        hordeSize = 5 + Global.gameState.gameModeManager.numPlayers * 3;
-                    }
-                    else
-                    {
-                        currentHordeCooldown = hordeCooldown;
-                        hordeSize = 200 + Global.gameState.gameModeManager.numPlayers * 10; //TODO testing
-                    }
-
-                    int maxChunkSize = 50;
-
-                    int chunkCount = (hordeSize + maxChunkSize - 1) / maxChunkSize;
-                    int chunkSize = hordeSize/chunkCount;
-                    for (int i = 0; i < chunkCount; i++)
-                    {
-                        SpawnHorde(chunkSize);
-                    }
-
-                    announcedHorde = false;
-                }
-                //TODO
-                if(currentHordeSize <= 10 && hordeActive)
-                {
-                    hordeActive = false;
-                    RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmDefeatedEvent", []);
-                }
-            }
+            
         }
     }
 
