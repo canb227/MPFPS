@@ -117,8 +117,8 @@ _data = {
 script = ExtResource("1_hcg5s")
 animationPlayer = NodePath("AnimationPlayer")
 audioStreamPlayerSiren = NodePath("AudioStreamPlayerSiren")
-audioStreamPlayerMusic = NodePath("AudioStreamPlayer2")
-audioStreamPlayerAlert = NodePath("AudioStreamPlayer3")
+audioStreamPlayerMusic = NodePath("AudioStreamPlayerMusic")
+audioStreamPlayerAlert = NodePath("AudioStreamPlayerAlert")
 metadata/_custom_type_script = "uid://c8bdsd63biy5x"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=412627634]
@@ -141,10 +141,11 @@ panning_strength = 0.0
 attenuation_model = 3
 panning_strength = 0.0
 
-[node name="AudioStreamPlayer2" type="AudioStreamPlayer3D" parent="." unique_id=325019242]
+[node name="AudioStreamPlayerMusic" type="AudioStreamPlayer3D" parent="." unique_id=325019242]
 attenuation_model = 3
 panning_strength = 0.0
 
-[node name="AudioStreamPlayer3" type="AudioStreamPlayer3D" parent="." unique_id=496429732]
+[node name="AudioStreamPlayerAlert" type="AudioStreamPlayer3D" parent="." unique_id=496429732]
 attenuation_model = 3
+volume_db = 2.0
 panning_strength = 0.0

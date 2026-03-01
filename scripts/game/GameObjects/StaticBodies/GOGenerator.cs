@@ -44,12 +44,12 @@ public partial class GOGenerator : GOBaseStaticBody
 		{
 			if (robotsInArea > 0)
 			{
-				int cappedRobotsInArea = Math.Max(20, robotsInArea);
+				int cappedRobotsInArea = Math.Min(20, robotsInArea);
 				generatorHealthInSecondsPerRobot -= (float)delta * cappedRobotsInArea; //max 20 robots deal damage
 				timeSinceNoEnemy = 0;
 				if(generatorHealthInSecondsPerRobot <= 0)
 				{
-					//ignore generator if we have started end of round evacuation
+					//ignore generator dying if we have started end of round evacuation or if the round hasnt started
 					if(!Global.gameState.gameModeManager.evacuationStarted && Global.gameState.gameModeManager.roundStarted)
 					{
 						//traitors win
