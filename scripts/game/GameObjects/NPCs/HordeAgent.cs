@@ -252,30 +252,29 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         // Distance to all players for priority assignment
         float dist = 999;
-        // foreach(BasicPlayerCharacter playerCharacter in Global.gameState.gameModeManager.basicPlayers.Values)
-        // {
-        //     float tempDist = (GlobalPosition - playerCharacter.GlobalPosition).Length();
-        //     if(tempDist < dist)
-        //     {
-        //         dist = tempDist;
-        //     }
-        // }
+        foreach(BasicPlayerCharacter playerCharacter in Global.gameState.gameModeManager.basicPlayers.Values)
+        {
+            float tempDist = (GlobalPosition - playerCharacter.GlobalPosition).Length();
+            if(tempDist < dist)
+            {
+                dist = tempDist;
+            }
+        }
         
 
-        // // Decide update frequency
-        // if (dist > midRange)
-        // {
-        //     priority = 1;
-        // } 
-        // else if (dist > nearRange)
-        // {
-        //     priority = 5;
-        // } 
-        // else 
-        // {
-        //     priority = 10;
-        // }
-        priority = 5;
+        // Decide update frequency
+        if (dist > midRange)
+        {
+            priority = 1;
+        } 
+        else if (dist > nearRange)
+        {
+            priority = 7;
+        } 
+        else 
+        {
+            priority = 15;
+        }
 
         deltaAccumulator += delta;
         updateCounter = 0;
@@ -404,160 +403,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float positionTimer;
     private float distanceLastCheck = 999;
     public Vector3 velocity = Vector3.Zero;
-    private void MoveAgent(double delta)
-    {
-        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
-        {
-            //GD.Print("Stuck");
-            //state = HordeAgentState.IDLE;
-            stuck = true;
-            //positionOneSecondAgo = new();
-            //distanceLastCheck = 1;
-            //currentIndex--;
-        }
-        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
-        {
-            //GD.Print("GO IDLE");
-            state = HordeAgentState.IDLE;
-            //TODO change behavior to generator behavior
-            return;
-        }
-        else
-        {
-            stuck = false;
-        }
-        float deltaF = (float)delta;
-        List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(this);
-
-        var space = GetWorld3D().DirectSpaceState;
-
-        
-        //avoidance
-        Vector3 origin = GlobalPosition;
-        // Vector3 forward = (targetPosition - GlobalPosition).Normalized();
-        // float rayLength = 1.5f;
-        // uint obstacleMask = (1 << 0);
-        // var hitForward = space.IntersectRay(new PhysicsRayQueryParameters3D {
-        //     From = origin,
-        //     To = origin + forward * rayLength,
-        //     CollisionMask = obstacleMask,
-        // });
-        // Vector3 avoidance = forward;
-        // if(hitForward.Count > 0)
-        // {
-        //     avoidance = ComputeAvoidanceScoredFan(origin, forward, rayLength, 7, 60f);
-        // }
-
-        // 1. Path following (look-ahead)
-        Vector3 target = path[Math.Min(currentIndex + lookAheadDist, path.Count - 1)];
-        Vector3 pathDir = (target - GlobalPosition).Normalized();
-
-        // Separation
-        Vector3 separation = Vector3.Zero;
-        foreach (var neighbor in neighbors)
-        {
-            Vector3 diff = GlobalPosition - neighbor.GlobalPosition;
-            diff.Y = 0; //we dont want them flying away to spread out
-            float neighbordist = diff.Length();
-            if (neighbordist < separationRadius && neighbordist > 0)
-            {
-                separation += diff.Normalized() / neighbordist;
-            }
-        }
-        if (separation.Length() > 1.0f)
-            separation = separation.Normalized();
-
-
-
-
-        // // Alignment
-        // Vector3 avgVel = Vector3.Zero;
-        // foreach (var neighbor in neighbors)
-        // {
-        //     avgVel += neighbor.Velocity;
-        // }
-        // if (neighbors.Count > 0)
-        //     avgVel /= neighbors.Count;
-
-        // Vector3 alignment = avgVel.Normalized();
-
-        // Cohesion
-        Vector3 cohesion = Vector3.Zero;
-        if (neighbors.Count > 0)
-        {
-            Vector3 center = Vector3.Zero;
-            foreach (var neighbor in neighbors)
-                center += neighbor.GlobalPosition;
-            center /= neighbors.Count;
-            cohesion = (center - GlobalPosition).Normalized();
-        }
-
-        //we track state update freshness
-        //if the stateupdate is new enough we add it in as a weighting for target location
-        Vector3 networkOrigin = Vector3.Zero;
-        // if(stateUpdateAge < 0.10f)
-        // {
-        //     networkOrigin = targetNetworkTransform.Origin;
-        // }
-
-        //var wallRepulsion = ComputeWallRepulsion(origin, 0.4f, 1.0f);
-        //float wallWeight = 3.0f;
-
-        // Combine forces
-        Vector3 steering =
-            //avoidance * avoidWeight + 
-            pathDir * pathWeight +
-            separation * sepWeight +
-            cohesion * cohWeight ;//+
-            //networkOrigin * networkWeight;// +
-            //wallRepulsion * wallWeight;
-            
-
-        if (steering.LengthSquared() > 0.001f)
-            steering = steering.Normalized();
-
-        //var space = GetWorld3D().DirectSpaceState;
-        float accel = 5.0f;
-        float speed = 30.0f;
-        float followSpeed = 11.0f;
-
-        Vector3 candidate = GlobalPosition + steering.Normalized() * deltaF * speed;
-        // Raycast from current position to candidate
-        var query = new PhysicsRayQueryParameters3D
-        {
-            From = GlobalPosition,
-            To = candidate,
-            CollisionMask = (1 << 0), // set to walls/obstacles only
-        };
-
-        var hit = space.IntersectRay(query);
-        targetPosition = candidate;
-        
-        //calculate desiredVel
-        Vector3 desiredVel = (targetPosition - GlobalPosition) * followSpeed;
-        velocity = velocity.Lerp(desiredVel, 1f - Mathf.Exp(-accel * deltaF));
-
-        if (hit.Count > 0 && !stuck)
-        {
-            Vector3 wallNormal = (Vector3)hit["normal"];
-            velocity = velocity.Slide(wallNormal) + (wallNormal * 0.2f);
-            //GD.Print("SLIDE TIME");
-        }
-        //rotate
-        SmoothRotateY(velocity, deltaF);
-
-        //move towards targetPosition
-        GlobalPosition += velocity * deltaF;
-
-        if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold && currentIndex < path.Count - 1)
-        {
-            if(HasLineOfSight(origin, path[currentIndex+1]))
-            {
-                currentIndex++;
-            }
-        }
-    }
-
+   
     public float TurnSpeed = 10.0f; // Higher = snappier
 
     public void SmoothRotateY(Vector3 velocity, float deltaF)
@@ -851,6 +697,21 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public void ApplyThreadedSteering(Vector3 steering, float delta)
     {
+        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
+        {
+            stuck = true;
+        }
+        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
+        {
+            //GD.Print("GO IDLE");
+            state = HordeAgentState.IDLE;
+            //TODO change behavior to generator behavior
+            return;
+        }
+        else
+        {
+            stuck = false;
+        }
         float accel = 5.0f;
         float speed = 30.0f;
         float followSpeed = 11.0f;
@@ -886,6 +747,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             currentIndex++;
         }
         UpdateGridLocation();
+        positionTimer += (float)delta;
+        if(positionTimer >= 3f)
+        {
+            positionTimer = 0;
+            distanceLastCheck = positionOneSecondAgo.DistanceSquaredTo(GlobalPosition);
+            positionOneSecondAgo = GlobalPosition;
+        }
     }
 
 

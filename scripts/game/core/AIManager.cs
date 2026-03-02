@@ -247,8 +247,10 @@ public partial class AIManager : Node3D
         while (_running) 
         {
             var localResults = new Dictionary<HordeAgent, Vector3>();
-
-            foreach (HordeAgent agent in controlledNPCs.ToList()) 
+            _mutex.WaitOne();
+            var tempNPCList = controlledNPCs.ToList();
+            _mutex.ReleaseMutex();
+            foreach (HordeAgent agent in tempNPCList) 
             {
                 if(agent.state==HordeAgentState.SWARM || agent.state == HordeAgentState.SIMPLECHASE)
                 {
@@ -316,26 +318,7 @@ public partial class AIManager : Node3D
     }
 
 
-        // if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
-    //     {
-    //         //GD.Print("Stuck");
-    //         //state = HordeAgentState.IDLE;
-    //         stuck = true;
-    //         //positionOneSecondAgo = new();
-    //         //distanceLastCheck = 1;
-    //         //currentIndex--;
-    //     }
-    //     else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
-    //     {
-    //         //GD.Print("GO IDLE");
-    //         state = HordeAgentState.IDLE;
-    //         //TODO change behavior to generator behavior
-    //         return;
-    //     }
-    //     else
-    //     {
-    //         stuck = false;
-    //     }
+
 
 
 
