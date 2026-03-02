@@ -557,7 +557,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
     }
 
-    public float TurnSpeed = 1.0f; // Higher = snappier
+    public float TurnSpeed = 10.0f; // Higher = snappier
 
     public void SmoothRotateY(Vector3 velocity, float deltaF)
     {
