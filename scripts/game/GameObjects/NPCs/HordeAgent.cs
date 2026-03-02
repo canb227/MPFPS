@@ -252,29 +252,30 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         // Distance to all players for priority assignment
         float dist = 999;
-        foreach(BasicPlayerCharacter playerCharacter in Global.gameState.gameModeManager.basicPlayers.Values)
-        {
-            float tempDist = (GlobalPosition - playerCharacter.GlobalPosition).Length();
-            if(tempDist < dist)
-            {
-                dist = tempDist;
-            }
-        }
+        // foreach(BasicPlayerCharacter playerCharacter in Global.gameState.gameModeManager.basicPlayers.Values)
+        // {
+        //     float tempDist = (GlobalPosition - playerCharacter.GlobalPosition).Length();
+        //     if(tempDist < dist)
+        //     {
+        //         dist = tempDist;
+        //     }
+        // }
         
 
-        // Decide update frequency
-        if (dist > midRange)
-        {
-            priority = 1;
-        } 
-        else if (dist > nearRange)
-        {
-            priority = 5;
-        } 
-        else 
-        {
-            priority = 10;
-        }
+        // // Decide update frequency
+        // if (dist > midRange)
+        // {
+        //     priority = 1;
+        // } 
+        // else if (dist > nearRange)
+        // {
+        //     priority = 5;
+        // } 
+        // else 
+        // {
+        //     priority = 10;
+        // }
+        priority = 5;
 
         deltaAccumulator += delta;
         updateCounter = 0;
