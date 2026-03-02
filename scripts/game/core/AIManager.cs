@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 public partial class AIManager : Node3D
 {
@@ -13,8 +14,9 @@ public partial class AIManager : Node3D
     public List<HordeAgent> controlledNPCs = new();
     public GOBasePlayerCharacter localPlayer;
     private GameModeOptions options;
-    private Dictionary<Vector3I, List<HordeAgent>> grid = new();
-    public List<Vector3> path = new();
+    private Dictionary<Vector3I, List<HordeAgent>> grid = new(); //only used by thread
+    public static List<Vector3> path = new();
+    public System.Threading.Mutex _gridMutex = new();
 
     internal void GameStartAsHost()
     {
@@ -85,6 +87,9 @@ public partial class AIManager : Node3D
     public override void _Ready()
     {
         base._Ready();
+        GD.Print("hello");
+        _avoidanceThread = new(AvoidanceLoop);
+        _avoidanceThread.Start();
     }
 
     public void NewRound()
@@ -103,8 +108,9 @@ public partial class AIManager : Node3D
         this.localPlayer = localPlayer;
     }
 
-    public void MoveAgentCell(HordeAgent agent, Vector3I oldCell, Vector3I newCell)
+    public void MoveAgentCell(HordeAgent agent, Vector3I oldCell, Vector3I newCell) //main thread?
     {
+        _gridMutex.WaitOne();
         if (grid.ContainsKey(oldCell))
             grid[oldCell].Remove(agent);
 
@@ -112,6 +118,7 @@ public partial class AIManager : Node3D
             grid[newCell] = new List<HordeAgent>();
 
         grid[newCell].Add(agent);
+        _gridMutex.ReleaseMutex();
     }
 
     public List<Vector3> CalculatePath(Vector3 start, Vector3 goal)
@@ -123,7 +130,7 @@ public partial class AIManager : Node3D
     }
 
 
-    public List<HordeAgent> GetNeighbors(HordeAgent agent)
+    public List<HordeAgent> GetNeighbors(HordeAgent agent) //thread
     {
         List<HordeAgent> neighbors = new();
         Vector3I cell = agent.currentCell;
@@ -133,33 +140,18 @@ public partial class AIManager : Node3D
                 for (int dz = -1; dz <= 1; dz++)
                 {
                     Vector3I neighborCell = cell + new Vector3I(dx, dy, dz);
+                    _gridMutex.WaitOne();
                     if (grid.ContainsKey(neighborCell))
                     {
-                        foreach (var other in grid[neighborCell])
+                        foreach (var other in grid[neighborCell]) //we may move where a agent is while calculating our new location
                         {
                             if (other == agent) continue;
-                            float dist = (other.GlobalPosition - agent.GlobalPosition).Length();
                             neighbors.Add(other);
                         }
                     }
+                    _gridMutex.ReleaseMutex();
                 }
         return neighbors;
-    }
-
-    public void UpdateAllAgentPaths()
-    {
-        Vector3 targetPosition = Global.gameState.gameModeManager.generator.GlobalPosition;
-        RPCManager.RPC(this, "UpdateAgentsPathOnClient", [targetPosition.X,targetPosition.Z]);
-    }
-
-    [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void UpdateAgentsPathOnClient(float x_start, float z_start, float x, float z)
-    {
-        path = CalculatePath(new Vector3(x_start, 1.2f, z_start), new Vector3(x, 1.2f, z));
-        foreach(var agent in controlledNPCs)
-        {
-            agent.UpdatePath(path);
-        }
     }
 
     bool evacuationStarted;
@@ -197,7 +189,7 @@ public partial class AIManager : Node3D
                 else
                 {
                     currentHordeCooldown = hordeCooldown;
-                    hordeSize = 200 + Global.gameState.gameModeManager.numPlayers * 10; //TODO testing
+                    hordeSize = 200; //Global.gameState.gameModeManager.numPlayers * 20; //TODO testing should probably just be like 20 per player? (min 50?) (max 300)
                 }
 
                 int maxChunkSize = 50;
@@ -223,11 +215,133 @@ public partial class AIManager : Node3D
         {
             
         }
+        //apply threading
+        foreach(var agent in controlledNPCs)
+        {
+            if (_resultsBuffer.ContainsKey(agent))
+            {
+                agent.ApplyThreadedSteering(_resultsBuffer[agent], (float)delta);
+            }
+        }
     }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+    }
+
 
     public void EvacuationStarted()
     {
         currentHordeCooldown = 5;
         evacuationStarted = true;
     }
+
+
+    private Thread _avoidanceThread;
+    private bool _running = true;
+    private Dictionary<HordeAgent, Vector3> _resultsBuffer = new();
+    private System.Threading.Mutex _mutex = new();
+
+    private void AvoidanceLoop() {
+        while (_running) 
+        {
+            var localResults = new Dictionary<HordeAgent, Vector3>();
+
+            foreach (HordeAgent agent in controlledNPCs.ToList()) 
+            {
+                if(agent.state==HordeAgentState.SWARM || agent.state == HordeAgentState.SIMPLECHASE)
+                {
+                    localResults[agent] = ComputeAgentMoveThreaded(agent);
+                }
+            }
+
+            _mutex.WaitOne();
+            _resultsBuffer = localResults;
+            _mutex.ReleaseMutex();
+
+            OS.DelayMsec(1); // prevents CPU hogging
+        }
+    }
+
+    private float waypointThreshold = 20.0f;
+    public static Vector3 ComputeAgentMoveThreaded(HordeAgent agent)
+    {
+        agent._mutex.WaitOne();
+
+        List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(agent);
+        
+        // 1. Path following (look-ahead)
+        Vector3 target = agent.path[Math.Min(agent.currentIndex + agent.lookAheadDist, agent.path.Count - 1)];
+        Vector3 pathDir = (target - agent.SnapshotPosition).Normalized();
+
+        // Separation
+        Vector3 separation = Vector3.Zero;
+        foreach (var neighbor in neighbors)
+        {
+            Vector3 diff = agent.SnapshotPosition - neighbor.SnapshotPosition;
+            diff.Y = 0; //we dont want them flying away to spread out
+            float neighbordist = diff.Length();
+            if (neighbordist < agent.separationRadius && neighbordist > 0)
+            {
+                separation += diff.Normalized() / neighbordist;
+            }
+        }
+        if (separation.Length() > 1.0f)
+            separation = separation.Normalized();
+
+        // Cohesion
+        Vector3 cohesion = Vector3.Zero;
+        if (neighbors.Count > 0)
+        {
+            Vector3 center = Vector3.Zero;
+            foreach (var neighbor in neighbors)
+                center += neighbor.SnapshotPosition;
+            center /= neighbors.Count;
+            cohesion = (center - agent.SnapshotPosition).Normalized();
+        }
+
+        // Combine forces
+        Vector3 steering =
+            pathDir * agent.pathWeight +
+            separation * agent.sepWeight +
+            cohesion * agent.cohWeight;
+            
+        if (steering.LengthSquared() > 0.001f)
+            steering = steering.Normalized();
+
+        agent._mutex.ReleaseMutex();
+
+        return steering;
+    }
+
+
+        // if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
+    //     {
+    //         //GD.Print("Stuck");
+    //         //state = HordeAgentState.IDLE;
+    //         stuck = true;
+    //         //positionOneSecondAgo = new();
+    //         //distanceLastCheck = 1;
+    //         //currentIndex--;
+    //     }
+    //     else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
+    //     {
+    //         //GD.Print("GO IDLE");
+    //         state = HordeAgentState.IDLE;
+    //         //TODO change behavior to generator behavior
+    //         return;
+    //     }
+    //     else
+    //     {
+    //         stuck = false;
+    //     }
+
+
+
+    
+}
+public struct AgentSnapshot {
+    public int id;
+    public Vector3 position;
 }

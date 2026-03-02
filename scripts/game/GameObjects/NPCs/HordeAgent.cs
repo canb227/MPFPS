@@ -31,7 +31,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public float maxHealth { get; set; } = 20;
     public float currentHealth { get; set; } = 20;
     private Transform3D targetNetworkTransform;
-    private Vector3 targetPosition;
+    public Vector3 targetPosition;
     private float stateUpdateAge;
 
     //new navigation stuff
@@ -40,9 +40,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float midRange = 25f;
     private float nearRange = 15f;
     private int updateCounter = 0;
-    private static int computeBucket = 0; // shared across agents
-    private int myBucket;
-    private int bucketCount = 8;
+
+    //threading info
+    public Vector3 SnapshotPosition;
+    public System.Threading.Mutex _mutex = new();
 
     public override void _Ready()
     {
@@ -54,8 +55,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
         priority = 1;
-        myBucket = computeBucket++ % bucketCount;
+        Global.gameState.AIManager._gridMutex.WaitOne();
         UpdateGridLocation();
+        Global.gameState.AIManager._gridMutex.ReleaseMutex();
         //Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
 
 
@@ -72,7 +74,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public HordeAgent SpawnAgent(Vector3 spawnPosition, int index)
     {
-        state = HordeAgentState.SWARM;
+
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
@@ -95,7 +97,11 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         // Apply the offset to the base spawn position
         GlobalPosition = spawnPosition + offset;
+        SnapshotPosition = GlobalPosition;
+        Global.gameState.AIManager._gridMutex.WaitOne();
         UpdateGridLocation();
+        Global.gameState.AIManager._gridMutex.ReleaseMutex();
+        state = HordeAgentState.SWARM;
         return this;
     }
 
@@ -175,6 +181,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public override void PerTickAuth(double delta)
     {
+        SnapshotPosition = GlobalTransform.Origin;
         tickIndex++;
         switch (state)
         {
@@ -186,13 +193,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 PerTickAgentAuth(delta);
                 break;
             case HordeAgentState.SIMPLECHASE:
-                timeSincePathUpdate += (float)delta;
-                //bucket scheduling
-                if (tickIndex % bucketCount == myBucket)
-                {
-                    RecalculatePath(delta);
-                }
-                PerTickAgentAuth(delta);
+                // timeSincePathUpdate += (float)delta;
+                // //bucket scheduling
+                // RecalculatePath(delta);
+                // PerTickAgentAuth(delta);
                 break;
             default:
                 break;
@@ -276,8 +280,8 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         updateCounter = 0;
         if(path != null)
         {
-            MoveAgent(deltaAccumulator);
-            UpdateGridLocation();
+            //MoveAgent(deltaAccumulator);
+            //UpdateGridLocation();
         }
 
         deltaAccumulator = 0;
@@ -383,22 +387,22 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     }
     
 
-    private float separationRadius = 1;
-    private int lookAheadDist = 0;
-    private float pathWeight = 1;
-    private float cohWeight = 1;
-    private float sepWeight = 2;
-    private float avoidWeight = 30;
-    private float networkWeight = 2;
+    public float separationRadius = 1;
+    public int lookAheadDist = 0;
+    public float pathWeight = 1;
+    public float cohWeight = 1;
+    public float sepWeight = 2;
+    public float avoidWeight = 30;
+    public float networkWeight = 2;
     private float navMeshSnapTolerance = 0.1f;
-    private int currentIndex = 0;
-    private float waypointThreshold = 20.0f;
-    private List<Vector3> path;
-    private bool stuck;
+    public int currentIndex = 0;
+    private float waypointThreshold = 20.0f; //deprecated
+    public List<Vector3> path;
+    public bool stuck;
     private Vector3 positionOneSecondAgo;
     private float positionTimer;
     private float distanceLastCheck = 999;
-    private Vector3 velocity = Vector3.Zero;
+    public Vector3 velocity = Vector3.Zero;
     private void MoveAgent(double delta)
     {
         if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
@@ -562,7 +566,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             float targetAngle = (float)Math.PI + Mathf.Atan2(velocity.X, velocity.Z);
             float currentAngle = Rotation.Y;
             float nextAngle = Mathf.LerpAngle(currentAngle, targetAngle, (float)deltaF * TurnSpeed);
-            Rotation = new Vector3(0, targetAngle, 0);
+            Rotation = new Vector3(0, nextAngle, 0);
         }
     }
     
@@ -572,8 +576,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         currentIndex = 0;
     }
 
-
-    private void UpdateGridLocation()
+    public void UpdateGridLocation()
     {
         Vector3I cell = new Vector3I(
             Mathf.FloorToInt(GlobalPosition.X / cellSize),
@@ -651,9 +654,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public override byte[] GenerateStateUpdate()
     {
         HordeAgentStateMessage message = new HordeAgentStateMessage();
-        message.transformOrigin = this.GlobalTransform.Origin;
+        message.transformOrigin = SnapshotPosition; //TODO does snapshot really work?
         //message.targetNodePath = Global.instance.GetPathTo(MovementTarget);
-        message.state = this.state;
+        message.state = state;
 
         return MessagePackSerializer.Serialize(message);   
     }
@@ -714,7 +717,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         }
         Position = new Vector3(0, -10, 0);
+        Global.gameState.AIManager._gridMutex.WaitOne();
         UpdateGridLocation();
+        Global.gameState.AIManager._gridMutex.ReleaseMutex();
         Global.gameState.AIManager.agentPool.Add(this);
         Global.gameState.AIManager.controlledNPCs.Remove(this);
         Global.gameState.AIManager.currentHordeSize--;
@@ -829,7 +834,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         return push;
     }
-    bool HasLineOfSight(Vector3 from, Vector3 to)
+    public bool HasLineOfSight(Vector3 from, Vector3 to)
     {
         var space = GetWorld3D().DirectSpaceState;
         uint obstacleMask = 1 << 0;
@@ -843,7 +848,44 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         return hit.Count == 0;
     }
 
+    public void ApplyThreadedSteering(Vector3 steering, float delta)
+    {
+        float accel = 5.0f;
+        float speed = 30.0f;
+        float followSpeed = 11.0f;
+        Vector3 candidate = GlobalPosition + steering * delta * speed;
 
+        var space = GetWorld3D().DirectSpaceState;
+        var query = new PhysicsRayQueryParameters3D
+        {
+            From = GlobalPosition,
+            To = candidate,
+            CollisionMask = (1 << 0),
+        };
+
+        var hit = space.IntersectRay(query);
+        targetPosition = candidate;
+
+        Vector3 desiredVel = (targetPosition - GlobalPosition) * followSpeed;
+        velocity = velocity.Lerp(desiredVel, 1f - Mathf.Exp(-accel * delta));
+
+        if (hit.Count > 0 && !stuck)
+        {
+            Vector3 wallNormal = (Vector3)hit["normal"];
+            velocity = velocity.Slide(wallNormal) + (wallNormal * 0.2f);
+        }
+
+        SmoothRotateY(velocity, delta);
+        GlobalPosition += velocity * delta;
+
+        if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold &&
+            currentIndex < path.Count - 1 &&
+            HasLineOfSight(GlobalPosition, path[currentIndex + 1]))
+        {
+            currentIndex++;
+        }
+        UpdateGridLocation();
+    }
 
 
 }
