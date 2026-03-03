@@ -339,7 +339,7 @@ type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
-transform = Transform3D(-0.3560368, 0, -0.93447196, 4.0847066e-08, -1, -1.5562863e-08, -0.93447196, -4.371139e-08, 0.3560368, -0.047898203, 0.08068455, -0.24127357)
+transform = Transform3D(-0.3560368, 0, -0.93447196, 4.0847066e-08, -1, -1.5562863e-08, -0.93447196, -4.371139e-08, 0.3560368, -0.25134853, 0.08068455, -0.23353934)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1810917358]
