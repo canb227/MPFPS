@@ -45,6 +45,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         thirdPersonScene.Show();
         this.CollisionLayer = 1 << 3;
         Freeze = false;
+        sleeping = false;
         equippedBySteamID = 0;
         inInventoryOf = 0;
         
@@ -77,6 +78,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
     {
         Logging.Log(bySteamID + " Just Picked a " + category.ToString() + " Up" + $"({id})", "GOBaseInventoryItem");
         Freeze = true;
+        sleeping = true;
         this.CollisionLayer = 0;
         firstPersonScene.Hide();
         thirdPersonScene.Hide();
