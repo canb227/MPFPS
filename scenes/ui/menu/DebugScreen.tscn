@@ -331,7 +331,8 @@ offset_left = 233.0
 offset_top = 138.0
 offset_right = 379.0
 offset_bottom = 187.0
-text = "Horde Size:"
+text = "Horde Size
+Per Player:"
 vertical_alignment = 1
 
 [node name="hordeSizeMultiplier" type="TextEdit" parent="sessionOptions" unique_id=96677186]
@@ -349,7 +350,7 @@ offset_top = 196.0
 offset_right = 379.0
 offset_bottom = 245.0
 text = "EndGame
-HordeSize"
+HordeMulti"
 
 [node name="endgameHordeSizeMultiplier" type="TextEdit" parent="sessionOptions" unique_id=368339841]
 layout_mode = 0
@@ -375,7 +376,6 @@ offset_top = 262.0
 offset_right = 356.0
 offset_bottom = 286.0
 scale = Vector2(1.58, 1.58)
-button_pressed = true
 
 [node name="ExtraTimeLabel5" type="Label" parent="sessionOptions" unique_id=1601400699]
 layout_mode = 0

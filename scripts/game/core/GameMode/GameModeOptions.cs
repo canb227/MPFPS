@@ -31,7 +31,7 @@ public class GameModeOptions
     [Key(16)] public double roundTime = 480;
     [Key(17)] public float hordeSizeMultiplier = 20.0f;
     [Key(18)] public float endgameHordeSizeMultiplier = 3.0f;
-    [Key(19)] public bool warehouseRobots = true;
+    [Key(19)] public bool warehouseRobots = false;
     [Key(20)] public bool hordeRobots = true;
 }
 
