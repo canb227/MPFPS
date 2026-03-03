@@ -101,7 +101,7 @@ public partial class UI : Node
         return loadedUI;
     }
 
-    private void ClearFullScreenUI()
+    public void ClearFullScreenUI()
     {
         Logging.Log($"Clearing fullscreen UI", "UI");
         if (currentFullScreenUI != null) currentFullScreenUI.Hide();

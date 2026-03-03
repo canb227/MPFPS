@@ -1,4 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dpvmxye6crgdd"]
+[gd_scene format=3 uid="uid://dpvmxye6crgdd"]
+
+[ext_resource type="Texture2D" uid="uid://b0v82knqowhvs" path="res://assets/sky/darksky.hdr" id="1_bgueo"]
+
+[sub_resource type="Theme" id="Theme_a47tw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp3pd"]
+bg_color = Color(0.3832183, 0.38321838, 0.38321817, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bppqe"]
+bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_p8adj"]
 font_size = 36
@@ -6,7 +16,7 @@ font_size = 36
 [sub_resource type="LabelSettings" id="LabelSettings_uo7ie"]
 font_size = 64
 
-[node name="LoadingScreen" type="Control"]
+[node name="LoadingScreen" type="Control" unique_id=853002647]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,27 +24,42 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="bar" type="ProgressBar" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=142723014]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_bgueo")
+expand_mode = 2
+
+[node name="bar" type="ProgressBar" parent="." unique_id=319730746]
 layout_mode = 0
-offset_left = 30.0
-offset_top = 825.0
+offset_left = 1387.0
+offset_top = 979.0
 offset_right = 1871.0
 offset_bottom = 1052.0
+theme = SubResource("Theme_a47tw")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/background = SubResource("StyleBoxFlat_hp3pd")
+theme_override_styles/fill = SubResource("StyleBoxFlat_bppqe")
+value = 27.23
 
-[node name="description" type="Label" parent="."]
+[node name="description" type="Label" parent="." unique_id=834323482]
 layout_mode = 0
-offset_left = 820.0
-offset_top = 752.0
-offset_right = 1116.0
-offset_bottom = 802.0
+offset_left = 1499.0
+offset_top = 914.0
+offset_right = 1757.0
+offset_bottom = 964.0
 text = "PLEASE SET ME"
 label_settings = SubResource("LabelSettings_p8adj")
 
-[node name="title" type="Label" parent="."]
+[node name="title" type="Label" parent="." unique_id=1489794]
 layout_mode = 0
-offset_left = 859.0
+offset_left = 815.0
 offset_top = 21.0
-offset_right = 1135.0
+offset_right = 1268.0
 offset_bottom = 109.0
-text = "Loading!"
+text = "Please Wait..."
 label_settings = SubResource("LabelSettings_uo7ie")

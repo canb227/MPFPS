@@ -114,25 +114,33 @@ public static class MapManager
 
         // Threaded load
         ResourceLoader.LoadThreadedRequest(scenePath);
-
+        float progressBarFaker = 0f;
+        var rand = new Random();
         while (ResourceLoader.LoadThreadedGetStatus(scenePath) == ResourceLoader.ThreadLoadStatus.InProgress)
         {
+            progressBarFaker += 0.01f * rand.Next(9); //:) gottem
+            Global.ui.UpdateLoadingScreenProgressBar(progressBarFaker);
             await Global.gameState.ToSignal(Global.gameState.GetTree(), SceneTree.SignalName.ProcessFrame);
         }
-
         var packed = ResourceLoader.LoadThreadedGet(scenePath) as PackedScene;
+        Global.ui.UpdateLoadingScreenProgressBar(40);
 
         nodeStaticLevel = packed.Instantiate<Node3D>();
         Global.gameState.AddChild(nodeStaticLevel);
+        Global.ui.UpdateLoadingScreenProgressBar(60);
 
         LoadMapMetas();
+        Global.ui.UpdateLoadingScreenProgressBar(70);
         LoadMapGameObjects();
+        Global.ui.UpdateLoadingScreenProgressBar(90);
+        Global.ui.StopLoadingScreen();
     }
 
 
 
     private static void LoadMapGameObjects()
     {
+        Global.ui.UpdateLoadingScreenProgressBar(80);
         Global.ui.SetLoadingScreenDescription("Loading map gameObjects...");
         foreach (Node node in Utils.GetChildrenRecursive(nodeStaticLevel, new()))
         {

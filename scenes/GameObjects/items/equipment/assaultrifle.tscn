@@ -325,8 +325,6 @@ audioStreamPlayer1 = NodePath("AudioPlayer")
 audioStreamPlayer2 = NodePath("AudioPlayer2")
 shotHitParticle = ExtResource("2_gd6m7")
 fireRate = 12.0
-currentMagazineAmmo = 25
-magazineSize = 25
 reloadTimeSeconds = 0.8
 physDamagePerShot = 4.0
 stunDamagePerShot = 8.0
@@ -364,7 +362,7 @@ skeleton = NodePath("")
 [node name="tps" type="Node3D" parent="." unique_id=1649983280]
 
 [node name="Cube_001" type="MeshInstance3D" parent="tps" unique_id=1644062355]
-transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0, 0, 0)
+transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0.3649021, 0, -0.1911812)
 mesh = SubResource("ArrayMesh_3fbs7")
 skeleton = NodePath("")
 

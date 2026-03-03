@@ -56,7 +56,7 @@ public partial class Main : Node
         InputMapManager.InitInputMap();
 
         //TODO: Add additonal start up items here.
-        await DoSomeLongShit();
+
 
         //Core game state manager - handles world state, network sync, etc.
         Global.gameState = new GameState();
