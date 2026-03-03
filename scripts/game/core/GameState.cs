@@ -137,11 +137,12 @@ public partial class GameState : Node3D
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void StartGame(string scenePath, GameModeType gameMode)
+    public async void StartGame(string scenePath, GameModeType gameMode)
     {
         Logging.Log($"Starting Game as char:{GameObjectLoader.GameObjectDictionary[PlayerData[Global.steamid].selectedCharacter].type.ToString()} !", "GameState");
-        //Global.ui.StartLoadingScreen();
-        MapManager.LoadMap(scenePath);
+        Global.ui.StartLoadingScreen();
+        
+        await MapManager.LoadMapAsync(scenePath);
 
         menuMusicStreamPlayer.Stop();
 

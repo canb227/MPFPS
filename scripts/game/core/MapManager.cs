@@ -102,6 +102,35 @@ public static class MapManager
         LoadMapGameObjects();
     }
 
+    public static async Task LoadMapAsync(string scenePath)
+    {
+        Global.ui.SetLoadingScreenDescription("Loading map...");
+
+        if (nodeStaticLevel != null)
+        {
+            nodeStaticLevel.QueueFree();
+            nodeStaticLevel = null;
+        }
+
+        // Threaded load
+        ResourceLoader.LoadThreadedRequest(scenePath);
+
+        while (ResourceLoader.LoadThreadedGetStatus(scenePath) == ResourceLoader.ThreadLoadStatus.InProgress)
+        {
+            await Global.gameState.ToSignal(Global.gameState.GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
+
+        var packed = ResourceLoader.LoadThreadedGet(scenePath) as PackedScene;
+
+        nodeStaticLevel = packed.Instantiate<Node3D>();
+        Global.gameState.AddChild(nodeStaticLevel);
+
+        LoadMapMetas();
+        LoadMapGameObjects();
+    }
+
+
+
     private static void LoadMapGameObjects()
     {
         Global.ui.SetLoadingScreenDescription("Loading map gameObjects...");
