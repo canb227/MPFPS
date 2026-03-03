@@ -95,7 +95,7 @@ public partial class AIManager : Node3D
     public void NewRound()
     {
         evacuationStarted = false;
-        currentHordeCooldown = 10; //TODO set this to a real number
+        currentHordeCooldown = Global.gameState.gameModeManager.options.mainhordeDelay;
         grid = new();
         agentPool = new();
         controlledNPCs = new();
@@ -156,7 +156,7 @@ public partial class AIManager : Node3D
 
     bool evacuationStarted;
     double currentHordeCooldown = 9999;
-    double hordeCooldown = 120;
+    double hordeCooldown = 240; //4 minutes
     double evacuationHordeCooldown = 10;
     bool announcedHorde = false;
     int hordeSize = 0;
@@ -184,12 +184,12 @@ public partial class AIManager : Node3D
                 if(Global.gameState.gameModeManager.evacuationStarted)
                 {
                     currentHordeCooldown = evacuationHordeCooldown;
-                    hordeSize = 5 + Global.gameState.gameModeManager.numPlayers * 3;
+                    hordeSize = (int)(5 + Global.gameState.gameModeManager.numPlayers * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
                 }
                 else
                 {
                     currentHordeCooldown = hordeCooldown;
-                    hordeSize = 200; //Global.gameState.gameModeManager.numPlayers * 20; //TODO testing should probably just be like 20 per player? (min 50?) (max 300)
+                    hordeSize = (int)(Global.gameState.gameModeManager.numPlayers * Global.gameState.gameModeManager.options.hordeSizeMultiplier); //TODO testing should probably just be like 20 per player? (min 50?) (max 300)
                 }
 
                 int maxChunkSize = 50;

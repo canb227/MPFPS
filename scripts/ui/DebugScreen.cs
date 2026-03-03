@@ -124,8 +124,8 @@ public partial class DebugScreen : Control
 		TimePerKillEdit = optNode.GetNode<TextEdit>("TimePerKillEdit");
 		TimePerKillEdit.TextChanged += GameOptionChanged;
 
-		PackagesPerPlayer = optNode.GetNode<TextEdit>("PackagesPerPlayerEdit");
-		PackagesPerPlayer.TextChanged += GameOptionChanged;
+		MainHordeDelay = optNode.GetNode<TextEdit>("MainHordeDelayEdit");
+		MainHordeDelay.TextChanged += GameOptionChanged;
 
 		UsePackageOverride = optNode.GetNode<CheckBox>("UsePackageOverrideCheck");
 		UsePackageOverride.Pressed += GameOptionChanged;
@@ -180,7 +180,7 @@ public partial class DebugScreen : Control
 	private Control optNode;
 	private TextEdit ItemsPerPackage;
 	private TextEdit TimePerKillEdit;
-	private TextEdit PackagesPerPlayer;
+	private TextEdit MainHordeDelay;
 	private CheckBox UsePackageOverride;
 	private TextEdit ExtraTime;
 	private TextEdit RoundTime;
@@ -205,7 +205,7 @@ public partial class DebugScreen : Control
 
 		opts.itemsPerPackage = int.Parse(ItemsPerPackage.Text);
 		opts.timePerKillEdit = int.Parse(TimePerKillEdit.Text);
-		opts.packagePerPlayer = float.Parse(PackagesPerPlayer.Text);
+		opts.mainhordeDelay = float.Parse(MainHordeDelay.Text);
 		opts.usePackageOverride = UsePackageOverride.ButtonPressed;
 		opts.roundTime = int.Parse(RoundTime.Text);
 		opts.timeAddedPerPackage = int.Parse(ExtraTime.Text);

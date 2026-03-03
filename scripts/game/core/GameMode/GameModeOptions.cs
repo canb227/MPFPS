@@ -23,14 +23,14 @@ public class GameModeOptions
     [Key(8)] public bool manualTeamOverride = true;
     [Key(9)] public int manualTraitorCount = 0;
     [Key(10)] public int manualManagerCount = 1;
-    [Key(11)] public int itemsPerPackage = 3;
+    [Key(11)] public int itemsPerPackage = 1;
     [Key(12)] public bool usePackageOverride = false; 
-    [Key(13)] public int timePerKillEdit = 4; 
-    [Key(14)] public float packagePerPlayer = 0.5f; 
+    [Key(13)] public int timePerKillEdit = 60; 
+    [Key(14)] public float mainhordeDelay = 300.0f;
     [Key(15)] public float timeAddedPerPackage = 120f; 
     [Key(16)] public double roundTime = 480;
-    [Key(17)] public float hordeSizeMultiplier = 1.0f;
-    [Key(18)] public float endgameHordeSizeMultiplier = 1.0f;
+    [Key(17)] public float hordeSizeMultiplier = 20.0f;
+    [Key(18)] public float endgameHordeSizeMultiplier = 3.0f;
     [Key(19)] public bool warehouseRobots = true;
     [Key(20)] public bool hordeRobots = true;
 }
