@@ -100,7 +100,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         Reparent(newParent, false);
         // Transform3D newTransform = Transform;
         // newTransform.Origin = new(0, 0, 0);
-        Transform = Transform3D.Identity;
+        //Transform = Transform3D.Identity;
         currentParent = newParent;
     }
 

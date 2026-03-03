@@ -325,11 +325,11 @@ script = ExtResource("1_07fvj")
 audioStreamPlayer1 = NodePath("AudioPlayer")
 audioStreamPlayer2 = NodePath("AudioPlayer2")
 shotHitParticle = ExtResource("2_gd6m7")
-fireRate = 5.0
-currentMagazineAmmo = 20
-magazineSize = 20
-physDamagePerShot = 9.0
-stunDamagePerShot = 20.0
+fireRate = 15.0
+currentMagazineAmmo = 25
+magazineSize = 25
+physDamagePerShot = 4.0
+stunDamagePerShot = 8.0
 maxPenetrations = 1
 iconPath = "res://assets/ui/icons/AssaultRifle.png"
 firstPersonScene = NodePath("fps")
@@ -339,7 +339,7 @@ type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.39710844, -0.0485382, -0.10046153)
+transform = Transform3D(-0.3560368, 0, -0.93447196, 4.0847066e-08, -1, -1.5562863e-08, -0.93447196, -4.371139e-08, 0.3560368, -0.047898203, 0.08068455, -0.24127357)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1810917358]
