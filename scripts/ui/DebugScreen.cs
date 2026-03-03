@@ -121,8 +121,8 @@ public partial class DebugScreen : Control
 		ItemsPerPackage = optNode.GetNode<TextEdit>("ItemsPerPackageEdit");
 		ItemsPerPackage.TextChanged += GameOptionChanged;
 
-		NumberOfPackages = optNode.GetNode<TextEdit>("NumberOfPackagesEdit");
-		NumberOfPackages.TextChanged += GameOptionChanged;
+		TimePerKillEdit = optNode.GetNode<TextEdit>("TimePerKillEdit");
+		TimePerKillEdit.TextChanged += GameOptionChanged;
 
 		PackagesPerPlayer = optNode.GetNode<TextEdit>("PackagesPerPlayerEdit");
 		PackagesPerPlayer.TextChanged += GameOptionChanged;
@@ -163,6 +163,9 @@ public partial class DebugScreen : Control
         warehouseRobots = optNode.GetNode<CheckBox>("warehouseRobots");
         warehouseRobots.Pressed += GameOptionChanged;
 
+		hordeRobots = optNode.GetNode<CheckBox>("hordeRobots");
+        hordeRobots.Pressed += GameOptionChanged;
+
 		chat_chatbar.GrabFocus();
 		Logging.Log("Debug Screen ready.", "DebugScreen");
 
@@ -176,7 +179,7 @@ public partial class DebugScreen : Control
 
 	private Control optNode;
 	private TextEdit ItemsPerPackage;
-	private TextEdit NumberOfPackages;
+	private TextEdit TimePerKillEdit;
 	private TextEdit PackagesPerPlayer;
 	private CheckBox UsePackageOverride;
 	private TextEdit ExtraTime;
@@ -192,6 +195,7 @@ public partial class DebugScreen : Control
     private TextEdit hordeSizeMultiplier;
     private TextEdit endgameHordeSizeMultiplier;
     private CheckBox warehouseRobots;
+	private CheckBox hordeRobots;
 
 
 	private void GameOptionChanged()
@@ -200,7 +204,7 @@ public partial class DebugScreen : Control
 		var opts = Global.gameState.gameModeManager.options;
 
 		opts.itemsPerPackage = int.Parse(ItemsPerPackage.Text);
-		opts.numPackages = int.Parse(NumberOfPackages.Text);
+		opts.timePerKillEdit = int.Parse(TimePerKillEdit.Text);
 		opts.packagePerPlayer = float.Parse(PackagesPerPlayer.Text);
 		opts.usePackageOverride = UsePackageOverride.ButtonPressed;
 		opts.roundTime = int.Parse(RoundTime.Text);
@@ -217,6 +221,7 @@ public partial class DebugScreen : Control
         opts.hordeSizeMultiplier = float.Parse(hordeSizeMultiplier.Text);
         opts.endgameHordeSizeMultiplier = float.Parse(endgameHordeSizeMultiplier.Text);
         opts.warehouseRobots = warehouseRobots.ButtonPressed;
+		opts.hordeRobots = hordeRobots.ButtonPressed;
 
 		Global.gameState.gameModeManager.PushGameStateOptions();
 	}

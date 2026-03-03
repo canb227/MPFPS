@@ -70,6 +70,7 @@ public partial class GameModeManager : Node
     public int numTraitors;
     public int numManagers;
 
+
     //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
     public delegate void GameModeOptionsReceived(GameModeOptions options, ulong sender);
     public static event GameModeOptionsReceived GameModeOptionsReceivedEvent;
@@ -244,7 +245,10 @@ public partial class GameModeManager : Node
                 }
             }
             //swarmManager.EvacuationStarted();
-            Global.gameState.AIManager.EvacuationStarted();
+            if(Global.gameState.gameModeManager.options.hordeRobots)
+            {
+                Global.gameState.AIManager.EvacuationStarted();
+            }
         }
         Logging.Log("Start End of Game Evacuation as Peer", "GameModeManager");
     }
@@ -301,7 +305,10 @@ public partial class GameModeManager : Node
         if (roundNumber == 0)
         {
             Logging.Log("Starting First Round as Peer", "GameModeManager");
-            Global.gameState.AIManager.NewRound();
+            if(Global.gameState.gameModeManager.options.hordeRobots)
+            {
+                Global.gameState.AIManager.NewRound();
+            }
             RPCManager.RPC(Global.gameState.GetCharacterControlledBy(Global.steamid), "ReleaseControl", []);
             SpawnAndControlNewLocalPlayerCharacter(GameObjectType.BasicPlayer);
             SpawnCharacterStartingInventory(Global.gameState.GetCharacterControlledBy(Global.steamid));
@@ -321,7 +328,10 @@ public partial class GameModeManager : Node
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
-            Global.gameState.AIManager.NewRound();
+            if(Global.gameState.gameModeManager.options.hordeRobots)
+            {
+                Global.gameState.AIManager.NewRound();
+            }
 
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)
@@ -357,14 +367,15 @@ public partial class GameModeManager : Node
 
     public void GenerateOrders()
     {
-        if (options.usePackageOverride)
-        {
-            ordersNeeded = options.numPackages;
-        }
-        else
-        {
-            ordersNeeded = 8; //8 max
-        }
+        ordersNeeded = 8; //max 8 per round
+        // if (options.usePackageOverride)
+        // {
+        //     ordersNeeded = options.numPackages;
+        // }
+        // else
+        // {
+        //     ordersNeeded = 8; //8 max
+        // }
 
         //determine our possible address details
         Random rand = new();
@@ -664,13 +675,13 @@ public partial class GameModeManager : Node
         }
         if(!evacuationStarted)
         {
-            remainingRoundTime += 60;
+            remainingRoundTime += options.timePerKillEdit;
         }
     }
 
     public void PlayerFound(ulong steamID)
     {
-        publicRemainingRoundTime += 60;
+        publicRemainingRoundTime += options.timePerKillEdit;
     }
 
 
