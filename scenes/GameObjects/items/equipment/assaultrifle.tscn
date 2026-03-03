@@ -339,7 +339,7 @@ type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, -0.0014464344, -0.048538193, -0.29541627)
+transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, -0.39290932, -0.048538193, -0.29541624)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1810917358]
@@ -364,7 +364,7 @@ skeleton = NodePath("")
 [node name="tps" type="Node3D" parent="." unique_id=1649983280]
 
 [node name="Cube_001" type="MeshInstance3D" parent="tps" unique_id=1644062355]
-transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0.39582276, -0.016174775, -0.0050991233)
+transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0, 0, 0)
 mesh = SubResource("ArrayMesh_3fbs7")
 skeleton = NodePath("")
 
