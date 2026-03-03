@@ -4,9 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_gd6m7"]
 [ext_resource type="AudioStream" uid="uid://bv3r20o11eaqu" path="res://assets/audio/weapons/basic/fire1.wav" id="3_7vhgp"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
-size = Vector3(1.3521881, 0.45162964, 0.15637207)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gwn1e"]
 resource_name = "main"
 cull_mode = 2
@@ -314,6 +311,9 @@ _data = {
 &"reload": SubResource("Animation_drkua")
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
+size = Vector3(1.3521881, 0.45162964, 0.15637207)
+
 [node name="Rifle" type="RigidBody3D" unique_id=2135433531 node_paths=PackedStringArray("audioStreamPlayer1", "audioStreamPlayer2", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
@@ -327,7 +327,7 @@ shotHitParticle = ExtResource("2_gd6m7")
 fireRate = 12.0
 currentMagazineAmmo = 25
 magazineSize = 25
-reloadTimeSeconds = 1.5
+reloadTimeSeconds = 0.8
 physDamagePerShot = 4.0
 stunDamagePerShot = 8.0
 maxPenetrations = 1
@@ -337,10 +337,6 @@ thirdPersonScene = NodePath("tps")
 animationPlayer = NodePath("AnimationPlayer")
 type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, -0.015125096, -0.048538193, -0.29541627)
-shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1810917358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
@@ -370,3 +366,7 @@ skeleton = NodePath("")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1597935765]
 libraries/ = SubResource("AnimationLibrary_a1fax")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
+transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.37906784, -0.048538193, -0.29541627)
+shape = SubResource("BoxShape3D_pmrh1")
