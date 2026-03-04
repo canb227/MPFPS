@@ -120,10 +120,10 @@ public static class MapManager
             Global.ui.UpdateLoadingScreenProgressBar((float)progress[0]*100);
             await Global.gameState.ToSignal(Global.gameState.GetTree(), SceneTree.SignalName.ProcessFrame);
         }
-        var packed = ResourceLoader.LoadThreadedGet(scenePath) as PackedScene;
+        cachedLevel = ResourceLoader.LoadThreadedGet(scenePath) as PackedScene;
         Global.ui.UpdateLoadingScreenProgressBar(40);
 
-        nodeStaticLevel = packed.Instantiate<Node3D>();
+        nodeStaticLevel = cachedLevel.Instantiate<Node3D>();
         Global.gameState.AddChild(nodeStaticLevel);
         Global.ui.UpdateLoadingScreenProgressBar(60);
 
