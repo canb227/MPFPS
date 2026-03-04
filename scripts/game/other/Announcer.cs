@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
 using MessagePack;
@@ -58,10 +59,28 @@ public partial class Announcer : GOBaseStaticBody
         audioStreamPlayerMusic.Play();
     }
 
-    public void SwarmDefeated()
+    public async void SwarmDefeated()
     {
-        audioStreamPlayerMusic.Stop();
+        await FadeOut(audioStreamPlayerMusic, 10f);
     }
+
+    public async Task FadeOut(AudioStreamPlayer3D player, float duration = 1f)
+    {
+        float startVolume = player.VolumeDb;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += (float)GetProcessDeltaTime();
+            float t = time / duration;
+            player.VolumeDb = Mathf.Lerp(startVolume, -80f, t); // -80 dB = silent
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
+
+        player.Stop();
+        player.VolumeDb = startVolume; // optional reset
+    }
+
 
     public void EvacuationStarted()
     {

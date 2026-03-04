@@ -48,19 +48,19 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     }
     public override void PerTickShared(double delta)   
     {
-        if(rotateOrders)
+        if(rotateOrders) //we rotate when it finishes the previous order
         {
-            rotateTime -= delta;
-            if(rotateTime <= 0)
-            {
-                rotateTime = 6;
-                orderNumber++;
-                if(orderNumber >= Global.gameState.gameModeManager.packageOrders.Count)
-                {
-                    orderNumber = 1;
-                }
-                UpdateDisplayedOrder();
-            }
+            // rotateTime -= delta;
+            // if(rotateTime <= 0)
+            // {
+            //     rotateTime = 6;
+            //     orderNumber++;
+            //     if(orderNumber >= Global.gameState.gameModeManager.packageOrders.Count)
+            //     {
+            //         orderNumber = 1;
+            //     }
+            //     UpdateDisplayedOrder();
+            // }
         }
     }
     public override void ProcessStateUpdate(byte[] update)    
@@ -105,17 +105,27 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     }
     public void ShowOrderAsFinished(int orderNumber)
     {
-        if (this.orderNumber-1 == orderNumber)
+        if(rotateOrders && orderNumber < Global.gameState.gameModeManager.packageOrders.Count)
         {
-            orderStatusLabel.Text = "\n\n\nORDER COMPLETED!";
-            orderCompletedImage.Visible = true;
-            backgroundColor.Color = new(0.0f, 0.187f, 0.015f, 0.25f);
+            //go to next order
+            this.orderNumber++;
+            UpdateDisplayedOrder();
         }
-        //if this is the previous order finishing then we can start displaying
-        if(this.orderNumber-2 == orderNumber)
+        else
         {
-            MonitorScreen.Visible = true;
+            if (this.orderNumber-1 == orderNumber)
+            {
+                orderStatusLabel.Text = "\n\n\nORDER COMPLETED!";
+                orderCompletedImage.Visible = true;
+                backgroundColor.Color = new(0.0f, 0.187f, 0.015f, 0.25f);
+            }
+            //if this is the previous order finishing then we can start displaying
+            if(this.orderNumber-2 == orderNumber)
+            {
+                MonitorScreen.Visible = true;
+            }
         }
+
     }
 
     public override void _Notification(int what)
@@ -136,11 +146,11 @@ public partial class GOOrderMonitor : GOBaseStaticBody
         orderNumberLabel.Text = "Order #" + orderNumber;
         if (Global.gameState.gameModeManager.packageOrders.Count < orderNumber)
         {
-            Logging.Log("Trying to update order of a monitor that doesn't exist (packageOrders.Count < orderNumber [for this monitor]).", "GOOrderMonitor");
+            GD.Print("Trying to update order of a monitor that doesn't exist (packageOrders.Count < orderNumber [for this monitor]).");
             MonitorScreen.Visible = false;
             return;
         }
-        MonitorScreen.Visible = false;
+        MonitorScreen.Visible = true;
         PackageOrderInfo orderInfo = Global.gameState.gameModeManager.packageOrders[orderNumber-1];
         // if (orderInfo.OrderIsFinished())
         // {

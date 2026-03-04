@@ -78,7 +78,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
+        Global.gameState.AIManager._mutex.WaitOne();
         Global.gameState.AIManager.controlledNPCs.Add(this);
+        Global.gameState.AIManager._mutex.ReleaseMutex();
         //GlobalTransform = new Transform3D(Basis.Identity, spawnPosition);
         //ResetPhysicsInterpolation();
             // Tuning parameters
@@ -163,7 +165,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 root.Visible = false;
                 break;
             case HordeAgentState.IDLE:
-                root.Visible = false;
+                //root.Visible = false;
                 break;
             case HordeAgentState.SWARM:
                 root.Visible = true;
@@ -568,8 +570,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         UpdateGridLocation();
         Global.gameState.AIManager._gridMutex.ReleaseMutex();
         Global.gameState.AIManager.agentPool.Add(this);
+        Global.gameState.AIManager._mutex.WaitOne();
         Global.gameState.AIManager.controlledNPCs.Remove(this);
-        Global.gameState.AIManager.currentHordeSize--;
+        Global.gameState.AIManager._mutex.ReleaseMutex();
+
         //add a timed ragdoll
     }
 

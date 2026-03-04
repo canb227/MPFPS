@@ -114,12 +114,10 @@ public static class MapManager
 
         // Threaded load
         ResourceLoader.LoadThreadedRequest(scenePath);
-        float progressBarFaker = 0f;
-        var rand = new Random();
-        while (ResourceLoader.LoadThreadedGetStatus(scenePath) == ResourceLoader.ThreadLoadStatus.InProgress)
+        Godot.Collections.Array progress = new();
+        while (ResourceLoader.LoadThreadedGetStatus(scenePath, progress) == ResourceLoader.ThreadLoadStatus.InProgress)
         {
-            progressBarFaker += 0.01f * rand.Next(9); //:) gottem
-            Global.ui.UpdateLoadingScreenProgressBar(progressBarFaker);
+            Global.ui.UpdateLoadingScreenProgressBar((float)progress[0]*100);
             await Global.gameState.ToSignal(Global.gameState.GetTree(), SceneTree.SignalName.ProcessFrame);
         }
         var packed = ResourceLoader.LoadThreadedGet(scenePath) as PackedScene;

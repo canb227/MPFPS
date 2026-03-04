@@ -319,15 +319,17 @@ collision_layer = 8
 collision_mask = 11
 mass = 9.0
 center_of_mass_mode = 1
+center_of_mass = Vector3(0.39, 0.01, 0)
 continuous_cd = true
 script = ExtResource("1_07fvj")
 audioStreamPlayer1 = NodePath("AudioPlayer")
 audioStreamPlayer2 = NodePath("AudioPlayer2")
 shotHitParticle = ExtResource("2_gd6m7")
-fireRate = 12.0
-reloadTimeSeconds = 0.8
-physDamagePerShot = 4.0
-stunDamagePerShot = 8.0
+fireRate = 5.0
+currentMagazineAmmo = 20
+magazineSize = 20
+physDamagePerShot = 9.0
+stunDamagePerShot = 20.0
 maxPenetrations = 1
 iconPath = "res://assets/ui/icons/AssaultRifle.png"
 firstPersonScene = NodePath("fps")
@@ -337,7 +339,7 @@ type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.37906784, -0.048538193, -0.29541627)
+transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.39710844, -0.0485382, -0.10046153)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1810917358]
@@ -362,7 +364,7 @@ skeleton = NodePath("")
 [node name="tps" type="Node3D" parent="." unique_id=1649983280]
 
 [node name="Cube_001" type="MeshInstance3D" parent="tps" unique_id=1644062355]
-transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0.3649021, 0, -0.1911812)
+transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0.39582276, -0.016174775, -0.0050991233)
 mesh = SubResource("ArrayMesh_3fbs7")
 skeleton = NodePath("")
 

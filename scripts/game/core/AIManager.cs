@@ -62,7 +62,6 @@ public partial class AIManager : Node3D
         var agentPoolSnapshot = agentPool.ToList();
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
-            currentHordeSize++;
             //spawn the agent and set its path
             agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin, i).UpdatePath(path);
         }
@@ -161,7 +160,6 @@ public partial class AIManager : Node3D
     bool announcedHorde = false;
     int hordeSize = 0;
     bool hordeActive = false;
-    public int currentHordeSize = 0;
     public override void _PhysicsProcess(double delta)
     {
         if(Global.Lobby.bIsLobbyHost)
@@ -204,10 +202,9 @@ public partial class AIManager : Node3D
                 announcedHorde = false;
             }
             //TODO
-            if(currentHordeSize <= 10 && hordeActive)
+            if(controlledNPCs.Count <= 10 && hordeActive)
             {
                 hordeActive = false;
-                GD.Print("Swarm Ended: " + currentHordeSize);
                 RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmDefeatedEvent", []);
             }
         }
@@ -241,7 +238,7 @@ public partial class AIManager : Node3D
     private Thread _avoidanceThread;
     private bool _running = true;
     private Dictionary<HordeAgent, Vector3> _resultsBuffer = new();
-    private System.Threading.Mutex _mutex = new();
+    public System.Threading.Mutex _mutex = new();
 
     private void AvoidanceLoop() {
         while (_running) 

@@ -35,7 +35,10 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         firstPersonScene.Hide();
         thirdPersonScene.Show();
         this.CollisionLayer = 1 << 3;
-        Freeze = false;
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            Freeze = false;
+        }
     }
 
     public virtual void OnDropped(ulong bySteamID)
@@ -44,7 +47,10 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
         firstPersonScene.Hide();
         thirdPersonScene.Show();
         this.CollisionLayer = 1 << 3;
-        Freeze = false;
+        if(bySteamID == Global.steamid)
+        {
+            Freeze = false; //we make freeze false because we dropped it as the authority
+        }
         sleeping = false;
         equippedBySteamID = 0;
         inInventoryOf = 0;
@@ -61,7 +67,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
     {
         Logging.Log(bySteamID + " Just Equipped a " + category.ToString() + $"({id})", "GOBaseInventoryItem");
         this.CollisionLayer = 0;
-        Freeze = true;
+        Freeze = true; //freeze because it should be frozen for everybody
         equippedBySteamID = bySteamID;
         inInventoryOf = 0;
 
@@ -77,7 +83,7 @@ public abstract partial class GOBaseInventoryItem : SimpleShape, IsInventoryItem
     public virtual void OnPickup(ulong bySteamID)
     {
         Logging.Log(bySteamID + " Just Picked a " + category.ToString() + " Up" + $"({id})", "GOBaseInventoryItem");
-        Freeze = true;
+        Freeze = true; //freeze because it should be frozen for everybody
         sleeping = true;
         this.CollisionLayer = 0;
         firstPersonScene.Hide();

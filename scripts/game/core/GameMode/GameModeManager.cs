@@ -161,7 +161,7 @@ public partial class GameModeManager : Node
             var start = Time.GetTicksMsec();
             while (Global.Lobby.AllPeersExceptSelf().Except(gameReadyClients).Any())
             {
-                if (Time.GetTicksMsec() - start > 10000)
+                if (Time.GetTicksMsec() - start > 120000)
                 {
                     Logging.Log("Timeout waiting for clients", "GameModeManager");
                     break;

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://8cg4bql5g6ts"]
+[gd_scene format=4 uid="uid://8cg4bql5g6ts"]
 
 [ext_resource type="Script" uid="uid://cno377a7j6wr4" path="res://scripts/game/GameObjects/Triggerable/GOTrap.cs" id="1_ohh4p"]
 [ext_resource type="Texture2D" uid="uid://c1y1a8ulh10ok" path="res://assets/models/map/firenozzle_metal_hr_2.png" id="2_l12yw"]
@@ -171,21 +171,19 @@ shadow_mesh = SubResource("ArrayMesh_ysl1a")
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jv2gt"]
 points = PackedVector3Array(0.40051702, -0.83334124, -0.02558198, 0.3748546, -0.80758834, -0.07690684, 0.3748546, 0.0655275, -0.82184124, -0.31854126, -0.037222758, -0.07690684, 0.3748546, -0.011600554, 0.82184124, 0.19507179, 0.5021508, -0.5393132, 0.22073422, -0.49946824, 0.5135703, 0.22073422, -0.49946824, -0.5135703, -0.31854126, 0.014152363, 0.12839258, 0.24646956, 0.47639787, 0.56489515, 0.42625234, -0.80758834, 0.07690684, 0.19507179, 0.5021508, 0.5393132, -0.13875848, 0.014152363, -0.3338529, -0.23377891, 0.15653406, -0.02292299, 0.32345682, 0.014152363, 0.82184124, 0.32345682, 0.014152363, -0.82184124, 0.3748546, 0.0655275, 0.82184124, 0.24646956, 0.47639787, -0.56489515, -0.31854126, -0.037222758, 0.07690684, -0.31854126, 0.014152363, -0.12839258, 0.27213198, -0.52509046, -0.5135703, 0.42625234, -0.80758834, -0.07690684, 0.3748546, -0.80758834, 0.07690684, 0.27213198, -0.52509046, 0.5135703, 0.3748546, -0.011600554, -0.82184124, -0.13875848, 0.014152363, 0.3338529, 0.32345682, 0.24527511, 0.6932878, 0.32345682, 0.0655275, -0.82184124, 0.32345682, 0.0655275, 0.82184124, 0.32345682, 0.24527511, -0.6932878, 0.42625234, -0.7819661, -0.07690684, -0.028238753, 0.32727382, -0.023381984)
 
-[node name="FireTrap" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer")]
+[node name="FireTrap" type="StaticBody3D" unique_id=1223249693 node_paths=PackedStringArray("animationPlayer")]
 script = ExtResource("1_ohh4p")
 animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_jv2gt")])
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_ohh4p")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2046292595]
+libraries/ = SubResource("AnimationLibrary_ohh4p")
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1126653100]
 stream = ExtResource("5_l12yw")
 panning_strength = 0.0
 
-[node name="FireParticles" type="GPUParticles3D" parent="."]
+[node name="FireParticles" type="GPUParticles3D" parent="." unique_id=2005556474]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26243293, 0, 0)
 emitting = false
 amount = 200
@@ -194,7 +192,7 @@ randomness = 0.5
 process_material = SubResource("ParticleProcessMaterial_2ml74")
 draw_pass_1 = SubResource("QuadMesh_yn8cl")
 
-[node name="Hurtbox" type="Area3D" parent="."]
+[node name="Hurtbox" type="Area3D" parent="." unique_id=304877460]
 collision_layer = 0
 collision_mask = 18
 script = ExtResource("5_fpl05")
@@ -205,17 +203,17 @@ hurtsNPCs = true
 active = true
 damageSoundType = 2
 
-[node name="HurtBoxShape" type="CollisionShape3D" parent="Hurtbox"]
+[node name="HurtBoxShape" type="CollisionShape3D" parent="Hurtbox" unique_id=608637642]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4694743, -0.02758789, 0.03012085)
 shape = SubResource("BoxShape3D_dd2wd")
 disabled = true
 debug_color = Color(0.988404, 0, 0.3075631, 0.41960785)
 
-[node name="FireTrapNozzle" type="MeshInstance3D" parent="."]
+[node name="FireTrapNozzle" type="MeshInstance3D" parent="." unique_id=1630267367]
 transform = Transform3D(-0.6174866, 0, 9.323789e-08, 0, 0.6174866, 0, -9.323789e-08, 0, -0.6174866, 0, 0, 0)
 mesh = SubResource("ArrayMesh_fpl05")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1897037334]
 transform = Transform3D(-0.6174866, 0, 9.323789e-08, 0, 0.6174866, 0, -9.323789e-08, 0, -0.6174866, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_jv2gt")
