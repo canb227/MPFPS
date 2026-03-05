@@ -45,6 +45,7 @@ public partial class Announcer : GOBaseStaticBody
         animationPlayer.Play("swarmIncoming");
         audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
         audioStreamPlayerSiren.Play();
+        Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("A horde of robots are approaching! Reach the front of the warehouse and defend the generator!");
     }
 
     public void SwarmStarted()
@@ -89,6 +90,7 @@ public partial class Announcer : GOBaseStaticBody
         animationPlayer.Play("evacuationStart");
         audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
         audioStreamPlayerSiren.Play();
+        Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("Rescue has arrived at the front of the warehouse. Get on board before it leaves!");
     }
 
     public void GeneratorSafe()
@@ -106,6 +108,7 @@ public partial class Announcer : GOBaseStaticBody
             //audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
             audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/baseunderattacksc.mp3");
             audioStreamPlayerSiren.Play();
+            Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("The generator is under attack! Get on board before it leaves!");
         }
     }
 
