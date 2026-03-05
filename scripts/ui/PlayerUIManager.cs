@@ -25,7 +25,9 @@ public partial class PlayerUIManager : Control
     [Export] public PanelContainer infoBox;
     [Export] public Label infoLabel;
 
+    [Export] public float FadeDuration = 3f;
     public float infoDisplayTimeLeft;
+    private bool _fadeStarted = false;
 
     public override void _Process(double delta)
     {
@@ -33,6 +35,19 @@ public partial class PlayerUIManager : Control
         {
             infoDisplayTimeLeft -= (float)delta;
         }
+
+        if (infoDisplayTimeLeft <= 3f && !_fadeStarted)
+        {
+            _fadeStarted = true;
+            StartFadeOut();
+        }
+    }
+
+    private void StartFadeOut()
+    {
+        var tween = CreateTween();
+        tween.TweenProperty(infoBox, "modulate:a", 0f, FadeDuration);
+    
     }
 
 
@@ -116,6 +131,7 @@ public partial class PlayerUIManager : Control
     {
         infoLabel.Text = infoString;
         infoDisplayTimeLeft = maxDisplayTime;
+        _fadeStarted = false;
     }
 
 

@@ -69,7 +69,7 @@ public partial class InGameUI : Control
         if (!EscapeMenu.Visible)
         {
             EscapeMenu.Visible = true;
-            Input.MouseMode = Input.MouseModeEnum.Confined;
+            Input.MouseMode = Input.MouseModeEnum.Visible;
         }
     }
 

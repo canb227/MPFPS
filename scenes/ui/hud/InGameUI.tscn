@@ -44,6 +44,7 @@ offset_right = 489.0
 offset_bottom = -146.0
 
 [node name="PlayerUIManager" parent="." unique_id=1640956908 instance=ExtResource("1_wcfvi")]
+visible = false
 layout_mode = 1
 
 [node name="EscapeMenuUI" parent="." unique_id=107021311 instance=ExtResource("5_l1i47")]
