@@ -190,27 +190,39 @@ public partial class Main : Node
             //backtick/tilde toggles the console
             else if (k.Keycode == Key.Quoteleft)
             {
+                //GD.Print("Toggling console (main.cs)");
                 if (Global.bConsoleOpen)
                 {
-                    Global.bConsoleOpen = false;
-                    LimboConsole.CloseConsole();
-                    if (Input.MouseMode==Input.MouseModeEnum.Visible)
-                    {
-                        Input.MouseMode = stashedMouseMouseMode;
-                    }
+                    CloseConsole();
 
                 }
                 else
                 {
-                    Global.bConsoleOpen = true;
-                    stashedMouseMouseMode = Input.MouseMode;
-                    LimboConsole.OpenConsole();
-                    Input.MouseMode = Input.MouseModeEnum.Visible;
+                    OpenConsole();
                 }
-                GetViewport().SetInputAsHandled();
             }
         }
 
+    }
+
+    public void CloseConsole()
+    {
+        Global.bConsoleOpen = false;
+        LimboConsole.CloseConsole();
+        if (Input.MouseMode==Input.MouseModeEnum.Visible)
+        {
+            Input.MouseMode = stashedMouseMouseMode;
+        }
+        GetViewport().SetInputAsHandled();
+    }
+
+    public void OpenConsole()
+    {
+        Global.bConsoleOpen = true;
+        stashedMouseMouseMode = Input.MouseMode;
+        LimboConsole.OpenConsole();
+        Input.MouseMode = Input.MouseModeEnum.Visible;
+        GetViewport().SetInputAsHandled();
     }
 
     /// <summary>
