@@ -4,6 +4,7 @@ using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 
 
@@ -21,6 +22,19 @@ public partial class PlayerUIManager : Control
     [Export] public TextureRect inventorySlot2;
     [Export] public TextureRect inventorySlot3;
     [Export] public TextureRect inventorySlot4;
+    [Export] public PanelContainer infoBox;
+    [Export] public Label infoLabel;
+
+    public float infoDisplayTimeLeft;
+
+    public override void _Process(double delta)
+    {
+        if(infoDisplayTimeLeft > 0)
+        {
+            infoDisplayTimeLeft -= (float)delta;
+        }
+    }
+
 
     public void ShowPlayerUI(ulong characterID)
     {
@@ -96,6 +110,12 @@ public partial class PlayerUIManager : Control
         {
             Logging.Error("INVALID Inventory Slot Update Request", "PlayerUIManager");
         }
+    }
+
+    public void DisplayNewInfo(string infoString, float maxDisplayTime = 60f)
+    {
+        infoLabel.Text = infoString;
+        infoDisplayTimeLeft = maxDisplayTime;
     }
 
 

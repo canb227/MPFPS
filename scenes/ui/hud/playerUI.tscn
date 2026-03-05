@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dp035d7xehaf3"]
+[gd_scene format=3 uid="uid://dp035d7xehaf3"]
 
 [ext_resource type="PackedScene" uid="uid://b0ytiqld1ba0v" path="res://scenes/ui/hud/playerinfoUI.tscn" id="1_ct4y5"]
 [ext_resource type="Script" uid="uid://dj5onwk1keewc" path="res://scripts/ui/PlayerUIManager.cs" id="1_mr6xf"]
@@ -7,7 +7,7 @@
 [ext_resource type="LabelSettings" uid="uid://bds86vvucgvfm" path="res://scenes/ui/hud/ScoreBoardFont1.tres" id="5_ppqf0"]
 [ext_resource type="Script" uid="uid://btuvjqernuwv7" path="res://scripts/ui/DeadPlayerScreen.cs" id="6_dk55q"]
 [ext_resource type="Texture2D" uid="uid://doy4ka51rjtuf" path="res://assets/ui/hud/xmark.png" id="7_6g85b"]
-[ext_resource type="Texture2D" uid="uid://pbf5lbiw2g2g" path="res://assets/models/warehouse/firehazard.png" id="8_eow85"]
+[ext_resource type="Texture2D" uid="uid://pbf5lbiw2g2g" path="res://assets/models/warehouse_old/firehazard.png" id="8_eow85"]
 [ext_resource type="Script" uid="uid://c80b8tarywtcb" path="res://scripts/ui/RoleShopScreen.cs" id="9_ak5ua"]
 [ext_resource type="Texture2D" uid="uid://cfdkd473ytihb" path="res://assets/ui/icons/radar.png" id="9_eow85"]
 [ext_resource type="Texture2D" uid="uid://b1ajbturvuone" path="res://assets/ui/icons/c4.png" id="10_ak5ua"]
@@ -31,7 +31,7 @@ shadow_color = Color(0, 0, 0, 1)
 font_size = 24
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="PlayerUIManager" type="Control" node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole", "inventorySlot1", "inventorySlot2", "inventorySlot3", "inventorySlot4")]
+[node name="PlayerUIManager" type="Control" unique_id=805232230 node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole", "inventorySlot1", "inventorySlot2", "inventorySlot3", "inventorySlot4", "infoBox", "infoLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -51,12 +51,14 @@ inventorySlot1 = NodePath("inventoryUI/VBoxContainer/PanelContainer/TextureRect"
 inventorySlot2 = NodePath("inventoryUI/VBoxContainer/PanelContainer2/TextureRect")
 inventorySlot3 = NodePath("inventoryUI/VBoxContainer/PanelContainer3/TextureRect")
 inventorySlot4 = NodePath("inventoryUI/VBoxContainer/PanelContainer4/TextureRect")
+infoBox = NodePath("InfoBox")
+infoLabel = NodePath("InfoBox/InfoMessage")
 metadata/_custom_type_script = "uid://dj5onwk1keewc"
 
-[node name="bottomleftUI" parent="." instance=ExtResource("1_ct4y5")]
+[node name="bottomleftUI" parent="." unique_id=379088181 instance=ExtResource("1_ct4y5")]
 layout_mode = 1
 
-[node name="inventoryUI" type="MarginContainer" parent="."]
+[node name="inventoryUI" type="MarginContainer" parent="." unique_id=986950628]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -70,69 +72,69 @@ grow_vertical = 0
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="VBoxContainer" type="VBoxContainer" parent="inventoryUI"]
+[node name="VBoxContainer" type="VBoxContainer" parent="inventoryUI" unique_id=957422390]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="inventoryUI/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="inventoryUI/VBoxContainer" unique_id=1151540952]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
 
-[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer"]
+[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer" unique_id=698408253]
 layout_mode = 2
 texture = ExtResource("3_mfrf8")
 expand_mode = 2
 
-[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer"]
+[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer" unique_id=475924988]
 layout_mode = 2
 size_flags_vertical = 0
 text = "1"
 
-[node name="PanelContainer2" type="PanelContainer" parent="inventoryUI/VBoxContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="inventoryUI/VBoxContainer" unique_id=1726528184]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
 
-[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer2"]
+[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer2" unique_id=538493058]
 layout_mode = 2
 expand_mode = 2
 
-[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer2"]
+[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer2" unique_id=1470625574]
 layout_mode = 2
 size_flags_vertical = 0
 text = "2"
 
-[node name="PanelContainer3" type="PanelContainer" parent="inventoryUI/VBoxContainer"]
+[node name="PanelContainer3" type="PanelContainer" parent="inventoryUI/VBoxContainer" unique_id=367183998]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
 
-[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer3"]
+[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer3" unique_id=593671757]
 layout_mode = 2
 expand_mode = 2
 
-[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer3"]
+[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer3" unique_id=1299680926]
 layout_mode = 2
 size_flags_vertical = 0
 text = "3"
 
-[node name="PanelContainer4" type="PanelContainer" parent="inventoryUI/VBoxContainer"]
+[node name="PanelContainer4" type="PanelContainer" parent="inventoryUI/VBoxContainer" unique_id=1282139570]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_x2et4")
 
-[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer4"]
+[node name="TextureRect" type="TextureRect" parent="inventoryUI/VBoxContainer/PanelContainer4" unique_id=1693398541]
 layout_mode = 2
 expand_mode = 2
 
-[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer4"]
+[node name="Label" type="Label" parent="inventoryUI/VBoxContainer/PanelContainer4" unique_id=1416921635]
 layout_mode = 2
 size_flags_vertical = 0
 text = "4"
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1637630212]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -140,45 +142,45 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="center" type="Control" parent="CenterContainer"]
+[node name="center" type="Control" parent="CenterContainer" unique_id=1841109407]
 layout_mode = 2
 
-[node name="crosshair" type="AnimatedSprite2D" parent="CenterContainer/center"]
+[node name="crosshair" type="AnimatedSprite2D" parent="CenterContainer/center" unique_id=1559634891]
 scale = Vector2(0.395, 0.395)
 sprite_frames = ExtResource("4_mr6xf")
 frame = 23
 speed_scale = 0.0
 
-[node name="SeenPlayerInfo" type="VBoxContainer" parent="CenterContainer"]
+[node name="SeenPlayerInfo" type="VBoxContainer" parent="CenterContainer" unique_id=1805153827]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="CenterContainer/SeenPlayerInfo"]
+[node name="Control" type="Control" parent="CenterContainer/SeenPlayerInfo" unique_id=1058391046]
 custom_minimum_size = Vector2(0, 139.955)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TargetName" type="Label" parent="CenterContainer/SeenPlayerInfo"]
+[node name="TargetName" type="Label" parent="CenterContainer/SeenPlayerInfo" unique_id=313210722]
 layout_mode = 2
 text = "Player Name Goes Here"
 label_settings = SubResource("LabelSettings_dk55q")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TargetHealth" type="Label" parent="CenterContainer/SeenPlayerInfo"]
+[node name="TargetHealth" type="Label" parent="CenterContainer/SeenPlayerInfo" unique_id=1359169075]
 layout_mode = 2
 text = "Healthy"
 label_settings = SubResource("LabelSettings_6g85b")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TargetRole" type="Label" parent="CenterContainer/SeenPlayerInfo"]
+[node name="TargetRole" type="Label" parent="CenterContainer/SeenPlayerInfo" unique_id=1128881681]
 layout_mode = 2
 text = "Security"
 label_settings = ExtResource("5_ppqf0")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DeadPlayerScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("deadPlayerScreen", "playerNameLabel", "closeWindowButton", "teamIcon", "teamLabel", "deathIcon", "deathLabel", "lastSeenPlayerIcon", "lastSeenLabel", "closeWindowButton2")]
+[node name="DeadPlayerScreen" type="PanelContainer" parent="CenterContainer" unique_id=1211171053 node_paths=PackedStringArray("deadPlayerScreen", "playerNameLabel", "closeWindowButton", "teamIcon", "teamLabel", "deathIcon", "deathLabel", "lastSeenPlayerIcon", "lastSeenLabel", "closeWindowButton2")]
 visible = false
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
@@ -195,38 +197,38 @@ lastSeenLabel = NodePath("VBoxContainer/LastSeenReport/HBox/LastSeenLabel")
 closeWindowButton2 = NodePath("VBoxContainer/MarginContainer/HBoxContainer/CloseWindowButton2")
 metadata/_custom_type_script = "uid://btuvjqernuwv7"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/DeadPlayerScreen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/DeadPlayerScreen" unique_id=125573987]
 layout_mode = 2
 
-[node name="TopBar" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+[node name="TopBar" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer" unique_id=749443741]
 layout_mode = 2
 
-[node name="PlayerNameLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar"]
+[node name="PlayerNameLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar" unique_id=2103661497]
 layout_mode = 2
 text = "Body of (Name)"
 
-[node name="Spacer" type="Control" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar"]
+[node name="Spacer" type="Control" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar" unique_id=1472826400]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CloseWindowButton" type="Button" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar"]
+[node name="CloseWindowButton" type="Button" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TopBar" unique_id=891469003]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 icon = ExtResource("7_6g85b")
 icon_alignment = 1
 expand_icon = true
 
-[node name="TeamInfo" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+[node name="TeamInfo" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer" unique_id=133467188]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo"]
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo" unique_id=313040856]
 layout_mode = 2
 
-[node name="TeamIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox"]
+[node name="TeamIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox" unique_id=468135065]
 visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
@@ -234,21 +236,21 @@ texture = ExtResource("8_eow85")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="TeamLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox"]
+[node name="TeamLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/TeamInfo/HBox" unique_id=533029831]
 layout_mode = 2
 text = "(Name) was a part of the (Team)"
 
-[node name="DeathReport" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+[node name="DeathReport" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer" unique_id=187086259]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport"]
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport" unique_id=614742389]
 layout_mode = 2
 
-[node name="DeathIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox"]
+[node name="DeathIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox" unique_id=351332534]
 visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
@@ -256,22 +258,22 @@ texture = ExtResource("8_eow85")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="DeathLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox"]
+[node name="DeathLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/DeathReport/HBox" unique_id=147275331]
 visible = false
 layout_mode = 2
 text = "(Name) died (time) ago to (cause of death)"
 
-[node name="LastSeenReport" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+[node name="LastSeenReport" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer" unique_id=763370247]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport"]
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport" unique_id=1640812173]
 layout_mode = 2
 
-[node name="LastSeenPlayerIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox"]
+[node name="LastSeenPlayerIcon" type="TextureRect" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox" unique_id=1609529293]
 visible = false
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
@@ -279,26 +281,26 @@ texture = ExtResource("8_eow85")
 expand_mode = 4
 stretch_mode = 5
 
-[node name="LastSeenLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox"]
+[node name="LastSeenLabel" type="Label" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/LastSeenReport/HBox" unique_id=1181093450]
 visible = false
 layout_mode = 2
 text = "(Name) saw (OtherName) right before they died"
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer" unique_id=1371440240]
 layout_mode = 2
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/MarginContainer" unique_id=744833638]
 layout_mode = 2
 alignment = 2
 
-[node name="CloseWindowButton2" type="Button" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="CloseWindowButton2" type="Button" parent="CenterContainer/DeadPlayerScreen/VBoxContainer/MarginContainer/HBoxContainer" unique_id=700007832]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 text = "Close"
 
-[node name="RoleShopScreen" type="PanelContainer" parent="CenterContainer" node_paths=PackedStringArray("roleShopScreen", "creditLabel", "itemButtonContainer", "itemDescriptionLabel", "closeWindowButton", "purchaseButton", "radarButton", "c4Button", "dartGunButton")]
+[node name="RoleShopScreen" type="PanelContainer" parent="CenterContainer" unique_id=896819325 node_paths=PackedStringArray("roleShopScreen", "creditLabel", "itemButtonContainer", "itemDescriptionLabel", "closeWindowButton", "purchaseButton", "radarButton", "c4Button", "dartGunButton")]
 visible = false
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
@@ -314,89 +316,106 @@ c4Button = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/C4Button")
 dartGunButton = NodePath("VBoxContainer/ShopItems/HBox/HFlowContainer/DartGunButton")
 metadata/_custom_type_script = "uid://c80b8tarywtcb"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/RoleShopScreen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/RoleShopScreen" unique_id=417242068]
 layout_mode = 2
 
-[node name="TopBar" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
+[node name="TopBar" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer" unique_id=1467321843]
 layout_mode = 2
 
-[node name="RoleShopLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+[node name="RoleShopLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar" unique_id=1817096443]
 layout_mode = 2
 text = "Role Shop"
 label_settings = SubResource("LabelSettings_eow85")
 
-[node name="Spacer" type="Control" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+[node name="Spacer" type="Control" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar" unique_id=118855735]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CreditLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+[node name="CreditLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar" unique_id=405431798]
 layout_mode = 2
 text = "You Currently Have X Credits"
 
-[node name="CloseWindowButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar"]
+[node name="CloseWindowButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/TopBar" unique_id=1511040174]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 icon = ExtResource("7_6g85b")
 icon_alignment = 1
 expand_icon = true
 
-[node name="ShopItems" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
+[node name="ShopItems" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer" unique_id=420731139]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="HBox" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems"]
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems" unique_id=2110801615]
 layout_mode = 2
 
-[node name="HFlowContainer" type="HFlowContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox"]
+[node name="HFlowContainer" type="HFlowContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox" unique_id=681989022]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.5
 
-[node name="RadarButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer"]
+[node name="RadarButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer" unique_id=1436258599]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("9_eow85")
 icon_alignment = 1
 expand_icon = true
 
-[node name="C4Button" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer"]
+[node name="C4Button" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer" unique_id=1626675573]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("10_ak5ua")
 icon_alignment = 1
 expand_icon = true
 
-[node name="DartGunButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer"]
+[node name="DartGunButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/HFlowContainer" unique_id=485549121]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("12_mfrf8")
 icon_alignment = 1
 expand_icon = true
 
-[node name="ItemDescriptionBox" type="VBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox"]
+[node name="ItemDescriptionBox" type="VBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox" unique_id=519885351]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ItemDescriptionLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/ItemDescriptionBox"]
+[node name="ItemDescriptionLabel" type="Label" parent="CenterContainer/RoleShopScreen/VBoxContainer/ShopItems/HBox/ItemDescriptionBox" unique_id=1502454424]
 layout_mode = 2
 text = "The radar lets you see other players and then we took the place and we put it in to the space that is used to make apple sauce"
 autowrap_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer" unique_id=1965065597]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/RoleShopScreen/VBoxContainer/MarginContainer" unique_id=1022388548]
 layout_mode = 2
 alignment = 2
 
-[node name="PurchaseButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="PurchaseButton" type="Button" parent="CenterContainer/RoleShopScreen/VBoxContainer/MarginContainer/HBoxContainer" unique_id=577829558]
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 text = "Purchase"
+
+[node name="InfoBox" type="PanelContainer" parent="." unique_id=1590043362]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.95
+anchor_top = 0.09
+anchor_right = 0.95
+anchor_bottom = 0.09
+offset_left = -400.0
+offset_bottom = 120.0
+grow_horizontal = 0
+
+[node name="InfoMessage" type="Label" parent="InfoBox" unique_id=1860022568]
+custom_minimum_size = Vector2(0, 0.165)
+layout_mode = 2
+text = "Rescue has arrived at the front of the warehouse. Get on board before it leaves!"
+autowrap_mode = 2

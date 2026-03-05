@@ -75,14 +75,13 @@ public partial class UI : Node
             }
             if (@event.IsActionPressed("Escape"))
             {
-                GD.Print("escape pressed");
                 if(inGameUI.EscapeMenu.Visible)
                 {
-                    inGameUI.ShowEscapeMenu();
+                    inGameUI.HideEscapeMenu();
                 }
                 else
                 {
-                    inGameUI.HideEscapeMenu();
+                    inGameUI.ShowEscapeMenu();
                 }
             }
         }
