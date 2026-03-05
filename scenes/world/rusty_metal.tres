@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c156felb6kslr"]
+
+[ext_resource type="Texture2D" uid="uid://d0n6eqj554rri" path="res://assets/models/warehouse/metal_hr_5.png" id="1_ue8oa"]
+
+[resource]
+albedo_texture = ExtResource("1_ue8oa")
+metallic = 0.28
+metallic_specular = 0.1
