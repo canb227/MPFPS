@@ -1,11 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://bjet6jkjoc1mv"]
+[gd_scene format=3 uid="uid://bjet6jkjoc1mv"]
 
 [ext_resource type="Script" uid="uid://q2t60gt2kvx1" path="res://scripts/ui/InGameUI.cs" id="1_0v7in"]
 [ext_resource type="PackedScene" uid="uid://dp035d7xehaf3" path="res://scenes/ui/hud/playerUI.tscn" id="1_wcfvi"]
 [ext_resource type="PackedScene" uid="uid://y7cd32qk1btg" path="res://scenes/ui/hud/ScoreBoardUI.tscn" id="2_0v7in"]
 [ext_resource type="PackedScene" uid="uid://cu47jqvm583t2" path="res://scenes/ui/hud/RoundReport.tscn" id="4_t1kl0"]
+[ext_resource type="PackedScene" uid="uid://dn7g72x5j6l6q" path="res://scenes/ui/hud/EscapeMenuUI.tscn" id="5_l1i47"]
 
-[node name="InGameUI" type="Control" node_paths=PackedStringArray("PlayerUIManager", "ScoreBoard", "RoundReport")]
+[node name="InGameUI" type="Control" unique_id=864638056 node_paths=PackedStringArray("PlayerUIManager", "ScoreBoard", "EscapeMenu", "RoundReport")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,11 +17,11 @@ mouse_filter = 1
 script = ExtResource("1_0v7in")
 PlayerUIManager = NodePath("PlayerUIManager")
 ScoreBoard = NodePath("ScoreBoardUI")
+EscapeMenu = NodePath("EscapeMenuUI")
 RoundReport = NodePath("RoundReport")
 metadata/_custom_type_script = "uid://q2t60gt2kvx1"
 
-[node name="ScoreBoardUI" parent="." instance=ExtResource("2_0v7in")]
-visible = false
+[node name="ScoreBoardUI" parent="." unique_id=1936723526 instance=ExtResource("2_0v7in")]
 layout_mode = 1
 anchors_preset = 13
 anchor_bottom = 1.0
@@ -30,7 +31,7 @@ offset_right = 542.0
 offset_bottom = -49.0
 grow_vertical = 2
 
-[node name="RoundReport" parent="." instance=ExtResource("4_t1kl0")]
+[node name="RoundReport" parent="." unique_id=173794599 instance=ExtResource("4_t1kl0")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -41,6 +42,14 @@ offset_top = 120.0
 offset_right = 489.0
 offset_bottom = -146.0
 
-[node name="PlayerUIManager" parent="." instance=ExtResource("1_wcfvi")]
+[node name="PlayerUIManager" parent="." unique_id=1640956908 instance=ExtResource("1_wcfvi")]
 visible = false
 layout_mode = 1
+
+[node name="EscapeMenuUI" parent="." unique_id=107021311 instance=ExtResource("5_l1i47")]
+layout_mode = 1
+anchors_preset = 13
+anchor_top = 0.0
+anchor_bottom = 1.0
+offset_top = 0.0
+offset_bottom = 0.0

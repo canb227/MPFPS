@@ -73,6 +73,18 @@ public partial class UI : Node
             {
                 inGameUI.HideScoreBoard();
             }
+            if (@event.IsActionPressed("Escape"))
+            {
+                GD.Print("escape pressed");
+                if(inGameUI.EscapeMenu.Visible)
+                {
+                    inGameUI.ShowEscapeMenu();
+                }
+                else
+                {
+                    inGameUI.HideEscapeMenu();
+                }
+            }
         }
 
     }

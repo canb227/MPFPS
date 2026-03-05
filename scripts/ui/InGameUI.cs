@@ -12,6 +12,7 @@ public partial class InGameUI : Control
 {
     [Export] public PlayerUIManager PlayerUIManager;
     [Export] public ScoreBoardUI ScoreBoard;
+    [Export] public EscapeMenuUI EscapeMenu;
     [Export] public RoundReportUI RoundReport;
 
     public void UpdateTimeLeftUI()
@@ -56,7 +57,31 @@ public partial class InGameUI : Control
         if (ScoreBoard.Visible)
         {
             ScoreBoard.Visible = false;
-            Input.MouseMode = Input.MouseModeEnum.Captured;
+            if(!EscapeMenu.Visible)
+            {
+                Input.MouseMode = Input.MouseModeEnum.Captured;
+            }
+        }
+    }
+
+    public void ShowEscapeMenu()
+    {
+        if (!EscapeMenu.Visible)
+        {
+            EscapeMenu.Visible = true;
+            Input.MouseMode = Input.MouseModeEnum.Confined;
+        }
+    }
+
+    public void HideEscapeMenu()
+    {
+        if (EscapeMenu.Visible)
+        {
+            EscapeMenu.Visible = false;
+            if(!ScoreBoard.Visible)
+            {
+                Input.MouseMode = Input.MouseModeEnum.Captured;
+            }
         }
     }
 

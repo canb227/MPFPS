@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=202 format=3 uid="uid://6ris0asu4w0y"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://6ris0asu4w0y"]
 
 [ext_resource type="Texture2D" uid="uid://dcbuagf5iu3bn" path="res://assets/ui/hud/crosshairs_tilesheet_white@2.png" id="1_q5dao"]
 
