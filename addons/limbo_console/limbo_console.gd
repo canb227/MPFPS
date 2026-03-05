@@ -152,7 +152,10 @@ func _handle_history_input(p_event: InputEvent):
 
 
 func _input(p_event: InputEvent) -> void: 
-	#if p_event.is_action_pressed("limbo_console_toggle"):
+	if p_event.is_action_pressed("limbo_console_toggle"):
+		#print("Toggling console (limbo_console.gd)")
+		get_node("../main").CloseConsole()
+		return
 		#toggle_console()
 		#get_viewport().set_input_as_handled()
 	## Check to see if the history gui should open
@@ -162,6 +165,7 @@ func _input(p_event: InputEvent) -> void:
 	elif _history_gui.visible and p_event is InputEventKey:
 		_handle_history_input(p_event)
 	elif _control.visible and p_event is InputEventKey and p_event.is_pressed():
+		print("Handling command input: ", p_event.as_text())
 		_handle_command_input(p_event) 
 
 
