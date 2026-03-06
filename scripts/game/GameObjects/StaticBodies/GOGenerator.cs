@@ -9,6 +9,7 @@ public partial class GOGenerator : GOBaseStaticBody
 {
 	[Export] Area3D generatorArea;
 	[Export] public MeshInstance3D _outline;
+	private bool outlineDesiredState;
 	public float generatorHealthInSecondsPerRobot = 0.0f;
 	public float generatorMaxHealth = 900.0f;
 	public override void _Ready()
@@ -40,6 +41,7 @@ public partial class GOGenerator : GOBaseStaticBody
 
 	public void SetHighlighted(bool enabled)
     {
+		outlineDesiredState = enabled;
         _outline.Visible = enabled;
     }
 
@@ -94,6 +96,22 @@ public partial class GOGenerator : GOBaseStaticBody
 				else
 					generatorHealthInSecondsPerRobot += (float)delta;
 			}
+		}
+
+		if(outlineDesiredState)
+        {
+            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 100f)
+            {
+                _outline.Visible = false;
+            }
+            else
+            {
+                _outline.Visible = true;
+            }
+        }
+		else
+		{
+			_outline.Visible = false;
 		}
 	}
 

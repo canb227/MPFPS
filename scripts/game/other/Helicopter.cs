@@ -18,6 +18,7 @@ public partial class Helicopter : GOBaseStaticBody
     [Export] Hurtbox frontRotorHurtbox { get; set; }
     [Export] Hurtbox rearRotorHurtbox { get; set; }
     [Export] public MeshInstance3D _outline;
+    private bool outlineDesiredState;
 
     private float currentSpeed = 0f;
     private bool flyaway { get; set; }
@@ -44,9 +45,9 @@ public partial class Helicopter : GOBaseStaticBody
         }
     }
 
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
-        base._Process(delta);
+        base._PhysicsProcess(delta);
         if (flyaway)
         {
             float factor = 1f - Mathf.Exp(-accelFactor * (float)delta);
@@ -58,10 +59,31 @@ public partial class Helicopter : GOBaseStaticBody
 
             GlobalTranslate(movement * (float)delta);
         }
+
+        //outline control
+        if(outlineDesiredState)
+        {
+            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 100f)
+            {
+                _outline.Visible = false;
+            }
+            else
+            {
+                _outline.Visible = true;
+            }
+        }
+        else
+		{
+			_outline.Visible = false;
+		}
     }
+    
+
+    
 
     public void SetHighlighted(bool enabled)
     {
+        outlineDesiredState = enabled;
         _outline.Visible = enabled;
     }
 
@@ -89,6 +111,7 @@ public partial class Helicopter : GOBaseStaticBody
             }
             Global.gameState.gameModeManager.EvacuationLeft(basicPlayerCharacters);
         }
+        Global.gameState.gameModeManager.helicopter.SetHighlighted(true);
     }
 
     public void StartHelicopter()

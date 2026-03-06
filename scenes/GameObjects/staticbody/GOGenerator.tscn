@@ -748,6 +748,8 @@ light_bake_mode = 1
 omni_range = 2.29
 
 [node name="Outline" type="MeshInstance3D" parent="Body" unique_id=1661393945]
+cast_shadow = 0
+extra_cull_margin = 16384.0
 mesh = SubResource("ArrayMesh_vsi7p")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_nlcfi")
