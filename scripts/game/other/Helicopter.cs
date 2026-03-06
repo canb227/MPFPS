@@ -17,6 +17,7 @@ public partial class Helicopter : GOBaseStaticBody
     [Export] MeshInstance3D frontRotorMesh { get; set; }
     [Export] Hurtbox frontRotorHurtbox { get; set; }
     [Export] Hurtbox rearRotorHurtbox { get; set; }
+    [Export] public MeshInstance3D _outline;
 
     private float currentSpeed = 0f;
     private bool flyaway { get; set; }
@@ -31,6 +32,7 @@ public partial class Helicopter : GOBaseStaticBody
         GameModeManager.EvacuationStarted += EvacuationStarted;
         GameModeManager.EvacuationEnded += EvacuationEnded;
         Global.gameState.gameModeManager.helicopter = this;
+        _outline.Visible = false;
     }
 
     public override void _Notification(int what)
@@ -56,6 +58,11 @@ public partial class Helicopter : GOBaseStaticBody
 
             GlobalTranslate(movement * (float)delta);
         }
+    }
+
+    public void SetHighlighted(bool enabled)
+    {
+        _outline.Visible = enabled;
     }
 
     public void EvacuationStarted()

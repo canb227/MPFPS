@@ -155,15 +155,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return MessagePackSerializer.Serialize(update);
     }
 
-    public override void PerTickShared(double delta)
-    {
-        base.PerTickShared(delta);
-        if(Global.Lobby.bIsLobbyHost)
-        {
-            UpdateGridLocation();
-        }
-    }
-
     public Vector3I currentCell;
 
     public void UpdateGridLocation()
@@ -240,6 +231,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public override void PerTickShared(double delta)
     {
         base.PerTickShared(delta);
+
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            UpdateGridLocation();
+        }
 
         //use input from local and remote players to calculate footsteps
         if (input != null && !knockedOut)

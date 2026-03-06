@@ -8,6 +8,7 @@ using MessagePack;
 public partial class GOGenerator : GOBaseStaticBody
 {
 	[Export] Area3D generatorArea;
+	[Export] public MeshInstance3D _outline;
 	public float generatorHealthInSecondsPerRobot = 0.0f;
 	public float generatorMaxHealth = 900.0f;
 	public override void _Ready()
@@ -17,6 +18,7 @@ public partial class GOGenerator : GOBaseStaticBody
 		generatorHealthInSecondsPerRobot = generatorMaxHealth;
 		generatorArea.AreaEntered += OnBodyEntered;
 		generatorArea.AreaExited += OnBodyExited;
+		_outline.Visible = false;
 	}
 	private int robotsInArea = 0;
 	private void OnBodyEntered(Node3D body)
@@ -35,6 +37,11 @@ public partial class GOGenerator : GOBaseStaticBody
 			if (robotsInArea < 0) robotsInArea = 0;
 		}
 	}
+
+	public void SetHighlighted(bool enabled)
+    {
+        _outline.Visible = enabled;
+    }
 
 	private bool announcedAttacked;
 	private bool announcedCritical;

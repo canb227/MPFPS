@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=4 uid="uid://du2toamiqaivk"]
+[gd_scene format=4 uid="uid://du2toamiqaivk"]
 
 [ext_resource type="Script" uid="uid://ctqdvvnvjarkk" path="res://scripts/game/other/Helicopter.cs" id="1_gybdq"]
 [ext_resource type="AudioStream" uid="uid://cag32t1rb7mug" path="res://assets/audio/environment/packingMachine/elevator_stop1.wav" id="2_f4cif"]
@@ -8,16 +8,17 @@
 [ext_resource type="Texture2D" uid="uid://d3vfthp7ouvef" path="res://assets/models/map/helicopter_CH47_Mask_Map.png" id="4_gybdq"]
 [ext_resource type="Texture2D" uid="uid://gspcd6pus0rb" path="res://assets/models/map/helicopter_CH47_Normal.png" id="5_pagf7"]
 [ext_resource type="Texture2D" uid="uid://bka1ciycxd35q" path="res://assets/models/map/helicopter_m240l mmg_M240L_BaseMap.png" id="6_f4cif"]
+[ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="7_eii22"]
 [ext_resource type="Texture2D" uid="uid://mssw2knfdd5h" path="res://assets/models/map/helicopter_m240l mmg_M240L_MaskMap.png" id="7_g52l4"]
 [ext_resource type="Texture2D" uid="uid://c31h5uodd721p" path="res://assets/models/map/helicopter_m240l mmg_M240L_Normal.png" id="8_c2lt1"]
-[ext_resource type="Texture2D" uid="uid://cppbxsxe5i0gd" path="res://assets/models/warehouse/lightprojector_Image_0.jpg" id="12_2v1ro"]
+[ext_resource type="Texture2D" uid="uid://cppbxsxe5i0gd" path="res://assets/models/warehouse_old/lightprojector_Image_0.jpg" id="12_2v1ro"]
 [ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/Hurtbox.cs" id="12_eii22"]
-[ext_resource type="Texture2D" uid="uid://cpk7gpwydjlo2" path="res://assets/models/warehouse/lightprojector_Image_1.png" id="13_eii22"]
-[ext_resource type="Texture2D" uid="uid://nysva0ha0kre" path="res://assets/models/warehouse/lightprojector_Image_2.jpg" id="14_mpjfq"]
-[ext_resource type="Texture2D" uid="uid://c5arie2ku6xm4" path="res://assets/models/warehouse/lightprojector_Image_3.jpg" id="15_agnsu"]
-[ext_resource type="Texture2D" uid="uid://cr33waynhk1ma" path="res://assets/models/warehouse/lightprojector_Image_7.jpg" id="16_k7vn1"]
-[ext_resource type="Texture2D" uid="uid://dfy35mwrge8y" path="res://assets/models/warehouse/lightprojector_Image_8.png" id="17_kk0k7"]
-[ext_resource type="Texture2D" uid="uid://dilnjtuqkbdu3" path="res://assets/models/warehouse/lightprojector_Image_9.jpg" id="18_tvcto"]
+[ext_resource type="Texture2D" uid="uid://cpk7gpwydjlo2" path="res://assets/models/warehouse_old/lightprojector_Image_1.png" id="13_eii22"]
+[ext_resource type="Texture2D" uid="uid://nysva0ha0kre" path="res://assets/models/warehouse_old/lightprojector_Image_2.jpg" id="14_mpjfq"]
+[ext_resource type="Texture2D" uid="uid://c5arie2ku6xm4" path="res://assets/models/warehouse_old/lightprojector_Image_3.jpg" id="15_agnsu"]
+[ext_resource type="Texture2D" uid="uid://cr33waynhk1ma" path="res://assets/models/warehouse_old/lightprojector_Image_7.jpg" id="16_k7vn1"]
+[ext_resource type="Texture2D" uid="uid://dfy35mwrge8y" path="res://assets/models/warehouse_old/lightprojector_Image_8.png" id="17_kk0k7"]
+[ext_resource type="Texture2D" uid="uid://dilnjtuqkbdu3" path="res://assets/models/warehouse_old/lightprojector_Image_9.jpg" id="18_tvcto"]
 
 [sub_resource type="Animation" id="Animation_4na8w"]
 length = 0.001
@@ -506,6 +507,12 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_32u7j")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mpjfq"]
+render_priority = 0
+shader = ExtResource("7_eii22")
+shader_parameter/outline_color = Color(0.24627927, 0.493751, 0.5612864, 0.12156863)
+shader_parameter/thickness = 0.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5jd6b"]
 resource_name = "mguns"
 cull_mode = 2
@@ -890,28 +897,26 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_mpjfq")
 
-[node name="Helicopter" type="StaticBody3D" node_paths=PackedStringArray("helicopterRoot", "rearRotorAudio", "frontRotorAudio", "InteriorAudio", "announcer", "insideHelicopterArea", "animationPlayer", "rearRotorMesh", "frontRotorMesh", "frontRotorHurtbox", "rearRotorHurtbox")]
+[node name="Helicopter" type="StaticBody3D" unique_id=573441866 node_paths=PackedStringArray("helicopterRoot", "rearRotorAudio", "frontRotorAudio", "InteriorAudio", "insideHelicopterArea", "animationPlayer", "rearRotorMesh", "frontRotorMesh", "frontRotorHurtbox", "rearRotorHurtbox", "_outline")]
 transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 script = ExtResource("1_gybdq")
 helicopterRoot = NodePath(".")
 rearRotorAudio = NodePath("RearRotorAudioPlayer")
 frontRotorAudio = NodePath("FrontRotorAudioPlayer")
 InteriorAudio = NodePath("InteriorNoise")
-announcer = NodePath("")
 insideHelicopterArea = NodePath("InsideHelicopterArea")
 animationPlayer = NodePath("AnimationPlayer")
 rearRotorMesh = NodePath("RearRotor")
 frontRotorMesh = NodePath("FrontRotor")
 frontRotorHurtbox = NodePath("FrontRotor/Hurtbox")
 rearRotorHurtbox = NodePath("RearRotor/Hurtbox")
+_outline = NodePath("Chassis/Outline")
 metadata/_custom_type_script = "uid://ctqdvvnvjarkk"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_4na8w")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=558139135]
+libraries/ = SubResource("AnimationLibrary_4na8w")
 
-[node name="RearRotorAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+[node name="RearRotorAudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=291635107]
 transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 7.4279795, -1.6943703)
 stream = ExtResource("2_ly7q5")
 attenuation_model = 2
@@ -919,7 +924,7 @@ volume_db = 3.0
 unit_size = 60.0
 max_db = 0.0
 
-[node name="FrontRotorAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+[node name="FrontRotorAudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1539554082]
 transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 4.4709544, 15.85544)
 stream = ExtResource("2_ly7q5")
 attenuation_model = 2
@@ -927,58 +932,58 @@ volume_db = 3.0
 unit_size = 60.0
 max_db = 0.0
 
-[node name="InteriorNoise" type="AudioStreamPlayer3D" parent="."]
+[node name="InteriorNoise" type="AudioStreamPlayer3D" parent="." unique_id=857662904]
 transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 2.3322163, 15.944915)
 stream = ExtResource("3_4na8w")
 attenuation_model = 1
 volume_db = 3.0
 unit_size = 30.0
 
-[node name="InsideHelicopterArea" type="Area3D" parent="."]
+[node name="InsideHelicopterArea" type="Area3D" parent="." unique_id=293409428]
 collision_layer = 0
 collision_mask = 27
 
-[node name="HelicopterInside" type="CollisionShape3D" parent="InsideHelicopterArea"]
+[node name="HelicopterInside" type="CollisionShape3D" parent="InsideHelicopterArea" unique_id=727618483]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.057782173, 3.9271817, 6.3023796)
 shape = SubResource("BoxShape3D_gybdq")
 debug_color = Color(0.67514056, 0.63936174, 0, 0.41960785)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1194549183]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.01365061, -0.3592163, 0, 0.3592163, -0.01365061, 0.02413675, 3.9189548, 6.864209)
 shape = SubResource("ConcavePolygonShape3D_ep3au")
 
-[node name="Chassis" type="MeshInstance3D" parent="."]
+[node name="Chassis" type="MeshInstance3D" parent="." unique_id=636279986]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.01365061, -0.3592163, 0, 0.3592163, -0.01365061, 0.02413675, 3.9189548, 6.864209)
 mesh = SubResource("ArrayMesh_ib7vs")
 skeleton = NodePath("")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Chassis"]
+[node name="SpotLight3D" type="SpotLight3D" parent="Chassis" unique_id=303749757]
 transform = Transform3D(1, 0, 0, 0, 0.034899496, -0.99939084, 0, 0.99939084, 0.034899496, -3.0753489, 31.263409, 4.658374)
 visible = false
 light_energy = 30.0
 spot_range = 25.462004
 spot_angle = 25.998428
 
-[node name="SpotLight3D2" type="SpotLight3D" parent="Chassis"]
+[node name="SpotLight3D2" type="SpotLight3D" parent="Chassis" unique_id=970180934]
 transform = Transform3D(1, 0, 0, 0, 0.034899496, -0.99939084, 0, 0.99939084, 0.034899496, 2.3819976, 31.263409, 4.658374)
 visible = false
 light_energy = 30.0
 spot_range = 25.462004
 spot_angle = 25.998428
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Chassis" unique_id=1253277190]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.3150005, 18.761852, 7.7230606)
 visible = false
 light_color = Color(1, 0, 0, 1)
 omni_range = 0.9503855
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="Chassis" unique_id=430572283]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.077184, -14.315864, 7.846993)
 visible = false
 light_color = Color(1, 0, 0, 1)
 omni_range = 0.9503855
 
-[node name="OmniLight3D3" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="Chassis" unique_id=207897297]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.565621, 3.8003163, -2.7162738)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -986,13 +991,13 @@ light_energy = 3.979
 light_indirect_energy = 1.309
 omni_range = 1.3952066
 
-[node name="OmniLight3D4" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D4" type="OmniLight3D" parent="Chassis" unique_id=1276496281]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.45397, -14.315864, 7.846993)
 visible = false
 light_color = Color(1, 0, 0, 1)
 omni_range = 0.9503855
 
-[node name="OmniLight3D5" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D5" type="OmniLight3D" parent="Chassis" unique_id=1605962855]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.480498, 3.8003163, -2.7162738)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -1000,7 +1005,7 @@ light_energy = 3.979
 light_indirect_energy = 1.309
 omni_range = 1.3952066
 
-[node name="OmniLight3D6" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D6" type="OmniLight3D" parent="Chassis" unique_id=490222306]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13651544, -32.75407, -5.7266774)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -1008,7 +1013,7 @@ light_energy = 3.979
 light_indirect_energy = 1.309
 omni_range = 1.3952066
 
-[node name="OmniLight3D7" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D7" type="OmniLight3D" parent="Chassis" unique_id=1516373676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6647534, -19.979115, 8.43144)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -1016,7 +1021,7 @@ light_energy = 3.979
 light_indirect_energy = 1.309
 omni_range = 1.3952066
 
-[node name="OmniLight3D8" type="OmniLight3D" parent="Chassis"]
+[node name="OmniLight3D8" type="OmniLight3D" parent="Chassis" unique_id=804297652]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1761293, -19.979115, 8.43144)
 visible = false
 light_color = Color(1, 0, 0, 1)
@@ -1024,58 +1029,66 @@ light_energy = 3.979
 light_indirect_energy = 1.309
 omni_range = 1.3952066
 
-[node name="box" type="MeshInstance3D" parent="."]
+[node name="Outline" type="MeshInstance3D" parent="Chassis" unique_id=755231579]
+cast_shadow = 0
+extra_cull_margin = 16384.0
+gi_mode = 0
+mesh = SubResource("ArrayMesh_ib7vs")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_mpjfq")
+
+[node name="box" type="MeshInstance3D" parent="." unique_id=1833541415]
 transform = Transform3D(-8.570569e-08, -0.3594756, 8.4555836e-08, -0.013650581, -8.124027e-08, -0.35921636, 0.35921642, -8.8854726e-08, -0.013650579, 1.7450968, 2.4606037, 13.766368)
 visible = false
 mesh = SubResource("ArrayMesh_dbr0q")
 skeleton = NodePath("")
 
-[node name="240C" type="MeshInstance3D" parent="."]
+[node name="240C" type="MeshInstance3D" parent="." unique_id=1545895236]
 transform = Transform3D(-8.570569e-08, -0.3594756, 8.4555836e-08, -0.013650581, -8.124027e-08, -0.35921636, 0.35921642, -8.8854726e-08, -0.013650579, 1.9579912, 2.44867, 13.982006)
 visible = false
 mesh = SubResource("ArrayMesh_wyrt5")
 skeleton = NodePath("")
 
-[node name="240C_001" type="MeshInstance3D" parent="."]
+[node name="240C_001" type="MeshInstance3D" parent="." unique_id=1221827718]
 transform = Transform3D(0, 0.35947567, -4.2461206e-08, 0.01365056, -4.243057e-08, -0.35921642, -0.35921642, -1.6123993e-09, -0.01365056, -1.9517456, 2.2366154, 13.969472)
 visible = false
 mesh = SubResource("ArrayMesh_kq4oh")
 skeleton = NodePath("")
 
-[node name="box_001" type="MeshInstance3D" parent="."]
+[node name="box_001" type="MeshInstance3D" parent="." unique_id=2112378064]
 transform = Transform3D(0, 0.35947567, -4.2461206e-08, 0.01365056, -4.243057e-08, -0.35921642, -0.35921642, -1.6123993e-09, -0.01365056, -1.7388515, 2.2321491, 14.185392)
 visible = false
 mesh = SubResource("ArrayMesh_4nrvt")
 skeleton = NodePath("")
 
-[node name="turret1" type="MeshInstance3D" parent="."]
+[node name="turret1" type="MeshInstance3D" parent="." unique_id=1122494148]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.01365061, -0.3592163, 0, 0.3592163, -0.01365061, -0.04115467, 2.1718063, 13.970894)
 visible = false
 mesh = SubResource("ArrayMesh_8svsk")
 skeleton = NodePath("")
 
-[node name="Ramp" type="StaticBody3D" parent="."]
+[node name="Ramp" type="StaticBody3D" parent="." unique_id=121259691]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.06427503, -0.35368255, 0, 0.35368255, -0.06427503, -0.0025226306, 0.9268015, 0.6977081)
 
-[node name="RampCollider" type="CollisionShape3D" parent="Ramp"]
+[node name="RampCollider" type="CollisionShape3D" parent="Ramp" unique_id=2107631633]
 shape = SubResource("ConcavePolygonShape3D_ly7q5")
 
-[node name="RampMesh" type="MeshInstance3D" parent="Ramp"]
+[node name="RampMesh" type="MeshInstance3D" parent="Ramp" unique_id=64994167]
 transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ari3h")
 skeleton = NodePath("")
 
-[node name="RampAudio" type="AudioStreamPlayer3D" parent="Ramp"]
+[node name="RampAudio" type="AudioStreamPlayer3D" parent="Ramp" unique_id=1717958957]
 transform = Transform3D(2.7818305, 0, 0, 0, 1.5039754, 2.3402224, 0, -2.3402224, 1.5039754, 0.007017531, -0.04854572, -0.21418977)
 stream = ExtResource("2_f4cif")
 pitch_scale = 0.33
 
-[node name="RearRotor" type="MeshInstance3D" parent="."]
+[node name="RearRotor" type="MeshInstance3D" parent="." unique_id=588065518]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.013650587, -0.3592163, 0, 0.3592163, -0.013650587, 0.040915273, 7.9741898, -1.7482331)
 mesh = SubResource("ArrayMesh_c1nup")
 skeleton = NodePath("")
 
-[node name="Hurtbox" type="Area3D" parent="RearRotor"]
+[node name="Hurtbox" type="Area3D" parent="RearRotor" unique_id=1876477714]
 transform = Transform3D(1, 0, 0, 0, 0.9988874, -0.04715875, 0, 0.04715875, 0.9988874, 0, -0.010404575, 0.67411923)
 collision_layer = 0
 collision_mask = 27
@@ -1087,17 +1100,17 @@ hurtsNPCs = true
 damageSoundType = 1
 metadata/_custom_type_script = "uid://chlcmntip4s3"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RearRotor/Hurtbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RearRotor/Hurtbox" unique_id=1821979240]
 transform = Transform3D(1.0000001, 0, 0, 0, -0.05092621, -0.9987299, 0, 0.9987299, -0.05092621, 0, 3.8146973e-06, -1.7646942)
 shape = SubResource("CylinderShape3D_mpjfq")
 debug_color = Color(0.9993934, 0, 0.12844995, 0.41960785)
 
-[node name="FrontRotor" type="MeshInstance3D" parent="."]
+[node name="FrontRotor" type="MeshInstance3D" parent="." unique_id=2096669244]
 transform = Transform3D(0.35947555, 0, 0, 0, -0.013650605, -0.3592163, 0, 0.3592163, -0.013650605, 0.05153317, 5.17294, 15.894762)
 mesh = SubResource("ArrayMesh_0sc2o")
 skeleton = NodePath("")
 
-[node name="Hurtbox" type="Area3D" parent="FrontRotor"]
+[node name="Hurtbox" type="Area3D" parent="FrontRotor" unique_id=611473408]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.149192, 3.7252903e-09)
 collision_layer = 0
 collision_mask = 27
@@ -1109,12 +1122,12 @@ hurtsNPCs = true
 damageSoundType = 1
 metadata/_custom_type_script = "uid://chlcmntip4s3"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontRotor/Hurtbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontRotor/Hurtbox" unique_id=2066333189]
 transform = Transform3D(1.0000001, 0, 0, 0, -0.08668935, -0.9962629, 0, 0.9962629, -0.08668935, 0, -0.041286115, -0.95494443)
 shape = SubResource("CylinderShape3D_mpjfq")
 debug_color = Color(0.9993934, 0, 0.12844995, 0.41960785)
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=903682832]
 transform = Transform3D(1, 0, 0, 0, 0.8707164, 0.49178544, 0, -0.49178544, 0.8707164, 0.51551294, 3.4579544, 14.415039)
 light_color = Color(0.7373294, 0, 0, 1)
 light_energy = 2.352
@@ -1122,13 +1135,13 @@ light_indirect_energy = 1.916
 spot_range = 14.903109
 spot_angle = 29.806135
 
-[node name="OmniLight3D" type="OmniLight3D" parent="SpotLight3D"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SpotLight3D" unique_id=1943643967]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002167493, 0, 0)
 light_color = Color(1, 0, 0, 1)
 light_energy = 0.135
 omni_range = 0.435
 
-[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+[node name="SpotLight3D2" type="SpotLight3D" parent="." unique_id=73209346]
 transform = Transform3D(1, 0, 0, 0, 0.8707164, 0.49178544, 0, -0.49178544, 0.8707164, -0.5721111, 3.4740252, 14.443493)
 light_color = Color(0.7373294, 0, 0, 1)
 light_energy = 2.352
@@ -1136,87 +1149,87 @@ light_indirect_energy = 1.916
 spot_range = 14.903109
 spot_angle = 27.470327
 
-[node name="OmniLight3D" type="OmniLight3D" parent="SpotLight3D2"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SpotLight3D2" unique_id=1674703596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002167493, 0, 0)
 light_color = Color(1, 0, 0, 1)
 light_energy = 0.135
 omni_range = 0.435
 
-[node name="Node3D" type="Node3D" parent="."]
+[node name="Node3D" type="Node3D" parent="." unique_id=1213512297]
 transform = Transform3D(0.5560636, 0, -0.83113974, 0, 1, 0, 0.83113974, 0, 0.5560636, 2.298174, 0, -36.262005)
 
-[node name="lightprojector" type="Node3D" parent="Node3D"]
+[node name="lightprojector" type="Node3D" parent="Node3D" unique_id=729240092]
 transform = Transform3D(0.8096238, 0, -0.41346768, 0, 0.9090909, 0, 0.41346768, 0, 0.8096238, 30.95453, 5.5378132e-05, 15.767631)
 
-[node name="projector_002" type="Node3D" parent="Node3D/lightprojector"]
+[node name="projector_002" type="Node3D" parent="Node3D/lightprojector" unique_id=1990809419]
 transform = Transform3D(0.0647686, 0, 0, 0, 0.064768605, 0, 0, 0, 0.064768605, 0, 0.708249, 0)
 
-[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector/projector_002"]
+[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector/projector_002" unique_id=721993076]
 mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")
 
-[node name="lightprojector2" type="Node3D" parent="Node3D"]
+[node name="lightprojector2" type="Node3D" parent="Node3D" unique_id=100585423]
 transform = Transform3D(0.6989572, 0, -0.5812959, 0, 0.9090909, 0, 0.5812959, 0, 0.6989572, 35.393032, 5.5378132e-05, 18.00488)
 
-[node name="projector_002" type="Node3D" parent="Node3D/lightprojector2"]
+[node name="projector_002" type="Node3D" parent="Node3D/lightprojector2" unique_id=1791204822]
 transform = Transform3D(0.0647686, 0, 0, 0, 0.064768605, 0, 0, 0, 0.064768605, 0, 0.708249, 0)
 
-[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector2/projector_002"]
+[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector2/projector_002" unique_id=116285739]
 transform = Transform3D(1.0000001, 0, 0, 0, 0.9646588, 0.26350272, 0, -0.26350272, 0.9646588, 0, 0, 0.5431456)
 mesh = SubResource("ArrayMesh_k4kxc")
 skeleton = NodePath("")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector2/projector_002/projector_002_M_Light_01_0"]
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector2/projector_002/projector_002_M_Light_01_0" unique_id=933187508]
 transform = Transform3D(-1, -2.2839753e-08, -1.4925843e-07, 0, 0.98849386, -0.15126085, 1.509958e-07, -0.15126085, -0.98849386, -0.00863617, 3.3725243, 0.6011506)
 visible = false
 light_energy = 16.0
 spot_range = 10.707144
 spot_angle = 46.989365
 
-[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector2/projector_002"]
+[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector2/projector_002" unique_id=855511632]
 mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")
 
-[node name="lightprojector3" type="Node3D" parent="Node3D"]
+[node name="lightprojector3" type="Node3D" parent="Node3D" unique_id=2020480913]
 transform = Transform3D(-0.6097258, 0, 0.6742999, 0, 0.9090909, 0, -0.6742999, 0, -0.6097258, 24.711182, 5.5378132e-05, 28.247179)
 
-[node name="projector_002" type="Node3D" parent="Node3D/lightprojector3"]
+[node name="projector_002" type="Node3D" parent="Node3D/lightprojector3" unique_id=585130061]
 transform = Transform3D(0.0647686, 0, 0, 0, 0.064768605, 0, 0, 0, 0.064768605, 0, 0.708249, 0)
 
-[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector3/projector_002"]
+[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector3/projector_002" unique_id=1635295770]
 transform = Transform3D(1.0000001, 0, 0, 0, 0.9646588, 0.26350272, 0, -0.26350272, 0.9646588, 0, 0, 0.5431456)
 mesh = SubResource("ArrayMesh_k4kxc")
 skeleton = NodePath("")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector3/projector_002/projector_002_M_Light_01_0"]
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector3/projector_002/projector_002_M_Light_01_0" unique_id=25565200]
 transform = Transform3D(-1, -2.2839753e-08, -1.4925843e-07, 0, 0.98849386, -0.15126085, 1.509958e-07, -0.15126085, -0.98849386, -0.00863617, 3.3725243, 0.6011506)
 visible = false
 light_energy = 16.0
 spot_range = 10.707144
 spot_angle = 46.989365
 
-[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector3/projector_002"]
+[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector3/projector_002" unique_id=400759894]
 mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")
 
-[node name="lightprojector4" type="Node3D" parent="Node3D"]
+[node name="lightprojector4" type="Node3D" parent="Node3D" unique_id=1970553198]
 transform = Transform3D(-0.44662145, 0, 0.79181784, 0, 0.9090909, 0, -0.79181784, 0, -0.44662145, 21.583254, 5.5378132e-05, 24.069391)
 
-[node name="projector_002" type="Node3D" parent="Node3D/lightprojector4"]
+[node name="projector_002" type="Node3D" parent="Node3D/lightprojector4" unique_id=98515921]
 transform = Transform3D(0.0647686, 0, 0, 0, 0.064768605, 0, 0, 0, 0.064768605, 0, 0.708249, 0)
 
-[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector4/projector_002"]
+[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector4/projector_002" unique_id=786327856]
 transform = Transform3D(1.0000001, 0, 0, 0, 0.9646588, 0.26350272, 0, -0.26350272, 0.9646588, 0, 0, 0.5431456)
 mesh = SubResource("ArrayMesh_k4kxc")
 skeleton = NodePath("")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector4/projector_002/projector_002_M_Light_01_0"]
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector4/projector_002/projector_002_M_Light_01_0" unique_id=831428261]
 transform = Transform3D(-1, -2.2839753e-08, -1.4925843e-07, 0, 0.98849386, -0.15126085, 1.509958e-07, -0.15126085, -0.98849386, -0.00863617, 3.3725243, 0.6011506)
 visible = false
 light_energy = 16.0
 spot_range = 10.707144
 spot_angle = 46.989365
 
-[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector4/projector_002"]
+[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector4/projector_002" unique_id=103628067]
 mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")

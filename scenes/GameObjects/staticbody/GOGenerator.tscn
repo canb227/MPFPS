@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://barohp151hufs" path="res://assets/models/warehouse_old/Rotorobj_Body_Normal.1001.jpg" id="3_g7r1e"]
 [ext_resource type="Texture2D" uid="uid://bi3bh1wo6qavp" path="res://assets/models/warehouse_old/Rotorobj_Cage_BaseColor.1001.png" id="4_yee2q"]
 [ext_resource type="Texture2D" uid="uid://b1ev460d30c0g" path="res://assets/models/warehouse_old/Rotorobj_Cage_Metallic.1001-Rotorobj_Cage_Roughness.1001.png" id="5_7dk5j"]
+[ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="5_kqqd5"]
 [ext_resource type="Texture2D" uid="uid://bo1q1ca2x40y6" path="res://assets/models/warehouse_old/Rotorobj_Cage_Normal.1001.jpg" id="6_f6i8e"]
 [ext_resource type="Texture2D" uid="uid://bfst3mabyj10u" path="res://assets/models/warehouse_old/Rotorobj_Caps_BaseColor.1001.jpg" id="7_v0ud1"]
 [ext_resource type="Texture2D" uid="uid://cvik6ip05gyo7" path="res://assets/models/warehouse_old/Rotorobj_Caps_Metallic.1001-Rotorobj_Caps_Roughness.1001.png" id="8_sjpc3"]
@@ -94,6 +95,12 @@ radius = 2.255371
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6gx2u"]
 height = 1.0234375
 radius = 1.1826172
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nlcfi"]
+render_priority = 0
+shader = ExtResource("5_kqqd5")
+shader_parameter/outline_color = Color(0.03876, 0.41687015, 0.50318396, 0.286)
+shader_parameter/thickness = 0.03
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h4chp"]
 resource_name = "Cage"
@@ -391,9 +398,10 @@ data = PackedVector3Array(1.7889999, -0.37359998, 2.0179, 1.7879, -0.0019999999,
 height = 4.8027344
 radius = 8.094238
 
-[node name="Cyberpunk Generator" type="StaticBody3D" node_paths=PackedStringArray("generatorArea")]
+[node name="Cyberpunk Generator" type="StaticBody3D" unique_id=1710346960 node_paths=PackedStringArray("generatorArea", "_outline")]
 script = ExtResource("1_ckp0e")
 generatorArea = NodePath("Area3D")
+_outline = NodePath("Body/Outline")
 metadata/_custom_type_script = "uid://b8gepvpe7edat"
 metadata/extras = {
 "ant_landscape": {},
@@ -676,15 +684,15 @@ metadata/ant_landscape = "{  }"
 metadata/blenderkit = "{ \"category\": 5.0, \"subcategory\": 3.0, \"is_free\": 1.0, \"name\": \"Cyberpunk Generator\", \"name_changed\": 1.0, \"name_old\": \"Cyberpunk Generator\", \"description\": \"This highly detailed 3D model of a cyberpunk generator boasts approximately 70k vertices, showcasing intricate design and realism. It features 4K textures complemented by procedural texturing, giving it a gritty, futuristic aesthetic perfect for any cyberpunk-themed project.\", \"tags\": \"Cyberpunk, Futuristic, Scifi, Generator\", \"thumbnail\": \"C:\\\\Users\\\\Harra\\\\OneDrive\\\\Desktop\\\\Generator.png\", \"has_thumbnail\": 1.0, \"thumbnail_generating_state\": \"\", \"condition\": 4.0, \"pbr\": 1.0, \"work_hours\": 12.0, \"texture_resolution_max\": 4096.0, \"texture_resolution_min\": 4096.0, \"uv\": 1.0, \"texture_count\": 24.0, \"total_megapixels\": 384.0, \"node_count\": 86.0, \"engine\": 0.0, \"is_procedural\": 0.0, \"materials\": \"Supports, Screws, Pipe/Flange, Panels, Pipe/Flange2, Caps, Cage, Body, \", \"shaders\": \"principled, \", \"dimensions\": [5.86814498901367, 4.50006151199341, 6.25257444381714], \"bbox_min\": [-3.3419246673584, -2.2500307559967, -0.00254392623901], \"bbox_max\": [2.52622056007385, 2.2500307559967, 6.25003051757813], \"face_count\": 72007.0, \"face_count_render\": 72007.0, \"mesh_poly_type\": 1.0, \"manifold\": 0.0, \"modifiers\": \"nodes,\", \"object_count\": 9.0, \"report\": \"\", \"upload_state\": \"\", \"asset_base_id\": \"95f760f4-1013-41d3-a81a-74e9ec0e200e\", \"id\": \"f6a20a7f-f82b-4d88-a299-a0b6ad0f76ec\", \"uploading\": 0.0 }"
 metadata/asset_data = "{ \"addonVersion\": \"3.12.2\", \"assetBaseId\": \"95f760f4-1013-41d3-a81a-74e9ec0e200e\", \"assetType\": \"model\", \"author\": { \"aboutMe\": \"Passionate 3d artist, who specialises in procedural modelling and texturing as well as free hand modelling and texturing.\", \"aboutMeUrl\": \"https://www.artstation.com/harrisoncostabh5\", \"avatar128\": \"/avatar-redirect/d42cdd28-6409-4311-a96b-8e06b0976672/128/\", \"firstName\": \"Harrison\", \"fullName\": \"Harrison Costa\", \"gravatarHash\": \"2ad11f57d31b698d8d0cf65d675e7dcc\", \"gravatarImg\": \"C:\\\\Users\\\\jeffe\\\\AppData\\\\Local\\\\Temp\\\\bktemp_DESKTOPI9HQE1Qjeffe\\\\bkit_g\\\\119551.jpg\", \"id\": \"119551\", \"lastName\": \"Costa\", \"socialNetworks\": [{ \"socialNetwork\": { \"icon\": \"<i class=\\\"fab fa-youtube\\\" title=\\\"YouTube\\\"></i><span class=\\\"sr-only\\\">YouTube</span>\", \"name\": \"YouTube\", \"order\": 1.0 }, \"url\": \"https://youtube.com/@curtainclip\" }, { \"socialNetwork\": { \"icon\": \"<i class=\\\"fab fa-artstation\\\" title=\\\"ArtStation\\\"></i><span class=\\\"sr-only\\\">ArtStation</span>\", \"name\": \"ArtStation\", \"order\": 5.0 }, \"url\": \"https://www.artstation.com/harrisoncostabh5\" }], \"tooltip\": \"Harrison Costa\\n\\nPassionate 3d artist, who specialises in procedural modelling and texturing as well as free hand modelling and texturing.\\n\" }, \"available_resolutions\": [512.0, 1024.0, 2048.0, 4096.0], \"bbox_max\": [2.5262, 2.25, 6.25], \"bbox_min\": [-3.3419, -2.25, -0.0025], \"canDownload\": true, \"canDownloadError\": true, \"category\": \"machine\", \"created\": \"2024-07-22T05:21:50.274542+02:00\", \"description\": \"This highly detailed 3D model of a cyberpunk generator boasts approximately 70k vertices, showcasing intricate design and realism. It features 4K textures complemented by procedural texturing, giving it a gritty, futuristic aesthetic perfect for any cyberpunk-themed project.\", \"dictParameters\": { \"animated\": false, \"boundBoxMaxX\": 2.5262, \"boundBoxMaxY\": 2.25, \"boundBoxMaxZ\": 6.25, \"boundBoxMinX\": -3.3419, \"boundBoxMinY\": -2.25, \"boundBoxMinZ\": -0.0025, \"condition\": \"desolate\", \"dimensionX\": 5.8681, \"dimensionY\": 4.5001, \"dimensionZ\": 6.2526, \"engines\": [\"[cycles]\"], \"faceCount\": 72007.0, \"faceCountRender\": 72007.0, \"gltfGeneratedDate\": \"2024-08-10\", \"imageAltTextGen4v\": \"3D-rendered futuristic generator with intricate design, 70k vertices, and 4K procedural textures, ideal for cyberpunk scenes.\", \"joinBlenderkitDiscounts\": true, \"manifold\": false, \"materials\": [\"[Supports Screws Pipe/Flange Panels Pipe/Flange2 Caps Cage Body]\"], \"megapixels\": 384.0, \"meshPolyType\": \"quad_dominant\", \"modelStyle\": \"realistic\", \"modifiers\": [\"[nodes]\"], \"nodeCount\": 86.0, \"objectCount\": 9.0, \"pbrType\": \"metallic\", \"procedural\": false, \"productionLevel\": \"finished\", \"purePbr\": true, \"rig\": false, \"sexualizedContent\": false, \"shaders\": [\"[principled]\"], \"simulation\": false, \"textAIcheckedDate\": \"2024-07-24\", \"textureCount\": 24.0, \"textureResolutionMax\": 4096.0, \"textureResolutionMin\": 4096.0, \"uv\": true }, \"displayName\": \"Cyberpunk Generator\", \"downloaded\": 0.0, \"files\": [{ \"created\": \"2024-07-22T05:23:46.603046+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/426453/\", \"fileThumbnail\": \"\", \"fileThumbnailLarge\": \"\", \"fileType\": \"blend\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/blend_2aa51eae-9222-457a-89ce-baa09e5b69fb.blend\", \"modified\": \"2024-07-22T05:23:46.603069+02:00\", \"resolution\": 0.0, \"url\": \"\" }, { \"created\": \"2024-08-10T07:39:06.351288+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/438224/\", \"fileThumbnail\": \"\", \"fileThumbnailLarge\": \"\", \"fileType\": \"gltf\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/gltf_7565327e-d959-4606-b09a-709a1a598387.glb\", \"modified\": \"2024-08-10T07:39:06.351309+02:00\", \"resolution\": 0.0, \"url\": \"\" }, { \"created\": \"2024-08-01T11:33:48.315840+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/431537/\", \"fileThumbnail\": \"\", \"fileThumbnailLarge\": \"\", \"fileType\": \"resolution_0_5K\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/resolution_0_5K_1271c254-c931-4771-a753-031f467eb0c5.blend\", \"modified\": \"2024-08-01T11:33:48.315868+02:00\", \"resolution\": 0.0, \"url\": \"\" }, { \"created\": \"2024-08-01T11:33:47.321483+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/431536/\", \"fileThumbnail\": \"\", \"fileThumbnailLarge\": \"\", \"fileType\": \"resolution_1K\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/resolution_1K_3f3b35e4-7f1a-44d2-9876-51cd97a9b353.blend\", \"modified\": \"2024-08-01T11:33:47.321502+02:00\", \"resolution\": 0.0, \"url\": \"\" }, { \"created\": \"2024-08-01T11:33:46.208259+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/431535/\", \"fileThumbnail\": \"\", \"fileThumbnailLarge\": \"\", \"fileType\": \"resolution_2K\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/resolution_2K_82f0aeb4-0666-44fb-ac7c-14b3940cd8a9.blend\", \"modified\": \"2024-08-01T11:33:46.208279+02:00\", \"resolution\": 0.0, \"url\": \"https://assets.blenderkit.com/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/resolution_2K_82f0aeb4-0666-44fb-ac7c-14b3940cd8a9.blend?verify=1758556153-7H%2FYinJRU9vK9LqbtkrWdIFrhxdQ26kJxeSCf34MhRQ%3D\", \"file_name\": \"C:\\\\Users\\\\jeffe\\\\Desktop\\\\Stuff\\\\dangerousdeliveryart\\\\assets\\\\models\\\\cyberpunk-genera_f6a20a7f-f82b-4d88-a299-a0b6ad0f76ec\\\\cyberpunk-generator_2K_82f0aeb4-0666-44fb-ac7c-14b3940cd8a9.blend\" }, { \"created\": \"2024-08-01T11:33:44.965898+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/431534/\", \"fileThumbnail\": \"\", \"fileThumbnailLarge\": \"\", \"fileType\": \"resolution_4K\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/resolution_4K_fac35000-dcf2-4357-b53d-04e2b94d61ea.blend\", \"modified\": \"2024-08-01T11:33:44.965917+02:00\", \"resolution\": 0.0, \"url\": \"\" }, { \"created\": \"2024-07-22T05:21:57.206899+02:00\", \"downloadUrl\": \"https://www.blenderkit.com/api/v1/downloads/426452/\", \"fileThumbnail\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.96x96_q85_crop-%2C.png\", \"fileThumbnailLarge\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.1024x1024_q85_crop-%2C.png\", \"fileType\": \"thumbnail\", \"filename\": \"assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png\", \"modified\": \"2024-07-22T05:21:57.206922+02:00\", \"resolution\": 0.0, \"url\": \"\" }], \"filesSize\": 437816.0, \"id\": \"f6a20a7f-f82b-4d88-a299-a0b6ad0f76ec\", \"isFree\": true, \"isPrivate\": false, \"lastBlendUpload\": \"2024-07-22T03:23:46.603046+00:00\", \"lastGltfUpload\": \"2024-08-10T05:39:06.351288+00:00\", \"lastResolutionUpload\": \"2024-08-01T09:33:48.315840+00:00\", \"lastThumbnailUpload\": \"2024-07-22T03:21:57.206899+00:00\", \"lastUserInteraction\": \"2024-07-22T05:23:47.130442+02:00\", \"lastVideoUpload\": \"\", \"lastZipFileUpload\": \"\", \"license\": \"royalty_free\", \"max_resolution\": 4096.0, \"name\": \"Cyberpunk Generator\", \"pk\": 100976.0, \"ratingsAverage\": { \"bookmarks\": 0.98830409356725, \"quality\": 9.5, \"virtualPrice\": <null>, \"workingHours\": 12.0 }, \"ratingsCount\": { \"bookmarks\": 171.0, \"quality\": 2.0, \"virtualPrice\": 0.0, \"workingHours\": 1.0 }, \"ratingsMedian\": { \"bookmarks\": 1.0, \"quality\": 9.5, \"virtualPrice\": <null>, \"workingHours\": 12.0 }, \"ratingsSum\": { \"bookmarks\": 169.0, \"quality\": 19.0, \"score\": 1140.0, \"virtualPrice\": <null>, \"workingHours\": 12.0 }, \"score\": 1140.0, \"showMarketingLabels\": true, \"sourceAppName\": \"blender\", \"sourceAppVersion\": \"4.2.0\", \"tags\": [\"Cyberpunk\", \"Futuristic\", \"Scifi\", \"Generator\"], \"thumbnail\": \"thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.512x512_q85_crop-%2C.png.webp\", \"thumbnailLargeUrl\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.1024x1024_q85_crop-%2C.png\", \"thumbnailLargeUrlNonsquared\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.1024x1024_q85.png\", \"thumbnailLargeUrlNonsquaredWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.1024x1024_q85.png.webp?webp_generated=1722504681\", \"thumbnailLargeUrlWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.1024x1024_q85_crop-%2C.png.webp?webp_generated=1722504681\", \"thumbnailMiddleUrl\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.512x512_q85_crop-%2C.png\", \"thumbnailMiddleUrlNonsquared\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.512x512_q85.png\", \"thumbnailMiddleUrlNonsquaredWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.512x512_q85.png.webp?webp_generated=1722504681\", \"thumbnailMiddleUrlWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.512x512_q85_crop-%2C.png.webp?webp_generated=1722504681\", \"thumbnailSmallUrl\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.256x256_q85_crop-%2C.png\", \"thumbnailSmallUrlNonsquared\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.256x256_q85.png\", \"thumbnailSmallUrlNonsquaredWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.256x256_q85.png.webp?webp_generated=1722504681\", \"thumbnailSmallUrlWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.256x256_q85_crop-%2C.png.webp?webp_generated=1722504681\", \"thumbnailXlargeUrl\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.2048x2048_q85_crop-%2C.png\", \"thumbnailXlargeUrlNonsquared\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.2048x2048_q85.png\", \"thumbnailXlargeUrlNonsquaredWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.2048x2048_q85.png.webp?webp_generated=1722504681\", \"thumbnailXlargeUrlWebp\": \"https://public.blenderkit.com/thumbnails/assets/f6a20a7ff82b4d88a299a0b6ad0f76ec/files/thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.2048x2048_q85_crop-%2C.png.webp?webp_generated=1722504681\", \"thumbnail_small\": \"thumbnail_2ad6278e-2661-4082-a8c3-73fee71f24ab.png.256x256_q85_crop-%2C.png.webp\", \"tooltip_data\": { \"aname\": \"Cyberpunk Generator\", \"author_text\": \"by Harrison Costa\", \"quality\": \"10\" }, \"url\": \"https://www.blenderkit.com/api/v1/assets/f6a20a7f-f82b-4d88-a299-a0b6ad0f76ec/\", \"verificationStatus\": \"validated\", \"versionNumber\": 1.0, \"webpGeneratedTimestamp\": 1722504681.0, \"resolution\": \"resolution_2K\" }"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=643787807]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 shape = SubResource("ConcavePolygonShape3D_cu3he")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=240626838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 shape = SubResource("ConcavePolygonShape3D_5xacc")
 
-[node name="Body" type="MeshInstance3D" parent="."]
+[node name="Body" type="MeshInstance3D" parent="." unique_id=2134927853]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 mesh = SubResource("ArrayMesh_vsi7p")
 skeleton = NodePath("")
@@ -697,25 +705,25 @@ metadata/ant_landscape = "{  }"
 metadata/muproperties = "{  }"
 metadata/kspmodules = "{  }"
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Body"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Body" unique_id=193599265]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/StaticBody3D" unique_id=990676638]
 transform = Transform3D(-4.371138e-08, -1, 0, 1, -4.371138e-08, 0, 0, 0, 1, -0.61724854, 0, 0)
 shape = SubResource("CylinderShape3D_pn0x4")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Body/StaticBody3D"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Body/StaticBody3D" unique_id=1686511217]
 transform = Transform3D(-4.371138e-08, -1, 0, 1, -4.371138e-08, 0, 0, 0, 1, -1.8955154, 0, 0)
 shape = SubResource("CylinderShape3D_eto71")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="Body/StaticBody3D"]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Body/StaticBody3D" unique_id=1304572734]
 transform = Transform3D(-4.371138e-08, -1, 0, 1, -4.371138e-08, 0, 0, 0, 1, 1.8833618, 0, 0)
 shape = SubResource("CylinderShape3D_eto71")
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="Body/StaticBody3D"]
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Body/StaticBody3D" unique_id=1687094116]
 transform = Transform3D(-4.371138e-08, -1, 0, 1, -4.371138e-08, 0, 0, 0, 1, 2.0269203, 0, 0)
 shape = SubResource("CylinderShape3D_6gx2u")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Body"]
+[node name="OmniLight3D" type="OmniLight3D" parent="Body" unique_id=1814283812]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.6443987)
 light_color = Color(0.99971575, 0.17498502, 0.12789476, 1)
 light_energy = 0.197
@@ -723,7 +731,7 @@ light_indirect_energy = 5.45
 light_bake_mode = 1
 omni_range = 2.29
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="Body"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="Body" unique_id=645250615]
 transform = Transform3D(0.9090909, 0, 0, 0, 0.9090909, 0, 0, 0, 0.9090909, -2.5716095, 0, -0.00928545)
 light_color = Color(0.99971575, 0.17498502, 0.12789476, 1)
 light_energy = 0.197
@@ -731,7 +739,7 @@ light_indirect_energy = 5.45
 light_bake_mode = 1
 omni_range = 2.29
 
-[node name="OmniLight3D3" type="OmniLight3D" parent="Body"]
+[node name="OmniLight3D3" type="OmniLight3D" parent="Body" unique_id=528771237]
 transform = Transform3D(0.9090909, 0, 0, 0, 0.9090909, 0, 0, 0, 0.9090909, 2.2078972, 0, -0.00928545)
 light_color = Color(0.99971575, 0.17498502, 0.12789476, 1)
 light_energy = 0.197
@@ -739,7 +747,20 @@ light_indirect_energy = 5.45
 light_bake_mode = 1
 omni_range = 2.29
 
-[node name="Cage" type="MeshInstance3D" parent="."]
+[node name="Outline" type="MeshInstance3D" parent="Body" unique_id=1661393945]
+mesh = SubResource("ArrayMesh_vsi7p")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_nlcfi")
+metadata/extras = {
+"ant_landscape": {},
+"kspmodules": {},
+"muproperties": {}
+}
+metadata/ant_landscape = "{  }"
+metadata/muproperties = "{  }"
+metadata/kspmodules = "{  }"
+
+[node name="Cage" type="MeshInstance3D" parent="." unique_id=1503215227]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 mesh = SubResource("ArrayMesh_8k33w")
 skeleton = NodePath("")
@@ -752,7 +773,7 @@ metadata/muproperties = "{  }"
 metadata/kspmodules = "{  }"
 metadata/ant_landscape = "{  }"
 
-[node name="Caps" type="MeshInstance3D" parent="."]
+[node name="Caps" type="MeshInstance3D" parent="." unique_id=1818792830]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 mesh = SubResource("ArrayMesh_u3oe3")
 skeleton = NodePath("")
@@ -765,7 +786,7 @@ metadata/ant_landscape = "{  }"
 metadata/muproperties = "{  }"
 metadata/kspmodules = "{  }"
 
-[node name="Panels" type="MeshInstance3D" parent="."]
+[node name="Panels" type="MeshInstance3D" parent="." unique_id=251619706]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 mesh = SubResource("ArrayMesh_tn6tt")
 skeleton = NodePath("")
@@ -779,7 +800,7 @@ metadata/ant_landscape = "{  }"
 metadata/muproperties = "{  }"
 metadata/kspmodules = "{  }"
 
-[node name="Screws" type="MeshInstance3D" parent="."]
+[node name="Screws" type="MeshInstance3D" parent="." unique_id=1696289359]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 mesh = SubResource("ArrayMesh_ctrye")
 skeleton = NodePath("")
@@ -792,7 +813,7 @@ metadata/ant_landscape = "{  }"
 metadata/muproperties = "{  }"
 metadata/kspmodules = "{  }"
 
-[node name="Supports" type="MeshInstance3D" parent="."]
+[node name="Supports" type="MeshInstance3D" parent="." unique_id=1861387692]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5002494, 0)
 mesh = SubResource("ArrayMesh_e7ix8")
 skeleton = NodePath("")
@@ -805,17 +826,17 @@ metadata/ant_landscape = "{  }"
 metadata/muproperties = "{  }"
 metadata/kspmodules = "{  }"
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Supports"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Supports" unique_id=1710399687]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Supports/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Supports/StaticBody3D" unique_id=2083743033]
 shape = SubResource("ConcavePolygonShape3D_fl38p")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="." unique_id=1061076990]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5557475, 0)
 collision_layer = 0
 collision_mask = 4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=636841726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.072265625, 0)
 shape = SubResource("CylinderShape3D_0bl1v")
 debug_color = Color(0.8411664, 0.37989157, 0.12514052, 0.41960785)
