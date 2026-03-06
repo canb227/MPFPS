@@ -14,7 +14,10 @@ public partial class AIManager : Node3D
     public List<HordeAgent> controlledNPCs = new();
     public GOBasePlayerCharacter localPlayer;
     private GameModeOptions options;
+    public float cellSize = 1f;
     private Dictionary<Vector3I, List<HordeAgent>> grid = new(); //only used by thread
+    private Dictionary<Vector3I, List<BasicPlayerCharacter>> playerGrid = new(); //only used by thread
+
     public static List<Vector3> path = new();
     public System.Threading.Mutex _gridMutex = new();
 
@@ -32,7 +35,7 @@ public partial class AIManager : Node3D
         {
             if(Global.gameState.gameModeManager.helicopter != null)
             {
-                targetLocation = Global.gameState.gameModeManager.helicopter.GlobalPosition;
+                targetLocation = hordeSpawnLocation.Origin;//Global.gameState.gameModeManager.helicopter.GlobalPosition;
             }
             else
             {
@@ -119,6 +122,16 @@ public partial class AIManager : Node3D
         grid[newCell].Add(agent);
         _gridMutex.ReleaseMutex();
     }
+    public void MovePlayerCell(BasicPlayerCharacter agent, Vector3I oldCell, Vector3I newCell) //main thread?
+    {
+        if (playerGrid.ContainsKey(oldCell))
+            playerGrid[oldCell].Remove(agent);
+
+        if (!playerGrid.ContainsKey(newCell))
+            playerGrid[newCell] = new List<BasicPlayerCharacter>();
+
+        playerGrid[newCell].Add(agent);
+    }
 
     public List<Vector3> CalculatePath(Vector3 start, Vector3 goal)
     {
@@ -153,7 +166,7 @@ public partial class AIManager : Node3D
         return neighbors;
     }
 
-    bool evacuationStarted;
+    public bool evacuationStarted;
     double currentHordeCooldown = 9999;
     double hordeCooldown = 240; //4 minutes
     double evacuationHordeCooldown = 10;

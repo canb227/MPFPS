@@ -155,6 +155,32 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         return MessagePackSerializer.Serialize(update);
     }
 
+    public override void PerTickShared(double delta)
+    {
+        base.PerTickShared(delta);
+        if(Global.Lobby.bIsLobbyHost)
+        {
+            UpdateGridLocation();
+        }
+    }
+
+    public Vector3I currentCell;
+
+    public void UpdateGridLocation()
+    {
+        Vector3I cell = new Vector3I(
+            Mathf.FloorToInt(GlobalPosition.X / Global.gameState.AIManager.cellSize),
+            Mathf.FloorToInt(GlobalPosition.Y / Global.gameState.AIManager.cellSize),
+            Mathf.FloorToInt(GlobalPosition.Z / Global.gameState.AIManager.cellSize)
+        );
+
+        if (cell != currentCell)
+        {
+            Global.gameState.AIManager.MovePlayerCell(this, currentCell, cell);
+            currentCell = cell;
+        }
+    }
+
     //various input functions, PerTickAuth is the main loop
     public override void PerTickAuth(double delta)
     {

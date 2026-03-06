@@ -134,6 +134,23 @@ layout_mode = 2
 size_flags_vertical = 0
 text = "4"
 
+[node name="InfoBox" type="PanelContainer" parent="." unique_id=1590043362]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.95
+anchor_top = 0.09
+anchor_right = 0.95
+anchor_bottom = 0.09
+offset_left = -400.0
+offset_bottom = 120.00001
+grow_horizontal = 0
+
+[node name="InfoMessage" type="Label" parent="InfoBox" unique_id=1860022568]
+custom_minimum_size = Vector2(0, 0.165)
+layout_mode = 2
+text = "Rescue has arrived at the front of the warehouse. Get on board before it leaves!"
+autowrap_mode = 2
+
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1637630212]
 layout_mode = 1
 anchors_preset = 15
@@ -402,20 +419,3 @@ alignment = 2
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 text = "Purchase"
-
-[node name="InfoBox" type="PanelContainer" parent="." unique_id=1590043362]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.95
-anchor_top = 0.09
-anchor_right = 0.95
-anchor_bottom = 0.09
-offset_left = -400.0
-offset_bottom = 120.0
-grow_horizontal = 0
-
-[node name="InfoMessage" type="Label" parent="InfoBox" unique_id=1860022568]
-custom_minimum_size = Vector2(0, 0.165)
-layout_mode = 2
-text = "Rescue has arrived at the front of the warehouse. Get on board before it leaves!"
-autowrap_mode = 2

@@ -35,7 +35,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float stateUpdateAge;
 
     //new navigation stuff
-    private float cellSize = 1f;
     public Vector3I currentCell;
     private float midRange = 25f;
     private float nearRange = 15f;
@@ -158,6 +157,10 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         base.PerFrameShared(delta);
 
+        if(Global.gameState.AIManager.evacuationStarted)
+        {
+            state = HordeAgentState.SIMPLECHASE;
+        }
 
         switch (state)
         {
@@ -195,10 +198,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 PerTickAgentAuth(delta);
                 break;
             case HordeAgentState.SIMPLECHASE:
-                // timeSincePathUpdate += (float)delta;
-                // //bucket scheduling
-                // RecalculatePath(delta);
-                // PerTickAgentAuth(delta);
+                
                 break;
             default:
                 break;
@@ -428,9 +428,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     public void UpdateGridLocation()
     {
         Vector3I cell = new Vector3I(
-            Mathf.FloorToInt(GlobalPosition.X / cellSize),
-            Mathf.FloorToInt(GlobalPosition.Y / cellSize),
-            Mathf.FloorToInt(GlobalPosition.Z / cellSize)
+            Mathf.FloorToInt(GlobalPosition.X / Global.gameState.AIManager.cellSize),
+            Mathf.FloorToInt(GlobalPosition.Y / Global.gameState.AIManager.cellSize),
+            Mathf.FloorToInt(GlobalPosition.Z / Global.gameState.AIManager.cellSize)
         );
 
         if (cell != currentCell)
@@ -598,93 +598,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             mat.AlbedoColor = color;
         }
     }
-
-    Vector3 ComputeAvoidanceScoredFan(
-        Vector3 origin,
-        Vector3 forward,
-        float rayLength,
-        int rays,
-        float maxAngleDeg)
-    {
-        var space = GetWorld3D().DirectSpaceState;
-        uint obstacleMask = 1 << 0;
-
-        float bestScore = -Mathf.Inf;
-        Vector3 bestDir = -forward; // fallback
-
-        for (int i = 0; i < rays; i++)
-        {
-            float t = (float)i / (rays - 1); // 0 → 1
-            float angle = Mathf.Lerp(0, maxAngleDeg, t);
-
-            foreach (float sign in new float[] { 1f, -1f })
-            {
-                float ang = angle * sign;
-                Vector3 dir = forward.Rotated(Vector3.Up, Mathf.DegToRad(ang));
-
-                var hit = space.IntersectRay(new PhysicsRayQueryParameters3D {
-                    From = origin,
-                    To = origin + dir * rayLength,
-                    CollisionMask = obstacleMask,
-                });
-
-                float hitDist = hit.Count > 0
-                    ? ((Vector3)hit["position"] - origin).Length()
-                    : rayLength;
-
-                float anglePenalty = Mathf.Abs(ang) * 0.02f; // tune weight
-
-                float score = hitDist - anglePenalty;
-
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestDir = dir;
-                }
-            }
-        }
-
-        return bestDir;
-    }
-
-    Vector3 ComputeWallRepulsion(Vector3 origin, float radius, float pushStrength)
-    {
-        var space = GetWorld3D().DirectSpaceState;
-        uint obstacleMask = 1 << 0;
-
-        // Create a small sphere shape
-        SphereShape3D sphere = new SphereShape3D();
-        sphere.Radius = radius;
-
-        var shapeParams = new PhysicsShapeQueryParameters3D
-        {
-            Shape = sphere,
-            Transform = new Transform3D(Basis.Identity, origin),
-            CollisionMask = obstacleMask,
-            CollideWithBodies = true,
-            CollideWithAreas = true
-        };
-
-        // Query for overlaps
-        var results = space.IntersectShape(shapeParams, 8);
-
-        if (results.Count == 0)
-            return Vector3.Zero;
-
-        // Compute push direction
-        Vector3 push = Vector3.Zero;
-
-        foreach (var hit in results)
-        {
-            Vector3 point = (Vector3)hit["point"];
-            Vector3 normal = (Vector3)hit["normal"];
-
-            // Push away from the wall
-            push += normal * pushStrength;
-        }
-
-        return push;
-    }
+    
     public bool HasLineOfSight(Vector3 from, Vector3 to)
     {
         var space = GetWorld3D().DirectSpaceState;

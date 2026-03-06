@@ -47,7 +47,12 @@ public partial class PlayerUIManager : Control
     {
         var tween = CreateTween();
         tween.TweenProperty(infoBox, "modulate:a", 0f, FadeDuration);
-    
+    }
+
+    private void FadeIn(float duration = 0.5f)
+    {
+        var tween = CreateTween();
+        tween.TweenProperty(infoBox, "modulate:a", 1f, duration);
     }
 
 
@@ -132,6 +137,7 @@ public partial class PlayerUIManager : Control
         infoLabel.Text = infoString;
         infoDisplayTimeLeft = maxDisplayTime;
         _fadeStarted = false;
+        FadeIn();
     }
 
 
