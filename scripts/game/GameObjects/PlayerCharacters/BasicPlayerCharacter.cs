@@ -126,7 +126,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     {
         Global.gameState.gameModeManager.basicPlayers.Add(authority, this);
         Global.gameState.gameModeManager.playerStats[authority] = new PlayerRoundStats();
-
         base.InitFromData(data);
         return true;
     }
@@ -1062,6 +1061,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar));
             Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI(Mathf.CeilToInt(currentHealth), Mathf.CeilToInt(maxHealth));
             Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
+            //disable our own body colliders
         }
     }
 

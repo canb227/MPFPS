@@ -63,7 +63,7 @@ public partial class Helicopter : GOBaseStaticBody
         //outline control
         if(outlineDesiredState)
         {
-            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 100f)
+            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 150f)
             {
                 _outline.Visible = false;
             }

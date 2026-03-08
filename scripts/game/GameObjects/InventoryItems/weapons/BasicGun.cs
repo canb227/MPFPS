@@ -3,6 +3,7 @@ using Godot.Collections;
 using ImGuiGodot.Internal;
 using MessagePack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,7 +68,13 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             gunSounds = ["res://assets/audio/weapons/basic/357_fire2.wav"];
         }        
         emptySounds = ["res://assets/audio/weapons/basic/ar2_empty.wav"];
+
+        // Warm up the hit particle scene
+        var warmup = shotHitParticle.Instantiate() as Node3D;
+        AddChild(warmup);
+        warmup.Visible = false;
     }
+
 
     public override void PerTickShared(double delta)
     {
@@ -273,7 +280,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     }
 
                     // check if it's a SwarmRobot
-                    if ((current is SwarmRobot || current is HordeAgent)&& penetrations < maxPenetrations)
+                    if ((current is SwarmRobot || current is HordeAgent) && penetrations < maxPenetrations)
                     {
                         penetrations++;
 

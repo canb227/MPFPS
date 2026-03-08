@@ -64,8 +64,8 @@ public partial class Announcer : GOBaseStaticBody
     public async void SwarmDefeated()
     {
         GD.Print("Swarm Defeated");
-        await FadeOut(audioStreamPlayerMusic, 10f);
         Global.gameState.gameModeManager.generator.SetHighlighted(false);
+        await FadeOut(audioStreamPlayerMusic, 10f);
     }
 
     public async Task FadeOut(AudioStreamPlayer3D player, float duration = 1f)
@@ -77,12 +77,12 @@ public partial class Announcer : GOBaseStaticBody
         {
             time += (float)GetProcessDeltaTime();
             float t = time / duration;
-            player.VolumeDb = Mathf.Lerp(startVolume, -80f, t); // -80 dB = silent
+            player.VolumeDb = Mathf.Lerp(startVolume, -80f, t);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         }
 
         player.Stop();
-        player.VolumeDb = startVolume; // optional reset
+        player.VolumeDb = startVolume;
     }
 
 

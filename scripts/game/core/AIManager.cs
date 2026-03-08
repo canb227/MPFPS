@@ -89,7 +89,6 @@ public partial class AIManager : Node3D
     public override void _Ready()
     {
         base._Ready();
-        GD.Print("hello");
         _avoidanceThread = new(AvoidanceLoop);
         _avoidanceThread.Start();
     }
@@ -228,7 +227,6 @@ public partial class AIManager : Node3D
                 announcedHorde = false;
             }
             //TODO
-            GD.Print(controlledNPCs.Count);
             if(controlledNPCs.Count <= 10 && hordeActive)
             {
                 hordeActive = false;

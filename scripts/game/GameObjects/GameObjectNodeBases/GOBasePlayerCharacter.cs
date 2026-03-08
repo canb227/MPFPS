@@ -20,6 +20,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
 
     [Export]
     public virtual Node3D thirdPersonEquipmentAttachmentPoint { get; set; }
+    [Export] public CollisionShape3D[] bodyColliders;
+
 
     public virtual ulong controllingPlayerID { get; set; } = 0;
     public virtual Team team {  get; set; }
@@ -125,6 +127,17 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual void rpc_TakeControl(ulong playerID)
     {
         Logging.Log($"Player {playerID} is taking control of character {id}", "GameModeManager");
+        if(playerID == Global.steamid)
+        {
+            GD.Print("disable colliders");
+            if(authority == Global.steamid && bodyColliders != null)
+            {
+                foreach(var collider in bodyColliders)
+                {
+                    collider.Disabled = true;
+                }
+            }   
+        }
         if(playerID == Global.steamid && Global.gameState.gameModeManager.options.hordeRobots)
         {
             Global.gameState.AIManager.UpdateLocalPlayer(this);
