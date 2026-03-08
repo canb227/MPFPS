@@ -31,7 +31,7 @@ shadow_color = Color(0, 0, 0, 1)
 font_size = 24
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="PlayerUIManager" type="Control" unique_id=805232230 node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole", "inventorySlot1", "inventorySlot2", "inventorySlot3", "inventorySlot4", "infoBox", "infoLabel")]
+[node name="PlayerUIManager" type="Control" unique_id=805232230 node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole", "inventorySlot1", "inventorySlot2", "inventorySlot3", "inventorySlot4", "infoBox", "infoLabel", "statusBox", "statusLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -53,6 +53,8 @@ inventorySlot3 = NodePath("inventoryUI/VBoxContainer/PanelContainer3/TextureRect
 inventorySlot4 = NodePath("inventoryUI/VBoxContainer/PanelContainer4/TextureRect")
 infoBox = NodePath("InfoBox")
 infoLabel = NodePath("InfoBox/InfoMessage")
+statusBox = NodePath("PlayerStatus")
+statusLabel = NodePath("PlayerStatus/StatusMessage")
 metadata/_custom_type_script = "uid://dj5onwk1keewc"
 
 [node name="bottomleftUI" parent="." unique_id=379088181 instance=ExtResource("1_ct4y5")]

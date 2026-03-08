@@ -143,14 +143,14 @@ public partial class PlayerUIManager : Control
         FadeIn();
     }
 
-    private Stack<string> statusStrings;
+    private List<string> statusStrings = new();
     public void AddNewStatus(string infoString)
     {
         if(!statusStrings.Contains(infoString))
         {
-            statusStrings.Push(infoString);
+            statusStrings.Insert(0, infoString);
         }
-        statusLabel.Text = statusStrings.Peek();
+        statusLabel.Text = infoString;
         statusBox.Visible = true;
     }
 
@@ -158,7 +158,7 @@ public partial class PlayerUIManager : Control
     {
         if(statusStrings.Contains(infoString))
         {
-            statusStrings.Push(infoString);
+            statusStrings.Remove(infoString);
         }
         if(!statusStrings.Any())
         {
@@ -166,7 +166,7 @@ public partial class PlayerUIManager : Control
         }
         else
         {
-            statusLabel.Text = statusStrings.Peek();
+            statusLabel.Text = statusStrings[0];
         }
     }
 

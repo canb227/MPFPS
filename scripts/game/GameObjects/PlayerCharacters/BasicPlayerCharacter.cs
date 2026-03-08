@@ -919,7 +919,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         Logging.Log($"{authority} PlayerCharacter has been knocked out", "BasicPlayerCharacter");
         KnockedOut?.Invoke(id);
         knockedOut = true;
-        DropEquipped();
+        //DropEquipped();
         currentStunBar = 0;
         //adjust collider
         collider.RotationDegrees = new Vector3(90, 0, 0);
@@ -930,6 +930,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //adjust camera
         camera.Position = new Vector3(0, -2.259f, 1.01f);
         camera.RotationDegrees = new Vector3(90, 0, 0);
+        GD.Print(authority + " erm " + Global.steamid);
         if(Global.steamid == authority)
         {
             Global.ui.inGameUI.PlayerUIManager.AddNewStatus("Knocked Out!\nRecovering..."); //make sure to update the remove
@@ -1082,6 +1083,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         PickupReplace(handcuffs);
         handcuffed = true;
+
         if(Global.steamid == authority)
         {
             Global.ui.inGameUI.PlayerUIManager.AddNewStatus("Handcuffed!\nAsk a friend to interact with you to remove them..."); //make sure to update the remove
