@@ -409,6 +409,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0008616382, -0.0013734996, 
 shape = SubResource("BoxShape3D_ss1d3")
 
 [node name="outline" type="MeshInstance3D" parent="packingMachine" unique_id=990072090]
+visible = false
 mesh = SubResource("ArrayMesh_uesdv")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_7p83q")

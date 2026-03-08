@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://barohp151hufs" path="res://assets/models/warehouse_old/Rotorobj_Body_Normal.1001.jpg" id="3_g7r1e"]
 [ext_resource type="Texture2D" uid="uid://bi3bh1wo6qavp" path="res://assets/models/warehouse_old/Rotorobj_Cage_BaseColor.1001.png" id="4_yee2q"]
 [ext_resource type="Texture2D" uid="uid://b1ev460d30c0g" path="res://assets/models/warehouse_old/Rotorobj_Cage_Metallic.1001-Rotorobj_Cage_Roughness.1001.png" id="5_7dk5j"]
-[ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="5_kqqd5"]
+[ext_resource type="Material" uid="uid://bdbiyx28noldg" path="res://unsorted/outlineshader.tres" id="5_kqqd5"]
 [ext_resource type="Texture2D" uid="uid://bo1q1ca2x40y6" path="res://assets/models/warehouse_old/Rotorobj_Cage_Normal.1001.jpg" id="6_f6i8e"]
 [ext_resource type="Texture2D" uid="uid://bfst3mabyj10u" path="res://assets/models/warehouse_old/Rotorobj_Caps_BaseColor.1001.jpg" id="7_v0ud1"]
 [ext_resource type="Texture2D" uid="uid://cvik6ip05gyo7" path="res://assets/models/warehouse_old/Rotorobj_Caps_Metallic.1001-Rotorobj_Caps_Roughness.1001.png" id="8_sjpc3"]
@@ -95,12 +95,6 @@ radius = 2.255371
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6gx2u"]
 height = 1.0234375
 radius = 1.1826172
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nlcfi"]
-render_priority = 0
-shader = ExtResource("5_kqqd5")
-shader_parameter/outline_color = Color(0.03876, 0.41687015, 0.50318396, 0.286)
-shader_parameter/thickness = 0.03
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h4chp"]
 resource_name = "Cage"
@@ -748,11 +742,12 @@ light_bake_mode = 1
 omni_range = 2.29
 
 [node name="Outline" type="MeshInstance3D" parent="Body" unique_id=1661393945]
+visible = false
 cast_shadow = 0
 extra_cull_margin = 16384.0
 mesh = SubResource("ArrayMesh_vsi7p")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("ShaderMaterial_nlcfi")
+surface_material_override/0 = ExtResource("5_kqqd5")
 metadata/extras = {
 "ant_landscape": {},
 "kspmodules": {},

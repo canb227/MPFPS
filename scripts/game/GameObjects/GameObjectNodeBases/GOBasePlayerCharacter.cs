@@ -119,10 +119,12 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             if(box.labelApplied)
             {
                 Global.ui.inGameUI.PlayerUIManager.AddNewInfoLowPriority("This package needs shipped out, find the shipping tube!"); //need to add info based on package state
+                Global.gameState.gameModeManager.LocalPlayInfoBeep(); 
             }
             else
             {
                 Global.ui.inGameUI.PlayerUIManager.AddNewInfoLowPriority("This package needs labelled,\nUse the label printer and stamp machine in Labelling!"); //need to add info based on package state
+                Global.gameState.gameModeManager.LocalPlayInfoBeep(); 
             }
         }
     }

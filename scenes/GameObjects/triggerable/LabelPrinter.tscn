@@ -803,6 +803,7 @@ metadata/blenderkit = "{ \"category\": 10.0, \"subcategory\": 1.0 }"
 metadata/tissue_tessellate = "{ \"generator\": {  }, \"component\": {  } }"
 
 [node name="Outline" type="MeshInstance3D" parent="Printer Body" unique_id=388146367]
+visible = false
 gi_mode = 2
 mesh = SubResource("ArrayMesh_l6pk1")
 skeleton = NodePath("")

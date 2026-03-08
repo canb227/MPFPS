@@ -26,6 +26,7 @@ public partial class GameModeManager : Node
     public static event Action OnPackageOrdersUpdated;
     public static event Action OnPossibleAddressesUpdated;
     public static event Action OnDeliveryQueueAppended;
+    public static event Action PlayInfoBeep;
     public static event Action<int> OnOrderPacked;
     public static event Action<int> OnOrderLabelled;
     public static event Action<int> OnOrderReadyToDeliver;
@@ -269,14 +270,17 @@ public partial class GameModeManager : Node
             bool anybodyOnBoard = false;
             foreach (BasicPlayerCharacter basicPlayerCharacter in basicPlayerCharacters)
             {
-                anybodyOnBoard = true;
+                if (basicPlayerCharacter.team != Team.Traitor)
+                {
+                    anybodyOnBoard = true;
+                }
                 Logging.Log(basicPlayerCharacter.Name + " " + basicPlayerCharacter.id + " is Onboard", "GameModeManager");
                 if (basicPlayerCharacter.team == Team.Traitor)
                 {
                     traitorOnBoard = true;
                 }
             }
-            if (anybodyOnBoard)
+            if (anybodyOnBoard) //anybody that isnt a traitor
             {
                 RPCManager.RPC(this, "InnocentsWin", []);
             }
@@ -291,6 +295,11 @@ public partial class GameModeManager : Node
     public void TriggerGeneratorUnderAttack()
     {
         GeneratorUnderAttack?.Invoke();
+    }
+
+    public void LocalPlayInfoBeep()
+    {
+        PlayInfoBeep?.Invoke();
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -428,7 +437,7 @@ public partial class GameModeManager : Node
             //pick some random item enums
             List<GameObjectType> allPossibleTypes = GameObjectLoader.GetAllObjectsOfType(typeof(GOPackageItem));
             List<GameObjectType> randomTypes = new();
-            int randomizer = rand.Next(3) - 1; //between 0 and 2 (-1) -1 to 1
+            int randomizer = 1;//rand.Next(3) - 1; //between 0 and 2 (-1) -1 to 1
             for (int j = 0; j < options.itemsPerPackage + randomizer; j++)
             {
                 GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)];
@@ -572,11 +581,12 @@ public partial class GameModeManager : Node
         numFinishedOrders = numFinished;
         if(Global.Lobby.bIsLobbyHost)
         {
-            RPCManager.RPC(this, "SetRoundTime", [remainingRoundTime-120, publicRemainingRoundTime-120]);
+            RPCManager.RPC(this, "SetRoundTime", [(float)(remainingRoundTime-120), (float)(publicRemainingRoundTime-120)]);
         }
     }
 
-    public void SetRoundTime(double roundTime, double publicRoundTime)
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void SetRoundTime(float roundTime, float publicRoundTime)
     {
         remainingRoundTime = roundTime;
         publicRemainingRoundTime = publicRoundTime;

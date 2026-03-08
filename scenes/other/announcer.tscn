@@ -147,5 +147,4 @@ panning_strength = 0.0
 
 [node name="AudioStreamPlayerAlert" type="AudioStreamPlayer3D" parent="." unique_id=496429732]
 attenuation_model = 3
-volume_db = 2.0
 panning_strength = 0.0

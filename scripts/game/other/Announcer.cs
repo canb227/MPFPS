@@ -23,6 +23,7 @@ public partial class Announcer : GOBaseStaticBody
         GameModeManager.SwarmDefeated += SwarmDefeated;
         GameModeManager.GeneratorSafe += GeneratorSafe;
         GameModeManager.GeneratorUnderAttack += GeneratorUnderAttack;
+        GameModeManager.PlayInfoBeep += PlayInfoBeep;
     }
     public override void _Notification(int what)
     {
@@ -34,6 +35,7 @@ public partial class Announcer : GOBaseStaticBody
             GameModeManager.SwarmDefeated -= SwarmDefeated;
             GameModeManager.GeneratorSafe -= GeneratorSafe;
             GameModeManager.GeneratorUnderAttack -= GeneratorUnderAttack;
+            GameModeManager.PlayInfoBeep -= PlayInfoBeep;
         }
     }
 
@@ -117,6 +119,12 @@ public partial class Announcer : GOBaseStaticBody
             audioStreamPlayerSiren.Play();
             Global.ui.inGameUI.PlayerUIManager.AddNewInfo("The generator is under attack! Kill robots near the generator quickly!");
         }
+    }
+
+    public void PlayInfoBeep()
+    {
+        audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/beepclear.wav");
+        audioStreamPlayerAlert.Play();
     }
 
     public override string GenerateStateString()

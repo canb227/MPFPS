@@ -528,6 +528,7 @@ disabled = true
 debug_color = Color(1, 0.19641912, 0, 0.624)
 
 [node name="Outline" type="MeshInstance3D" parent="MainMesh" unique_id=1402533169]
+visible = false
 mesh = SubResource("ArrayMesh_uua3i")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_22u12")
