@@ -105,6 +105,42 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                 audioOccluder.Call("changeTarget", camera);
             }
         }
+
+        //package tip setup
+    }
+
+    private Dictionary<int, string> packageTips = new(); //the key is what step and the value is the string
+    //then we need to track what tip we should be displaying
+    public void AddPackageTip(GOPackageBox box)
+    {
+        //highlight and write messages if we are the local player
+        if(Global.steamid == authority)
+        {
+            if(box.labelApplied)
+            {
+                Global.ui.inGameUI.PlayerUIManager.AddNewInfoLowPriority("This package needs shipped out, find the shipping tube!"); //need to add info based on package state
+            }
+            else
+            {
+                Global.ui.inGameUI.PlayerUIManager.AddNewInfoLowPriority("This package needs labelled,\nUse the label printer and stamp machine in Labelling!"); //need to add info based on package state
+            }
+        }
+    }
+
+    public void RemovePackageTip(GOPackageBox box)
+    {
+        //disable all highlights and remove the tip if we are the local player
+        if(Global.steamid == authority)
+        {
+            if(box.labelApplied)
+            {
+                Global.ui.inGameUI.PlayerUIManager.RemoveInfo("This package needs shipped out, find the shipping tube!"); //need to add info based on package state
+            }
+            else
+            {
+                Global.ui.inGameUI.PlayerUIManager.RemoveInfo("This package needs labelled,\nUse the label printer and stamp machine in Labelling!"); //need to add info based on package state
+            }
+        }
     }
 
     public override bool InitFromData(GameObjectConstructorData data)
@@ -403,8 +439,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     
     }
 
-     public override void PerTickShared(double delta)
+    public override void PerTickShared(double delta)
     {
+        
     }
 
     public override void PerFrameShared(double delta)

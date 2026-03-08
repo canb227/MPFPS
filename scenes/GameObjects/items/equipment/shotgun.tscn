@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://c72lhqmuv0nrf"]
+[gd_scene format=4 uid="uid://c72lhqmuv0nrf"]
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_vcw5l"]
 [ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_weoqn"]
@@ -172,7 +172,7 @@ _data = {
 &"reload": SubResource("Animation_drkua")
 }
 
-[node name="Shotgun" type="RigidBody3D" node_paths=PackedStringArray("audioStreamPlayer1", "audioStreamPlayer2", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[node name="Shotgun" type="RigidBody3D" unique_id=2002154732 node_paths=PackedStringArray("audioStreamPlayer1", "audioStreamPlayer2", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
 mass = 6.0
@@ -200,39 +200,37 @@ animationPlayer = NodePath("AnimationPlayer")
 type = 9
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1854138161]
 transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.3900894, 0.0107421875, -0.004598178)
 shape = SubResource("BoxShape3D_pmrh1")
 
-[node name="AudioPlayer" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=261497763]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
 stream = ExtResource("3_c5mbw")
 max_db = 0.0
 max_polyphony = 4
 panning_strength = 0.0
 
-[node name="AudioPlayer2" type="AudioStreamPlayer3D" parent="."]
+[node name="AudioPlayer2" type="AudioStreamPlayer3D" parent="." unique_id=1893073286]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37197757, 0.063711405, -0.5899842)
 stream = ExtResource("3_c5mbw")
 max_db = 0.0
 max_polyphony = 4
 panning_strength = 0.0
 
-[node name="fps" type="Node3D" parent="."]
+[node name="fps" type="Node3D" parent="." unique_id=1080446034]
 
-[node name="shotgun_1" type="MeshInstance3D" parent="fps"]
+[node name="shotgun_1" type="MeshInstance3D" parent="fps" unique_id=1743513555]
 transform = Transform3D(4.3711385e-08, 3.8213705e-15, -0.99999994, 8.742277e-08, -0.99999994, 0, -0.99999994, -8.742277e-08, -4.3711385e-08, 0.3567911, 1.4655803e-09, -0.016764268)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
 
-[node name="tps" type="Node3D" parent="."]
+[node name="tps" type="Node3D" parent="." unique_id=150688919]
 
-[node name="shotgun_1" type="MeshInstance3D" parent="tps"]
+[node name="shotgun_1" type="MeshInstance3D" parent="tps" unique_id=570748005]
 transform = Transform3D(4.3711385e-08, 3.8213705e-15, -0.99999994, 8.742277e-08, -0.99999994, 0, -0.99999994, -8.742277e-08, -4.3711385e-08, 0.3567911, 1.4655803e-09, -0.016764268)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_a1fax")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=390103935]
+libraries/ = SubResource("AnimationLibrary_a1fax")

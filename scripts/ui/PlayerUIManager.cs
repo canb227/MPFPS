@@ -135,12 +135,51 @@ public partial class PlayerUIManager : Control
         }
     }
 
-    public void DisplayNewInfo(string infoString, float maxDisplayTime = 60f)
+    private List<string> infoStrings = new();
+    public void AddNewInfo(string infoString)
     {
+       if(!infoStrings.Contains(infoString))
+        {
+            infoStrings.Insert(0, infoString);
+        }
         infoLabel.Text = infoString;
-        infoDisplayTimeLeft = maxDisplayTime;
-        _fadeStarted = false;
-        FadeIn();
+        infoBox.Visible = true;
+    }
+
+    public void AddNewInfoLowPriority(string infoString)
+    {
+       if(!infoStrings.Contains(infoString))
+        {
+            infoStrings.Add(infoString);
+        }
+        infoLabel.Text = infoStrings[0];
+        infoBox.Visible = true;
+    }
+
+    public void RemoveInfo(string infoString)
+    {
+        if(infoStrings.Contains(infoString))
+        {
+            infoStrings.Remove(infoString);
+        }
+        if(!infoStrings.Any())
+        {
+            infoBox.Visible = false;
+        }
+        else
+        {
+            infoLabel.Text = infoStrings[0];
+        }
+    }
+
+    public void ClearAllInfoStrings()
+    {
+        infoStrings = new();
+    }
+
+    public void ClearAllStatusStrings()
+    {
+        infoStrings = new();
     }
 
     private List<string> statusStrings = new();
@@ -150,7 +189,7 @@ public partial class PlayerUIManager : Control
         {
             statusStrings.Insert(0, infoString);
         }
-        statusLabel.Text = infoString;
+        statusLabel.Text = statusStrings[0];
         statusBox.Visible = true;
     }
 

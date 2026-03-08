@@ -11,6 +11,8 @@ public partial class GOPackingMachine : GOTrap
 {
     [Export] Area3D ItemsForPackingArea;
     [Export] Marker3D PackageOutputMarker;
+    [Export] public MeshInstance3D _outline;
+	private bool outlineDesiredState;
 
     public override void _Ready()
     {
@@ -18,6 +20,11 @@ public partial class GOPackingMachine : GOTrap
         animationPlayer.Play("packageFailed");
     }
 
+    public void SetHighlighted(bool enabled)
+    {
+		outlineDesiredState = enabled;
+        _outline.Visible = enabled;
+    }
 
     public bool AttemptPacking()
     {

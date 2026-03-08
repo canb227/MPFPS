@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://caeg44mi0sb4o"]
+[gd_scene format=4 uid="uid://caeg44mi0sb4o"]
 
 [ext_resource type="Texture2D" uid="uid://clmavo7e3wmvr" path="res://assets/models/map/packingMachine_machinery_mx_1.png" id="1_f6pg2"]
 [ext_resource type="Script" uid="uid://bysmyhbmio3bs" path="res://scripts/game/GameObjects/Triggerable/GOPackingMachine.cs" id="1_pkqno"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://duyj13ci6wny5" path="res://assets/audio/environment/elevbell1.wav" id="4_pkqno"]
 [ext_resource type="AudioStream" uid="uid://8qk0ncay2plo" path="res://assets/audio/environment/packingMachine/elevator_move_loop1.wav" id="5_nfwkh"]
 [ext_resource type="AudioStream" uid="uid://blxpt2irn6rri" path="res://assets/audio/environment/klaxon1.wav" id="7_hfxq0"]
+[ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="9_k54qh"]
 
 [sub_resource type="Resource" id="Resource_lwmcn"]
 script = ExtResource("2_k54qh")
@@ -317,6 +318,12 @@ shadow_mesh = SubResource("ArrayMesh_l81ta")
 [sub_resource type="BoxShape3D" id="BoxShape3D_ss1d3"]
 size = Vector3(1.7928619, 0.037887573, 0.8203888)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7p83q"]
+render_priority = 0
+shader = ExtResource("9_k54qh")
+shader_parameter/outline_color = Color(0.46666667, 0.3529412, 0.1254902, 0.28627452)
+shader_parameter/thickness = 0.03
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_v2nqw"]
 size = Vector3(0.5941162, 0.5280609, 1.6903076)
 
@@ -340,7 +347,7 @@ size = Vector3(2.3759766, 1.3515625, 0.13128662)
 height = 0.19299316
 radius = 0.17236328
 
-[node name="GOPackingMachine" type="StaticBody3D" node_paths=PackedStringArray("ItemsForPackingArea", "PackageOutputMarker", "animationPlayer")]
+[node name="GOPackingMachine" type="StaticBody3D" unique_id=451845517 node_paths=PackedStringArray("ItemsForPackingArea", "PackageOutputMarker", "animationPlayer")]
 script = ExtResource("1_pkqno")
 ItemsForPackingArea = NodePath("ItemArea")
 PackageOutputMarker = NodePath("PackageSpawnMarker")
@@ -348,7 +355,7 @@ animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_lwmcn")])
 metadata/_custom_type_script = "uid://bysmyhbmio3bs"
 
-[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="." unique_id=817952128]
 distance_attenuation = true
 air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6726502, 0)
@@ -356,7 +363,7 @@ attenuation_model = 3
 volume_db = -1.714287
 panning_strength = 0.0
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1591025454]
 distance_attenuation = true
 air_absorption = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.669729, 0)
@@ -364,81 +371,84 @@ attenuation_model = 3
 volume_db = -3.0
 panning_strength = 0.0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_nfwkh")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=424102868]
+libraries/ = SubResource("AnimationLibrary_nfwkh")
 
-[node name="PackageSpawnMarker" type="Marker3D" parent="."]
+[node name="PackageSpawnMarker" type="Marker3D" parent="." unique_id=131771123]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7033704, 0)
 
-[node name="ItemArea" type="Area3D" parent="."]
+[node name="ItemArea" type="Area3D" parent="." unique_id=1595381728]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7113081, 0)
 collision_layer = 0
 collision_mask = 26
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ItemArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ItemArea" unique_id=1736003921]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0011291504, 0.026550293, 0.0030517578)
 shape = SubResource("BoxShape3D_hfxq0")
 debug_color = Color(0, 0.7126279, 0.31517208, 0.41960785)
 
-[node name="packingMachine" type="MeshInstance3D" parent="."]
+[node name="packingMachine" type="MeshInstance3D" parent="." unique_id=606097261]
 transform = Transform3D(1.274429, 0, 0, 0, -5.5707076e-08, -1.2744293, 0, 1.2744293, -5.5707076e-08, 0.0043058395, 0.17966385, 0.006237719)
 mesh = SubResource("ArrayMesh_uesdv")
 skeleton = NodePath("")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="packingMachine"]
+[node name="OmniLight3D" type="OmniLight3D" parent="packingMachine" unique_id=1520587155]
 transform = Transform3D(0.78466517, 0, 0, 0, -2.8061806e-06, 0.7846649, 0, -0.7846649, -2.8061806e-06, -0.0033786423, -0.35053176, -0.78839856)
 omni_range = 1.625
 
-[node name="machineDoor" type="StaticBody3D" parent="packingMachine"]
+[node name="machineDoor" type="StaticBody3D" parent="packingMachine" unique_id=1199123065]
 transform = Transform3D(1, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.462, 0)
 
-[node name="packingMachineDoor" type="MeshInstance3D" parent="packingMachine/machineDoor"]
+[node name="packingMachineDoor" type="MeshInstance3D" parent="packingMachine/machineDoor" unique_id=172532534]
 transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.00071763434, -0.0152819455, -0.04541087)
 mesh = SubResource("ArrayMesh_w8cyn")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="packingMachine/machineDoor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="packingMachine/machineDoor" unique_id=1964242614]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0008616382, -0.0013734996, -0.4497307)
 shape = SubResource("BoxShape3D_ss1d3")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="outline" type="MeshInstance3D" parent="packingMachine" unique_id=990072090]
+mesh = SubResource("ArrayMesh_uesdv")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_7p83q")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=476496636]
 transform = Transform3D(1.274429, 0, 0, 0, -4.5577126e-06, -1.2744293, 0, 1.2744293, -4.5577126e-06, -1.5656282, 1.0982267, 0.0022642203)
 shape = SubResource("BoxShape3D_v2nqw")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1233756156]
 transform = Transform3D(1.274429, 0, 0, 0, -4.5577126e-06, -1.2744293, 0, 1.2744293, -4.5577126e-06, 1.5795428, 1.0982267, 0.009099577)
 shape = SubResource("BoxShape3D_v2nqw")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1512168231]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.0057373107, 1.8322734, 0)
 shape = SubResource("CylinderShape3D_he4l8")
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=141563163]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.0033111265, 1.6067086, 0.007751465)
 shape = SubResource("BoxShape3D_nfwkh")
 
-[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="." unique_id=825788090]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -1.1709069, 0.92964566, 0.011383057)
 shape = SubResource("BoxShape3D_7dqg3")
 
-[node name="CollisionShape3D6" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="." unique_id=246404566]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 1.1707104, 0.9296458, 0.011383057)
 shape = SubResource("BoxShape3D_7dqg3")
 
-[node name="CollisionShape3D7" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="." unique_id=1625746492]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00019836426, 0.07186127, -0.0056915283)
 shape = SubResource("BoxShape3D_pkqno")
 
-[node name="CollisionShape3D9" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="." unique_id=1317424666]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0010223389, 0.7163411, -0.55806124)
 shape = SubResource("BoxShape3D_7p83q")
 
-[node name="CollisionShape3D10" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D10" type="CollisionShape3D" parent="." unique_id=378311574]
 transform = Transform3D(1.274429, 0, 0, 0, -4.5577126e-06, -1.2744293, 0, 1.2744293, -4.5577126e-06, -1.6135734, 1.198215, 0.38450012)
 shape = SubResource("CylinderShape3D_2uwqu")
 
-[node name="CollisionShape3D11" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D11" type="CollisionShape3D" parent="." unique_id=1297208120]
 transform = Transform3D(1.274429, 0, 0, 0, -4.5577126e-06, -1.2744293, 0, 1.2744293, -4.5577126e-06, 1.6213697, 1.2016151, 0.38450012)
 shape = SubResource("CylinderShape3D_2uwqu")

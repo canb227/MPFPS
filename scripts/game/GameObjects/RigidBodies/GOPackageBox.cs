@@ -11,6 +11,7 @@ public partial class GOPackageBox : SimpleShape
     [Export] ViewportTexture viewportTexture { get; set; }
     [Export] Label addressLabel { get; set; }
     [Export] HBoxContainer packageItems { get; set; }
+    [Export] Area3D packageTipArea {get; set;}
     public int orderNumber = -1;
     public bool labelApplied = false;
 
@@ -19,6 +20,24 @@ public partial class GOPackageBox : SimpleShape
         base._Ready();
         this.CollisionLayer = 1 << 1; //2
         this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 3) | (1 << 4);//1,2,4,5
+               BodyEntered += OnBodyEntered;
+        BodyExited += OnBodyExited;
+    }
+
+    private void OnBodyEntered(Node body)
+    {
+        if (body is GOBasePlayerCharacter bpc)
+        {
+            bpc.AddPackageTip(this);
+        }
+    }
+
+    private void OnBodyExited(Node body)
+    {
+        if (body is GOBasePlayerCharacter bpc)
+        {
+            bpc.RemovePackageTip(this);
+        }
     }
 
     public void AddPackedItems()

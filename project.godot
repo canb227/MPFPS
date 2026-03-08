@@ -90,6 +90,7 @@ forward={
 3d_physics/layer_5="playerCharacter"
 3d_physics/layer_6="NPCs"
 3d_physics/layer_7="Non-ShootableAreas"
+3d_physics/layer_9="PackageTipAoe"
 
 [physics]
 

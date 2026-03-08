@@ -26,6 +26,8 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     private Label viewportLabel { get; set; }
     public int paperLoadedCount { get; set; } = 1;
     public bool waitingForPaper { get; set; } = false;
+    [Export] public MeshInstance3D _outline;
+	private bool outlineDesiredState;
 
 
     public override void _Ready()
@@ -36,6 +38,12 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         {
             OutOfPaper();
         }
+    }
+
+    public void SetHighlighted(bool enabled)
+    {
+		outlineDesiredState = enabled;
+        _outline.Visible = enabled;
     }
 
 

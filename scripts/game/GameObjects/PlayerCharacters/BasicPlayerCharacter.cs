@@ -1039,6 +1039,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if(Global.steamid == authority)
         {
             Global.ui.inGameUI.PlayerUIManager.EndStatus("You have died..."); //make sure to update the add
+            Global.ui.inGameUI.PlayerUIManager.ClearAllStatusStrings();
         }
         ulong tempControllingPlayerID = controllingPlayerID;
         ReleaseControl();

@@ -6,11 +6,19 @@ using System.Linq;
 public partial class GOShippingTube : GOTrap
 {
     [Export] Area3D ItemsForShipping;
+    [Export] public MeshInstance3D _outline;
+	private bool outlineDesiredState;
 
     public override void _Ready()
     {
         base._Ready();
         animationPlayer.Play("shipmentFail");
+    }
+
+    public void SetHighlighted(bool enabled)
+    {
+		outlineDesiredState = enabled;
+        _outline.Visible = enabled;
     }
 
     public void ProcessShipping()

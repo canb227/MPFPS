@@ -45,7 +45,7 @@ public partial class Announcer : GOBaseStaticBody
         animationPlayer.Play("swarmIncoming");
         audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
         audioStreamPlayerSiren.Play();
-        Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("A horde of robots are approaching! Reach the front of the warehouse and defend the generator!");
+        Global.ui.inGameUI.PlayerUIManager.AddNewInfo("A horde of robots are approaching! Reach the front of the warehouse and defend the generator!");
         Global.gameState.gameModeManager.generator.SetHighlighted(true);
     }
 
@@ -64,6 +64,7 @@ public partial class Announcer : GOBaseStaticBody
     public async void SwarmDefeated()
     {
         GD.Print("Swarm Defeated");
+        Global.ui.inGameUI.PlayerUIManager.RemoveInfo("A horde of robots are approaching! Reach the front of the warehouse and defend the generator!");
         Global.gameState.gameModeManager.generator.SetHighlighted(false);
         await FadeOut(audioStreamPlayerMusic, 10f);
     }
@@ -93,9 +94,8 @@ public partial class Announcer : GOBaseStaticBody
         animationPlayer.Play("evacuationStart");
         audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
         audioStreamPlayerSiren.Play();
-        Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("Rescue has arrived at the front of the warehouse. Get on board before it leaves!");
+        Global.ui.inGameUI.PlayerUIManager.AddNewInfo("Rescue has arrived at the front of the warehouse. Get on board before it leaves!");
         Global.gameState.gameModeManager.helicopter.SetHighlighted(true);
-
     }
 
     public void GeneratorSafe()
@@ -103,7 +103,9 @@ public partial class Announcer : GOBaseStaticBody
         // announcerState = AnnouncerState.NONE;
         // animationPlayer.Stop();
         // audioStreamPlayerSiren.Stop();
+        Global.ui.inGameUI.PlayerUIManager.RemoveInfo("The generator is under attack! Kill robots near the generator quickly!");
     }
+
     public void GeneratorUnderAttack()
     {
         if(announcerState != AnnouncerState.EVACUATION)
@@ -113,7 +115,7 @@ public partial class Announcer : GOBaseStaticBody
             //audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
             audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/baseunderattacksc.mp3");
             audioStreamPlayerSiren.Play();
-            Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("The generator is under attack! Kill robots near the generator quickly!");
+            Global.ui.inGameUI.PlayerUIManager.AddNewInfo("The generator is under attack! Kill robots near the generator quickly!");
         }
     }
 

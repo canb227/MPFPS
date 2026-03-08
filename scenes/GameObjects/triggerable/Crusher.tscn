@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://b40cl37f4wy5f"]
+[gd_scene format=4 uid="uid://b40cl37f4wy5f"]
 
 [ext_resource type="Script" uid="uid://bbo5ubvo8lkaw" path="res://scripts/game/GameObjects/Triggerable/GOCrusher.cs" id="1_v4yce"]
 [ext_resource type="AudioStream" uid="uid://dmwrw0sotsgpv" path="res://assets/audio/environment/heavy_metal_stop1.wav" id="2_8hvrf"]
@@ -11,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://cvy6jwxpbspf1" path="res://assets/audio/environment/siren.wav" id="5_v4yce"]
 [ext_resource type="AudioStream" uid="uid://df1tkgwl3botl" path="res://assets/audio/environment/hall_elev_stop.wav" id="6_w6tdc"]
 [ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/Hurtbox.cs" id="7_pytuy"]
+[ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="11_bc21h"]
 [ext_resource type="Texture2D" uid="uid://bn5edf2o42ota" path="res://assets/models/map/grate_metal_hr_2.png" id="11_pytuy"]
 [ext_resource type="AudioStream" uid="uid://cf0w6tu7k7xc0" path="res://assets/audio/environment/hall_elev_move.wav" id="12_w6tdc"]
 
@@ -416,6 +417,12 @@ shadow_mesh = SubResource("ArrayMesh_bc21h")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kxmu2"]
 albedo_texture = ExtResource("11_pytuy")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pkuou"]
+render_priority = 0
+shader = ExtResource("11_bc21h")
+shader_parameter/outline_color = Color(0.46666667, 0.3529412, 0.1254902, 0.28627452)
+shader_parameter/thickness = 0.03
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1jb7t"]
 resource_name = "metal_hr_2"
 cull_mode = 2
@@ -465,61 +472,60 @@ size = Vector3(0.20806885, 5.0527344, 0.2899475)
 [sub_resource type="BoxShape3D" id="BoxShape3D_s3lk7"]
 size = Vector3(4.496155, 0.20327759, 5.9790344)
 
-[node name="GOCrusher" type="StaticBody3D" node_paths=PackedStringArray("PackagePressArea", "PackageOutputMarker", "animationPlayer")]
+[node name="GOCrusher" type="StaticBody3D" unique_id=274397774 node_paths=PackedStringArray("PackagePressArea", "PackageOutputMarker", "_outline", "animationPlayer")]
 script = ExtResource("1_v4yce")
 PackagePressArea = NodePath("PressBase/StaticBody3D/PackagePressArea")
 PackageOutputMarker = NodePath("PressBase/StaticBody3D/PackageSpawnSpot")
+_outline = NodePath("PressFrame/Outline")
 animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_pytuy")])
 metadata/_custom_type_script = "uid://bbo5ubvo8lkaw"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_dnnl5")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=39174281]
+libraries/ = SubResource("AnimationLibrary_dnnl5")
 
-[node name="PressBase" type="MeshInstance3D" parent="."]
+[node name="PressBase" type="MeshInstance3D" parent="." unique_id=181578904]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.75971967, 0, -0.068397045, 1.1434829)
 mesh = SubResource("ArrayMesh_kxmu2")
 skeleton = NodePath("")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="PressBase"]
+[node name="StaticBody3D" type="StaticBody3D" parent="PressBase" unique_id=1460044695]
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="PressBase/StaticBody3D"]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="PressBase/StaticBody3D" unique_id=1112616088]
 shape = SubResource("ConvexPolygonShape3D_bc21h")
 
-[node name="PackagePressArea" type="Area3D" parent="PressBase/StaticBody3D"]
+[node name="PackagePressArea" type="Area3D" parent="PressBase/StaticBody3D" unique_id=736047888]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03566283, 0, 0.81530654)
 collision_layer = 0
 collision_mask = 26
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PressBase/StaticBody3D/PackagePressArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PressBase/StaticBody3D/PackagePressArea" unique_id=81045947]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013877869, 1.2188416, -0.07055473)
 shape = SubResource("BoxShape3D_w3e0y")
 debug_color = Color(0.81687033, 0.001924075, 0.9740954, 0.41960785)
 
-[node name="PackageSpawnSpot" type="Marker3D" parent="PressBase/StaticBody3D"]
+[node name="PackageSpawnSpot" type="Marker3D" parent="PressBase/StaticBody3D" unique_id=1127376157]
 transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0.8406015, 0.57316)
 
-[node name="PressArm" type="MeshInstance3D" parent="."]
+[node name="PressArm" type="MeshInstance3D" parent="." unique_id=2039375092]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_w3e0y")
 skeleton = NodePath("")
 
-[node name="StaticBody3D2" type="StaticBody3D" parent="PressArm"]
+[node name="StaticBody3D2" type="StaticBody3D" parent="PressArm" unique_id=283029692]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.903061, 0)
 collision_layer = 0
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/StaticBody3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/StaticBody3D2" unique_id=929928518]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
 shape = SubResource("ConvexPolygonShape3D_v4yce")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="PressArm/StaticBody3D2"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="PressArm/StaticBody3D2" unique_id=345463668]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.903061, 0)
 shape = SubResource("ConvexPolygonShape3D_pytuy")
 
-[node name="Hurtbox" type="Area3D" parent="PressArm"]
+[node name="Hurtbox" type="Area3D" parent="PressArm" unique_id=1940331587]
 collision_layer = 0
 collision_mask = 18
 script = ExtResource("7_pytuy")
@@ -531,12 +537,12 @@ active = true
 damageSoundType = 1
 metadata/_custom_type_script = "uid://chlcmntip4s3"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PressArm/Hurtbox" unique_id=92711572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0082603, 0)
 shape = SubResource("ConvexPolygonShape3D_v4yce")
 disabled = true
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="PressArm"]
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="PressArm" unique_id=391460410]
 air_absorption = true
 occlusion = false
 reflection = true
@@ -546,7 +552,7 @@ attenuation_model = 2
 volume_db = 3.0
 panning_strength = 0.0
 
-[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="PressArm"]
+[node name="SteamAudioPlayer2" type="SteamAudioPlayer" parent="PressArm" unique_id=263014994]
 air_absorption = true
 occlusion = false
 reflection = true
@@ -556,24 +562,30 @@ attenuation_model = 2
 volume_db = 3.0
 panning_strength = 0.0
 
-[node name="PressFrame" type="MeshInstance3D" parent="."]
+[node name="PressFrame" type="MeshInstance3D" parent="." unique_id=175745669]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, 0, 0)
 mesh = SubResource("ArrayMesh_w6tdc")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_kxmu2")
 
-[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+[node name="Outline" type="MeshInstance3D" parent="PressFrame" unique_id=327189899]
+visible = false
+mesh = SubResource("ArrayMesh_w6tdc")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_pkuou")
 
-[node name="cage_mx_1_door" type="MeshInstance3D" parent="StaticBody3D2"]
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=317091816]
+
+[node name="cage_mx_1_door" type="MeshInstance3D" parent="StaticBody3D2" unique_id=15380257]
 transform = Transform3D(-4.3711385e-08, 2.4756336, 1.0535642e-06, 0, -8.853557e-07, 2.9459789, 0.99999994, 1.08213385e-07, 4.6052754e-14, 0, 5.5337124, -2.8233328)
 mesh = SubResource("ArrayMesh_ch7lo")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=1196761740]
 transform = Transform3D(-4.3711385e-08, 2.4756336, 1.0535642e-06, 0, -8.853557e-07, 2.9459789, 0.99999994, 1.08213385e-07, 4.6052754e-14, 0, 5.5337124, -2.8233328)
 shape = SubResource("ConcavePolygonShape3D_w6tdc")
 
-[node name="SteamAudioPlayerCage" type="SteamAudioPlayer" parent="StaticBody3D2"]
+[node name="SteamAudioPlayerCage" type="SteamAudioPlayer" parent="StaticBody3D2" unique_id=594251817]
 distance_attenuation = true
 occlusion = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8893733, -2.023976)
@@ -582,7 +594,7 @@ attenuation_model = 3
 volume_db = -3.0
 panning_strength = 0.0
 
-[node name="SteamAudioPlayerCage2" type="SteamAudioPlayer" parent="StaticBody3D2"]
+[node name="SteamAudioPlayerCage2" type="SteamAudioPlayer" parent="StaticBody3D2" unique_id=600982165]
 distance_attenuation = true
 occlusion = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8893733, -2.023976)
@@ -591,31 +603,31 @@ attenuation_model = 3
 volume_db = -3.0
 panning_strength = 0.0
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=519232718]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.151792, 2.5234375, -2.8267434)
 shape = SubResource("BoxShape3D_pkuou")
 
-[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="." unique_id=906386055]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1552448, 2.5234375, -2.8194408)
 shape = SubResource("BoxShape3D_pkuou")
 
-[node name="CollisionShape3D6" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="." unique_id=1164969612]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1552448, 2.5234375, 2.814371)
 shape = SubResource("BoxShape3D_pkuou")
 
-[node name="CollisionShape3D7" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="." unique_id=664914383]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.136756, 2.5234375, 2.814371)
 shape = SubResource("BoxShape3D_pkuou")
 
-[node name="CollisionShape3D8" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="." unique_id=519702058]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0010681152, 5.4250355, 0.0067749023)
 shape = SubResource("BoxShape3D_s3lk7")
 
-[node name="CollisionShape3D9" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="." unique_id=1256186860]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0010681152, -0.094035536, -0.010940552)
 shape = SubResource("BoxShape3D_s3lk7")
 
-[node name="SteamAudioPlayerAlarm" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayerAlarm" type="SteamAudioPlayer" parent="." unique_id=392164105]
 air_absorption = true
 occlusion = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.493114, 0)

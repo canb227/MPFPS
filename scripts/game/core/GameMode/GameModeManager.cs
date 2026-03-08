@@ -347,6 +347,8 @@ public partial class GameModeManager : Node
         publicRemainingRoundTime = options.roundTime;
         evacuationStarted = false;
         evacuationTimeLeft = 9999999;
+        Global.ui.inGameUI.PlayerUIManager.ClearAllInfoStrings();
+        Global.ui.inGameUI.PlayerUIManager.ClearAllStatusStrings();
 
         //clear the scoreboard , role assignment comes later
         if (Global.Lobby.bIsLobbyHost)

@@ -1,11 +1,12 @@
-[gd_scene load_steps=48 format=4 uid="uid://lkjoa1d5xng3"]
+[gd_scene format=4 uid="uid://lkjoa1d5xng3"]
 
 [ext_resource type="Script" uid="uid://dxf613enqntqj" path="res://scripts/game/GameObjects/Triggerable/GOLabelPrinter.cs" id="1_gg7eq"]
-[ext_resource type="Texture2D" uid="uid://cv3dg3g7glmwn" path="res://assets/models/warehouse/MetalScratched007_REFL_3K.png" id="1_xx0ak"]
-[ext_resource type="Texture2D" uid="uid://ctgninah22as8" path="res://assets/models/warehouse/MetalScratched007_NRM_3K.jpg" id="2_emlgc"]
+[ext_resource type="Texture2D" uid="uid://cv3dg3g7glmwn" path="res://assets/models/warehouse_old/MetalScratched007_REFL_3K.png" id="1_xx0ak"]
+[ext_resource type="Texture2D" uid="uid://ctgninah22as8" path="res://assets/models/warehouse_old/MetalScratched007_NRM_3K.jpg" id="2_emlgc"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_tsbdh"]
-[ext_resource type="Texture2D" uid="uid://csq13ergt6e3a" path="res://assets/models/warehouse/PrinterDisplay_TFS.jpg" id="3_gg7eq"]
+[ext_resource type="Texture2D" uid="uid://csq13ergt6e3a" path="res://assets/models/warehouse_old/PrinterDisplay_TFS.jpg" id="3_gg7eq"]
 [ext_resource type="PackedScene" uid="uid://1ka68hkbpecx" path="res://scenes/ui/ingame/labelprintermonitor.tscn" id="4_emlgc"]
+[ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="5_nphrl"]
 [ext_resource type="AudioStream" uid="uid://bgg2116bt677y" path="res://assets/audio/environment/plastic_rough_scraping.wav" id="7_nphrl"]
 
 [sub_resource type="Resource" id="Resource_bihfw"]
@@ -101,6 +102,18 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_egoxu")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bihfw"]
+render_priority = 0
+shader = ExtResource("5_nphrl")
+shader_parameter/outline_color = Color(0.46666667, 0.3529412, 0.1254902, 0.28627452)
+shader_parameter/thickness = 0.03
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_35xkw"]
+render_priority = 0
+shader = ExtResource("5_nphrl")
+shader_parameter/outline_color = Color(0.46666667, 0.3529412, 0.1254902, 0.28627452)
+shader_parameter/thickness = 0.03
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_jgygn"]
 _surfaces = [{
@@ -376,6 +389,8 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_bj3m8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tsbdh"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_rq08p"]
 resource_name = "test_scene_Cube_011"
@@ -747,7 +762,7 @@ _data = {
 &"print": SubResource("Animation_35xkw")
 }
 
-[node name="GOLabelPrinter" type="StaticBody3D" node_paths=PackedStringArray("animationPlayer", "viewport", "paperPrintLocation", "paperTrayArea")]
+[node name="GOLabelPrinter" type="StaticBody3D" unique_id=1002788476 node_paths=PackedStringArray("animationPlayer", "viewport", "paperPrintLocation", "paperTrayArea")]
 script = ExtResource("1_gg7eq")
 animationPlayer = NodePath("AnimationPlayer")
 viewport = NodePath("SubViewport")
@@ -756,7 +771,7 @@ paperTrayArea = NodePath("PaperDrawer")
 triggerables = Array[Object]([SubResource("Resource_bihfw"), SubResource("Resource_nphrl")])
 metadata/_custom_type_script = "uid://dxf613enqntqj"
 
-[node name="Printer Body" type="MeshInstance3D" parent="."]
+[node name="Printer Body" type="MeshInstance3D" parent="." unique_id=300397323]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.018779054, 0.048621524, 0.04638953)
 gi_mode = 2
 mesh = SubResource("ArrayMesh_l6pk1")
@@ -787,7 +802,39 @@ metadata/JK_MMT = "{ \"Socket_props\": {  } }"
 metadata/blenderkit = "{ \"category\": 10.0, \"subcategory\": 1.0 }"
 metadata/tissue_tessellate = "{ \"generator\": {  }, \"component\": {  } }"
 
-[node name="Printer Detail" type="MeshInstance3D" parent="."]
+[node name="Outline" type="MeshInstance3D" parent="Printer Body" unique_id=388146367]
+gi_mode = 2
+mesh = SubResource("ArrayMesh_l6pk1")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_bihfw")
+surface_material_override/1 = SubResource("ShaderMaterial_35xkw")
+metadata/extras = {
+"JK_MMT": {
+"Socket_props": {}
+},
+"ant_landscape": {},
+"blenderkit": {
+"category": 10.0,
+"subcategory": 1.0
+},
+"kitops": {
+"insert_target": null,
+"main_object": null,
+"mirror_target": null,
+"reserved_target": null
+},
+"tissue_tessellate": {
+"component": {},
+"generator": {}
+}
+}
+metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
+metadata/ant_landscape = "{  }"
+metadata/JK_MMT = "{ \"Socket_props\": {  } }"
+metadata/blenderkit = "{ \"category\": 10.0, \"subcategory\": 1.0 }"
+metadata/tissue_tessellate = "{ \"generator\": {  }, \"component\": {  } }"
+
+[node name="Printer Detail" type="MeshInstance3D" parent="." unique_id=1910122882]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, 0.22933246, 0.5436863, 0.468148)
 mesh = SubResource("ArrayMesh_7fd8x")
 skeleton = NodePath("")
@@ -803,7 +850,7 @@ metadata/extras = {
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/ant_landscape = "{  }"
 
-[node name="Printer Drawer 1_5" type="MeshInstance3D" parent="."]
+[node name="Printer Drawer 1_5" type="MeshInstance3D" parent="." unique_id=175434821]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, 0.32243946, 0.7934838, -0.40184927)
 mesh = SubResource("ArrayMesh_nxn20")
 skeleton = NodePath("")
@@ -821,7 +868,7 @@ metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"res
 metadata/ant_landscape = "{  }"
 metadata/blenderkit = "{  }"
 
-[node name="Printer Drawer 2_5" type="MeshInstance3D" parent="."]
+[node name="Printer Drawer 2_5" type="MeshInstance3D" parent="." unique_id=1184927716]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, 0.32243946, 0.55826586, -0.4008289)
 mesh = SubResource("ArrayMesh_s2rxf")
 skeleton = NodePath("")
@@ -837,7 +884,7 @@ metadata/extras = {
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/ant_landscape = "{  }"
 
-[node name="Printer Drawer 3_5" type="MeshInstance3D" parent="."]
+[node name="Printer Drawer 3_5" type="MeshInstance3D" parent="." unique_id=284209764]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.01877889, 0.24464165, -0.40486383)
 mesh = SubResource("ArrayMesh_hd0xh")
 skeleton = NodePath("")
@@ -855,21 +902,22 @@ metadata/ant_landscape = "{  }"
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/blenderkit = "{  }"
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=216805736]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.01877889, 0.24464165, -0.40486383)
 shape = SubResource("ConcavePolygonShape3D_tsbdh")
 
-[node name="PaperDrawer" type="Area3D" parent="."]
+[node name="PaperDrawer" type="Area3D" parent="." unique_id=424715668]
 collision_mask = 26
 
-[node name="CollisionPaperDrawer" type="CollisionShape3D" parent="PaperDrawer"]
+[node name="CollisionPaperDrawer" type="CollisionShape3D" parent="PaperDrawer" unique_id=1523060538]
 transform = Transform3D(-1, 1.509958e-07, 0, -1.509958e-07, -1, 0, 0, 0, 1, -0.019, 0.245, -0.067)
 shape = SubResource("BoxShape3D_rco13")
 
-[node name="Printer_Details 2" type="MeshInstance3D" parent="."]
+[node name="Printer_Details 2" type="MeshInstance3D" parent="." unique_id=811843676]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, 7.0377717, 0.048622586, 0.017200073)
 mesh = SubResource("ArrayMesh_awrdi")
 skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_tsbdh")
 metadata/extras = {
 "ant_landscape": {},
 "kitops": {
@@ -882,7 +930,7 @@ metadata/extras = {
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/ant_landscape = "{  }"
 
-[node name="Printer_Feet" type="MeshInstance3D" parent="."]
+[node name="Printer_Feet" type="MeshInstance3D" parent="." unique_id=1130279188]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, 0.66778946, 0.03470458, -0.3138817)
 mesh = SubResource("ArrayMesh_0fvwu")
 skeleton = NodePath("")
@@ -900,7 +948,7 @@ metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"res
 metadata/ant_landscape = "{  }"
 metadata/blenderkit = "{  }"
 
-[node name="Printer_Screen" type="MeshInstance3D" parent="."]
+[node name="Printer_Screen" type="MeshInstance3D" parent="." unique_id=1750383226]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.8028376, 0.041903257, 0.022745755)
 mesh = SubResource("ArrayMesh_v7s7p")
 skeleton = NodePath("")
@@ -919,7 +967,7 @@ metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"res
 metadata/ant_landscape = "{  }"
 metadata/blenderkit = "{  }"
 
-[node name="Printer_TopHinge" type="MeshInstance3D" parent="."]
+[node name="Printer_TopHinge" type="MeshInstance3D" parent="." unique_id=418895373]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.014806475, 1.2247969, 0.4527942)
 mesh = SubResource("ArrayMesh_sss68")
 skeleton = NodePath("")
@@ -935,7 +983,7 @@ metadata/extras = {
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/ant_landscape = "{  }"
 
-[node name="Printer_Trays" type="MeshInstance3D" parent="."]
+[node name="Printer_Trays" type="MeshInstance3D" parent="." unique_id=160121023]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.8028376, 0.0486214, 0.017201021)
 mesh = SubResource("ArrayMesh_alhdf")
 skeleton = NodePath("")
@@ -951,26 +999,24 @@ metadata/extras = {
 metadata/kitops = "{ \"insert_target\": <null>, \"mirror_target\": <null>, \"reserved_target\": <null>, \"main_object\": <null> }"
 metadata/ant_landscape = "{  }"
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=7636506]
 transform = Transform3D(2.4475887, -1.8478781e-07, 0, 3.6957562e-07, 1.2237943, 0, 0, 0, -1.3986222, -0.8028376, 0.0486214, 0.017201021)
 shape = SubResource("ConvexPolygonShape3D_tsbdh")
 
-[node name="PrintLocation" type="Node3D" parent="."]
+[node name="PrintLocation" type="Node3D" parent="." unique_id=777662514]
 transform = Transform3D(-2.4475884, -1.069875e-07, -1.2227142e-07, -2.1397497e-07, 1.2237943, 0, -2.1397497e-07, -9.3531445e-15, 1.398622, -1.2005918, 1.3411986, 0.017200902)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1278652566]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.104969025, 0.7289047, 0.060180664)
 shape = SubResource("BoxShape3D_gg7eq")
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=1442098308]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.017784119, 0.7289047, 0.0715332)
 
-[node name="SubViewport" parent="." instance=ExtResource("4_emlgc")]
+[node name="SubViewport" parent="." unique_id=310675749 instance=ExtResource("4_emlgc")]
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_aqq6t")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=156427822]
+libraries/ = SubResource("AnimationLibrary_aqq6t")
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="." unique_id=166848357]
 panning_strength = 0.0

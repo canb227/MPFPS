@@ -10,6 +10,8 @@ public partial class GOCrusher : GOTrap
 {
     [Export] Area3D PackagePressArea;
     [Export] Marker3D PackageOutputMarker;
+    [Export] public MeshInstance3D _outline;
+	private bool outlineDesiredState;
     public bool AttemptLabeling()
     {
         if (Global.Lobby.bIsLobbyHost)
@@ -65,6 +67,12 @@ public partial class GOCrusher : GOTrap
             GOLabelPaper item = (GOLabelPaper)Global.gameState.GameObjects[labelID];
             item.Visible = false;
             item.collider.Disabled = true;   
+    }
+
+    public void SetHighlighted(bool enabled)
+    {
+		outlineDesiredState = enabled;
+        _outline.Visible = enabled;
     }
 
 }

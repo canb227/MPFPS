@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://crwk164xe65sl"]
+[gd_scene format=4 uid="uid://crwk164xe65sl"]
 
 [ext_resource type="Script" uid="uid://drr5dn6hwbo24" path="res://scripts/game/GameObjects/RigidBodies/GOPackageBox.cs" id="1_f57io"]
 [ext_resource type="Texture2D" uid="uid://ccpfoortykshu" path="res://assets/models/props/package_cardboardbox.png" id="2_4qnuk"]
@@ -130,7 +130,11 @@ font_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_imtqj"]
 bg_color = Color(0.7912414, 0.68347365, 0.50842464, 1)
 
-[node name="GOPackageBox" type="RigidBody3D" node_paths=PackedStringArray("packageMesh", "packageCollision", "addressLabel", "packageItems") groups=["PackageBoxes"]]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_odwf8"]
+height = 2.5693817
+radius = 3.2856445
+
+[node name="GOPackageBox" type="RigidBody3D" unique_id=1467939792 node_paths=PackedStringArray("packageMesh", "packageCollision", "addressLabel", "packageItems") groups=["PackageBoxes"]]
 collision_layer = 2
 collision_mask = 27
 mass = 6.0
@@ -142,7 +146,7 @@ addressLabel = NodePath("LabelViewport/PanelContainer/Label")
 packageItems = NodePath("ItemsViewport/PanelContainer/MarginContainer/PackageItems")
 metadata/_custom_type_script = "uid://drr5dn6hwbo24"
 
-[node name="CardboardBox_LP" type="MeshInstance3D" parent="."]
+[node name="CardboardBox_LP" type="MeshInstance3D" parent="." unique_id=1706934004]
 transform = Transform3D(0.015, 0, 0, 0, -6.556708e-10, -0.015, 0, 0.015, -6.556708e-10, 0, 0, 0)
 mesh = SubResource("ArrayMesh_1f32a")
 skeleton = NodePath("")
@@ -150,14 +154,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_odwf8")
 surface_material_override/1 = SubResource("StandardMaterial3D_duxyo")
 surface_material_override/2 = SubResource("StandardMaterial3D_imtqj")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=528046567]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00012207031, 0.0007324219, -0.00012207031)
 shape = SubResource("BoxShape3D_nufsw")
 
-[node name="LabelViewport" type="SubViewport" parent="."]
+[node name="LabelViewport" type="SubViewport" parent="." unique_id=1680790620]
 size = Vector2i(512, 1024)
 
-[node name="PanelContainer" type="PanelContainer" parent="LabelViewport"]
+[node name="PanelContainer" type="PanelContainer" parent="LabelViewport" unique_id=1362932639]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -171,7 +175,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_uksx0")
 
-[node name="Label" type="Label" parent="LabelViewport/PanelContainer"]
+[node name="Label" type="Label" parent="LabelViewport/PanelContainer" unique_id=635378429]
 custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 text = "1500 DeliveryLover Court"
@@ -180,10 +184,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ItemsViewport" type="SubViewport" parent="."]
+[node name="ItemsViewport" type="SubViewport" parent="." unique_id=1284413473]
 size = Vector2i(1024, 512)
 
-[node name="PanelContainer" type="PanelContainer" parent="ItemsViewport"]
+[node name="PanelContainer" type="PanelContainer" parent="ItemsViewport" unique_id=90811836]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -193,11 +197,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_imtqj")
 
-[node name="MarginContainer" type="MarginContainer" parent="ItemsViewport/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ItemsViewport/PanelContainer" unique_id=1740005086]
 layout_mode = 2
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="PackageItems" type="HBoxContainer" parent="ItemsViewport/PanelContainer/MarginContainer"]
+[node name="PackageItems" type="HBoxContainer" parent="ItemsViewport/PanelContainer/MarginContainer" unique_id=1011295049]
 layout_mode = 2
 alignment = 1
+
+[node name="PackageTipRadius" type="Area3D" parent="." unique_id=21003429]
+collision_layer = 256
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PackageTipRadius" unique_id=1202551617]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14852142, 0)
+shape = SubResource("CylinderShape3D_odwf8")
