@@ -54,9 +54,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
         priority = 1;
-        Global.gameState.AIManager._gridMutex.WaitOne();
-        UpdateGridLocation();
-        Global.gameState.AIManager._gridMutex.ReleaseMutex();
+        if(Global.gameState.AIManager._gridMutex.WaitOne(4))
+        {
+            UpdateGridLocation();
+            Global.gameState.AIManager._gridMutex.ReleaseMutex();
+        }
+
         //Logging.Log($"Spawned new HordeRobot with initial state: {state}", "HordeAgent");
 
 
@@ -77,9 +80,12 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
-        Global.gameState.AIManager._mutex.WaitOne();
-        Global.gameState.AIManager.controlledNPCs.Add(this);
-        Global.gameState.AIManager._mutex.ReleaseMutex();
+        if(Global.gameState.AIManager._mutex.WaitOne(4))
+        {
+            Global.gameState.AIManager.controlledNPCs.Add(this);
+            Global.gameState.AIManager._mutex.ReleaseMutex(); 
+        }
+
         //GlobalTransform = new Transform3D(Basis.Identity, spawnPosition);
         //ResetPhysicsInterpolation();
             // Tuning parameters
@@ -99,9 +105,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         // Apply the offset to the base spawn position
         GlobalPosition = spawnPosition + offset;
         SnapshotPosition = GlobalPosition;
-        Global.gameState.AIManager._gridMutex.WaitOne();
-        UpdateGridLocation();
-        Global.gameState.AIManager._gridMutex.ReleaseMutex();
+
+        if(Global.gameState.AIManager._gridMutex.WaitOne(4))
+        {
+            UpdateGridLocation();
+            Global.gameState.AIManager._gridMutex.ReleaseMutex(); 
+        }
+
         state = HordeAgentState.SWARM;
         return this;
     }
@@ -566,13 +576,19 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         }
         Position = new Vector3(0, -10, 0);
-        Global.gameState.AIManager._gridMutex.WaitOne();
-        UpdateGridLocation();
-        Global.gameState.AIManager._gridMutex.ReleaseMutex();
+        if(Global.gameState.AIManager._gridMutex.WaitOne(4))
+        {
+            UpdateGridLocation();
+            Global.gameState.AIManager._gridMutex.ReleaseMutex();
+        }
+
         Global.gameState.AIManager.agentPool.Add(this);
-        Global.gameState.AIManager._mutex.WaitOne();
-        Global.gameState.AIManager.controlledNPCs.Remove(this);
-        Global.gameState.AIManager._mutex.ReleaseMutex();
+        if(Global.gameState.AIManager._mutex.WaitOne(4))
+        {
+            Global.gameState.AIManager.controlledNPCs.Remove(this);
+            Global.gameState.AIManager._mutex.ReleaseMutex();
+        }
+
 
         //add a timed ragdoll
     }

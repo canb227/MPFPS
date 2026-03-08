@@ -112,15 +112,22 @@ public partial class AIManager : Node3D
 
     public void MoveAgentCell(HordeAgent agent, Vector3I oldCell, Vector3I newCell) //main thread?
     {
-        _gridMutex.WaitOne();
-        if (grid.ContainsKey(oldCell))
+        if(_gridMutex.WaitOne(4))
+        {
+                    if (grid.ContainsKey(oldCell))
             grid[oldCell].Remove(agent);
 
-        if (!grid.ContainsKey(newCell))
-            grid[newCell] = new List<HordeAgent>();
+            if (!grid.ContainsKey(newCell))
+                grid[newCell] = new List<HordeAgent>();
 
-        grid[newCell].Add(agent);
-        _gridMutex.ReleaseMutex();
+            grid[newCell].Add(agent);
+            _gridMutex.ReleaseMutex();
+        }
+        else
+        {
+            GD.PushWarning("Failed to move agent cell GridMutex");
+        }
+
     }
     public void MovePlayerCell(BasicPlayerCharacter agent, Vector3I oldCell, Vector3I newCell) //main thread?
     {
@@ -152,16 +159,22 @@ public partial class AIManager : Node3D
                 for (int dz = -1; dz <= 1; dz++)
                 {
                     Vector3I neighborCell = cell + new Vector3I(dx, dy, dz);
-                    _gridMutex.WaitOne();
-                    if (grid.ContainsKey(neighborCell))
+                    if(_gridMutex.WaitOne(4))
                     {
-                        foreach (var other in grid[neighborCell]) //we may move where a agent is while calculating our new location
+                        if (grid.ContainsKey(neighborCell))
                         {
-                            if (other == agent) continue;
-                            neighbors.Add(other);
+                            foreach (var other in grid[neighborCell]) //we may move where a agent is while calculating our new location
+                            {
+                                if (other == agent) continue;
+                                neighbors.Add(other);
+                            }
                         }
+                        _gridMutex.ReleaseMutex();
                     }
-                    _gridMutex.ReleaseMutex();
+                    else
+                    {
+                        GD.PushWarning("Failed to Get Neighbors, GridMutex");
+                    }
                 }
         return neighbors;
     }
@@ -215,6 +228,7 @@ public partial class AIManager : Node3D
                 announcedHorde = false;
             }
             //TODO
+            GD.Print(controlledNPCs.Count);
             if(controlledNPCs.Count <= 10 && hordeActive)
             {
                 hordeActive = false;
@@ -257,20 +271,24 @@ public partial class AIManager : Node3D
         while (_running) 
         {
             var localResults = new Dictionary<HordeAgent, Vector3>();
-            _mutex.WaitOne();
-            var tempNPCList = controlledNPCs.ToList();
-            _mutex.ReleaseMutex();
-            foreach (HordeAgent agent in tempNPCList) 
+            if(_mutex.WaitOne(4))
             {
-                if(agent.state==HordeAgentState.SWARM || agent.state == HordeAgentState.SIMPLECHASE)
+                var tempNPCList = controlledNPCs.ToList();
+                _mutex.ReleaseMutex();
+                foreach (HordeAgent agent in tempNPCList) 
                 {
-                    localResults[agent] = ComputeAgentMoveThreaded(agent);
+                    if(agent.state==HordeAgentState.SWARM || agent.state == HordeAgentState.SIMPLECHASE)
+                    {
+                        localResults[agent] = ComputeAgentMoveThreaded(agent);
+                    }
+                }
+
+                if(_mutex.WaitOne(4))
+                {
+                    _resultsBuffer = localResults;
+                    _mutex.ReleaseMutex();
                 }
             }
-
-            _mutex.WaitOne();
-            _resultsBuffer = localResults;
-            _mutex.ReleaseMutex();
 
             OS.DelayMsec(1); // prevents CPU hogging
         }
@@ -279,52 +297,54 @@ public partial class AIManager : Node3D
     private float waypointThreshold = 20.0f;
     public static Vector3 ComputeAgentMoveThreaded(HordeAgent agent)
     {
-        agent._mutex.WaitOne();
-
-        List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(agent);
+        if(agent._mutex.WaitOne(4))
+        {
+            List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(agent);
         
-        // 1. Path following (look-ahead)
-        Vector3 target = agent.path[Math.Min(agent.currentIndex + agent.lookAheadDist, agent.path.Count - 1)];
-        Vector3 pathDir = (target - agent.SnapshotPosition).Normalized();
+            // 1. Path following (look-ahead)
+            Vector3 target = agent.path[Math.Min(agent.currentIndex + agent.lookAheadDist, agent.path.Count - 1)];
+            Vector3 pathDir = (target - agent.SnapshotPosition).Normalized();
 
-        // Separation
-        Vector3 separation = Vector3.Zero;
-        foreach (var neighbor in neighbors)
-        {
-            Vector3 diff = agent.SnapshotPosition - neighbor.SnapshotPosition;
-            diff.Y = 0; //we dont want them flying away to spread out
-            float neighbordist = diff.Length();
-            if (neighbordist < agent.separationRadius && neighbordist > 0)
-            {
-                separation += diff.Normalized() / neighbordist;
-            }
-        }
-        if (separation.Length() > 1.0f)
-            separation = separation.Normalized();
-
-        // Cohesion
-        Vector3 cohesion = Vector3.Zero;
-        if (neighbors.Count > 0)
-        {
-            Vector3 center = Vector3.Zero;
+            // Separation
+            Vector3 separation = Vector3.Zero;
             foreach (var neighbor in neighbors)
-                center += neighbor.SnapshotPosition;
-            center /= neighbors.Count;
-            cohesion = (center - agent.SnapshotPosition).Normalized();
+            {
+                Vector3 diff = agent.SnapshotPosition - neighbor.SnapshotPosition;
+                diff.Y = 0; //we dont want them flying away to spread out
+                float neighbordist = diff.Length();
+                if (neighbordist < agent.separationRadius && neighbordist > 0)
+                {
+                    separation += diff.Normalized() / neighbordist;
+                }
+            }
+            if (separation.Length() > 1.0f)
+                separation = separation.Normalized();
+
+            // Cohesion
+            Vector3 cohesion = Vector3.Zero;
+            if (neighbors.Count > 0)
+            {
+                Vector3 center = Vector3.Zero;
+                foreach (var neighbor in neighbors)
+                    center += neighbor.SnapshotPosition;
+                center /= neighbors.Count;
+                cohesion = (center - agent.SnapshotPosition).Normalized();
+            }
+
+            // Combine forces
+            Vector3 steering =
+                pathDir * agent.pathWeight +
+                separation * agent.sepWeight +
+                cohesion * agent.cohWeight;
+                
+            if (steering.LengthSquared() > 0.001f)
+                steering = steering.Normalized();
+
+            agent._mutex.ReleaseMutex();
+            return steering;
         }
-
-        // Combine forces
-        Vector3 steering =
-            pathDir * agent.pathWeight +
-            separation * agent.sepWeight +
-            cohesion * agent.cohWeight;
-            
-        if (steering.LengthSquared() > 0.001f)
-            steering = steering.Normalized();
-
-        agent._mutex.ReleaseMutex();
-
-        return steering;
+        GD.PushWarning("Steering Agent Mutex Timeout");
+        return new Vector3(); //timeout on mutex;
     }
 
 

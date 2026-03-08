@@ -63,6 +63,7 @@ public partial class Announcer : GOBaseStaticBody
 
     public async void SwarmDefeated()
     {
+        GD.Print("Swarm Defeated");
         await FadeOut(audioStreamPlayerMusic, 10f);
         Global.gameState.gameModeManager.generator.SetHighlighted(false);
     }
