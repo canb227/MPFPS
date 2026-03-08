@@ -5,6 +5,7 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 
@@ -24,6 +25,8 @@ public partial class PlayerUIManager : Control
     [Export] public TextureRect inventorySlot4;
     [Export] public PanelContainer infoBox;
     [Export] public Label infoLabel;
+    [Export] public PanelContainer statusBox;
+    [Export] public Label statusLabel;
 
     [Export] public float FadeDuration = 3f;
     public float infoDisplayTimeLeft;
@@ -138,6 +141,33 @@ public partial class PlayerUIManager : Control
         infoDisplayTimeLeft = maxDisplayTime;
         _fadeStarted = false;
         FadeIn();
+    }
+
+    private Stack<string> statusStrings;
+    public void AddNewStatus(string infoString)
+    {
+        if(!statusStrings.Contains(infoString))
+        {
+            statusStrings.Push(infoString);
+        }
+        statusLabel.Text = statusStrings.Peek();
+        statusBox.Visible = true;
+    }
+
+    public void EndStatus(string infoString)
+    {
+        if(statusStrings.Contains(infoString))
+        {
+            statusStrings.Push(infoString);
+        }
+        if(!statusStrings.Any())
+        {
+            statusBox.Visible = false;
+        }
+        else
+        {
+            statusLabel.Text = statusStrings.Peek();
+        }
     }
 
 

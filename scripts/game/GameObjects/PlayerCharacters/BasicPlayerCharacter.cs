@@ -930,6 +930,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         //adjust camera
         camera.Position = new Vector3(0, -2.259f, 1.01f);
         camera.RotationDegrees = new Vector3(90, 0, 0);
+        if(Global.steamid == authority)
+        {
+            Global.ui.inGameUI.PlayerUIManager.AddNewStatus("Knocked Out!\nRecovering..."); //make sure to update the remove
+        }
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -944,6 +948,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         camera.Position = new Vector3(0, -0.259f, -0.08f);
         camera.RotationDegrees = new Vector3(0, 0, 0);
+        if(Global.steamid == authority)
+        {
+            Global.ui.inGameUI.PlayerUIManager.EndStatus("Knocked Out!\nRecovering..."); //make sure to update the add
+        }
     }
 
     public void TakeDamage(float damage, ulong byID, PainSoundType soundType, int VolumeDb = 0)
@@ -1074,11 +1082,19 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
         PickupReplace(handcuffs);
         handcuffed = true;
+        if(Global.steamid == authority)
+        {
+            Global.ui.inGameUI.PlayerUIManager.AddNewStatus("Handcuffed!\nAsk a friend to interact with you to remove them..."); //make sure to update the remove
+        }
     }
 
     public void RemoveHandcuffs()
     {
         handcuffed = false;
+        if(Global.steamid == authority)
+        {
+            Global.ui.inGameUI.PlayerUIManager.EndStatus("Handcuffed!\nAsk a friend to interact with you to remove them..."); //make sure to update the add
+        }
     }
 
 

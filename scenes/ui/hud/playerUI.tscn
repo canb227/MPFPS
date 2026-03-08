@@ -134,6 +134,29 @@ layout_mode = 2
 size_flags_vertical = 0
 text = "4"
 
+[node name="PlayerStatus" type="PanelContainer" parent="." unique_id=1946035838]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -131.785
+offset_right = 100.0
+offset_bottom = -81.78479
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatusMessage" type="Label" parent="PlayerStatus" unique_id=692114808]
+custom_minimum_size = Vector2(0, 0.165)
+layout_mode = 2
+text = "HANDCUFFED"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="InfoBox" type="PanelContainer" parent="." unique_id=1590043362]
 layout_mode = 1
 anchors_preset = -1
