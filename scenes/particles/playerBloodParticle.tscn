@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://df04p8j6ft1s"]
+[gd_scene format=3 uid="uid://drrdx1uyas0p6"]
 
-[ext_resource type="Script" uid="uid://hco6kv34txxq" path="res://scripts/game/particle/ParticleDespawner.cs" id="1_1oke2"]
-[ext_resource type="Texture2D" uid="uid://wvs6v3f064an" path="res://assets/materials/particles/dirt_02.png" id="2_jdld6"]
+[ext_resource type="Script" uid="uid://hco6kv34txxq" path="res://scripts/game/particle/ParticleDespawner.cs" id="1_4y8tj"]
+[ext_resource type="Texture2D" uid="uid://wvs6v3f064an" path="res://assets/materials/particles/dirt_02.png" id="2_yk7so"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_05moy"]
 lifetime_randomness = 0.5
@@ -19,18 +19,18 @@ scale_max = 0.099999994
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uhks6"]
 transparency = 1
 blend_mode = 1
-albedo_color = Color(0.48785955, 0.3990522, 0.29407978, 1)
-albedo_texture = ExtResource("2_jdld6")
+albedo_color = Color(0.55200386, 0, 0.036913686, 1)
+albedo_texture = ExtResource("2_yk7so")
 emission_enabled = true
 billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_w68xi"]
 material = SubResource("StandardMaterial3D_uhks6")
 
-[node name="BulletHitParticle" type="Node3D" unique_id=523268235]
-script = ExtResource("1_1oke2")
+[node name="BulletHitParticle" type="Node3D" unique_id=662929996]
+script = ExtResource("1_4y8tj")
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=2004696225]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1291931333]
 emitting = false
 amount = 1
 one_shot = true

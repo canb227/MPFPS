@@ -24,6 +24,8 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [Export] public CollisionShape3D collider;
     [Export] public ColorRect hurtColorRect;
     private ShaderMaterial hurtShaderMaterial;
+    [Export] public PackedScene shotParticle { get; set; }
+
 
 
 
@@ -112,6 +114,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         ((CapsuleShape3D)collider.Shape).Radius = 0.5f;
         ((CapsuleShape3D)collider.Shape).Height = 2.4f;
 
+        
+        // Warm up the hit particle scene
+        var warmup = shotParticle.Instantiate() as Node3D;
+        warmup.Visible = false;
     }
 
     private void GameState_PlayerDataReceivedEvent(PlayerData data, ulong sender)
@@ -1019,6 +1025,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             rpc_OnKnockedOut();
             Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
             Global.gameState.gameModeManager.CharacterDied(authority, team);
+            if(Global.steamid == authority)
+            {
+                Global.ui.inGameUI.PlayerUIManager.AddNewStatus("You have died..."); //make sure to update the remove
+            }
             DelayDeathRelease();
         }
     }
@@ -1026,6 +1036,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public async void DelayDeathRelease()
     {
         await ToSignal(GetTree().CreateTimer(3), SceneTreeTimer.SignalName.Timeout);
+        if(Global.steamid == authority)
+        {
+            Global.ui.inGameUI.PlayerUIManager.EndStatus("You have died..."); //make sure to update the add
+        }
         ulong tempControllingPlayerID = controllingPlayerID;
         ReleaseControl();
         Global.gameState.gameModeManager.ghostPlayers[tempControllingPlayerID].TakeControl(tempControllingPlayerID);

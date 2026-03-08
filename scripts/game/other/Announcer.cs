@@ -113,7 +113,7 @@ public partial class Announcer : GOBaseStaticBody
             //audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/alarm_citizen_loop1.wav");
             audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/baseunderattacksc.mp3");
             audioStreamPlayerSiren.Play();
-            Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("The generator is under attack! Get on board before it leaves!");
+            Global.ui.inGameUI.PlayerUIManager.DisplayNewInfo("The generator is under attack! Kill robots near the generator quickly!");
         }
     }
 

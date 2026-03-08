@@ -71,7 +71,6 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
         // Warm up the hit particle scene
         var warmup = shotHitParticle.Instantiate() as Node3D;
-        AddChild(warmup);
         warmup.Visible = false;
     }
 
@@ -220,6 +219,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
             while (true)
             {
+                bool particlesSpawned = false;
                 var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd);
                 query.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
                 query.CollideWithBodies = true;
@@ -235,17 +235,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                 Vector3 hitNormal = (Vector3)hitResult["normal"];
 
                 // spawn particles, etc.
-                if (shotHitParticle != null)
-                {
-                    var hitParticle = shotHitParticle.Instantiate() as Node3D;
-                    GetTree().Root.AddChild(hitParticle);
-                    hitParticle.GlobalPosition = (Vector3)hitResult["position"];
 
-                    //janky solution to avoid the error using dot product
-                    Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
-                    Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
-                    hitParticle.LookAt(direction, up);
-                }
 
                 // climb up to IsDamagable
                 Node current = collider;
@@ -254,6 +244,20 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
 
                 if (current is IsDamagable target)
                 {
+                    if (target is BasicPlayerCharacter bpc && !particlesSpawned)
+                    {
+                        particlesSpawned = true;
+                        var hitParticle = bpc.shotParticle.Instantiate() as Node3D;
+                        GetTree().Root.AddChild(hitParticle);
+                        hitParticle.GlobalPosition = (Vector3)hitResult["position"];
+
+                        //janky solution to avoid the error using dot product
+                        Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
+                        Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
+                        hitParticle.LookAt(direction, up);
+
+                        //add a hit effect based on target
+                    }
                     if(Global.steamid == GetHeldBy().authority)
                     {
                         int shapeIndex = (int)hitResult["shape"];
@@ -348,6 +352,19 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     }
                 }
 
+
+                if (shotHitParticle != null && !particlesSpawned)
+                {
+                    particlesSpawned = true;
+                    var hitParticle = shotHitParticle.Instantiate() as Node3D;
+                    GetTree().Root.AddChild(hitParticle);
+                    hitParticle.GlobalPosition = (Vector3)hitResult["position"];
+
+                    //janky solution to avoid the error using dot product
+                    Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
+                    Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
+                    hitParticle.LookAt(direction, up);
+                }
                 break; // stop if not SwarmRobot or no penetrations left
             }
         }
