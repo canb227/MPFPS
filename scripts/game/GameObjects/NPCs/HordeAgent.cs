@@ -54,7 +54,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         headArea.Monitorable = false;
         state = HordeAgentState.NONE;
         priority = 1;
-        if(Global.gameState.AIManager._gridMutex.WaitOne(4))
+        if(Global.gameState.AIManager._gridMutex.WaitOne(1))
         {
             UpdateGridLocation();
             Global.gameState.AIManager._gridMutex.ReleaseMutex();
@@ -80,7 +80,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
-        if(Global.gameState.AIManager._mutex.WaitOne(4))
+        if(Global.gameState.AIManager._mutex.WaitOne(1))
         {
             Global.gameState.AIManager.controlledNPCs.Add(this);
             Global.gameState.AIManager._mutex.ReleaseMutex(); 
@@ -106,7 +106,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         GlobalPosition = spawnPosition + offset;
         SnapshotPosition = GlobalPosition;
 
-        if(Global.gameState.AIManager._gridMutex.WaitOne(4))
+        if(Global.gameState.AIManager._gridMutex.WaitOne(1))
         {
             UpdateGridLocation();
             Global.gameState.AIManager._gridMutex.ReleaseMutex(); 
@@ -576,14 +576,14 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         }
         Position = new Vector3(0, -10, 0);
-        if(Global.gameState.AIManager._gridMutex.WaitOne(4))
+        if(Global.gameState.AIManager._gridMutex.WaitOne(1))
         {
             UpdateGridLocation();
             Global.gameState.AIManager._gridMutex.ReleaseMutex();
         }
 
         Global.gameState.AIManager.agentPool.Add(this);
-        if(Global.gameState.AIManager._mutex.WaitOne(4))
+        if(Global.gameState.AIManager._mutex.WaitOne(1))
         {
             Global.gameState.AIManager.controlledNPCs.Remove(this);
             Global.gameState.AIManager._mutex.ReleaseMutex();

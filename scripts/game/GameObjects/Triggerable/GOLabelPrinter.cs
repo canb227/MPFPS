@@ -63,6 +63,22 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
 
     public override void PerTickShared(double delta)
     {
+        if(outlineDesiredState)
+        {
+            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 20f)
+            {
+                _outline.Visible = false;
+            }
+            else
+            {
+                _outline.Visible = true;
+            }
+        }
+        else
+		{
+			_outline.Visible = false;
+		}
+        
         foreach (Trigger t in triggerables)
         {
             if (t.cooldownSecondsRemaining == 0)

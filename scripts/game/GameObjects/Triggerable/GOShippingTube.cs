@@ -16,6 +16,27 @@ public partial class GOShippingTube : GOTrap
         Global.gameState.gameModeManager.shippingTube = this;
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        if(outlineDesiredState)
+        {
+            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 20f)
+            {
+                _outline.Visible = false;
+            }
+            else
+            {
+                _outline.Visible = true;
+            }
+        }
+        else
+		{
+			_outline.Visible = false;
+		}
+    }
+
+
     public void SetHighlighted(bool enabled)
     {
 		outlineDesiredState = enabled;

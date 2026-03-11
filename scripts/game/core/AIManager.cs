@@ -111,7 +111,7 @@ public partial class AIManager : Node3D
 
     public void MoveAgentCell(HordeAgent agent, Vector3I oldCell, Vector3I newCell) //main thread?
     {
-        if(_gridMutex.WaitOne(4))
+        if(_gridMutex.WaitOne(1))
         {
                     if (grid.ContainsKey(oldCell))
             grid[oldCell].Remove(agent);
@@ -158,7 +158,7 @@ public partial class AIManager : Node3D
                 for (int dz = -1; dz <= 1; dz++)
                 {
                     Vector3I neighborCell = cell + new Vector3I(dx, dy, dz);
-                    if(_gridMutex.WaitOne(4))
+                    if(_gridMutex.WaitOne(1))
                     {
                         if (grid.ContainsKey(neighborCell))
                         {
@@ -269,7 +269,7 @@ public partial class AIManager : Node3D
         while (_running) 
         {
             var localResults = new Dictionary<HordeAgent, Vector3>();
-            if(_mutex.WaitOne(4))
+            if(_mutex.WaitOne(1))
             {
                 var tempNPCList = controlledNPCs.ToList();
                 _mutex.ReleaseMutex();
@@ -281,7 +281,7 @@ public partial class AIManager : Node3D
                     }
                 }
 
-                if(_mutex.WaitOne(4))
+                if(_mutex.WaitOne(1))
                 {
                     _resultsBuffer = localResults;
                     _mutex.ReleaseMutex();
@@ -295,7 +295,7 @@ public partial class AIManager : Node3D
     private float waypointThreshold = 20.0f;
     public static Vector3 ComputeAgentMoveThreaded(HordeAgent agent)
     {
-        if(agent._mutex.WaitOne(4))
+        if(agent._mutex.WaitOne(1))
         {
             List<HordeAgent> neighbors = Global.gameState.AIManager.GetNeighbors(agent);
         

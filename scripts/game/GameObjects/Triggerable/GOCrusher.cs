@@ -19,6 +19,27 @@ public partial class GOCrusher : GOTrap
         Global.gameState.gameModeManager.crusher = this;
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        if(outlineDesiredState)
+        {
+            if(Global.gameState.AIManager.localPlayer != null && this.GlobalPosition.DistanceSquaredTo(Global.gameState.AIManager.localPlayer.GlobalPosition) < 20f)
+            {
+                _outline.Visible = false;
+            }
+            else
+            {
+                _outline.Visible = true;
+            }
+        }
+        else
+		{
+			_outline.Visible = false;
+		}
+    }
+
+
     public bool AttemptLabeling()
     {
         if (Global.Lobby.bIsLobbyHost)

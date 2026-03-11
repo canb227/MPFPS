@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://db26midcwg3na"]
+
+[ext_resource type="PackedScene" uid="uid://crrsm5cklvjar" path="res://assets/models/map/computercubical.glb" id="1_jt6xo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5lc6a"]
+size = Vector3(0.45000005, 0.048617642, 0.16479158)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yrsqx"]
+size = Vector3(2.9913237, 3.8879232, 3.0694609)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k4oeg"]
+size = Vector3(0.49000013, 0.49850762, 0.50750005)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m5loy"]
+size = Vector3(0.5087577, 0.25381106, 0.64073586)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4bhrj"]
+size = Vector3(0.5087577, 0.25381106, 0.64073586)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qx4rt"]
+size = Vector3(0.5087577, 0.253811, 0.64073586)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wdh62"]
+size = Vector3(0.47257772, 0.7741045, 0.07259771)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e6x2v"]
+size = Vector3(1.8137494, 0.0226323, 0.64377165)
+
+[node name="computercubical" unique_id=1339962849 instance=ExtResource("1_jt6xo")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Yellowed IBM Keyboard_001/Keyboard Dirty_001" index="1" unique_id=802802041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024295628, 0.00045081973)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Yellowed IBM Keyboard_001/Keyboard Dirty_001/StaticBody3D" index="0" unique_id=1673650524]
+shape = SubResource("BoxShape3D_5lc6a")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Chair/Plane_002_Curve_007" index="0" unique_id=1237509856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2520707, 1.616976, 0.05832112)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Chair/Plane_002_Curve_007/StaticBody3D" index="0" unique_id=1335118508]
+shape = SubResource("BoxShape3D_yrsqx")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Large CRT Monitor Dirty/Generic Large CRT Monitor Dirty Armeture/Skeleton3D/Generic Large CRT Monitor Dirty Mesh" index="0" unique_id=212529888]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006234646, 1.1616151, -0.12197554)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Large CRT Monitor Dirty/Generic Large CRT Monitor Dirty Armeture/Skeleton3D/Generic Large CRT Monitor Dirty Mesh/StaticBody3D" index="0" unique_id=1098275191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8962424, 0.09014368)
+shape = SubResource("BoxShape3D_k4oeg")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Table Desk/Drawer" index="0" unique_id=578569874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0004762411, -0.0143734515, -0.13807642)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Table Desk/Drawer/StaticBody3D" index="0" unique_id=2068857355]
+shape = SubResource("BoxShape3D_m5loy")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Table Desk/Drawer1" index="0" unique_id=631858572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0004762411, -0.014382154, -0.13807645)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Table Desk/Drawer1/StaticBody3D" index="0" unique_id=747101086]
+shape = SubResource("BoxShape3D_4bhrj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Table Desk/Drawer2" index="0" unique_id=867780196]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0007208586, 0.015451163, -0.07048994)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Table Desk/Drawer2/StaticBody3D" index="0" unique_id=1710741416]
+shape = SubResource("BoxShape3D_qx4rt")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Table Desk/Drawer3" index="0" unique_id=1242377637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23628886, 0.38705224, 0.036298856)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Table Desk/Drawer3/StaticBody3D" index="0" unique_id=2075190747]
+shape = SubResource("BoxShape3D_wdh62")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Office Table Desk/table" index="0" unique_id=1873943382]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9010451, 1.4901161e-07)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Office Table Desk/table/StaticBody3D" index="0" unique_id=376773788]
+shape = SubResource("BoxShape3D_e6x2v")
