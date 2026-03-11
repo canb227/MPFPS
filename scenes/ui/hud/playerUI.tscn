@@ -160,6 +160,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="InfoBox" type="PanelContainer" parent="." unique_id=1590043362]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.95

@@ -113,17 +113,23 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     //then we need to track what tip we should be displaying
     public void AddPackageTip(GOPackageBox box)
     {
+        GD.Print(Global.steamid + " " + authority);
         //highlight and write messages if we are the local player
         if(Global.steamid == authority)
         {
+            GD.Print("yeah thats me");
             if(box.labelApplied)
             {
                 Global.ui.inGameUI.PlayerUIManager.AddNewInfoLowPriority("This package needs shipped out, find the shipping tube!"); //need to add info based on package state
+                Global.gameState.gameModeManager.shippingTube.SetHighlighted(true);
                 Global.gameState.gameModeManager.LocalPlayInfoBeep(); 
             }
             else
             {
                 Global.ui.inGameUI.PlayerUIManager.AddNewInfoLowPriority("This package needs labelled,\nUse the label printer and stamp machine in Labelling!"); //need to add info based on package state
+                Global.gameState.gameModeManager.labelPrinter.SetHighlighted(true);
+                Global.gameState.gameModeManager.crusher.SetHighlighted(true);
+
                 Global.gameState.gameModeManager.LocalPlayInfoBeep(); 
             }
         }
@@ -142,6 +148,9 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
             {
                 Global.ui.inGameUI.PlayerUIManager.RemoveInfo("This package needs labelled,\nUse the label printer and stamp machine in Labelling!"); //need to add info based on package state
             }
+            Global.gameState.gameModeManager.shippingTube.SetHighlighted(false);
+            Global.gameState.gameModeManager.labelPrinter.SetHighlighted(false);
+            Global.gameState.gameModeManager.crusher.SetHighlighted(false);
         }
     }
 

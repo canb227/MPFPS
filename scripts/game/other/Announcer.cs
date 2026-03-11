@@ -123,7 +123,8 @@ public partial class Announcer : GOBaseStaticBody
 
     public void PlayInfoBeep()
     {
-        audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/beepclear.wav");
+        if(audioStreamPlayerAlert.Playing) return;
+        audioStreamPlayerAlert.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/beepclear.wav");
         audioStreamPlayerAlert.Play();
     }
 

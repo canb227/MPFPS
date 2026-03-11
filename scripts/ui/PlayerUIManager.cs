@@ -34,29 +34,8 @@ public partial class PlayerUIManager : Control
 
     public override void _Process(double delta)
     {
-        if(infoDisplayTimeLeft > 0)
-        {
-            infoDisplayTimeLeft -= (float)delta;
-        }
-
-        if (infoDisplayTimeLeft <= 3f && !_fadeStarted)
-        {
-            _fadeStarted = true;
-            StartFadeOut();
-        }
     }
 
-    private void StartFadeOut()
-    {
-        var tween = CreateTween();
-        tween.TweenProperty(infoBox, "modulate:a", 0f, FadeDuration);
-    }
-
-    private void FadeIn(float duration = 0.5f)
-    {
-        var tween = CreateTween();
-        tween.TweenProperty(infoBox, "modulate:a", 1f, duration);
-    }
 
 
     public void ShowPlayerUI(ulong characterID)
@@ -148,8 +127,10 @@ public partial class PlayerUIManager : Control
 
     public void AddNewInfoLowPriority(string infoString)
     {
+        GD.Print("Add info check");
        if(!infoStrings.Contains(infoString))
         {
+            GD.Print("yep added it");
             infoStrings.Add(infoString);
         }
         infoLabel.Text = infoStrings[0];

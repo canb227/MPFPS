@@ -134,7 +134,7 @@ bg_color = Color(0.7912414, 0.68347365, 0.50842464, 1)
 height = 2.5693817
 radius = 3.2856445
 
-[node name="GOPackageBox" type="RigidBody3D" unique_id=1467939792 node_paths=PackedStringArray("packageMesh", "packageCollision", "addressLabel", "packageItems") groups=["PackageBoxes"]]
+[node name="GOPackageBox" type="RigidBody3D" unique_id=1467939792 node_paths=PackedStringArray("packageMesh", "packageCollision", "addressLabel", "packageItems", "packageTipArea") groups=["PackageBoxes"]]
 collision_layer = 2
 collision_mask = 27
 mass = 6.0
@@ -144,6 +144,7 @@ packageCollision = NodePath("CollisionShape3D")
 viewportTexture = SubResource("ViewportTexture_odwf8")
 addressLabel = NodePath("LabelViewport/PanelContainer/Label")
 packageItems = NodePath("ItemsViewport/PanelContainer/MarginContainer/PackageItems")
+packageTipArea = NodePath("PackageTipRadius")
 metadata/_custom_type_script = "uid://drr5dn6hwbo24"
 
 [node name="CardboardBox_LP" type="MeshInstance3D" parent="." unique_id=1706934004]

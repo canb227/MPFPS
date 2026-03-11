@@ -462,9 +462,10 @@ size = Vector3(6.1553345, 2.072998, 2.1171875)
 [sub_resource type="BoxShape3D" id="BoxShape3D_0ctc7"]
 size = Vector3(2.0055504, 2.6936035, 1.9985962)
 
-[node name="GOShippingTube" type="StaticBody3D" unique_id=153399468 node_paths=PackedStringArray("ItemsForShipping", "animationPlayer")]
+[node name="GOShippingTube" type="StaticBody3D" unique_id=153399468 node_paths=PackedStringArray("ItemsForShipping", "_outline", "animationPlayer")]
 script = ExtResource("1_kfj15")
 ItemsForShipping = NodePath("MainMesh/Area3D")
+_outline = NodePath("MainMesh/Outline")
 animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_cmag4")])
 

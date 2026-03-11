@@ -347,10 +347,11 @@ size = Vector3(2.3759766, 1.3515625, 0.13128662)
 height = 0.19299316
 radius = 0.17236328
 
-[node name="GOPackingMachine" type="StaticBody3D" unique_id=451845517 node_paths=PackedStringArray("ItemsForPackingArea", "PackageOutputMarker", "animationPlayer")]
+[node name="GOPackingMachine" type="StaticBody3D" unique_id=451845517 node_paths=PackedStringArray("ItemsForPackingArea", "PackageOutputMarker", "_outline", "animationPlayer")]
 script = ExtResource("1_pkqno")
 ItemsForPackingArea = NodePath("ItemArea")
 PackageOutputMarker = NodePath("PackageSpawnMarker")
+_outline = NodePath("packingMachine/outline")
 animationPlayer = NodePath("AnimationPlayer")
 triggerables = Array[Object]([SubResource("Resource_lwmcn")])
 metadata/_custom_type_script = "uid://bysmyhbmio3bs"

@@ -13,6 +13,7 @@ public partial class GOShippingTube : GOTrap
     {
         base._Ready();
         animationPlayer.Play("shipmentFail");
+        Global.gameState.gameModeManager.shippingTube = this;
     }
 
     public void SetHighlighted(bool enabled)

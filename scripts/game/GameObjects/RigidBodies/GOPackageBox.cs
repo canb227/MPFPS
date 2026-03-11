@@ -20,23 +20,31 @@ public partial class GOPackageBox : SimpleShape
         base._Ready();
         this.CollisionLayer = 1 << 1; //2
         this.CollisionMask = (1 << 0) | (1 << 1) | (1 << 3) | (1 << 4);//1,2,4,5
-               BodyEntered += OnBodyEntered;
-        BodyExited += OnBodyExited;
+        packageTipArea.BodyEntered += OnBodyEntered;
+        packageTipArea.BodyExited += OnBodyExited;
     }
 
     private void OnBodyEntered(Node body)
     {
-        if (body is GOBasePlayerCharacter bpc)
+        if (body is BasicPlayerCharacter bpc)
         {
             bpc.AddPackageTip(this);
+        }
+        else if (body is Ghost ghost)
+        {
+            ghost.AddPackageTip(this);
         }
     }
 
     private void OnBodyExited(Node body)
     {
-        if (body is GOBasePlayerCharacter bpc)
+        if (body is BasicPlayerCharacter bpc)
         {
             bpc.RemovePackageTip(this);
+        }
+        else if (body is Ghost ghost)
+        {
+            ghost.RemovePackageTip(this);
         }
     }
 

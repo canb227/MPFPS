@@ -12,6 +12,13 @@ public partial class GOCrusher : GOTrap
     [Export] Marker3D PackageOutputMarker;
     [Export] public MeshInstance3D _outline;
 	private bool outlineDesiredState;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        Global.gameState.gameModeManager.crusher = this;
+    }
+
     public bool AttemptLabeling()
     {
         if (Global.Lobby.bIsLobbyHost)

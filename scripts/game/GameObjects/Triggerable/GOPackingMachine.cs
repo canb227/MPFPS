@@ -18,6 +18,7 @@ public partial class GOPackingMachine : GOTrap
     {
         base._Ready();
         animationPlayer.Play("packageFailed");
+        
     }
 
     public void SetHighlighted(bool enabled)

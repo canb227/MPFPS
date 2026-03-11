@@ -38,6 +38,7 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
         {
             OutOfPaper();
         }
+        Global.gameState.gameModeManager.labelPrinter = this;
     }
 
     public void SetHighlighted(bool enabled)

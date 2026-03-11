@@ -51,6 +51,9 @@ public partial class GameModeManager : Node
     public bool roundStarted;
     public bool evacuationStarted;
     public GOGenerator generator;
+    public GOLabelPrinter labelPrinter;
+    public GOShippingTube shippingTube;
+    public GOCrusher crusher;
     public Helicopter helicopter;
 
 

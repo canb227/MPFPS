@@ -762,12 +762,13 @@ _data = {
 &"print": SubResource("Animation_35xkw")
 }
 
-[node name="GOLabelPrinter" type="StaticBody3D" unique_id=1002788476 node_paths=PackedStringArray("animationPlayer", "viewport", "paperPrintLocation", "paperTrayArea")]
+[node name="GOLabelPrinter" type="StaticBody3D" unique_id=1002788476 node_paths=PackedStringArray("animationPlayer", "viewport", "paperPrintLocation", "paperTrayArea", "_outline")]
 script = ExtResource("1_gg7eq")
 animationPlayer = NodePath("AnimationPlayer")
 viewport = NodePath("SubViewport")
 paperPrintLocation = NodePath("PrintLocation")
 paperTrayArea = NodePath("PaperDrawer")
+_outline = NodePath("Printer Body/Outline")
 triggerables = Array[Object]([SubResource("Resource_bihfw"), SubResource("Resource_nphrl")])
 metadata/_custom_type_script = "uid://dxf613enqntqj"
 
