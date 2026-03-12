@@ -22,6 +22,8 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
     public virtual Node3D thirdPersonEquipmentAttachmentPoint { get; set; }
     [Export] public CollisionShape3D[] bodyColliders;
 
+    [Export] public OmniLight3D localPlayerLight;
+
 
     public virtual ulong controllingPlayerID { get; set; } = 0;
     public virtual Team team {  get; set; }
@@ -177,6 +179,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         if(playerID == Global.steamid)
         {
             GD.Print("disable colliders");
+            if(localPlayerLight != null) localPlayerLight.Visible = true;
             if(authority == Global.steamid && bodyColliders != null)
             {
                 foreach(var collider in bodyColliders)
@@ -260,6 +263,7 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                 camera.Current = false;
                 Input.MouseMode = Input.MouseModeEnum.Confined;
             }
+            if(localPlayerLight != null) localPlayerLight.Visible = false;
             Global.gameState.PlayerIDToControlledCharacter[controllingPlayerID] = 0;
             controllingPlayerID = 0;
             input = null;

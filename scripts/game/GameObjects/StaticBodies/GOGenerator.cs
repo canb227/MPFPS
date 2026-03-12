@@ -9,9 +9,12 @@ public partial class GOGenerator : GOBaseStaticBody
 {
 	[Export] Area3D generatorArea;
 	[Export] public MeshInstance3D _outline;
+	[Export] public AudioStreamPlayer3D idleAudio;
+	[Export] public AudioStreamPlayer3D otherAudio;
 	private bool outlineDesiredState;
 	public float generatorHealthInSecondsPerRobot = 0.0f;
 	public float generatorMaxHealth = 900.0f;
+	private bool generatorPowered;
 	public override void _Ready()
 	{
 		base._Ready();
@@ -20,6 +23,7 @@ public partial class GOGenerator : GOBaseStaticBody
 		generatorArea.AreaEntered += OnBodyEntered;
 		generatorArea.AreaExited += OnBodyExited;
 		_outline.Visible = false;
+		generatorPowered = true;
 	}
 	private int robotsInArea = 0;
 	private void OnBodyEntered(Node3D body)
@@ -63,7 +67,8 @@ public partial class GOGenerator : GOBaseStaticBody
 					if(!Global.gameState.gameModeManager.evacuationStarted && Global.gameState.gameModeManager.roundStarted)
 					{
 						//traitors win
-						RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
+						//RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
+						if(generatorPowered) TurnOffGenerator();
 					}
 				}
 				else if(generatorHealthInSecondsPerRobot <= (generatorMaxHealth*0.8) && !announcedAttacked)
@@ -72,7 +77,7 @@ public partial class GOGenerator : GOBaseStaticBody
 					announcedAttacked = true;
 					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorUnderAttack", []);
 				}
-				else if(generatorHealthInSecondsPerRobot <= (generatorMaxHealth*0.8) && !announcedCritical)
+				else if(generatorHealthInSecondsPerRobot <= (generatorMaxHealth*0.4) && !announcedCritical)
 				{
 					announcedCritical = true;
 					RPCManager.RPC(Global.gameState.gameModeManager, "TriggerGeneratorUnderAttack", []);
@@ -95,6 +100,10 @@ public partial class GOGenerator : GOBaseStaticBody
 					generatorHealthInSecondsPerRobot = generatorMaxHealth;
 				else
 					generatorHealthInSecondsPerRobot += (float)delta;
+				if(generatorHealthInSecondsPerRobot >= generatorMaxHealth/2)
+				{
+					if(!generatorPowered) TurnOnGenerator();
+				}
 			}
 		}
 
@@ -113,6 +122,21 @@ public partial class GOGenerator : GOBaseStaticBody
 		{
 			_outline.Visible = false;
 		}
+	}
+
+	public void TurnOnGenerator()
+	{
+		generatorPowered = true;
+		RPCManager.RPC(Global.gameState.gameModeManager, "TurnOnAllSpotLights", []);
+		idleAudio.Play();
+		otherAudio.Stop();
+	}
+	public void TurnOffGenerator()
+	{
+		generatorPowered = false;
+		RPCManager.RPC(Global.gameState.gameModeManager, "TurnOffAllSpotLights", []);
+		otherAudio.Play();
+		idleAudio.Stop();
 	}
 
 	public override string GenerateStateString()

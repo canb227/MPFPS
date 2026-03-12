@@ -55,6 +55,8 @@ public partial class GameModeManager : Node
     public GOShippingTube shippingTube;
     public GOCrusher crusher;
     public Helicopter helicopter;
+    public List<SpotLight3D> spotLights = new();
+    public List<MeshInstance3D> cases = new();
 
 
    
@@ -300,6 +302,26 @@ public partial class GameModeManager : Node
         GeneratorUnderAttack?.Invoke();
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void TurnOffAllSpotLights()
+    {
+        foreach(var light in spotLights)
+        {
+            light.Visible = false;
+        }
+        DisableEmission(cases);
+    }
+
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
+    public void TurnOnAllSpotLights()
+    {
+        foreach(var light in spotLights)
+        {
+            light.Visible = true;
+        }
+        EnableEmission(cases);
+    }
+
     public void LocalPlayInfoBeep()
     {
         PlayInfoBeep?.Invoke();
@@ -361,6 +383,13 @@ public partial class GameModeManager : Node
         evacuationTimeLeft = 9999999;
         Global.ui.inGameUI.PlayerUIManager.ClearAllInfoStrings();
         Global.ui.inGameUI.PlayerUIManager.ClearAllStatusStrings();
+
+
+        //GET THE MAP FROM MAP MANAGER OR GAMESTATE TODO RIGHT HERE BUDFindSpotLights
+        spotLights = FindSpotLights(Global.gameState);
+        cases = FindCases(Global.gameState);
+        GD.Print(cases.Count);
+        TurnOffAllSpotLights();
 
         //clear the scoreboard , role assignment comes later
         if (Global.Lobby.bIsLobbyHost)
@@ -816,6 +845,74 @@ public partial class GameModeManager : Node
             Logging.Error($"Provided object type to spawn as player must be base player derived object", "GameState");
         }
     }
+
+    private List<SpotLight3D> FindSpotLights(Node root)
+    {
+        var result = new List<SpotLight3D>();
+
+        foreach (Node child in root.GetChildren())
+        {
+            if (child is SpotLight3D spot && child.Name.ToString().Contains("spot", StringComparison.OrdinalIgnoreCase))
+                result.Add(spot);
+
+            result.AddRange(FindSpotLights(child));
+        }
+
+        return result;
+    }
+
+    private List<MeshInstance3D> FindCases(Node root)
+    {
+        var result = new List<MeshInstance3D>();
+
+        foreach (Node child in root.GetChildren())
+        {
+            if (child is MeshInstance3D mesh && child.Name.ToString().Contains("case", StringComparison.OrdinalIgnoreCase))
+                result.Add(mesh);
+
+            result.AddRange(FindCases(child));
+        }
+        return result;
+    }
+
+    private void EnableEmission(List<MeshInstance3D> cases)
+    {
+        foreach (var mesh in cases)
+        {
+            if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
+                continue;
+
+            var mat = mesh.Mesh.SurfaceGetMaterial(1);
+            if (mat == null)
+                continue;
+
+            // Duplicate so we don't modify the original resource
+            var instanced = (Material)mat.Duplicate();
+
+            if (instanced is StandardMaterial3D sm)
+            {
+                sm.EmissionEnabled = true;
+                sm.EmissionEnergyMultiplier = 1.0f; // or whatever strength you want
+            }
+
+            mesh.SetSurfaceOverrideMaterial(1, instanced);
+        }
+    }
+
+
+    private void DisableEmission(List<MeshInstance3D> cases)
+    {
+        foreach (var mesh in cases)
+        {
+            if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
+                continue;
+
+            mesh.SetSurfaceOverrideMaterial(1, null);
+        }
+    }
+
+
+
 
     public readonly static List<string> possibleAddressNumbersSuperSet = new()
     {

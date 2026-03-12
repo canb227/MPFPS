@@ -106,6 +106,7 @@ public partial class Announcer : GOBaseStaticBody
         // animationPlayer.Stop();
         // audioStreamPlayerSiren.Stop();
         Global.ui.inGameUI.PlayerUIManager.RemoveInfo("The generator is under attack! Kill robots near the generator quickly!");
+        Global.gameState.gameModeManager.generator.SetHighlighted(false);
     }
 
     public void GeneratorUnderAttack()
@@ -118,6 +119,7 @@ public partial class Announcer : GOBaseStaticBody
             audioStreamPlayerSiren.Stream = GD.Load<AudioStream>("res://assets/audio/announcer/baseunderattacksc.mp3");
             audioStreamPlayerSiren.Play();
             Global.ui.inGameUI.PlayerUIManager.AddNewInfo("The generator is under attack! Kill robots near the generator quickly!");
+            Global.gameState.gameModeManager.generator.SetHighlighted(true);
         }
     }
 

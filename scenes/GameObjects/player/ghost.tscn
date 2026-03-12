@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ch1u881og5rwt"]
+[gd_scene format=3 uid="uid://ch1u881og5rwt"]
 
 [ext_resource type="Script" uid="uid://dlqiqow6onvpu" path="res://scripts/game/GameObjects/PlayerCharacters/Ghost.cs" id="1_xy2rk"]
 [ext_resource type="Texture2D" uid="uid://juuwkrv8wquj" path="res://icon.svg" id="2_5i5vb"]
@@ -11,38 +11,43 @@ albedo_texture = ExtResource("2_5i5vb")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_5mfnq"]
 
-[node name="Ghost" type="CharacterBody3D" node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "camera", "voicePlayer")]
+[node name="Ghost" type="CharacterBody3D" unique_id=426655960 node_paths=PackedStringArray("firstPersonModel", "thirdPersonModel", "camera", "bodyColliders", "localPlayerLight", "voicePlayer")]
 collision_layer = 0
 collision_mask = 17
 script = ExtResource("1_xy2rk")
 firstPersonModel = NodePath("firstPersonModel")
 thirdPersonModel = NodePath("mesh")
 camera = NodePath("firstPersonModel/Camera3D")
+bodyColliders = []
+localPlayerLight = NodePath("OmniLight3D")
 voicePlayer = NodePath("thirdPersonModel/AudioOccluder3D")
 type = 2
 metadata/_custom_type_script = "uid://dlqiqow6onvpu"
 
-[node name="mesh" type="MeshInstance3D" parent="."]
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=1125697152]
 layers = 2
 mesh = SubResource("SphereMesh_bbnym")
 surface_material_override/0 = SubResource("StandardMaterial3D_veat2")
 
-[node name="collider" type="CollisionShape3D" parent="."]
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1773103639]
 shape = SubResource("SphereShape3D_5mfnq")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=2045506085]
 spot_range = 6.646452
 spot_angle = 28.109053
 
-[node name="firstPersonModel" type="Node3D" parent="."]
+[node name="firstPersonModel" type="Node3D" parent="." unique_id=1117218388]
 
-[node name="Camera3D" type="Camera3D" parent="firstPersonModel"]
+[node name="Camera3D" type="Camera3D" parent="firstPersonModel" unique_id=323547317]
 
-[node name="thirdPersonModel" type="Node3D" parent="."]
+[node name="thirdPersonModel" type="Node3D" parent="." unique_id=220189782]
 
-[node name="AudioOccluder3D" type="AudioStreamPlayer3D" parent="thirdPersonModel"]
+[node name="AudioOccluder3D" type="AudioStreamPlayer3D" parent="thirdPersonModel" unique_id=577357745]
 unit_size = 15.0
 max_distance = 40.0
 script = ExtResource("3_5i5vb")
 occlusion_db = -16.0
 metadata/_custom_type_script = "uid://bd37pxx3kgd2n"
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=435663543]
+light_energy = 0.5
