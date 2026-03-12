@@ -388,9 +388,6 @@ public partial class GameModeManager : Node
         //GET THE MAP FROM MAP MANAGER OR GAMESTATE TODO RIGHT HERE BUDFindSpotLights
         spotLights = FindSpotLights(Global.gameState);
         cases = FindCases(Global.gameState);
-        GD.Print(cases.Count);
-        TurnOffAllSpotLights();
-
         //clear the scoreboard , role assignment comes later
         if (Global.Lobby.bIsLobbyHost)
         {
@@ -882,22 +879,16 @@ public partial class GameModeManager : Node
             if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
                 continue;
 
-            var mat = mesh.Mesh.SurfaceGetMaterial(1);
+            var mat = mesh.GetSurfaceOverrideMaterial(1) as StandardMaterial3D;
             if (mat == null)
                 continue;
 
-            // Duplicate so we don't modify the original resource
-            var instanced = (Material)mat.Duplicate();
-
-            if (instanced is StandardMaterial3D sm)
-            {
-                sm.EmissionEnabled = true;
-                sm.EmissionEnergyMultiplier = 1.0f; // or whatever strength you want
-            }
-
-            mesh.SetSurfaceOverrideMaterial(1, instanced);
+            //mat.EmissionEnabled = true;
+            mat.EmissionEnergyMultiplier = 2.5f;
+            mat.Emission = new Color(1,1,1);
         }
     }
+
 
 
     private void DisableEmission(List<MeshInstance3D> cases)
@@ -907,7 +898,13 @@ public partial class GameModeManager : Node
             if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
                 continue;
 
-            mesh.SetSurfaceOverrideMaterial(1, null);
+            var mat = mesh.GetSurfaceOverrideMaterial(1) as StandardMaterial3D;
+            if (mat == null)
+                continue;
+
+            //mat.EmissionEnabled = false;
+            mat.EmissionEnergyMultiplier = 0.3f;
+            mat.Emission = new Color(.4f,0,0);
         }
     }
 

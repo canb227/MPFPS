@@ -493,6 +493,8 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hy41c"]
 resource_local_to_scene = true
 albedo_texture = SubResource("ViewportTexture_gg7eq")
+emission_enabled = true
+emission_energy_multiplier = 2.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_j13bj"]
 _surfaces = [{

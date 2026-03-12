@@ -920,24 +920,24 @@ libraries/ = SubResource("AnimationLibrary_4na8w")
 transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 7.4279795, -1.6943703)
 stream = ExtResource("2_ly7q5")
 attenuation_model = 2
-volume_db = 3.0
+volume_db = -32.0
 unit_size = 60.0
-max_db = 0.0
+max_db = -24.0
 
 [node name="FrontRotorAudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1539554082]
 transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 4.4709544, 15.85544)
 stream = ExtResource("2_ly7q5")
 attenuation_model = 2
-volume_db = 3.0
+volume_db = -32.0
 unit_size = 60.0
-max_db = 0.0
+max_db = -24.0
 
 [node name="InteriorNoise" type="AudioStreamPlayer3D" parent="." unique_id=857662904]
 transform = Transform3D(1, 0, 0, 0, 0.9999999, 0, 0, 0, 0.9999999, 0, 2.3322163, 15.944915)
 stream = ExtResource("3_4na8w")
 attenuation_model = 1
-volume_db = 3.0
-unit_size = 30.0
+volume_db = -9.0
+max_db = -12.0
 
 [node name="InsideHelicopterArea" type="Area3D" parent="." unique_id=293409428]
 collision_layer = 0

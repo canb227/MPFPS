@@ -68,7 +68,11 @@ public partial class GOGenerator : GOBaseStaticBody
 					{
 						//traitors win
 						//RPCManager.RPC(Global.gameState.gameModeManager, "TraitorsWin", []);
-						if(generatorPowered) TurnOffGenerator();
+						if(generatorPowered) 
+						{
+							TurnOffGenerator();
+							Global.gameState.gameModeManager.TriggerSwarmDefeatedEvent(); //we end the swarm because the power is out and its cooked anyways
+						}
 					}
 				}
 				else if(generatorHealthInSecondsPerRobot <= (generatorMaxHealth*0.8) && !announcedAttacked)

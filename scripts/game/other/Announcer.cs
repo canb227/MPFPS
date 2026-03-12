@@ -14,6 +14,7 @@ public partial class Announcer : GOBaseStaticBody
     [Export] public AudioStreamPlayer3D audioStreamPlayerAlert;
     bool evacuationStarted;
     public AnnouncerState announcerState;
+    private float swarmMusicTimer;
     public override void _Ready()
     {
         base._Ready();
@@ -25,6 +26,21 @@ public partial class Announcer : GOBaseStaticBody
         GameModeManager.GeneratorUnderAttack += GeneratorUnderAttack;
         GameModeManager.PlayInfoBeep += PlayInfoBeep;
     }
+
+    public override async void _Process(double delta)
+    {
+        base._Process(delta);
+        if(swarmMusicTimer > 0)
+        {
+            swarmMusicTimer -= (float)delta;
+        }
+        else if (audioStreamPlayerMusic.Playing)
+        {
+            await FadeOut(audioStreamPlayerMusic, 10f);
+        }
+
+    }
+
     public override void _Notification(int what)
     {
         if (what == NotificationPredelete)
@@ -53,14 +69,18 @@ public partial class Announcer : GOBaseStaticBody
 
     public void SwarmStarted()
     {
+        swarmMusicTimer = 60f;
         if(announcerState == AnnouncerState.HORDE)
         {
             announcerState = AnnouncerState.NONE;
             animationPlayer.Stop();
             audioStreamPlayerSiren.Stop();
         }
-        audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/Hordedrums.mp3");
-        audioStreamPlayerMusic.Play();
+        if(!audioStreamPlayerMusic.Playing)
+        {        
+            audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/Hordedrums.mp3");
+            audioStreamPlayerMusic.Play();
+        }
     }
 
     public async void SwarmDefeated()
