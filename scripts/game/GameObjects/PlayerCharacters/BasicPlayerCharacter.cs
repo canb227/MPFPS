@@ -45,7 +45,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float camXRotMin = -85;
     public float baseSpeed = 6;
     public float acceleration = 1;
-    public float deceleration = 1;
+    public float deceleration = 10;
     public float finalSpeed;
     private Vector3 jumpVelocity = new Vector3(0, 5, 0);
     private bool airbrake = false;
@@ -550,8 +550,6 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private float cantUncrouchSticky = 0f;
     private void HandleMovementInputAndPhysics(double delta)
     {
-        Velocity = HandleYAxis(Velocity, delta);
-
         // Handle crouch input
         bool wantsToCrouch = input.actions.HasFlag(ActionFlags.Crouch);
 
@@ -591,6 +589,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         PushAwayRigidBodies();
         MoveAndSlide();
 
+        Velocity = HandleYAxis(Velocity, delta);
 
         //GD.Print(IsOnFloor();
     }
@@ -669,7 +668,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             globalVelocity.Y -= ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * (float)delta * 1.5f;
         }
-        if (input.actions.HasFlag(ActionFlags.Jump))
+        if (!lastTickActions.HasFlag(ActionFlags.Jump) && input.actions.HasFlag(ActionFlags.Jump))
         {
 
             if (IsOnFloor())
