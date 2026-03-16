@@ -46,6 +46,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public float baseSpeed = 6;
     public float acceleration = 1;
     public float deceleration = 10;
+    public float horizontalAirSpeedReduction = 0.5f;
     public float finalSpeed;
     private Vector3 jumpVelocity = new Vector3(0, 5, 0);
     private bool airbrake = false;
@@ -600,22 +601,27 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         // Adjust movement speed
         Vector3 localVelocity = CalculateLocalVelocity();
-        if (crouched)
-        {
-            localVelocity.X *= crouchMoveSpeedMultiplier;
-            localVelocity.Z *= crouchMoveSpeedMultiplier;
-        }
-        else if (handcuffed)
-        {
-            localVelocity.X *= crouchMoveSpeedMultiplier;
-            localVelocity.Z *= crouchMoveSpeedMultiplier;
-        }
-        else if (sprinting)
-        {
-            localVelocity.X *= sprintMoveSpeedMultiplier;
-            localVelocity.Z *= sprintMoveSpeedMultiplier;
-        }
+        // if (IsOnFloor())
+        // {
+        //     if (crouched)
+        //     {
+        //         localVelocity.X *= crouchMoveSpeedMultiplier;
+        //         localVelocity.Z *= crouchMoveSpeedMultiplier;
+        //     }
+        //     else if (handcuffed)
+        //     {
+        //         localVelocity.X *= crouchMoveSpeedMultiplier;
+        //         localVelocity.Z *= crouchMoveSpeedMultiplier;
+        //     }
+        //     else if (sprinting)
+        //     {
+        //         localVelocity.X *= sprintMoveSpeedMultiplier;
+        //         localVelocity.Z *= sprintMoveSpeedMultiplier;
+        //     }
+        // }
+
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
+
         PushAwayRigidBodies();
         MoveAndSlide();
 
@@ -781,14 +787,31 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             //reset airbrake when on ground
             airbrake = false;
 
+            float adjustedAcceleration = acceleration;
+            if (crouched)
+            {
+                adjustedAcceleration *= crouchMoveSpeedMultiplier;
+                finalSpeed *= crouchMoveSpeedMultiplier;
+            } else if (handcuffed)
+            {
+                adjustedAcceleration *= crouchMoveSpeedMultiplier;
+                finalSpeed *= crouchMoveSpeedMultiplier;
+            } else if (sprinting)
+            {
+                adjustedAcceleration *= sprintMoveSpeedMultiplier;
+                finalSpeed *= sprintMoveSpeedMultiplier;
+            }
+
             //accelerate directions
             if (moveZ != 0)
             {
-                localVelocity.Z = GetClampedVelocity(localVelocity.Z, moveZ, acceleration, finalSpeed);
+                localVelocity.Z = GetClampedVelocity(localVelocity.Z, moveZ, adjustedAcceleration, finalSpeed);
             }
             if (moveX != 0)
             {
-                localVelocity.X = GetClampedVelocity(localVelocity.X, moveX, acceleration, finalSpeed);
+                // To avoid crazy air strafes we give less horizontal control in air
+                float horizontalMaxSpeed = !IsOnFloor() ? finalSpeed * horizontalAirSpeedReduction : finalSpeed;
+                localVelocity.X = GetClampedVelocity(localVelocity.X, moveX, adjustedAcceleration, horizontalMaxSpeed);
             }
         }
 
