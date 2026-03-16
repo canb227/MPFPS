@@ -23,26 +23,56 @@ public partial class PlayerInfoUI : MarginContainer
     public void UpdateTeamUI(Team newTeam)
     {
         StyleBoxFlat styleBox = TeamPanel.GetThemeStylebox("panel") as StyleBoxFlat;
-        if (newTeam == Team.Innocent)
+        
+        if(Global.gameState.hideTeamInGame)
         {
-            styleBox.BgColor = new Godot.Color(0.028f, 0.679f, 0.009f); //green
-            TeamLabel.Text = "Innocent";
-        }
-        else if (newTeam == Team.Traitor)
-        {
-            styleBox.BgColor = new Godot.Color(0.803f, 0.003f, 0.004f); //red
-            TeamLabel.Text = "Traitor";
-        }
-        else if (newTeam == Team.Manager)
-        {
-            styleBox.BgColor = new Godot.Color(0.005f, 0.005f, 0.65f); //Blue
-            TeamLabel.Text = "Manager";
+            styleBox.BgColor = new Godot.Color(0.333f, 0.333f, 0.333f); //grey
+            TeamLabel.Text = "Hidden";
+            if (newTeam == Team.Innocent)
+            {
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("Innocent", new Godot.Color(0.028f, 0.679f, 0.009f));
+            }
+            else if (newTeam == Team.Traitor)
+            {
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("Traitor", new Godot.Color(0.803f, 0.003f, 0.004f));
+            }
+            else if (newTeam == Team.Manager)
+            {
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("Manager", new Godot.Color(0.005f, 0.005f, 0.65f));
+            }
+            else
+            {
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("---", new Godot.Color(0.333f, 0.333f, 0.333f));
+            } 
         }
         else
         {
-            styleBox.BgColor = new Godot.Color(0.333f, 0.333f, 0.333f); //grey
-            TeamLabel.Text = "...";
+            if (newTeam == Team.Innocent)
+            {
+                styleBox.BgColor = new Godot.Color(0.028f, 0.679f, 0.009f); //green
+                TeamLabel.Text = "Innocent";
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("Innocent", new Godot.Color(0.028f, 0.679f, 0.009f));
+            }
+            else if (newTeam == Team.Traitor)
+            {
+                styleBox.BgColor = new Godot.Color(0.803f, 0.003f, 0.004f); //red
+                TeamLabel.Text = "Traitor";
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("Traitor", new Godot.Color(0.803f, 0.003f, 0.004f));
+            }
+            else if (newTeam == Team.Manager)
+            {
+                styleBox.BgColor = new Godot.Color(0.005f, 0.005f, 0.65f); //Blue
+                TeamLabel.Text = "Manager";
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("Manager", new Godot.Color(0.005f, 0.005f, 0.65f));
+            }
+            else
+            {
+                styleBox.BgColor = new Godot.Color(0.333f, 0.333f, 0.333f); //grey
+                TeamLabel.Text = "...";
+                Global.ui.inGameUI.ScoreBoard.UpdatePlayerTeamLabel("---", new Godot.Color(0.333f, 0.333f, 0.333f));
+            } 
         }
+
     }
 
     double switchClockTimer = 3;

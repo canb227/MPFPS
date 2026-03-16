@@ -76,8 +76,6 @@ public partial class Helicopter : GOBaseStaticBody
 		{
 			_outline.Visible = false;
 		}
-
-
     }
     
 

@@ -4,6 +4,7 @@ using SteamMultiplayerPeerCSharp;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 
 
@@ -20,8 +21,16 @@ public partial class ScoreBoardUI : MarginContainer
     [Export] public VBoxContainer LivingWorkersList;
     [Export] public VBoxContainer MissingWorkersList;
     [Export] public VBoxContainer DeadWorkersList;
+    [Export] public Label PlayerTeamLabel;
 
 
+
+    public void UpdatePlayerTeamLabel(string teamLabel, Godot.Color color)
+    {
+        PlayerTeamLabel.AddThemeColorOverride("font_color", color);; //green
+        PlayerTeamLabel.Text = teamLabel;
+    }
+    
     public void UpdateTimeLeftUI(string timeLeftString)
     {
         TimeRemainingNumber.Text = timeLeftString;
@@ -224,6 +233,7 @@ public partial class ScoreBoardUI : MarginContainer
         {
             child.Free();
         }
+        PlayerTeamLabel.Text = "---";
         Logging.Log("Cleared the scoreboard of all rows, basicplayers add themselves", "ScoreBoardUI");
         //use the basicplayers list
     }

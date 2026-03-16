@@ -20,6 +20,7 @@ public partial class AIManager : Node3D
 
     public static List<Vector3> path = new();
     public System.Threading.Mutex _gridMutex = new();
+    private int hordeWaiting = 0;
 
     internal void GameStartAsHost()
     {
@@ -190,6 +191,13 @@ public partial class AIManager : Node3D
         if(Global.Lobby.bIsLobbyHost)
         {
             currentHordeCooldown -= delta;
+            //if we have units waiting to spawn, spawn in minimum waves of 30
+            if(hordeWaiting > 0 && agentPool.Count >= 30)
+            {
+                hordeWaiting -= 30;
+                SpawnHorde(30);
+                GD.Print("Spawning Waiting Wave.");
+            }
             //decide if we want to updatepath and set target and start
             if(currentHordeCooldown <= 30 && currentHordeCooldown > 0 && !announcedHorde && !Global.gameState.gameModeManager.evacuationStarted)
             {
@@ -217,6 +225,13 @@ public partial class AIManager : Node3D
 
                 int maxChunkSize = 50;
 
+                //if the horde is bigger than all agents in the pool we will add to the hordeWaiting count
+                if(hordeSize >= agentPool.Count())
+                {
+                    hordeWaiting = hordeSize;
+                    hordeSize = agentPool.Count();
+                    hordeWaiting -= hordeSize;
+                }
                 int chunkCount = (hordeSize + maxChunkSize - 1) / maxChunkSize;
                 int chunkSize = hordeSize/chunkCount;
                 for (int i = 0; i < chunkCount; i++)
@@ -226,7 +241,6 @@ public partial class AIManager : Node3D
 
                 announcedHorde = false;
             }
-            //TODO
             if(controlledNPCs.Count <= 10 && hordeActive)
             {
                 hordeActive = false;

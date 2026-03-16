@@ -352,11 +352,13 @@ public partial class GameModeManager : Node
             Logging.Log("Starting New Round as Peer", "GameModeManager");
             Global.ui.inGameUI.RoundReport.NewRound();
             Global.ui.inGameUI.ScoreBoard.NewRound();
+            Global.ui.inGameUI.PlayerUIManager.ClearAllInfoStrings();
             basicPlayers.Clear();
             ghostPlayers.Clear();
             playerStats.Clear();
             deadPlayers.Clear();
             packageOrders.Clear();
+            
             
 
             minimumItemTypeCount.Clear();

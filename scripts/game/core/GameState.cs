@@ -106,6 +106,7 @@ public partial class GameState : Node3D
     private Queue<PlayerInputData> PlayerInputPacketBuffer = new();
 
     private AudioStreamPlayer menuMusicStreamPlayer = new();
+    public bool hideTeamInGame;
 
     //runs after GameState gets added to scenetree during Main.cs init
     public override void _Ready()

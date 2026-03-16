@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://c1qkpuphv3rbn"]
 
-[node name="PlayerListItem" type="Control"]
+[node name="PlayerListItem" type="Control" unique_id=1645321291]
 clip_contents = true
 custom_minimum_size = Vector2(550, 75)
 layout_mode = 3
-anchor_right = 0.290625
+anchor_right = 0.5729167
 anchor_bottom = 0.074074075
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="icon" type="TextureRect" parent="."]
+[node name="icon" type="TextureRect" parent="." unique_id=738191692]
 clip_contents = true
 layout_mode = 1
 anchors_preset = -1
@@ -24,7 +24,7 @@ expand_mode = 2
 stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
-[node name="bg" type="ColorRect" parent="."]
+[node name="bg" type="ColorRect" parent="." unique_id=1811801541]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,7 +33,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.301961)
 
-[node name="playername" type="Label" parent="."]
+[node name="playername" type="Label" parent="." unique_id=475729731]
 custom_minimum_size = Vector2(0, 4.835)
 layout_mode = 1
 anchors_preset = 4
@@ -47,14 +47,14 @@ grow_vertical = 2
 text = "PlayerNamePlayerName"
 clip_text = true
 
-[node name="div1" type="Panel" parent="."]
+[node name="div1" type="Panel" parent="." unique_id=1549927953]
 layout_mode = 0
 offset_left = 229.0
 offset_top = 7.0
 offset_right = 232.0
 offset_bottom = 72.0
 
-[node name="lbl_ID" type="Label" parent="."]
+[node name="lbl_ID" type="Label" parent="." unique_id=39996314]
 layout_mode = 0
 offset_left = 240.0
 offset_top = 5.0
@@ -62,7 +62,7 @@ offset_right = 280.0
 offset_bottom = 28.0
 text = "ID:"
 
-[node name="id" type="Label" parent="."]
+[node name="id" type="Label" parent="." unique_id=927658480]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 264.0
@@ -71,7 +71,7 @@ offset_right = 420.0
 offset_bottom = 29.0
 text = "0"
 
-[node name="div2" type="Panel" parent="."]
+[node name="div2" type="Panel" parent="." unique_id=545118900]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 427.0
@@ -79,7 +79,7 @@ offset_top = 9.0
 offset_right = 430.0
 offset_bottom = 74.0
 
-[node name="lbl_color" type="Label" parent="."]
+[node name="lbl_team" type="Label" parent="." unique_id=1250550858]
 custom_minimum_size = Vector2(0, 4.835)
 layout_mode = 1
 anchors_preset = -1
@@ -92,10 +92,22 @@ offset_right = 152.8
 offset_bottom = 27.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Color"
+text = "Hide Team?"
 metadata/_edit_use_anchors_ = true
 
-[node name="lbl_role" type="Label" parent="."]
+[node name="hideTeam" type="CheckBox" parent="." unique_id=936169517]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.597
+anchor_top = 0.075
+anchor_right = 0.597
+anchor_bottom = 0.075
+offset_left = 115.29999
+offset_top = 30.0
+offset_right = 139.29999
+offset_bottom = 54.0
+
+[node name="lbl_role" type="Label" parent="." unique_id=2107845232]
 custom_minimum_size = Vector2(0, 4.835)
 layout_mode = 1
 anchors_preset = -1
@@ -111,7 +123,7 @@ grow_vertical = 2
 text = "Role:"
 metadata/_edit_use_anchors_ = true
 
-[node name="roleSelect" type="OptionButton" parent="."]
+[node name="roleSelect" type="OptionButton" parent="." unique_id=1713675242]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.7008674
@@ -132,7 +144,7 @@ popup/item_2/text = "WarehouseWorker"
 popup/item_2/id = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="lbl_lvl" type="Label" parent="."]
+[node name="lbl_lvl" type="Label" parent="." unique_id=837723316]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 239.0
@@ -141,7 +153,7 @@ offset_right = 279.0
 offset_bottom = 60.0
 text = "Level: "
 
-[node name="level" type="Label" parent="."]
+[node name="level" type="Label" parent="." unique_id=246629441]
 layout_mode = 1
 anchors_preset = -1
 offset_left = 287.0
@@ -149,15 +161,3 @@ offset_top = 39.0
 offset_right = 362.0
 offset_bottom = 62.0
 text = "0"
-
-[node name="colorSelect" type="ColorPickerButton" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.59400004
-anchor_right = 0.59400004
-offset_left = 108.54797
-offset_top = 30.0
-offset_right = 148.54797
-offset_bottom = 69.0
-edit_alpha = false
-edit_intensity = false

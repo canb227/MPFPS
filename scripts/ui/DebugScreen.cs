@@ -260,7 +260,7 @@ public partial class DebugScreen : Control
 		if (newPlayerSteamID==Global.steamid)
 		{
 			playerListItem.GetNode<OptionButton>("roleSelect").ItemSelected += (index) => OnRoleSelect((Role)index);
-			playerListItem.GetNode<ColorPickerButton>("colorSelect").ColorChanged += OnColorSelect;
+			playerListItem.GetNode<CheckBox>("hideTeam").Toggled += OnHideTeamToggle;
 			playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
 			Global.gameState.PlayerData[Global.steamid].role = (Role)0;
 			playerList_list.AddChild(playerListItem);
@@ -270,16 +270,15 @@ public partial class DebugScreen : Control
 		{
 			playerListItem.GetNode<OptionButton>("roleSelect").Select(0);
 			playerListItem.GetNode<OptionButton>("roleSelect").Disabled = true;
-			playerListItem.GetNode<ColorPickerButton>("colorSelect").Disabled = true;
+			playerListItem.GetNode<CheckBox>("hideTeam").Disabled = true;
 			playerList_list.AddChild(playerListItem);
 		}
 
 	}
 
-	private void OnColorSelect(Color color)
+	private void OnHideTeamToggle(bool state)
 	{
-		Global.gameState.PlayerData[Global.steamid].color = color;
-		Global.gameState.PushLocalPlayerData();
+		Global.gameState.hideTeamInGame = state;
 	}
 
 	private void OnRoleSelect(Role role)

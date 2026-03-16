@@ -53,6 +53,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public bool handcuffed;
     public bool knockedOut;
     private bool crouched;
+    private bool sprinting;
     public bool onGround = true;
     private float fov = 90;
 
@@ -539,7 +540,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
     }
 
-
+    private float sprintMoveSpeedMultiplier = 1.5f;
     private float crouchMoveSpeedMultiplier = 0.7f;
     private float standHeight = 2.4f;
     private float crouchHeight = 1.75f;
@@ -550,6 +551,30 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private float cantUncrouchSticky = 0f;
     private void HandleMovementInputAndPhysics(double delta)
     {
+        bool wantsToSprint = input.actions.HasFlag(ActionFlags.Sprint);
+        if(currentStunBar >= 10 && wantsToSprint)
+        {
+            currentStunBar -= (float)delta;
+            if (controllingPlayerID == Global.steamid)
+            {
+                Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar)); ;
+            }
+            if(!sprinting)
+            {
+                //play sprint sound
+                if(!characterSFX.Playing)
+                {
+                    characterSFX.Stream = GD.Load<AudioStream>("res://assets/audio/character/suit_sprint.wav");
+                    characterSFX.Play();
+                }
+            }
+            sprinting = true;
+        }
+        else
+        {
+            sprinting = false;
+        }
+        
         // Handle crouch input
         bool wantsToCrouch = input.actions.HasFlag(ActionFlags.Crouch);
 
@@ -584,6 +609,11 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         {
             localVelocity.X *= crouchMoveSpeedMultiplier;
             localVelocity.Z *= crouchMoveSpeedMultiplier;
+        }
+        else if (sprinting)
+        {
+            localVelocity.X *= sprintMoveSpeedMultiplier;
+            localVelocity.Z *= sprintMoveSpeedMultiplier;
         }
         Velocity = PCUtils.GlobalizeVector(this, localVelocity);
         PushAwayRigidBodies();

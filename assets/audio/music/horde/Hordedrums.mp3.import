@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Hordedrums.mp3-90f7f8338f4f1ea86a01c4c43698c6
 [params]
 
 loop=true
-loop_offset=0.5
+loop_offset=6.1
 bpm=0.0
 beat_count=0
 bar_beats=4

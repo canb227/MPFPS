@@ -69,7 +69,7 @@ public partial class Announcer : GOBaseStaticBody
 
     public void SwarmStarted()
     {
-        swarmMusicTimer = 60f;
+        swarmMusicTimer = 90f;
         if(announcerState == AnnouncerState.HORDE)
         {
             announcerState = AnnouncerState.NONE;
@@ -77,7 +77,7 @@ public partial class Announcer : GOBaseStaticBody
             audioStreamPlayerSiren.Stop();
         }
         if(!audioStreamPlayerMusic.Playing)
-        {        
+        {
             audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/Hordedrums.mp3");
             audioStreamPlayerMusic.Play();
         }

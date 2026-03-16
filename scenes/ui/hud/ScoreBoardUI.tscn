@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://y7cd32qk1btg"]
+[gd_scene format=3 uid="uid://y7cd32qk1btg"]
 
 [ext_resource type="LabelSettings" uid="uid://bds86vvucgvfm" path="res://scenes/ui/hud/ScoreBoardFont1.tres" id="1_1w4ys"]
 [ext_resource type="Script" uid="uid://dyjefggelwr88" path="res://scripts/ui/ScoreBoardUI.cs" id="1_jgbgi"]
@@ -18,7 +18,7 @@ bg_color = Color(0.85882354, 0.70980394, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1wqdr"]
 bg_color = Color(0.51, 0.4709, 0.408, 1)
 
-[node name="ScoreBoardUI" type="MarginContainer" node_paths=PackedStringArray("TimeRemainingLabel", "TimeRemainingNumber", "DeliveryStatusLabel", "DeliveryStatusNumber", "EvacuationETALabel", "EvacuationETANumber", "LivingWorkersList", "MissingWorkersList", "DeadWorkersList")]
+[node name="ScoreBoardUI" type="MarginContainer" unique_id=847524320 node_paths=PackedStringArray("TimeRemainingLabel", "TimeRemainingNumber", "DeliveryStatusLabel", "DeliveryStatusNumber", "EvacuationETALabel", "EvacuationETANumber", "LivingWorkersList", "MissingWorkersList", "DeadWorkersList", "PlayerTeamLabel")]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -36,110 +36,115 @@ EvacuationETANumber = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBo
 LivingWorkersList = NodePath("PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/LivingWorkersList")
 MissingWorkersList = NodePath("PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/MissingWorkersList")
 DeadWorkersList = NodePath("PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/DeadWorkersList")
+PlayerTeamLabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/TeamLabel")
 metadata/_custom_type_script = "uid://dyjefggelwr88"
 
-[node name="ScoreBoardUI" type="MarginContainer" parent="."]
+[node name="ScoreBoardUI" type="MarginContainer" parent="." unique_id=1954484286]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/margin_top = 128
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1304534353]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=325496527]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=1832205175]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=954823425]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1007226191]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=1057121085]
 layout_mode = 2
 text = "Welcome To Dangerous Deliveries"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1532834237]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="TimeRemainingLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="TeamLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1881181312]
+layout_mode = 2
+text = "TEAM ROUND WAIT"
+
+[node name="TimeRemainingLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1835041368]
 layout_mode = 2
 text = "Time Remaining: "
 label_settings = ExtResource("1_1w4ys")
 
-[node name="TimeRemainingNumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="TimeRemainingNumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=833495717]
 layout_mode = 2
 text = "99:99"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=172927099]
 layout_mode = 2
 
-[node name="DeliveryStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="DeliveryStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=767608435]
 layout_mode = 2
 text = "Delivery Status: "
 
-[node name="DeliveryStatusNumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="DeliveryStatusNumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=2010474681]
 layout_mode = 2
 text = "0/4"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="Control2" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="Control2" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1925934492]
 layout_mode = 2
 
-[node name="EvacuationETALabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="EvacuationETALabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1497531489]
 layout_mode = 2
 text = "Evacuation ETA: "
 
-[node name="EvacuationETANumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2"]
+[node name="EvacuationETANumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=669047166]
 layout_mode = 2
 text = "1:00"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="Control3" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Control3" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1369907462]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="LivingPlayers" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="LivingPlayers" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=510007449]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers" unique_id=537643615]
 layout_mode = 2
 
-[node name="ColumnHeaders" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer"]
+[node name="ColumnHeaders" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer" unique_id=2094873174]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders" unique_id=221074125]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer" unique_id=1989482644]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2bson")
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer/PanelContainer"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer/PanelContainer" unique_id=1228960326]
 layout_mode = 2
 text = "Workers"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders" unique_id=1151873069]
 layout_mode = 2
 size_flags_horizontal = 10
 alignment = 2
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=406162626]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Karma?"
@@ -148,7 +153,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=63982378]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Score?"
@@ -157,7 +162,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=2022371359]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Deaths?"
@@ -166,7 +171,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=2096798868]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Ping"
@@ -175,41 +180,41 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="LivingWorkersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer"]
+[node name="LivingWorkersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer" unique_id=854892524]
 layout_mode = 2
 
-[node name="Control2" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Control2" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1005977622]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
-[node name="MissingPlayers" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="MissingPlayers" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1243373871]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers" unique_id=1825333755]
 layout_mode = 2
 
-[node name="ColumnHeaders" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer"]
+[node name="ColumnHeaders" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer" unique_id=1500606607]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders" unique_id=867188322]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer" unique_id=161769944]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fqcu3")
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer/PanelContainer"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer/PanelContainer" unique_id=1732720062]
 layout_mode = 2
 text = "Missing In Action"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders" unique_id=1310478653]
 layout_mode = 2
 size_flags_horizontal = 10
 alignment = 2
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=1583156264]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Karma?"
@@ -218,7 +223,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=1199604047]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Score?"
@@ -227,7 +232,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=1623407248]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Deaths?"
@@ -236,7 +241,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=1898709692]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Ping"
@@ -245,41 +250,41 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="MissingWorkersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer"]
+[node name="MissingWorkersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer" unique_id=122638094]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1979916662]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
-[node name="DeadPlayers" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="DeadPlayers" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=102027978]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers" unique_id=466247078]
 layout_mode = 2
 
-[node name="ColumnHeaders" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer"]
+[node name="ColumnHeaders" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer" unique_id=2087028602]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders" unique_id=1981980905]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer" unique_id=1062809557]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1wqdr")
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer/PanelContainer"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer/PanelContainer" unique_id=820735829]
 layout_mode = 2
 text = "Confirmed Dead"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders" unique_id=2114817352]
 layout_mode = 2
 size_flags_horizontal = 10
 alignment = 2
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=244739065]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Karma?"
@@ -288,7 +293,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=400897822]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Score?"
@@ -297,7 +302,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=749846370]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Deaths?"
@@ -306,7 +311,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2"]
+[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/ColumnHeaders/HBoxContainer2" unique_id=326203862]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 text = "Ping"
@@ -315,5 +320,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
-[node name="DeadWorkersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer"]
+[node name="DeadWorkersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer" unique_id=1929026528]
 layout_mode = 2
