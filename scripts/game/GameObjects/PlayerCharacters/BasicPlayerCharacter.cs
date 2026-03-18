@@ -555,7 +555,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         bool wantsToSprint = input.actions.HasFlag(ActionFlags.Sprint);
         if(currentStunBar >= 10 && wantsToSprint)
         {
-            TakeStunDamage((float)delta, 0, PainSoundType.None, 0);
+            TakeStunDamage((float)delta*12, 0, PainSoundType.None, 0);
             if (controllingPlayerID == Global.steamid)
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar)); ;
