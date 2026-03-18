@@ -18,6 +18,7 @@ public partial class Helicopter : GOBaseStaticBody
     [Export] Hurtbox frontRotorHurtbox { get; set; }
     [Export] Hurtbox rearRotorHurtbox { get; set; }
     [Export] public MeshInstance3D _outline;
+    [Export] public Marker3D hordeTarget;
     private bool outlineDesiredState;
 
     private float currentSpeed = 0f;

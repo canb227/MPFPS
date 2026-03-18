@@ -897,7 +897,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_mpjfq")
 
-[node name="Helicopter" type="StaticBody3D" unique_id=573441866 node_paths=PackedStringArray("helicopterRoot", "rearRotorAudio", "frontRotorAudio", "InteriorAudio", "insideHelicopterArea", "animationPlayer", "rearRotorMesh", "frontRotorMesh", "frontRotorHurtbox", "rearRotorHurtbox", "_outline")]
+[node name="Helicopter" type="StaticBody3D" unique_id=573441866 node_paths=PackedStringArray("helicopterRoot", "rearRotorAudio", "frontRotorAudio", "InteriorAudio", "insideHelicopterArea", "animationPlayer", "rearRotorMesh", "frontRotorMesh", "frontRotorHurtbox", "rearRotorHurtbox", "_outline", "hordeTarget")]
 transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 script = ExtResource("1_gybdq")
 helicopterRoot = NodePath(".")
@@ -911,6 +911,7 @@ frontRotorMesh = NodePath("FrontRotor")
 frontRotorHurtbox = NodePath("FrontRotor/Hurtbox")
 rearRotorHurtbox = NodePath("RearRotor/Hurtbox")
 _outline = NodePath("Chassis/Outline")
+hordeTarget = NodePath("Marker3D")
 metadata/_custom_type_script = "uid://ctqdvvnvjarkk"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=558139135]
@@ -1030,6 +1031,7 @@ light_indirect_energy = 1.309
 omni_range = 1.3952066
 
 [node name="Outline" type="MeshInstance3D" parent="Chassis" unique_id=755231579]
+visible = false
 cast_shadow = 0
 extra_cull_margin = 16384.0
 gi_mode = 0
@@ -1233,3 +1235,6 @@ spot_angle = 46.989365
 [node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector4/projector_002" unique_id=103628067]
 mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")
+
+[node name="Marker3D" type="Marker3D" parent="." unique_id=1535213547]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.1461873)

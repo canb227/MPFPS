@@ -554,7 +554,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         bool wantsToSprint = input.actions.HasFlag(ActionFlags.Sprint);
         if(currentStunBar >= 10 && wantsToSprint)
         {
-            currentStunBar -= (float)delta;
+            TakeStunDamage((float)delta, 0, PainSoundType.None, 0);
             if (controllingPlayerID == Global.steamid)
             {
                 Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar)); ;
@@ -600,22 +600,23 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
 
         // Adjust movement speed
         Vector3 localVelocity = CalculateLocalVelocity();
+        Vector3 globalVelocity = PCUtils.GlobalizeVector(this, localVelocity);
         if (crouched)
         {
-            localVelocity.X *= crouchMoveSpeedMultiplier;
-            localVelocity.Z *= crouchMoveSpeedMultiplier;
+            globalVelocity.X *= crouchMoveSpeedMultiplier;
+            globalVelocity.Z *= crouchMoveSpeedMultiplier;
         }
         else if (handcuffed)
         {
-            localVelocity.X *= crouchMoveSpeedMultiplier;
-            localVelocity.Z *= crouchMoveSpeedMultiplier;
+            globalVelocity.X *= crouchMoveSpeedMultiplier;
+            globalVelocity.Z *= crouchMoveSpeedMultiplier;
         }
         else if (sprinting)
         {
-            localVelocity.X *= sprintMoveSpeedMultiplier;
-            localVelocity.Z *= sprintMoveSpeedMultiplier;
+            globalVelocity.X *= sprintMoveSpeedMultiplier;
+            globalVelocity.Z *= sprintMoveSpeedMultiplier;
         }
-        Velocity = PCUtils.GlobalizeVector(this, localVelocity);
+        Velocity = globalVelocity;
         PushAwayRigidBodies();
         MoveAndSlide();
 

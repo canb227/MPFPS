@@ -36,7 +36,7 @@ public partial class AIManager : Node3D
         {
             if(Global.gameState.gameModeManager.helicopter != null)
             {
-                targetLocation = hordeSpawnLocation.Origin;//Global.gameState.gameModeManager.helicopter.GlobalPosition;
+                targetLocation = Global.gameState.gameModeManager.helicopter.hordeTarget.GlobalPosition;
             }
             else
             {
@@ -98,6 +98,7 @@ public partial class AIManager : Node3D
     {
         evacuationStarted = false;
         currentHordeCooldown = Global.gameState.gameModeManager.options.mainhordeDelay;
+        hordeCooldown = Global.gameState.gameModeManager.options.mainhordeDelay;
         grid = new();
         agentPool = new();
         controlledNPCs = new();
@@ -208,22 +209,24 @@ public partial class AIManager : Node3D
             {
                 Logging.Log("Spawn Horde", "AIManager");
                 hordeActive = true;
-                //we should play a sound like L4D
                 GD.Print("RPC swarm started");
                 RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmStartedEvent", []);
                 //Global.gameState.gameModeManager.TriggerSwarmStartedEvent();
+                int maxChunkSize;
                 if(Global.gameState.gameModeManager.evacuationStarted)
                 {
                     currentHordeCooldown = evacuationHordeCooldown;
                     hordeSize = (int)(5 + Global.gameState.gameModeManager.numPlayers * Global.gameState.gameModeManager.options.endgameHordeSizeMultiplier);
+                    maxChunkSize = 15;
                 }
                 else
                 {
                     currentHordeCooldown = hordeCooldown;
                     hordeSize = (int)(Global.gameState.gameModeManager.numPlayers * Global.gameState.gameModeManager.options.hordeSizeMultiplier); //TODO testing should probably just be like 20 per player? (min 50?) (max 300)
+                    maxChunkSize = 30;
                 }
 
-                int maxChunkSize = 50;
+                
 
                 //if the horde is bigger than all agents in the pool we will add to the hordeWaiting count
                 if(hordeSize >= agentPool.Count())

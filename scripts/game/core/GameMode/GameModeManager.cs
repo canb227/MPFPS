@@ -55,6 +55,7 @@ public partial class GameModeManager : Node
     public GOShippingTube shippingTube;
     public GOCrusher crusher;
     public Helicopter helicopter;
+    
     public List<SpotLight3D> spotLights = new();
     public List<MeshInstance3D> cases = new();
 
