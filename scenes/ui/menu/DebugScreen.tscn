@@ -395,6 +395,25 @@ offset_bottom = 343.0
 scale = Vector2(1.58, 1.58)
 button_pressed = true
 
+[node name="TraitorsKnowLabel" type="Label" parent="sessionOptions" unique_id=224071212]
+layout_mode = 0
+offset_left = 242.0
+offset_top = 355.605
+offset_right = 388.0
+offset_bottom = 430.605
+text = "Traitors
+Know Each
+Other"
+
+[node name="TraitorsKnow" type="CheckBox" parent="sessionOptions" unique_id=921592181]
+layout_mode = 0
+offset_left = 330.0
+offset_top = 366.85
+offset_right = 354.0
+offset_bottom = 390.85
+scale = Vector2(1.58, 1.58)
+button_pressed = true
+
 [node name="chat" type="Control" parent="." unique_id=694992706]
 layout_mode = 1
 anchor_left = 0.5609375

@@ -59,7 +59,7 @@ public partial class CharacterSoundManager : Node
         }
     }
 
-    public void PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump)
+    public void PlayMovementSound(AudioStreamPlayer3D audioStream, MovementSoundType soundType, bool isJump, bool isRunning)
     {
         if (soundType == MovementSoundType.None)
         {
@@ -67,7 +67,7 @@ public partial class CharacterSoundManager : Node
         }
         else if (soundType == MovementSoundType.Generic)
         {
-            PlayGenericFootstepSound(audioStream, isJump);
+            PlayGenericFootstepSound(audioStream, isJump, isRunning);
         }
         else
         {
@@ -81,8 +81,17 @@ public partial class CharacterSoundManager : Node
         audioSoundTime += (float)delta;
     }
 
-    public void PlayGenericFootstepSound(AudioStreamPlayer3D audioStream, bool isJump)
+    public void PlayGenericFootstepSound(AudioStreamPlayer3D audioStream, bool isJump, bool isRunning)
     {
+        float audioTime = 0;
+        if(isRunning)
+        {
+            audioTime = 0.0f;
+        }
+        else
+        {
+            audioTime = 0.4f;
+        }
         //increase step sound if this is a jump
         if (isJump)
         {
@@ -91,7 +100,7 @@ public partial class CharacterSoundManager : Node
         else
         {
             audioStream.VolumeDb = 0.0f;
-            if (audioSoundTime < 0.4 && audioStream.Playing)
+            if (audioSoundTime < audioTime && audioStream.Playing)
             {
                 return;
             }

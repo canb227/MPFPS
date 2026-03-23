@@ -36,7 +36,8 @@ public partial class Announcer : GOBaseStaticBody
         }
         else if (audioStreamPlayerMusic.Playing)
         {
-            await FadeOut(audioStreamPlayerMusic, 10f);
+            audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/hordefinished.mp3");
+            audioStreamPlayerMusic.Play();
         }
 
     }
@@ -88,7 +89,8 @@ public partial class Announcer : GOBaseStaticBody
         GD.Print("Swarm Defeated");
         Global.ui.inGameUI.PlayerUIManager.RemoveInfo("A horde of robots are approaching! Reach the front of the warehouse and defend the generator!");
         Global.gameState.gameModeManager.generator.SetHighlighted(false);
-        await FadeOut(audioStreamPlayerMusic, 10f);
+        audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/hordefinished.mp3");
+        audioStreamPlayerMusic.Play();
     }
 
     public async Task FadeOut(AudioStreamPlayer3D player, float duration = 1f)

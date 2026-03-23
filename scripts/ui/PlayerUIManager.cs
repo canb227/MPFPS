@@ -56,9 +56,9 @@ public partial class PlayerUIManager : Control
     }
 
     //player info functions
-    public void UpdateTeamUI(Team newTeam)
+    public void UpdateTeamUI(Team newTeam, string codeWords)
     {
-        PlayerInfoUI.UpdateTeamUI(newTeam);
+        PlayerInfoUI.UpdateTeamUI(newTeam, codeWords);
     }
 
     public void UpdateInventorySlot(int slot, string iconPath)

@@ -166,6 +166,9 @@ public partial class DebugScreen : Control
 		hordeRobots = optNode.GetNode<CheckBox>("hordeRobots");
         hordeRobots.Pressed += GameOptionChanged;
 
+		traitorsKnow = optNode.GetNode<CheckBox>("TraitorsKnow");
+        traitorsKnow.Pressed += GameOptionChanged;
+
 		chat_chatbar.GrabFocus();
 		Logging.Log("Debug Screen ready.", "DebugScreen");
 
@@ -196,6 +199,7 @@ public partial class DebugScreen : Control
     private TextEdit endgameHordeSizeMultiplier;
     private CheckBox warehouseRobots;
 	private CheckBox hordeRobots;
+	private CheckBox traitorsKnow;
 
 
 	private void GameOptionChanged()
@@ -222,6 +226,7 @@ public partial class DebugScreen : Control
         opts.endgameHordeSizeMultiplier = float.Parse(endgameHordeSizeMultiplier.Text);
         opts.warehouseRobots = warehouseRobots.ButtonPressed;
 		opts.hordeRobots = hordeRobots.ButtonPressed;
+		opts.traitorsKnow = traitorsKnow.ButtonPressed;
 
 		Global.gameState.gameModeManager.PushGameStateOptions();
 	}

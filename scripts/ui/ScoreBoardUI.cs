@@ -14,14 +14,16 @@ public partial class ScoreBoardUI : MarginContainer
 
     [Export] public Label TimeRemainingLabel;
     [Export] public Label TimeRemainingNumber;
-    [Export] public Label DeliveryStatusLabel;
-    [Export] public Label DeliveryStatusNumber;
-    [Export] public Label EvacuationETALabel;
-    [Export] public Label EvacuationETANumber;
+    // [Export] public Label DeliveryStatusLabel;
+    // [Export] public Label DeliveryStatusNumber;
+    // [Export] public Label EvacuationETALabel;
+    // [Export] public Label EvacuationETANumber;
     [Export] public VBoxContainer LivingWorkersList;
     [Export] public VBoxContainer MissingWorkersList;
     [Export] public VBoxContainer DeadWorkersList;
     [Export] public Label PlayerTeamLabel;
+    [Export] public Label CodeWordsTitle;
+    [Export] public Label CodeWordsLabel;
 
 
 
@@ -29,6 +31,21 @@ public partial class ScoreBoardUI : MarginContainer
     {
         PlayerTeamLabel.AddThemeColorOverride("font_color", color);; //green
         PlayerTeamLabel.Text = teamLabel;
+    }
+
+    public void UpdatePlayerCodeWords(string codeWords, Team team)
+    {
+        if(team == Team.Traitor)
+        {
+            CodeWordsTitle.Visible = true;
+            CodeWordsLabel.Visible = true;
+            CodeWordsLabel.Text = codeWords;
+        }
+        else
+        {
+            CodeWordsTitle.Visible = false;
+            CodeWordsLabel.Visible = false;
+        }
     }
     
     public void UpdateTimeLeftUI(string timeLeftString)
@@ -143,8 +160,8 @@ public partial class ScoreBoardUI : MarginContainer
 
     public void SetPlayerIDAsTraitor(ulong playerID)
     {
-        //only set the row as traitor for traitors
-        if(Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Traitor)
+        //only set the row as traitor for traitors 
+        if(Global.gameState.gameModeManager.basicPlayers[Global.steamid].team == Team.Traitor && Global.gameState.gameModeManager.options.traitorsKnow)
         {
             ScoreBoardPlayerRow playerRow = GetNodeFromLists(playerID.ToString());
             playerRow.SetAsTraitor();

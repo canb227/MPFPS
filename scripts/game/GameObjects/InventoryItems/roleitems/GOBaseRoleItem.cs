@@ -23,6 +23,18 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
     protected ActionFlags lastTickActions;
     protected RayCast3D interactRayCast;
     [Export] string iconPath;
+    private bool attemptAutoPickup;
+    private ulong initialAutoPickupPlayerCharacterID;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        if(Global.gameState.GameObjects[initialAutoPickupPlayerCharacterID] is BasicPlayerCharacter bpc)
+        {
+            bpc.Pickup(this);
+        }
+    }
+
 
     public override void HandleInput(ActionFlags input)
     {
@@ -89,18 +101,17 @@ public partial class GOBaseRoleItem : GOBaseInventoryItem, IsHoldable
         {
             GlobalTransform = data.spawnTransform;
             bool attemptPickup = (bool)data.paramList[0];
-            uint playerCharacterTarget = (uint)data.paramList[1];
+            ulong playerCharacterClient = (ulong)data.paramList[1];
+            initialAutoPickupPlayerCharacterID = Global.gameState.PlayerIDToControlledCharacter[playerCharacterClient];
             if(attemptPickup)
             {
-                if(Global.gameState.GameObjects[playerCharacterTarget] is BasicPlayerCharacter bpc)
-                {
-                    bpc.Pickup(this);
-                }
+                attemptAutoPickup = true;
             }
             return true;
         }
         catch (Exception ex)
         {
+            GD.PushError(ex);
             return false;
         }
     }

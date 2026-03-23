@@ -33,5 +33,6 @@ public class GameModeOptions
     [Key(18)] public float endgameHordeSizeMultiplier = 3.0f;
     [Key(19)] public bool warehouseRobots = false;
     [Key(20)] public bool hordeRobots = true;
+    [Key(21)] public bool traitorsKnow = true;
 }
 

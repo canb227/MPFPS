@@ -365,6 +365,10 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
                                 {
                                     Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontColor = Colors.Blue;
                                 }
+                                else if(basicPlayerCharacter.team == Team.Traitor && this.team == Team.Traitor && Global.gameState.gameModeManager.options.traitorsKnow)
+                                {
+                                    Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontColor = Colors.Red;
+                                }
                                 else
                                 {
                                     Global.ui.inGameUI.PlayerUIManager.targetPlayerName.LabelSettings.FontColor = Colors.White;

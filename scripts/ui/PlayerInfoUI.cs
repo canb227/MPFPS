@@ -20,10 +20,10 @@ public partial class PlayerInfoUI : MarginContainer
     [Export] public Label AmmoLabel;
     [Export] public Label StoredAmmoLabel;
 
-    public void UpdateTeamUI(Team newTeam)
+    public void UpdateTeamUI(Team newTeam, string codeWords)
     {
         StyleBoxFlat styleBox = TeamPanel.GetThemeStylebox("panel") as StyleBoxFlat;
-        
+        Global.ui.inGameUI.ScoreBoard.UpdatePlayerCodeWords(codeWords, newTeam);
         if(Global.gameState.hideTeamInGame)
         {
             styleBox.BgColor = new Godot.Color(0.333f, 0.333f, 0.333f); //grey

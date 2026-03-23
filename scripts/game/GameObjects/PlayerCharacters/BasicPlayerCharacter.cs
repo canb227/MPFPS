@@ -252,12 +252,12 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             {
                 if (IsOnFloor())
                 {
-                    characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true);
+                    characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, true, sprinting);
                 }
             }
             else if (IsOnFloor() && Math.Abs(Velocity.Z) + Math.Abs(Velocity.X) > 0.0f && !crouched)
             {
-                characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false);
+                characterSoundManager.PlayMovementSound(movementSFX, MovementSoundType.Generic, false, sprinting);
             }
         }
         
@@ -1136,7 +1136,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             GD.Print("UPDATE BOTTOM RIGHT UI: " + currentStunBar + " " + currentHealth + " " + team);
             Global.ui.inGameUI.PlayerUIManager.UpdateStunUI(Mathf.CeilToInt(currentStunBar), Mathf.CeilToInt(maxStunBar));
             Global.ui.inGameUI.PlayerUIManager.UpdateHealthUI(Mathf.CeilToInt(currentHealth), Mathf.CeilToInt(maxHealth));
-            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
+            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team, "Take Control Bug?");
             //disable our own body colliders
         }
     }
@@ -1184,7 +1184,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         if (controllingPlayerID == Global.steamid)
         {
             Logging.Log("Disabling Player UI " + controllingPlayerID, "BasicPlayerCharacter");
-            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(Team.None);
+            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(Team.None, "");
             //Global.ui.inGameUI.PlayerUIManager.HidePlayerUI();
         }
     }

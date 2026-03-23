@@ -45,9 +45,12 @@ public partial class GOFlashlight : GOBaseAccessory
     public override void OnUnequipped(ulong bySteamID)
     {
         base.OnUnequipped(bySteamID);
-        spotLight3D.Visible = false;
-        omniLight3D.Visible = false;
-        audioStreamPlayer.Play();
+        if(spotLight3D.Visible)
+        {
+            spotLight3D.Visible = false;
+            omniLight3D.Visible = false;
+            audioStreamPlayer.Play();
+        }
     }
 
 

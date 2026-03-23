@@ -18,7 +18,7 @@ bg_color = Color(0.85882354, 0.70980394, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1wqdr"]
 bg_color = Color(0.51, 0.4709, 0.408, 1)
 
-[node name="ScoreBoardUI" type="MarginContainer" unique_id=847524320 node_paths=PackedStringArray("TimeRemainingLabel", "TimeRemainingNumber", "DeliveryStatusLabel", "DeliveryStatusNumber", "EvacuationETALabel", "EvacuationETANumber", "LivingWorkersList", "MissingWorkersList", "DeadWorkersList", "PlayerTeamLabel")]
+[node name="ScoreBoardUI" type="MarginContainer" unique_id=847524320 node_paths=PackedStringArray("TimeRemainingLabel", "TimeRemainingNumber", "LivingWorkersList", "MissingWorkersList", "DeadWorkersList", "PlayerTeamLabel", "CodeWordsTitle", "CodeWordsLabel")]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -29,14 +29,12 @@ grow_horizontal = 2
 script = ExtResource("1_jgbgi")
 TimeRemainingLabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/TimeRemainingLabel")
 TimeRemainingNumber = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/TimeRemainingNumber")
-DeliveryStatusLabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/DeliveryStatusLabel")
-DeliveryStatusNumber = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/DeliveryStatusNumber")
-EvacuationETALabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/EvacuationETALabel")
-EvacuationETANumber = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/EvacuationETANumber")
 LivingWorkersList = NodePath("PanelContainer/MarginContainer/VBoxContainer/LivingPlayers/VBoxContainer/LivingWorkersList")
 MissingWorkersList = NodePath("PanelContainer/MarginContainer/VBoxContainer/MissingPlayers/VBoxContainer/MissingWorkersList")
 DeadWorkersList = NodePath("PanelContainer/MarginContainer/VBoxContainer/DeadPlayers/VBoxContainer/DeadWorkersList")
 PlayerTeamLabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/TeamLabel")
+CodeWordsTitle = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/CodewordsTitle")
+CodeWordsLabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2/CodewordsText")
 metadata/_custom_type_script = "uid://dyjefggelwr88"
 
 [node name="ScoreBoardUI" type="MarginContainer" parent="." unique_id=1954484286]
@@ -75,6 +73,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
+[node name="CodewordsTitle" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=523171676]
+layout_mode = 2
+text = "Your Codewords Are: "
+
+[node name="CodewordsText" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1481031627]
+layout_mode = 2
+text = "WAIT FOR ROUND TO START"
+
+[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=172927099]
+custom_minimum_size = Vector2(23.755, 0)
+layout_mode = 2
+
 [node name="TeamLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1881181312]
 layout_mode = 2
 text = "TEAM ROUND WAIT"
@@ -89,29 +99,8 @@ layout_mode = 2
 text = "99:99"
 label_settings = ExtResource("1_1w4ys")
 
-[node name="Control" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=172927099]
-layout_mode = 2
-
-[node name="DeliveryStatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=767608435]
-layout_mode = 2
-text = "Delivery Status: "
-
-[node name="DeliveryStatusNumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=2010474681]
-layout_mode = 2
-text = "0/4"
-label_settings = ExtResource("1_1w4ys")
-
 [node name="Control2" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1925934492]
 layout_mode = 2
-
-[node name="EvacuationETALabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1497531489]
-layout_mode = 2
-text = "Evacuation ETA: "
-
-[node name="EvacuationETANumber" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=669047166]
-layout_mode = 2
-text = "1:00"
-label_settings = ExtResource("1_1w4ys")
 
 [node name="Control3" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1369907462]
 custom_minimum_size = Vector2(0, 16)

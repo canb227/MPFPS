@@ -77,6 +77,24 @@ public partial class GameModeManager : Node
     public int numTraitors;
     public int numManagers;
 
+    public string codeWords;
+    public List<string> possibleCodeWords = new List<string>
+    {
+        "Parcel", "Crate", "Freight", "Pallet", "Dispatch", "Courier", "Dropzone",
+        "Cargo", "Tracking", "Barcode", "Label", "Packing", "Shipping", "Conveyor",
+        "Warehouse", "Inventory", "Carton", "Bubblewrap", "Tape", "Forklift",
+        "Express", "Priority", "Sorting", "Route", "Circuit", "Servo", "Gearshift",
+        "Overclock", "Nanobot", "Alloy", "Dynamo", "Volt", "Capacitor", "Gyro",
+        "Firmware", "Uplink", "C4", "Sparkplug", "Ironclad", "Sentinel",
+        "Titan", "Wrench", "Pineapple", "Marshmallow", "Bumblebee", "Noodle",
+        "Waffles", "Stardust", "Jellybean", "Tater", "Glitter", "Banana", "Gumdrop",
+        "Sprinkles", "Whisker", "Teacup", "Pancake", "Blueberry", "Firefly",
+        "Pebble", "Button", "Daydream", "Bolt", "DeliveryCo", "Neon", "Flux",
+        "DartGun", "Byte", "Crank", "Echo", "Snap", "Rusty", "Jet", "Lock", "Plate",
+        "Patch", "Drift", "Spark", "Moon", "Rivet", "Hawk", "Drop", "Bucket",
+        "Fizz", "Bubble"
+    };
+
 
     //This event fires whenever GameStateOptions change. Subscribe with GameState.GameStateOptionsReceivedEvent += MyFuncNameHere;
     public delegate void GameModeOptionsReceived(GameModeOptions options, ulong sender);
@@ -503,6 +521,19 @@ public partial class GameModeManager : Node
         OnPackageOrdersUpdated?.Invoke();
     }
 
+    Random rng = new Random();
+
+    string GetTwoRandomCodewords(List<string> words)
+    {
+        int firstIndex = rng.Next(words.Count);
+        int secondIndex = rng.Next(words.Count);
+
+        // Ensure they aren't the same
+        while (secondIndex == firstIndex)
+            secondIndex = rng.Next(words.Count);
+
+        return $"{words[firstIndex]}, {words[secondIndex]}";
+    }
 
     public void AssignRoles()
     {
@@ -517,6 +548,8 @@ public partial class GameModeManager : Node
         }
         List<ulong> traitors = new();
         List<ulong> managers = new();
+
+        codeWords = GetTwoRandomCodewords(possibleCodeWords);
 
         numPlayers = players.Count;
         numTraitors = Mathf.FloorToInt(numPlayers * options.percentTraitors);
@@ -600,7 +633,7 @@ public partial class GameModeManager : Node
         }
         if (id == Global.steamid)
         {
-            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team);
+            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team, codeWords);
         }
     }
 
