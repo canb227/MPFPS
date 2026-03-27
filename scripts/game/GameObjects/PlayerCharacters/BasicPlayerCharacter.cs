@@ -815,6 +815,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 float horizontalMaxSpeed = !IsOnFloor() ? finalSpeed * horizontalAirSpeedReduction : finalSpeed;
                 localVelocity.X = GetClampedVelocity(localVelocity.X, moveX, adjustedAcceleration, horizontalMaxSpeed);
             }
+
+            // Theres a more efficient way to integrate this in the flow probs
+            // Normalizes speed so diagonals arent faster
+            Vector3 localNormalizedVelocities = localVelocity.Normalized() * finalSpeed;
+            localVelocity.X = localNormalizedVelocities.X;
+            localVelocity.Z = localNormalizedVelocities.Z;
+
         }
 
         //apply deceleration
