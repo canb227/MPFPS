@@ -318,7 +318,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                                     if (basicPlayerCharacter.handcuffed)
                                     {
                                         RPCManager.RPC(basicPlayerCharacter, "RemoveHandcuffs", []);
-                                        RPCManager.RPC(basicPlayerCharacter, "rpc_DropEquipped", []);
+                                        //RPCManager.RPC(basicPlayerCharacter, "rpc_DropEquipped", []);
                                     }
                                     break;
 
@@ -1161,13 +1161,14 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void Handcuff(GOHandcuffs handcuffs)
     {
-        //make sure we have dropped what the hands are holding
-        equipped.OnUnequipped(authority);
-        //PickupReplace(handcuffs);
-        handcuffs.OnDropped(authority);
-        handcuffs.QueueFree();
-        handcuffed = true;
 
+        Equip(InventoryGroupCategory.Hands);
+        //equipped.OnUnequipped(authority);
+        //PickupReplace(handcuffs);
+        //handcuffs.OnDropped(authority);
+        //handcuffs.QueueFree();
+        handcuffed = true;
+        
         if(Global.steamid == authority)
         {
             Global.ui.inGameUI.PlayerUIManager.AddNewStatus("Handcuffed!\nAsk a friend to interact with you to remove them..."); //make sure to update the remove
@@ -1178,6 +1179,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     public void RemoveHandcuffs()
     {
         handcuffed = false;
+        
         if(Global.steamid == authority)
         {
             Global.ui.inGameUI.PlayerUIManager.EndStatus("Handcuffed!\nAsk a friend to interact with you to remove them..."); //make sure to update the add
