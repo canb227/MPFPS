@@ -83,6 +83,19 @@ public partial class Hands : GOBaseInventoryItem
 
     public void HandleHandInput(PlayerInputData input, double delta)
     {
+        if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+            {
+                if (basicPlayerCharacter.handcuffed)
+                {
+                    if (heldObject != null)
+                    {
+                        RPCManager.RPCID(id, "ReleaseHeld", []);
+                        //heldObject.OnRelease(equippedBySteamID);
+                        heldObject = null;
+                    }
+                    return; //cant do anything with hands if handcuffed
+                }
+            }
         if (charging && lastTickActions.HasFlag(ActionFlags.Fire) && !input.actions.HasFlag(ActionFlags.Fire))
         {
             //mouse released while charging

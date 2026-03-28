@@ -53,7 +53,7 @@ public partial class GOHandcuffs : GOBaseAccessory
              }
             target.Handcuff(this);
             audioStreamPlayer.Play();
-            this.QueueFree();
+            this.Visible = false;
         }
         else
         {
