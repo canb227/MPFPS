@@ -57,6 +57,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     private bool sprinting;
     public bool onGround = true;
     private float fov = 90;
+    private JumpType lastJumpType = JumpType.Walk;
 
 
     public Dictionary<AmmoType, int> ammoStored = new() //should be all 0 for production
@@ -710,6 +711,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             if (IsOnFloor())
             {
                 globalVelocity += jumpVelocity;
+                lastJumpType = crouched ? JumpType.Crouch : sprinting ? JumpType.Sprint : JumpType.Walk;
             }
         }
 
@@ -788,15 +790,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             airbrake = false;
 
             float adjustedAcceleration = acceleration;
-            if (crouched)
+            if (IsOnFloor() ? crouched : lastJumpType == JumpType.Crouch)
             {
                 adjustedAcceleration *= crouchMoveSpeedMultiplier;
                 finalSpeed *= crouchMoveSpeedMultiplier;
-            } else if (handcuffed)
+            } else if (IsOnFloor() ? handcuffed : lastJumpType == JumpType.Crouch)
             {
                 adjustedAcceleration *= crouchMoveSpeedMultiplier;
                 finalSpeed *= crouchMoveSpeedMultiplier;
-            } else if (sprinting)
+            } else if (IsOnFloor() ? sprinting : lastJumpType == JumpType.Sprint)
             {
                 adjustedAcceleration *= sprintMoveSpeedMultiplier;
                 finalSpeed *= sprintMoveSpeedMultiplier;
@@ -813,6 +815,13 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
                 float horizontalMaxSpeed = !IsOnFloor() ? finalSpeed * horizontalAirSpeedReduction : finalSpeed;
                 localVelocity.X = GetClampedVelocity(localVelocity.X, moveX, adjustedAcceleration, horizontalMaxSpeed);
             }
+
+            // Theres a more efficient way to integrate this in the flow probs
+            // Normalizes speed so diagonals arent faster
+            Vector3 localNormalizedVelocities = localVelocity.Normalized() * finalSpeed;
+            localVelocity.X = localNormalizedVelocities.X;
+            localVelocity.Z = localNormalizedVelocities.Z;
+
         }
 
         //apply deceleration
@@ -1281,4 +1290,12 @@ public struct BasicPlayerStateUpdate
 
     [Key(5)]
     public bool Crouched;
+}
+
+// Used to snapshot our state when starting a jump to properly clamp the velocity values for that jump
+public enum JumpType
+{
+    Walk,
+    Sprint,
+    Crouch
 }
