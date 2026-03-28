@@ -97,6 +97,18 @@ tracks/3/keys = {
 "update": 0,
 "values": [Vector3(0, 0, 0)]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("tps/flash:light_energy")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_bs15t"]
 resource_name = "fire"
@@ -111,6 +123,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0.058381263, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("tps/flash:light_energy")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [6.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_drkua"]
@@ -189,10 +213,9 @@ currentMagazineAmmo = 8
 magazineSize = 8
 reloadTimeSeconds = 3.0
 bulletsPerShot = 8
-spread = 0.1
-physDamagePerShot = 4.0
+spread = 0.05
+physDamagePerShot = 8.0
 stunDamagePerShot = 8.0
-maxPenetrations = 1
 iconPath = "res://assets/ui/icons/Shotgun.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
@@ -231,6 +254,13 @@ skeleton = NodePath("")
 transform = Transform3D(4.3711385e-08, 3.8213705e-15, -0.99999994, 8.742277e-08, -0.99999994, 0, -0.99999994, -8.742277e-08, -4.3711385e-08, 0.3567911, 1.4655803e-09, -0.016764268)
 mesh = SubResource("ArrayMesh_304ml")
 skeleton = NodePath("")
+
+[node name="flash" type="OmniLight3D" parent="tps" unique_id=1189776666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38496777, 0.058003537, -0.74878573)
+light_color = Color(0.97582036, 0.9043445, 0.77304626, 1)
+light_energy = 0.0
+light_specular = 0.0
+omni_range = 3.2984407
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=390103935]
 libraries/ = SubResource("AnimationLibrary_a1fax")

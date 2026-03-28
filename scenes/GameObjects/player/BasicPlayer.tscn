@@ -8404,6 +8404,7 @@ shader_parameter/vignette_intensity = 0.0
 [node name="BasicPlayer" type="CharacterBody3D" unique_id=997580453 node_paths=PackedStringArray("characterSFX", "movementSFX", "animationTree", "collider", "hurtColorRect", "firstPersonModel", "thirdPersonModel", "camera", "firstPersonEquipmentAttachmentPoint", "thirdPersonEquipmentAttachmentPoint", "bodyColliders", "localPlayerLight", "voicePlayer") groups=["players"]]
 collision_layer = 16
 collision_mask = 51
+floor_max_angle = 1.0471976
 platform_on_leave = 2
 script = ExtResource("1_dt3qt")
 characterSFX = NodePath("SteamAudioCharacterSFX")
@@ -8441,7 +8442,7 @@ bones/0/parent = -1
 bones/0/rest = Transform3D(0.9878424, -0.050007887, 0.14719607, 0.0687027, 0.9898009, -0.12479675, -0.13945396, 0.13339227, 0.9812029, -0.0044627455, 1.3289943, 0.0026339197)
 bones/0/enabled = true
 bones/0/position = Vector3(0, 0, 0)
-bones/0/rotation = Quaternion(-0.036877114, -0.044709455, -0.02511342, 0.9980033)
+bones/0/rotation = Quaternion(-0.033950828, -0.046706375, -0.027216129, 0.99796057)
 bones/0/scale = Vector3(1, 1, 1)
 bones/0/bone_meta/extras = {
 "transformData": {
@@ -8458,7 +8459,7 @@ bones/1/parent = 0
 bones/1/rest = Transform3D(-0.98735774, -0.057267677, -0.14780204, 0.049994577, -0.9973706, 0.052465916, -0.150418, 0.04441332, 0.98762435, -0.13825692, -0.08684063, -0.0108829625)
 bones/1/enabled = true
 bones/1/position = Vector3(-0.13825692, -0.08684063, -0.0108829625)
-bones/1/rotation = Quaternion(-0.08947281, -0.0345896, 0.9951076, -0.023644904)
+bones/1/rotation = Quaternion(-0.08829986, -0.029918836, 0.9953798, -0.022961108)
 bones/1/scale = Vector3(0.99999994, 0.9999999, 0.9999999)
 bones/1/bone_meta/extras = {
 "transformData": {
@@ -8477,7 +8478,7 @@ bones/2/parent = 1
 bones/2/rest = Transform3D(0.99456066, -0.060129736, 0.08505027, -0.103604175, -0.65526843, 0.7482577, 0.01073822, -0.75299925, -0.65793383, 1.1917554e-09, 0.64681613, -1.1599139e-09)
 bones/2/enabled = true
 bones/2/position = Vector3(1.1917554e-09, 0.64681613, -1.1599139e-09)
-bones/2/rotation = Quaternion(0.06784929, -0.08515403, 0.021129742, -0.99383044)
+bones/2/rotation = Quaternion(0.055050883, -0.08516502, 0.019496014, -0.9946539)
 bones/2/scale = Vector3(1, 1, 1)
 bones/2/bone_meta/extras = {
 "transformData": {
@@ -8497,7 +8498,7 @@ bones/3/parent = 2
 bones/3/rest = Transform3D(0.9872816, 0.09173168, -0.1298473, -0.15841164, 0.49854457, -0.8522671, -0.013445228, 0.86199695, 0.50673527, 1.3378908e-10, 0.5526521, -1.5712568e-09)
 bones/3/enabled = true
 bones/3/position = Vector3(1.3378908e-10, 0.5526521, -1.5712568e-09)
-bones/3/rotation = Quaternion(0.5395409, 0.014914068, -0.017970303, 0.84163547)
+bones/3/rotation = Quaternion(0.5272241, 0.014541982, -0.017781654, 0.84941584)
 bones/3/scale = Vector3(1, 1, 1)
 bones/3/bone_meta/extras = {
 "transformData": {
@@ -8516,7 +8517,7 @@ bones/4/parent = 3
 bones/4/rest = Transform3D(0.97856146, 0.11486837, 0.17094654, -0.00081887096, 0.83218235, -0.55450153, -0.20595337, 0.5424738, 0.8144356, -3.1909478e-10, 0.24636483, -5.2640345e-09)
 bones/4/enabled = true
 bones/4/position = Vector3(-3.1909478e-10, 0.24636483, -5.2640345e-09)
-bones/4/rotation = Quaternion(0.34911743, 0.102595136, -0.027658781, 0.9310351)
+bones/4/rotation = Quaternion(0.3499158, 0.10264019, -0.027622066, 0.9307314)
 bones/4/scale = Vector3(1, 1, 1)
 bones/4/bone_meta/extras = {
 "transformData": {
@@ -8535,7 +8536,7 @@ bones/5/parent = 0
 bones/5/rest = Transform3D(0.9927251, 0.11844384, -0.021632308, -0.12033922, 0.98190385, -0.14623013, 0.003920788, 0.14776954, 0.989014, 0, 0.15633933, -0.01591976)
 bones/5/enabled = true
 bones/5/position = Vector3(0, 0.15633933, -0.01591976)
-bones/5/rotation = Quaternion(-0.014577036, 0.016879296, 0.025957154, 0.9994143)
+bones/5/rotation = Quaternion(-0.021059738, 0.011922011, 0.022257935, 0.9994593)
 bones/5/scale = Vector3(1, 1, 0.99999994)
 bones/5/bone_meta/extras = {
 "transformData": {
@@ -8553,7 +8554,7 @@ bones/6/parent = 5
 bones/6/rest = Transform3D(0.99822557, -0.058689304, -0.0100650415, 0.05914706, 0.9968047, 0.05368442, 0.0068821795, -0.05418448, 0.9985072, 0, 0.18333901, 4.0268738e-10)
 bones/6/enabled = true
 bones/6/position = Vector3(0, 0.18333901, 4.0268738e-10)
-bones/6/rotation = Quaternion(0.01176691, 0.0035228482, 0.015223219, 0.9998087)
+bones/6/rotation = Quaternion(0.010301155, 0.0015403165, 0.014000956, 0.99984777)
 bones/6/scale = Vector3(1, 1, 0.99999994)
 bones/6/bone_meta/extras = {
 "transformData": {
@@ -8571,7 +8572,7 @@ bones/7/parent = 6
 bones/7/rest = Transform3D(0.9982265, -0.058675706, -0.010046415, 0.059134193, 0.996792, 0.053933978, 0.006849572, -0.054432414, 0.99849397, 0, 0.20953025, -2.9624775e-10)
 bones/7/enabled = true
 bones/7/position = Vector3(0, 0.20953025, -2.9624775e-10)
-bones/7/rotation = Quaternion(0.011615421, 0.0036057874, 0.015191735, 0.99981064)
+bones/7/rotation = Quaternion(0.01007778, 0.0017331571, 0.014047792, 0.9998491)
 bones/7/scale = Vector3(0.99999994, 1, 1)
 bones/7/bone_meta/extras = {
 "transformData": {
@@ -8590,7 +8591,7 @@ bones/8/parent = 7
 bones/8/rest = Transform3D(0.9954837, 0.08937485, -0.032006063, -0.0932162, 0.9840791, -0.1513242, 0.01797192, 0.15362425, 0.9879659, 0, 0.23572156, 1.724889e-08)
 bones/8/enabled = true
 bones/8/position = Vector3(0, 0.23572156, 1.724889e-08)
-bones/8/rotation = Quaternion(0.105400495, -0.0019521941, 0.0024039948, 0.99442506)
+bones/8/rotation = Quaternion(0.09955798, -0.0012667667, 0.0041610063, 0.9950223)
 bones/8/scale = Vector3(1, 1, 1)
 bones/8/bone_meta/extras = {
 "transformData": {
@@ -8608,7 +8609,7 @@ bones/9/parent = 8
 bones/9/rest = Transform3D(0.9983962, 0.04752422, -0.030764125, -0.04754536, 0.99886906, 4.4469314e-05, 0.030731447, 0.0014182935, 0.9995267, 0, 0.10461777, 0.03716949)
 bones/9/enabled = true
 bones/9/position = Vector3(0, 0.10461777, 0.03716949)
-bones/9/rotation = Quaternion(0.0548831, -0.0020757422, 0.002960203, 0.9984863)
+bones/9/rotation = Quaternion(0.049061634, -0.0013555803, 0.0046494696, 0.99878407)
 bones/9/scale = Vector3(1, 0.99999994, 1)
 bones/9/bone_meta/extras = {
 "transformData": {
@@ -8625,7 +8626,7 @@ bones/10/parent = 7
 bones/10/rest = Transform3D(0.16059965, 0.89984894, -0.40556097, 0.06477171, -0.41961718, -0.9053873, -0.98489213, 0.11913599, -0.12567513, 0.109557375, 0.20912367, -0.0027265537)
 bones/10/enabled = true
 bones/10/position = Vector3(0.109557375, 0.20912367, -0.0027265537)
-bones/10/rotation = Quaternion(0.6852919, 0.31794804, -0.517828, 0.40142044)
+bones/10/rotation = Quaternion(0.68154323, 0.3229718, -0.51833105, 0.40313902)
 bones/10/scale = Vector3(1, 1, 1)
 bones/10/bone_meta/extras = {
 "transformData": {
@@ -8644,7 +8645,7 @@ bones/11/parent = 10
 bones/11/rest = Transform3D(0.92995465, 0.35595146, 0.092102736, -0.1726659, 0.6439577, -0.7453221, -0.32460874, 0.6772128, 0.66031206, 2.2821344e-11, 0.22491662, 2.162298e-10)
 bones/11/enabled = true
 bones/11/position = Vector3(2.2821344e-11, 0.22491662, 2.162298e-10)
-bones/11/rotation = Quaternion(0.47455496, 0.13785307, 0.06677153, 0.86679626)
+bones/11/rotation = Quaternion(0.4772986, 0.14347218, 0.059935506, 0.86487556)
 bones/11/scale = Vector3(1, 1, 1)
 bones/11/bone_meta/extras = {
 "transformData": {
@@ -8663,7 +8664,7 @@ bones/12/parent = 11
 bones/12/rest = Transform3D(-0.11615479, -0.98724824, 0.10885307, 0.9868371, -0.1271275, -0.099956356, 0.11251996, 0.09580983, 0.9890196, 2.0443218e-10, 0.3861511, -5.4294275e-10)
 bones/12/enabled = true
 bones/12/position = Vector3(2.0443218e-10, 0.3861511, -5.4294275e-10)
-bones/12/rotation = Quaternion(0.0015815261, -0.0020997825, 0.015945045, 0.99986947)
+bones/12/rotation = Quaternion(0.00129046, -0.0020998942, 0.013008693, 0.9999124)
 bones/12/scale = Vector3(1, 1, 1)
 bones/12/bone_meta/extras = {
 "transformData": {
@@ -8672,7 +8673,7 @@ bones/12/bone_meta/extras = {
 "parentMatrixWorld": {
 "elements": [0.92995466196674, -0.1726658883169081, -0.3246087102613077, 0.0, 0.3559514107755235, 0.6439577268611445, 0.6772126876672575, 0.0, 0.09210275203646778, -0.7453220258266419, 0.6603121585444638, 0.0, 1.521423e-09, 14.994442195368867, 1.4415320492844332e-08, 1.0]
 },
-"preRotation": [-4.709757464749423, -5.896657922671016e-08, 5.846673269123587],
+"preRotation": [-4.709757464749423, -5.8966579226710164e-08, 5.846673269123587],
 "scale": [1.0, 0.9999999999999998, 0.9999999999999996],
 "translation": [1.3628812e-08, 25.743408555041157, -3.6196183827996726e-08]
 }
@@ -8682,7 +8683,7 @@ bones/13/parent = 12
 bones/13/rest = Transform3D(0.95535105, 0.27233636, -0.11461829, -0.24688715, 0.9488676, 0.19671577, 0.16233043, -0.15963483, 0.97373796, 1.6523281e-10, 0.33422524, 1.0585964e-10)
 bones/13/enabled = true
 bones/13/position = Vector3(1.6523281e-10, 0.33422524, 1.0585964e-10)
-bones/13/rotation = Quaternion(0.06613034, -0.24626672, -0.017045185, 0.9667931)
+bones/13/rotation = Quaternion(0.07321075, -0.24130856, -0.023961466, 0.9673863)
 bones/13/scale = Vector3(1, 1, 1)
 bones/13/bone_meta/extras = {
 "transformData": {
@@ -8986,7 +8987,7 @@ bones/29/parent = 7
 bones/29/rest = Transform3D(0.07061213, -0.9475734, 0.31163853, -0.028671622, -0.31421733, -0.948918, 0.99709177, 0.058069937, -0.049356014, -0.109557375, 0.20912, -0.0026906298)
 bones/29/enabled = true
 bones/29/position = Vector3(-0.109557375, 0.20912, -0.0026906298)
-bones/29/rotation = Quaternion(0.68422616, -0.3164936, 0.53428924, 0.38236287)
+bones/29/rotation = Quaternion(0.6799113, -0.32194918, 0.5365506, 0.38233858)
 bones/29/scale = Vector3(1, 1, 0.99999994)
 bones/29/bone_meta/extras = {
 "transformData": {
@@ -8996,7 +8997,7 @@ bones/29/bone_meta/extras = {
 "elements": [0.998226542671662, 0.05913419391475252, 0.00684957220669429, 0.0, -0.05867571100735026, 0.9967919909675946, -0.05443241427034252, 0.0, -0.0100464156366432, 0.05393397719034559, 0.9984939637560726, 0.0, 0.0, 13.968683304006008, -1.9749849755612562e-08, 1.0]
 },
 "preRotation": [-76.38229455494371, -88.59072034729913, -179.94823537121644],
-"rotation": [1.0985959e-14, -1.5902773e-15, 1.9878467000000002e-16],
+"rotation": [1.0985959e-14, -1.5902773e-15, 1.9878467e-16],
 "scale": [1.0000000000000002, 1.0, 1.0],
 "translation": [-7.3038254, 13.941333598632012, -0.1793753278630046]
 }
@@ -9006,7 +9007,7 @@ bones/30/parent = 29
 bones/30/rest = Transform3D(0.8270187, -0.5273975, -0.1946589, 0.18029113, 0.57679117, -0.79674786, 0.53248036, 0.6238301, 0.57210207, -2.2505917e-11, 0.22491662, 2.1626263e-10)
 bones/30/enabled = true
 bones/30/position = Vector3(-2.2505917e-11, 0.22491662, 2.1626263e-10)
-bones/30/rotation = Quaternion(0.4038019, -0.23079722, -0.079820104, 0.8816493)
+bones/30/rotation = Quaternion(0.40554988, -0.23318401, -0.08515739, 0.87971747)
 bones/30/scale = Vector3(1, 1.0000001, 1)
 bones/30/bone_meta/extras = {
 "transformData": {
@@ -9026,7 +9027,7 @@ bones/31/parent = 30
 bones/31/rest = Transform3D(0.0812986, 0.9928429, -0.08748433, -0.99240357, 0.0725049, -0.09938956, -0.09233519, 0.0949, 0.9911953, 3.291319e-10, 0.38626358, -3.5853814e-10)
 bones/31/enabled = true
 bones/31/position = Vector3(3.291319e-10, 0.38626358, -3.5853814e-10)
-bones/31/rotation = Quaternion(0.0056950636, 0.0022575706, -0.058190778, 0.9982867)
+bones/31/rotation = Quaternion(0.005675365, 0.0022575334, -0.057989888, 0.9982985)
 bones/31/scale = Vector3(1, 1, 1)
 bones/31/bone_meta/extras = {
 "transformData": {
@@ -9045,7 +9046,7 @@ bones/32/parent = 31
 bones/32/rest = Transform3D(0.9182523, -0.11869609, -0.37778834, 0.22693321, 0.93955666, 0.25638756, 0.32452133, -0.32116118, 0.8896861, -3.2124461e-10, 0.3342728, 4.2577142e-10)
 bones/32/enabled = true
 bones/32/position = Vector3(-3.2124461e-10, 0.3342728, 4.2577142e-10)
-bones/32/rotation = Quaternion(0.07112626, 0.14056621, 0.04713876, 0.9863875)
+bones/32/rotation = Quaternion(0.07606563, 0.13601255, 0.04736102, 0.9866466)
 bones/32/scale = Vector3(1, 1, 1)
 bones/32/bone_meta/extras = {
 "transformData": {
@@ -9348,7 +9349,7 @@ bones/48/parent = 0
 bones/48/rest = Transform3D(-0.9940072, -0.10573732, 0.027736744, 0.10354744, -0.829425, 0.5489374, -0.035037614, 0.54851973, 0.8354032, 0.13825692, -0.08684063, -0.0065858993)
 bones/48/enabled = true
 bones/48/position = Vector3(0.13825692, -0.08684063, -0.0065858993)
-bones/48/rotation = Quaternion(0.13881561, 0.05608336, 0.98552495, -0.079533614)
+bones/48/rotation = Quaternion(0.13324727, 0.06287855, 0.98608005, -0.07705581)
 bones/48/scale = Vector3(1, 1, 1)
 bones/48/bone_meta/extras = {
 "transformData": {
@@ -9367,7 +9368,7 @@ bones/49/parent = 48
 bones/49/rest = Transform3D(0.99216294, 0.124454, 0.0111329965, -0.102353565, 0.75839245, 0.64371157, 0.0716693, -0.6398063, 0.7651872, 5.4648475e-10, 0.6470819, 6.0424743e-10)
 bones/49/enabled = true
 bones/49/position = Vector3(5.4648475e-10, 0.6470819, 6.0424743e-10)
-bones/49/rotation = Quaternion(-0.12361145, -0.008016234, 0.029485408, 0.99186015)
+bones/49/rotation = Quaternion(-0.120709725, -0.017558692, 0.029289313, 0.9921003)
 bones/49/scale = Vector3(1, 1, 1)
 bones/49/bone_meta/extras = {
 "transformData": {
@@ -9386,7 +9387,7 @@ bones/50/parent = 49
 bones/50/rest = Transform3D(0.9743691, -0.115723066, 0.19290686, 0.21869896, 0.2864676, -0.93279535, 0.052684374, 0.9510755, 0.30443373, -1.1777744e-09, 0.5528729, -2.0541118e-09)
 bones/50/enabled = true
 bones/50/position = Vector3(-1.1777744e-09, 0.5528729, -2.0541118e-09)
-bones/50/rotation = Quaternion(0.5068053, -0.026686875, -0.021701835, 0.861374)
+bones/50/rotation = Quaternion(0.5025565, -0.02488643, -0.019548984, 0.863965)
 bones/50/scale = Vector3(1, 1, 1)
 bones/50/bone_meta/extras = {
 "transformData": {
@@ -9451,7 +9452,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.0, 0.0, 0.0], \"rotation\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, -87.9891697838902, -3.51051425933838, 1.0] } }"
 
 [node name="mixamorig8Head" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=832705377]
-transform = Transform3D(0.9965557, -0.07956484, -0.023368571, 0.07079829, 0.9630612, -0.25980902, 0.04317703, 0.25725964, 0.9653771, -0.024970308, 2.3035045, -0.005899895)
+transform = Transform3D(0.9960254, -0.07555916, -0.047161262, 0.06314471, 0.9724467, -0.2244112, 0.062818125, 0.22054121, 0.9733526, -0.0022207014, 2.305642, -0.029294517)
 bone_name = "mixamorig8Head"
 bone_idx = 9
 metadata/extras = {
@@ -9475,7 +9476,7 @@ transform = Transform3D(0.997278, 0.02009386, 0.071016856, -0.05916807, 0.79284,
 shape = SubResource("CapsuleShape3D_evul3")
 
 [node name="mixamorig8Hips_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=187674916]
-transform = Transform3D(0.9947408, 0.053424057, -0.087388135, -0.046829034, 0.99601877, 0.075852565, 0.09109258, -0.07136134, 0.99328226, -0.007171428, 1.4255294, 0.019109933)
+transform = Transform3D(0.9941556, 0.05749268, -0.09137421, -0.0511498, 0.99621326, 0.0703055, 0.09507025, -0.06522083, 0.99333173, 0.0052589527, 1.4264784, 0.0037821752)
 bone_name = "mixamorig8Hips"
 bone_idx = 0
 
@@ -9489,7 +9490,7 @@ shape = SubResource("CapsuleShape3D_pu85p")
 debug_color = Color(3.0322374e-06, 0.45448166, 0.5337904, 0.41960785)
 
 [node name="mixamorig8RightUpLeg_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=2006528511]
-transform = Transform3D(-0.9641812, 0.005377678, -0.26519015, -0.008310322, -0.9999161, 0.0099378675, -0.26511446, 0.011785738, 0.96414477, -0.14838956, 1.3446834, 0.001902964)
+transform = Transform3D(-0.96374106, -0.0015616193, -0.2668337, -0.002430208, -0.9998898, 0.014629111, -0.26682717, 0.014747128, 0.96363145, -0.13618821, 1.3462733, -0.014508519)
 bone_name = "mixamorig8RightUpLeg"
 bone_idx = 1
 
@@ -9502,7 +9503,7 @@ transform = Transform3D(-0.9979984, 0.063175365, -0.0028078556, 0.06319198, 0.99
 shape = SubResource("CapsuleShape3D_6pekc")
 
 [node name="mixamorig8RightLeg_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=2060710089]
-transform = Transform3D(-0.9055003, 0.012688547, -0.42415607, 0.043713603, -0.9914459, -0.12297995, -0.4220882, -0.12989973, 0.8971997, -0.1449112, 0.6979216, 0.009526168)
+transform = Transform3D(-0.904319, 0.00021642447, -0.4268566, 0.04331492, -0.99479127, -0.09226939, -0.4246533, -0.10193027, 0.8995997, -0.13719828, 0.69952846, -0.00496984)
 bone_name = "mixamorig8RightLeg"
 bone_idx = 2
 
@@ -9515,7 +9516,7 @@ transform = Transform3D(0.885448, -0.02009264, 0.4643099, -0.012046438, -0.99972
 shape = SubResource("CapsuleShape3D_nhpn6")
 
 [node name="mixamorig8RightFoot_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1534394175]
-transform = Transform3D(-0.8858191, -0.42165852, -0.19372359, 0.06317232, -0.52317494, 0.84988064, -0.45971072, 0.7406023, 0.4900754, -0.13789885, 0.14999688, -0.062263194)
+transform = Transform3D(-0.88481915, -0.42318803, -0.19495225, 0.062075496, -0.52174956, 0.85083693, -0.4617804, 0.74073535, 0.4879238, -0.13707867, 0.14975494, -0.061301816)
 bone_name = "mixamorig8RightFoot"
 bone_idx = 3
 
@@ -9528,7 +9529,7 @@ transform = Transform3D(0.7989129, -0.007922947, 0.60139537, -0.00742957, 0.9997
 shape = SubResource("CapsuleShape3D_rj67t")
 
 [node name="mixamorig8Spine_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1188231973]
-transform = Transform3D(0.99859357, 0.0036984752, -0.05288917, 0.0018313632, 0.9945624, 0.104126364, 0.0529867, -0.10407677, 0.99315673, 0.0025720522, 1.5800387, -0.007859467)
+transform = Transform3D(0.9976802, 0.016451789, -0.06605658, -0.009002874, 0.99372166, 0.111518145, 0.067476526, -0.110664755, 0.9915645, 0.015701976, 1.5811064, -0.022228008)
 bone_name = "mixamorig8Spine"
 bone_idx = 5
 
@@ -9541,7 +9542,7 @@ transform = Transform3D(0.013283629, 0.9989264, 0.044438258, -0.99565244, 0.0173
 shape = SubResource("CapsuleShape3D_wuvde")
 
 [node name="mixamorig8Spine1_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=889522531]
-transform = Transform3D(0.99857247, -0.02786939, -0.04556764, 0.031491816, 0.9962316, 0.0808138, 0.0431437, -0.08213345, 0.99568695, 0.003250127, 1.7623807, -0.0269408)
+transform = Transform3D(0.9979299, -0.012822751, -0.063019626, 0.018542778, 0.99567497, 0.09103663, 0.061579723, -0.09201676, 0.9938515, 0.018718231, 1.7632943, -0.042517178)
 bone_name = "mixamorig8Spine1"
 bone_idx = 6
 
@@ -9558,7 +9559,7 @@ transform = Transform3D(0.9955556, 0.0882633, 0.032840796, 0.033640906, -0.00759
 shape = SubResource("CapsuleShape3D_kvkvi")
 
 [node name="mixamorig8Spine2_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=164684243]
-transform = Transform3D(0.99754906, -0.059163075, -0.03735758, 0.061268985, 0.9964348, 0.0579983, 0.033793043, -0.06014502, 0.99761736, -0.0025893531, 1.9711213, -0.04415024)
+transform = Transform3D(0.9973699, -0.04208649, -0.05900749, 0.04625023, 0.99639857, 0.07107023, 0.055803876, -0.07361245, 0.9957244, 0.016031478, 1.9719183, -0.06179747)
 bone_name = "mixamorig8Spine2"
 bone_idx = 7
 
@@ -9579,7 +9580,7 @@ transform = Transform3D(0.9978791, -0.045911264, 0.046146892, -0.046206906, -0.9
 shape = SubResource("CapsuleShape3D_41oc1")
 
 [node name="mixamorig8Neck_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=927288920]
-transform = Transform3D(0.99710745, -0.07085862, -0.027492188, 0.06587647, 0.9861232, -0.1523854, 0.03790851, 0.15013349, 0.9879386, -0.016535366, 2.2060025, -0.0583277)
+transform = Transform3D(0.9967966, -0.061451335, -0.05118669, 0.054485966, 0.9902973, -0.1278389, 0.0585459, 0.1246404, 0.99047315, 0.0061107837, 2.206791, -0.0791495)
 bone_name = "mixamorig8Neck"
 bone_idx = 8
 
@@ -9592,7 +9593,7 @@ transform = Transform3D(0.99226576, 0.12124692, -0.026631583, -0.1240406, 0.9599
 shape = SubResource("CapsuleShape3D_6ynph")
 
 [node name="mixamorig8LeftShoulder_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=991115825]
-transform = Transform3D(0.2957495, 0.8693031, -0.39603564, -0.019974705, -0.40886348, -0.91237706, -0.9550566, 0.27774572, -0.10355714, 0.094428964, 2.1860538, -0.05574577)
+transform = Transform3D(0.3094933, 0.86285776, -0.39961258, -0.03473151, -0.40970808, -0.91155535, -0.95026714, 0.29599938, -0.09683347, 0.11666031, 2.185162, -0.07379275)
 bone_name = "mixamorig8LeftShoulder"
 bone_idx = 10
 
@@ -9605,7 +9606,7 @@ transform = Transform3D(0.9174111, 0.19935489, -0.3444078, -0.19719622, 0.979478
 shape = SubResource("CapsuleShape3D_p27wf")
 
 [node name="mixamorig8LeftArm_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=277242493]
-transform = Transform3D(0.5657821, 0.1413708, -0.81234527, 0.040360257, -0.98876, -0.14396185, -0.8235663, 0.048664548, -0.56512845, 0.2899497, 2.0940936, 0.006723862)
+transform = Transform3D(0.57846797, 0.1370222, -0.8041141, 0.042426914, -0.98951024, -0.13809264, -0.814601, 0.04576613, -0.57821333, 0.31073135, 2.0930119, -0.007217571)
 bone_name = "mixamorig8LeftArm"
 bone_idx = 11
 
@@ -9618,7 +9619,7 @@ transform = Transform3D(0.93480796, -0.009040255, -0.35504237, 0.014498167, 0.99
 shape = SubResource("CapsuleShape3D_61f4l")
 
 [node name="mixamorig8LeftForeArm_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=173996164]
-transform = Transform3D(0.5665443, 0.1207392, -0.8151378, 0.008206659, -0.98998517, -0.14093399, -0.82399035, 0.073155746, -0.56186116, 0.34454018, 1.7122828, 0.025515731)
+transform = Transform3D(0.5784272, 0.11989209, -0.8068752, 0.016090788, -0.99062485, -0.13566001, -0.8155753, 0.06548623, -0.5749334, 0.36364263, 1.7109114, 0.01045507)
 bone_name = "mixamorig8LeftForeArm"
 bone_idx = 12
 
@@ -9631,7 +9632,7 @@ transform = Transform3D(0.7669731, -0.02672349, -0.64112216, 0.0012809038, 0.999
 shape = SubResource("CapsuleShape3D_n3yc4")
 
 [node name="mixamorig8LeftHand_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1254984437]
-transform = Transform3D(0.103271306, 0.008758239, -0.9946147, 0.005288005, -0.99995214, -0.008256234, -0.99463916, -0.004406914, -0.1033127, 0.38489425, 1.3814048, 0.049966227)
+transform = Transform3D(0.12672454, 0.0012260154, -0.9919371, 0.03226465, -0.99947524, 0.0028866678, -0.9914131, -0.03237025, -0.12669748, 0.40371358, 1.3798196, 0.03234222)
 bone_name = "mixamorig8LeftHand"
 bone_idx = 13
 
@@ -9644,7 +9645,7 @@ transform = Transform3D(0.98670125, -0.08285604, -0.13983992, 0.07700826, 0.9959
 shape = SubResource("CapsuleShape3D_4iffa")
 
 [node name="mixamorig8RightShoulder_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1491582863]
-transform = Transform3D(0.1932681, -0.81653, 0.54399097, 0.046022847, -0.5462895, -0.836331, 0.9800659, 0.1866721, -0.068001255, -0.124149874, 2.1726272, -0.06311426)
+transform = Transform3D(0.1599319, -0.83508664, 0.5263572, 0.05197644, -0.52535725, -0.8492928, 0.98575866, 0.16318724, -0.040616497, -0.1018801, 2.175027, -0.085984156)
 bone_name = "mixamorig8RightShoulder"
 bone_idx = 29
 
@@ -9657,7 +9658,7 @@ transform = Transform3D(0.9659937, -0.1195021, 0.22928639, 0.09655967, 0.9893594
 shape = SubResource("CapsuleShape3D_bgie3")
 
 [node name="mixamorig8RightArm_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1485725]
-transform = Transform3D(0.62365234, -0.14128989, 0.76882696, -0.067198336, -0.9895791, -0.12734863, 0.7788081, 0.02775741, -0.6266477, -0.30780104, 2.0497577, -0.021128602)
+transform = Transform3D(0.602878, -0.15808651, 0.7820144, -0.066131905, -0.98670167, -0.1484814, 0.7950878, 0.03780006, -0.60531515, -0.28970498, 2.0568652, -0.049280632)
 bone_name = "mixamorig8RightArm"
 bone_idx = 30
 
@@ -9670,7 +9671,7 @@ transform = Transform3D(0.8978625, 0.09333028, 0.43027806, -0.10765753, 0.994145
 shape = SubResource("CapsuleShape3D_rmxgt")
 
 [node name="mixamorig8RightForeArm_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1745189893]
-transform = Transform3D(0.6318591, -0.059310526, 0.77281064, 0.048861835, -0.9920367, -0.116085306, 0.7735415, 0.11111053, -0.6239294, -0.36237618, 1.6675193, -0.010406925)
+transform = Transform3D(0.61307704, -0.07853839, 0.7861094, 0.049297977, -0.9893041, -0.13728578, 0.7884834, 0.12292038, -0.6026478, -0.35076803, 1.6757383, -0.034679845)
 bone_name = "mixamorig8RightForeArm"
 bone_idx = 31
 
@@ -9683,7 +9684,7 @@ transform = Transform3D(0.7664108, 0.051184617, 0.6403249, -0.0722592, 0.9973781
 shape = SubResource("CapsuleShape3D_ns8pa")
 
 [node name="mixamorig8RightHand_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=261005013]
-transform = Transform3D(0.38825744, 0.014107764, 0.9214429, -0.03396382, -0.9989845, 0.02960597, 0.92092484, -0.042790424, -0.38738406, -0.3822021, 1.3359084, 0.026734304)
+transform = Transform3D(0.37335652, 0.006234579, 0.92766684, -0.02981783, -0.9993803, 0.018717468, 0.92720854, -0.034649253, -0.37293917, -0.37702128, 1.3450409, 0.0064090937)
 bone_name = "mixamorig8RightHand"
 bone_idx = 32
 
@@ -9699,7 +9700,7 @@ shape = SubResource("CapsuleShape3D_bbt66")
 transform = Transform3D(-0.14522304, 1.1266099, -0.031354193, -0.10936409, -0.04555055, -1.1301714, -1.1217272, -0.14141397, 0.114246234, 0.00014019012, 0.13327128, -0.0012664199)
 
 [node name="mixamorig8LeftUpLeg_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1483169315]
-transform = Transform3D(-0.9760525, 0.1112862, 0.18691419, -0.07476936, -0.9785125, 0.19215293, 0.20428184, 0.17357588, 0.9634004, 0.12629454, 1.3320605, 0.03135952)
+transform = Transform3D(-0.97971845, 0.10192713, 0.17251854, -0.06681502, -0.97786117, 0.19830148, 0.18891147, 0.18275279, 0.9648388, 0.13831693, 1.3324318, 0.016048132)
 bone_name = "mixamorig8LeftUpLeg"
 bone_idx = 48
 
@@ -9713,7 +9714,7 @@ shape = SubResource("CapsuleShape3D_jvo65")
 disabled = true
 
 [node name="mixamorig8LeftLeg_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=60856689]
-transform = Transform3D(-0.96589035, 0.1169259, 0.23105015, -0.13214803, -0.9898918, -0.05148889, 0.22269425, -0.08026548, 0.9715785, 0.19830582, 0.6988827, 0.14367732)
+transform = Transform3D(-0.96628714, 0.11006833, 0.2327536, -0.122126974, -0.9917868, -0.03800334, 0.22665897, -0.06514761, 0.971793, 0.20427214, 0.6996755, 0.13430415)
 bone_name = "mixamorig8LeftLeg"
 bone_idx = 49
 
@@ -9726,7 +9727,7 @@ transform = Transform3D(0.9744923, -0.013577953, 0.22401129, 0.005348538, 0.9992
 shape = SubResource("CapsuleShape3D_3xynj")
 
 [node name="mixamorig8LeftFoot_Attachment" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1575584731]
-transform = Transform3D(-0.96559906, 0.24876347, 0.07573098, -0.06928434, -0.5268292, 0.84714276, 0.25063542, 0.81275326, 0.52594125, 0.262951, 0.15159833, 0.09930071)
+transform = Transform3D(-0.96538734, 0.24826135, 0.079959884, -0.06445978, -0.5241603, 0.8491768, 0.25272954, 0.81463027, 0.5220206, 0.26512593, 0.15134346, 0.0982858)
 bone_name = "mixamorig8LeftFoot"
 bone_idx = 50
 
@@ -9739,7 +9740,7 @@ transform = Transform3D(0.99999934, 3.427267e-07, -2.8312206e-07, -5.9604645e-08
 shape = SubResource("CapsuleShape3D_mtmu1")
 
 [node name="mixamorig8RightToeBase" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1994844251]
-transform = Transform3D(-0.83355504, -0.552142, -0.018035993, -0.12756103, 0.16060466, 0.9787411, -0.5375074, 0.81813514, -0.20430458, -0.24178067, 0.021104977, 0.12019518)
+transform = Transform3D(-0.8324481, -0.5538413, -0.017009035, -0.12898688, 0.16383713, 0.97801805, -0.5388802, 0.81634355, -0.20782423, -0.24133733, 0.021214202, 0.121189326)
 bone_name = "mixamorig8RightToeBase"
 bone_idx = 4
 metadata/extras = {
@@ -9757,7 +9758,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00000002127299, 16.4243226247672, -0.00000035093563], \"preRotation\": [33.9664037188387, 11.8985351821459, -0.00000073096318], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.98728161428839, -0.158411614919, -0.01344522343668, 0.0, 0.09173167350628, 0.49854460050937, 0.86199684977057, 0.0, -0.12984727124681, -0.85226699407956, 0.50673528078278, 0.0, 0.00000000891927, 36.8434746186377, -0.00000010475045, 1.0] } }"
 
 [node name="mixamorig8LeftHandThumb3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=2004664522]
-transform = Transform3D(0.2871357, 0.09045522, -0.95360947, -0.24751124, -0.9547172, -0.16508698, -0.9253601, 0.28343135, -0.25174475, 0.3342292, 1.2451915, 0.1182372)
+transform = Transform3D(0.3069697, 0.07645857, -0.9486429, -0.22389041, -0.96299237, -0.15006337, -0.9250096, 0.25845698, -0.27849102, 0.35041505, 1.2421738, 0.09554718)
 bone_name = "mixamorig8LeftHandThumb3"
 bone_idx = 16
 metadata/extras = {
@@ -9775,7 +9776,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.16502824489238, 3.34923247109168, -0.00000005862736], \"preRotation\": [-10.6644704946896, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99743118986157, 0.07139265741725, 0.00584036220569, 0.0, -0.07147815668234, 0.99731310112788, 0.016045289109, 0.0, -0.00467915388572, -0.01642153014182, 0.9998542088022, 0.0, -0.6203647507215, 3.46398062491432, 0.00000013233102, 1.0] } }"
 
 [node name="mixamorig8LeftHandIndex3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=471640567]
-transform = Transform3D(0.12485094, -0.52025205, -0.84483737, -0.057936627, -0.8538698, 0.51725227, -0.99048257, -0.015632465, -0.1367481, 0.3535276, 1.1484196, 0.10749708)
+transform = Transform3D(0.14771692, -0.526242, -0.83740604, -0.031228302, -0.8487541, 0.5278648, -0.98853666, -0.051823698, -0.14180894, 0.369222, 1.1455841, 0.08253855)
 bone_name = "mixamorig8LeftHandIndex3"
 bone_idx = 19
 metadata/extras = {
@@ -9793,7 +9794,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00470420790416, 3.18226242890957, -0.00000011825551], \"preRotation\": [4.94296798276613, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.9995601883382, -0.02956954700845, -0.00225206263364, 0.0, 0.0295643332389, 0.98768053336753, 0.15366559278423, 0.0, -0.00231950350937, -0.15366458959469, 0.98812034388521, 0.0, 0.02252119436575, 3.33419346152692, -0.00000001890538, 1.0] } }"
 
 [node name="mixamorig8LeftHandMiddle3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=29361109]
-transform = Transform3D(0.14086325, -0.75385284, -0.64176595, 0.014376685, -0.6466035, 0.76269096, -0.9899246, -0.11666162, -0.08024479, 0.34887108, 1.140362, 0.0637974)
+transform = Transform3D(0.1642632, -0.75580764, -0.6338552, 0.040905774, -0.6368116, 0.7699336, -0.98556805, -0.15239997, -0.07368779, 0.3655354, 1.1387911, 0.038532406)
 bone_name = "mixamorig8LeftHandMiddle3"
 bone_idx = 22
 metadata/extras = {
@@ -9811,7 +9812,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.01341055155304, 3.36927095857611, 0.00000004270348], \"preRotation\": [-5.49251750596108, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99957748813124, -0.0289796300356, -0.00224192903884, 0.0, 0.02897922644788, 0.98765371703621, 0.15394914459259, 0.0, -0.0022471398039, -0.15394906862111, 0.98807622889813, 0.0, 0.01255624760316, 3.42477556494808, -0.00000002671894, 1.0] } }"
 
 [node name="mixamorig8LeftHandRing3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=303462142]
-transform = Transform3D(0.1495748, -0.8363638, -0.5273738, 0.037382428, -0.5282092, 0.8482911, -0.98804337, -0.1465975, -0.04774149, 0.3511245, 1.1579124, 0.027740143)
+transform = Transform3D(0.17310336, -0.8366837, -0.5196109, 0.06377683, -0.5169457, 0.853639, -0.98283654, -0.18090679, -0.036124013, 0.36877197, 1.1573246, 0.0030463408)
 bone_name = "mixamorig8LeftHandRing3"
 bone_idx = 25
 metadata/extras = {
@@ -9829,7 +9830,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00610107321702, 2.65858946619942, 0.00000005408], \"preRotation\": [-7.48771995123588, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99969127876077, -0.0247648874726, -0.00201184720126, 0.0, 0.02478011184697, 0.98783357244096, 0.15352778136294, 0.0, -0.00181472795296, -0.15353023787465, 0.98814228390674, 0.0, 0.00028224587828, 2.7913392364803, -0.00000005885576, 1.0] } }"
 
 [node name="mixamorig8LeftHandPinky3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=897564380]
-transform = Transform3D(0.1655614, -0.8417959, -0.5137794, 0.06323951, -0.5108349, 0.85735, -0.9841698, -0.17443521, -0.03133977, 0.35087585, 1.1853952, -0.0066471333)
+transform = Transform3D(0.18919109, -0.84132534, -0.50633806, 0.0893819, -0.49875468, 0.8621222, -0.9778638, -0.2083632, -0.019160673, 0.3695438, 1.1857601, -0.030549463)
 bone_name = "mixamorig8LeftHandPinky3"
 bone_idx = 28
 metadata/extras = {
@@ -9847,7 +9848,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.00701075988583, 2.27551924411195, -0.0000000065827], \"preRotation\": [-1.25276936196477, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99915760026314, 0.0409784522337, -0.00220369940559, 0.0, -0.0400631955491, 0.98565727815747, 0.16393495787665, 0.0, 0.00888989319028, -0.16370857187134, 0.98646868846876, 0.0, 0.01213005396753, 2.68773483975284, -0.00000002262641, 1.0] } }"
 
 [node name="mixamorig8RightHandThumb3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1744696264]
-transform = Transform3D(0.551988, -0.087465525, 0.829252, 0.11357647, -0.97732896, -0.17868556, 0.82608086, 0.19281588, -0.52953994, -0.31060085, 1.2001145, 0.07073151)
+transform = Transform3D(0.5398211, -0.09885891, 0.8359545, 0.11556856, -0.9749727, -0.18992773, 0.8338087, 0.19913712, -0.51488596, -0.30728835, 1.209007, 0.052610625)
 bone_name = "mixamorig8RightHandThumb3"
 bone_idx = 35
 metadata/extras = {
@@ -9865,7 +9866,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [-0.30420586583226, 3.40526163057257, -0.00000002961903], \"preRotation\": [-3.55178171155789, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99658542080354, -0.07970203714323, 0.02156581699956, 0.0, 0.08071676044177, 0.99542155470848, -0.05119309720109, 0.0, -0.01738688504089, 0.05275901716744, 0.99845589907719, 0.0, 0.61327458127912, 3.44791601494267, 0.00000007296623, 1.0] } }"
 
 [node name="mixamorig8RightHandIndex3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1387217539]
-transform = Transform3D(0.40319327, 0.50538206, 0.76290506, 0.03852979, -0.84230727, 0.53761876, 0.9143033, -0.1873697, -0.35908502, -0.33198243, 1.0989238, 0.066167936)
+transform = Transform3D(0.38901478, 0.5010538, 0.7730538, 0.042491645, -0.848019, 0.5282601, 0.920251, -0.17265256, -0.3511825, -0.32946014, 1.1079667, 0.048509844)
 bone_name = "mixamorig8RightHandIndex3"
 bone_idx = 38
 metadata/extras = {
@@ -9883,7 +9884,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00547513462574, 3.06480745936593, -0.00000000167486], \"preRotation\": [2.23720662791303, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99875780054255, 0.04935047593912, 0.00688377197182, 0.0, -0.04927404873181, 0.95763153783135, 0.283749720192, 0.0, 0.00741106696456, -0.28373643775879, 0.9588736662744, 0.0, -0.01556772178775, 3.17305658027107, -0.00000002719204, 1.0] } }"
 
 [node name="mixamorig8RightHandMiddle3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=2087582190]
-transform = Transform3D(0.4181833, 0.6982216, 0.58104146, -0.033200573, -0.62748206, 0.777923, 0.9077557, -0.34460533, -0.23922119, -0.3389505, 1.0955455, 0.020148449)
+transform = Transform3D(0.40349215, 0.6981842, 0.59138215, -0.029412923, -0.6360999, 0.77104616, 0.91451025, -0.32850525, -0.23612565, -0.33572912, 1.1042768, 0.0024137981)
 bone_name = "mixamorig8RightHandMiddle3"
 bone_idx = 41
 metadata/extras = {
@@ -9901,7 +9902,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.01471073302994, 3.41666444847588, -0.00000007603569], \"preRotation\": [-5.2238282237792, 0.0, -0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99868321062867, 0.05076745557933, 0.00738310578764, 0.0, -0.05077441676995, 0.95755570672114, 0.28374112631439, 0.0, 0.00733508000925, -0.28374237190537, 0.95887249550335, 0.0, -0.01367540018676, 3.49193319789274, -0.00000004183559, 1.0] } }"
 
 [node name="mixamorig8RightHandRing3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=121414683]
-transform = Transform3D(0.4209022, 0.76762426, 0.4833158, -0.06348347, -0.5065771, 0.8598545, 0.9048819, -0.39259723, -0.16448802, -0.35212404, 1.1138825, -0.011867592)
+transform = Transform3D(0.40599686, 0.76936805, 0.49319273, -0.05973982, -0.5161748, 0.85439765, 0.91191965, -0.3763459, -0.1636034, -0.34823787, 1.1224656, -0.029951401)
 bone_name = "mixamorig8RightHandRing3"
 bone_idx = 44
 metadata/extras = {
@@ -9919,7 +9920,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00139288412876, 2.70095321226921, 0.00000001401384], \"preRotation\": [-4.63876025022453, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99888850303785, 0.04661113237723, 0.00701147849633, 0.0, -0.04668862148262, 0.95797467530607, 0.28302772628561, 0.0, 0.00647542402049, -0.28304049809323, 0.9590860988877, 0.0, 0.00346215760754, 2.80727789559357, -0.00000001574764, 1.0] } }"
 
 [node name="mixamorig8RightHandPinky3" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=2093375812]
-transform = Transform3D(0.43163654, 0.76777434, 0.4735106, -0.08312258, -0.488841, 0.8684038, 0.8982095, -0.4141943, -0.14718236, -0.36627862, 1.1416851, -0.04513987)
+transform = Transform3D(0.4166669, 0.770011, 0.4831888, -0.07952181, -0.4986149, 0.8631684, 0.9055743, -0.3980776, -0.14652368, -0.36162668, 1.1501179, -0.06366317)
 bone_name = "mixamorig8RightHandPinky3"
 bone_idx = 47
 metadata/extras = {
@@ -9937,7 +9938,7 @@ metadata/extras = {
 metadata/transformData = "{ \"inheritType\": 1.0, \"eulerOrder\": \"ZYX\", \"translation\": [0.00884832529519, 2.11767326246995, -0.00000001062659], \"preRotation\": [-12.0181071282053, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parentMatrixWorld\": { \"elements\": [0.99868389713529, 0.05071981851719, 0.00761404046897, 0.0, -0.05079787062096, 0.95769887703924, 0.28325330935076, 0.0, 0.0070745984378, -0.28326729590152, 0.95901490558259, 0.0, -0.00224624784972, 2.63311577672464, 0.00000001275748, 1.0] } }"
 
 [node name="mixamorig8LeftToeBase" type="BoneAttachment3D" parent="thirdPersonModel/CharacterModel/Node/Skeleton3D" unique_id=1029905995]
-transform = Transform3D(-0.93069315, 0.35901132, 0.07015063, 0.120390266, 0.11952999, 0.9855044, 0.3454221, 0.9256477, -0.15446717, 0.32427087, 0.021735609, 0.29964334)
+transform = Transform3D(-0.92957765, 0.36119628, 0.0736381, 0.12549913, 0.1222665, 0.98453104, 0.34660542, 0.92443943, -0.15898597, 0.32632202, 0.02213861, 0.29909113)
 bone_name = "mixamorig8LeftToeBase"
 bone_idx = 51
 metadata/extras = {

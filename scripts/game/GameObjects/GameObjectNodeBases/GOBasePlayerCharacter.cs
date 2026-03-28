@@ -299,6 +299,14 @@ public abstract partial class GOBasePlayerCharacter : GOBaseCharacterBody3D
         if (Global.gameState.PlayerIDToControlledCharacter[Global.steamid] == id)
         {
             HandleVisualRayCast(delta);
+            if(this.GlobalPosition.DistanceSquaredTo(Global.gameState.gameModeManager.generator.GlobalPosition) < 100f)
+            {
+                Global.ui.inGameUI.PlayerUIManager.ShowGeneratorHealthBar();
+            }
+            else
+            {
+                Global.ui.inGameUI.PlayerUIManager.HideGeneratorHealthBar();
+            }
         }
     }
 

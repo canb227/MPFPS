@@ -86,7 +86,7 @@ public partial class CharacterSoundManager : Node
         float audioTime = 0;
         if(isRunning)
         {
-            audioTime = 0.0f;
+            audioTime = 0.2f;
         }
         else
         {

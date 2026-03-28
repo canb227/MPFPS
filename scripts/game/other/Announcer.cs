@@ -27,6 +27,7 @@ public partial class Announcer : GOBaseStaticBody
         GameModeManager.PlayInfoBeep += PlayInfoBeep;
     }
 
+    bool hordeFinished;
     public override async void _Process(double delta)
     {
         base._Process(delta);
@@ -34,8 +35,9 @@ public partial class Announcer : GOBaseStaticBody
         {
             swarmMusicTimer -= (float)delta;
         }
-        else if (audioStreamPlayerMusic.Playing)
+        else if (audioStreamPlayerMusic.Playing && !hordeFinished)
         {
+            hordeFinished = true;
             audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/hordefinished.mp3");
             audioStreamPlayerMusic.Play();
         }
@@ -71,6 +73,7 @@ public partial class Announcer : GOBaseStaticBody
     public void SwarmStarted()
     {
         swarmMusicTimer = 90f;
+        hordeFinished = false;
         if(announcerState == AnnouncerState.HORDE)
         {
             announcerState = AnnouncerState.NONE;

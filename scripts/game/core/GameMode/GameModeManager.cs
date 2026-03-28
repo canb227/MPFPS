@@ -326,7 +326,10 @@ public partial class GameModeManager : Node
     {
         foreach(var light in spotLights)
         {
-            light.Visible = false;
+            if(IsInstanceValid(light))
+            {
+                light.Visible = false;
+            }
         }
         DisableEmission(cases);
     }
@@ -336,7 +339,10 @@ public partial class GameModeManager : Node
     {
         foreach(var light in spotLights)
         {
-            light.Visible = true;
+            if(IsInstanceValid(light))
+            {
+                light.Visible = true;
+            }
         }
         EnableEmission(cases);
     }
@@ -404,6 +410,9 @@ public partial class GameModeManager : Node
         evacuationTimeLeft = 9999999;
         Global.ui.inGameUI.PlayerUIManager.ClearAllInfoStrings();
         Global.ui.inGameUI.PlayerUIManager.ClearAllStatusStrings();
+        Global.ui.inGameUI.PlayerUIManager.HideGeneratorHealthBar();
+        Global.ui.inGameUI.PlayerUIManager.ClearInventoryUI();
+        Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(Team.None, "");
 
 
         //GET THE MAP FROM MAP MANAGER OR GAMESTATE TODO RIGHT HERE BUDFindSpotLights
@@ -585,7 +594,7 @@ public partial class GameModeManager : Node
             pa.id = id;
             pa.team = Team.Traitor;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role, codeWords]);
         }
 
         foreach (ulong id in managers)
@@ -594,7 +603,7 @@ public partial class GameModeManager : Node
             pa.id = id;
             pa.team = Team.Manager;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role, codeWords]);
         }
 
         foreach (ulong id in players)
@@ -603,7 +612,7 @@ public partial class GameModeManager : Node
             pa.id = id;
             pa.team = Team.Innocent;
             byte[] data = MessagePackSerializer.Serialize(pa);
-            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role]);
+            RPCManager.RPC(this, "AssignRole", [id, pa.team, pa.role, codeWords]);
         }
         if (numPlayers == 0)
         {
@@ -614,7 +623,7 @@ public partial class GameModeManager : Node
     }
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
-    public void AssignRole(ulong id, Team team, Role role)
+    public void AssignRole(ulong id, Team team, Role role, string currentCodeWords)
     {
         Logging.Log($"Player {id} has been assigned team:{team} and role:{role}", "GameModeManager");
         basicPlayers[id].Assignment(team, role);
@@ -633,7 +642,7 @@ public partial class GameModeManager : Node
         }
         if (id == Global.steamid)
         {
-            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team, codeWords);
+            Global.ui.inGameUI.PlayerUIManager.UpdateTeamUI(team, currentCodeWords);
         }
     }
 
@@ -912,16 +921,19 @@ public partial class GameModeManager : Node
     {
         foreach (var mesh in cases)
         {
-            if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
-                continue;
+            if(IsInstanceValid(mesh))
+            {
+                if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
+                    continue;
 
-            var mat = mesh.GetSurfaceOverrideMaterial(1) as StandardMaterial3D;
-            if (mat == null)
-                continue;
+                var mat = mesh.GetSurfaceOverrideMaterial(1) as StandardMaterial3D;
+                if (mat == null)
+                    continue;
 
-            //mat.EmissionEnabled = true;
-            mat.EmissionEnergyMultiplier = 2.5f;
-            mat.Emission = new Color(1,1,1);
+                //mat.EmissionEnabled = true;
+                mat.EmissionEnergyMultiplier = 2.5f;
+                mat.Emission = new Color(1,1,1);
+            }
         }
     }
 
@@ -931,16 +943,19 @@ public partial class GameModeManager : Node
     {
         foreach (var mesh in cases)
         {
-            if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
-                continue;
+            if(IsInstanceValid(mesh))
+            {
+                if (mesh.Mesh == null || mesh.Mesh.GetSurfaceCount() <= 1)
+                    continue;
 
-            var mat = mesh.GetSurfaceOverrideMaterial(1) as StandardMaterial3D;
-            if (mat == null)
-                continue;
+                var mat = mesh.GetSurfaceOverrideMaterial(1) as StandardMaterial3D;
+                if (mat == null)
+                    continue;
 
-            //mat.EmissionEnabled = false;
-            mat.EmissionEnergyMultiplier = 0.3f;
-            mat.Emission = new Color(.4f,0,0);
+                //mat.EmissionEnabled = false;
+                mat.EmissionEnergyMultiplier = 0.3f;
+                mat.Emission = new Color(.4f,0,0);
+            }
         }
     }
 

@@ -88,8 +88,8 @@ omni_range = 0.087864086
 [node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=50563392]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33246216, 0.0006111264, -0.28638643)
 light_specular = 0.1
-spot_range = 6.0909977
-spot_angle = 29.042307
+spot_range = 10.619146
+spot_angle = 14.497566
 
 [node name="fps" type="Node3D" parent="." unique_id=716934181]
 

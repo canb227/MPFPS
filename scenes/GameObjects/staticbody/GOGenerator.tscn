@@ -835,7 +835,7 @@ shape = SubResource("ConcavePolygonShape3D_fl38p")
 [node name="Area3D" type="Area3D" parent="." unique_id=1061076990]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5557475, 0)
 collision_layer = 0
-collision_mask = 4
+collision_mask = 20
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=636841726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.072265625, 0)

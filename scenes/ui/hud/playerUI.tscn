@@ -31,7 +31,10 @@ shadow_color = Color(0, 0, 0, 1)
 font_size = 24
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="PlayerUIManager" type="Control" unique_id=805232230 node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole", "inventorySlot1", "inventorySlot2", "inventorySlot3", "inventorySlot4", "infoBox", "infoLabel", "statusBox", "statusLabel")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mfrf8"]
+bg_color = Color(0.69340664, 0.5118575, 0, 1)
+
+[node name="PlayerUIManager" type="Control" unique_id=805232230 node_paths=PackedStringArray("PlayerInfoUI", "deadPlayerScreen", "roleShopScreen", "InventoryUI", "targetPlayerName", "targetPlayerHealth", "targetPlayerRole", "inventorySlot1", "inventorySlot2", "inventorySlot3", "inventorySlot4", "infoBox", "infoLabel", "statusBox", "statusLabel", "generatorHealthBar")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,6 +58,7 @@ infoBox = NodePath("InfoBox")
 infoLabel = NodePath("InfoBox/InfoMessage")
 statusBox = NodePath("PlayerStatus")
 statusLabel = NodePath("PlayerStatus/StatusMessage")
+generatorHealthBar = NodePath("GeneratorBar")
 metadata/_custom_type_script = "uid://dj5onwk1keewc"
 
 [node name="bottomleftUI" parent="." unique_id=379088181 instance=ExtResource("1_ct4y5")]
@@ -445,3 +449,25 @@ alignment = 2
 custom_minimum_size = Vector2(128, 64)
 layout_mode = 2
 text = "Purchase"
+
+[node name="GeneratorBar" type="ProgressBar" parent="." unique_id=2054982873]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -242.0
+offset_top = 87.0
+offset_right = 245.0
+offset_bottom = 114.0
+grow_horizontal = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_mfrf8")
+value = 100.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="GeneratorBar" unique_id=226541094]
+layout_mode = 0
+offset_left = 175.0
+offset_top = 1.0
+offset_right = 311.0006
+offset_bottom = 24.0
+text = "Generator Health"

@@ -984,6 +984,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         collider.Position = new Vector3(0, -0.634f, 0);
         ((CapsuleShape3D)collider.Shape).Radius = 0.186f;
         CollisionLayer = 0;
+        if(equipped.category == InventoryGroupCategory.Hands)
+        {
+            equipped.OnUnequipped(authority);
+        }
 
         //adjust camera
         camera.Position = new Vector3(0, -2.259f, 1.01f);
@@ -1077,6 +1081,10 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             rpc_OnKnockedOut();
             Global.ui.inGameUI.ScoreBoard.PlayerDied(authority);
             Global.gameState.gameModeManager.CharacterDied(authority, team);
+            if(equipped.category == InventoryGroupCategory.Hands)
+            {
+                equipped.OnUnequipped(authority);
+            }
             if(Global.steamid == authority)
             {
                 Global.ui.inGameUI.PlayerUIManager.AddNewStatus("You have died..."); //make sure to update the remove
@@ -1140,15 +1148,15 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
             //disable our own body colliders
         }
     }
-
+    
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void Handcuff(GOHandcuffs handcuffs)
     {
         //make sure we have dropped what the hands are holding
-        if(equipped.category == InventoryGroupCategory.Hands)
-        {
-            equipped.OnUnequipped(authority);
-        }
-        PickupReplace(handcuffs);
+        equipped.OnUnequipped(authority);
+        //PickupReplace(handcuffs);
+        handcuffs.OnDropped(authority);
+        handcuffs.QueueFree();
         handcuffed = true;
 
         if(Global.steamid == authority)
@@ -1157,6 +1165,7 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
         }
     }
 
+    [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void RemoveHandcuffs()
     {
         handcuffed = false;

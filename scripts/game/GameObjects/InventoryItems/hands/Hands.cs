@@ -187,11 +187,14 @@ public partial class Hands : GOBaseInventoryItem
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void ReleaseHeld()
     {
-        (heldObject as GameObject).priority = 10;
-        (heldObject as RigidBody3D).RemoveCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
-        heldObject.OnRelease(equippedBySteamID);
-        heldObject.currentlyHeldBy = 0;
-        heldObject = null;
+        if(heldObject != null)
+        {
+            (heldObject as GameObject).priority = 10;
+            (heldObject as RigidBody3D).RemoveCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
+            heldObject.OnRelease(equippedBySteamID);
+            heldObject.currentlyHeldBy = 0;
+            heldObject = null;
+        }
     }
 
     //[RPCMethod(mode = RPCMode.SendToAllPeers)]
@@ -238,11 +241,7 @@ public partial class Hands : GOBaseInventoryItem
     public override void OnUnequipped(ulong byID)
     {
         base.OnUnequipped(byID);
-        if(heldObject != null)
-        {
-            heldObject.OnRelease(equippedBySteamID);
-            heldObject = null; 
-        }
+        RPCManager.RPCID(id, "ReleaseHeld", []);
         Logging.Log($"Hands Unequipped", "Hands");
     }
 

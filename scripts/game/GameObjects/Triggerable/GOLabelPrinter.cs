@@ -24,8 +24,8 @@ public partial class GOLabelPrinter : GOBaseStaticTriggerable
     public GOLabelMonitor monitor3 { get; set; }
 
     private Label viewportLabel { get; set; }
-    public int paperLoadedCount { get; set; } = 1;
-    public bool waitingForPaper { get; set; } = false;
+    public int paperLoadedCount { get; set; } = 0;
+    public bool waitingForPaper { get; set; } = true;
     [Export] public MeshInstance3D _outline;
 	private bool outlineDesiredState;
 

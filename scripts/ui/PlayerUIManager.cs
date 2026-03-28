@@ -27,6 +27,7 @@ public partial class PlayerUIManager : Control
     [Export] public Label infoLabel;
     [Export] public PanelContainer statusBox;
     [Export] public Label statusLabel;
+    [Export] public ProgressBar generatorHealthBar;
 
     [Export] public float FadeDuration = 3f;
     public float infoDisplayTimeLeft;
@@ -34,9 +35,23 @@ public partial class PlayerUIManager : Control
 
     public override void _Process(double delta)
     {
+        if(Global.gameState.gameModeManager.generator != null)
+        {
+            generatorHealthBar.Value = Global.gameState.gameModeManager.generator.generatorHealthInSecondsPerRobot;
+            generatorHealthBar.MaxValue = Global.gameState.gameModeManager.generator.generatorMaxHealth;
+        }
     }
 
 
+    public void ShowGeneratorHealthBar()
+    {
+        generatorHealthBar.Visible = true;
+    }
+
+    public void HideGeneratorHealthBar()
+    {
+        generatorHealthBar.Visible = false;
+    }
 
     public void ShowPlayerUI(ulong characterID)
     {
@@ -59,6 +74,13 @@ public partial class PlayerUIManager : Control
     public void UpdateTeamUI(Team newTeam, string codeWords)
     {
         PlayerInfoUI.UpdateTeamUI(newTeam, codeWords);
+    }
+
+    public void ClearInventoryUI()
+    {
+        inventorySlot2.Texture = null;
+        inventorySlot3.Texture = null;
+        inventorySlot4.Texture = null;
     }
 
     public void UpdateInventorySlot(int slot, string iconPath)
@@ -156,11 +178,13 @@ public partial class PlayerUIManager : Control
     public void ClearAllInfoStrings()
     {
         infoStrings = new();
+        infoBox.Visible = false;
     }
 
     public void ClearAllStatusStrings()
     {
-        infoStrings = new();
+        statusStrings = new();
+        statusBox.Visible = false;
     }
 
     private List<string> statusStrings = new();

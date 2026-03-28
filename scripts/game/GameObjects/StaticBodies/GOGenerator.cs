@@ -13,7 +13,7 @@ public partial class GOGenerator : GOBaseStaticBody
 	[Export] public AudioStreamPlayer3D otherAudio;
 	private bool outlineDesiredState;
 	public float generatorHealthInSecondsPerRobot = 0.0f;
-	public float generatorMaxHealth = 900.0f;
+	public float generatorMaxHealth = 300.0f;
 	private bool generatorPowered;
 	public override void _Ready()
 	{
@@ -58,7 +58,7 @@ public partial class GOGenerator : GOBaseStaticBody
 		{
 			if (robotsInArea > 0)
 			{
-				int cappedRobotsInArea = Math.Min(20, robotsInArea);
+				int cappedRobotsInArea = Math.Min(30, robotsInArea);
 				generatorHealthInSecondsPerRobot -= (float)delta * cappedRobotsInArea; //max 20 robots deal damage
 				timeSinceNoEnemy = 0;
 				if(generatorHealthInSecondsPerRobot <= 0)

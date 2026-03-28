@@ -20,7 +20,7 @@ damping = 0.4
 wet = 0.2
 
 [resource]
-bus/0/volume_db = -3.1173582
+bus/0/volume_db = -10.610998
 bus/0/effect/0/effect = SubResource("AudioEffectLimiter_j3pel")
 bus/0/effect/0/enabled = false
 bus/0/effect/1/effect = SubResource("AudioEffectCompressor_j3pel")
