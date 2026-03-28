@@ -46,12 +46,11 @@ public partial class GOHandcuffs : GOBaseAccessory
         var obj = Global.gameState.GameObjects[targetID];
         if (obj is BasicPlayerCharacter target)
         {
-            // if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
-            // {
-            //     basicPlayerCharacter.DropEquipped();
-
-            // }
-            GetHeldBy().Equip(InventoryGroupCategory.Hands);
+            if (GetHeldBy() is BasicPlayerCharacter basicPlayerCharacter)
+             {
+                 basicPlayerCharacter.DropEquipped();
+                 basicPlayerCharacter.Equip(InventoryGroupCategory.Hands);
+             }
             target.Handcuff(this);
             audioStreamPlayer.Play();
             this.QueueFree();
