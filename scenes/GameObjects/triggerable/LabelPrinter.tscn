@@ -1,10 +1,7 @@
 [gd_scene format=4 uid="uid://lkjoa1d5xng3"]
 
 [ext_resource type="Script" uid="uid://dxf613enqntqj" path="res://scripts/game/GameObjects/Triggerable/GOLabelPrinter.cs" id="1_gg7eq"]
-[ext_resource type="Texture2D" uid="uid://cv3dg3g7glmwn" path="res://assets/models/warehouse_old/MetalScratched007_REFL_3K.png" id="1_xx0ak"]
-[ext_resource type="Texture2D" uid="uid://ctgninah22as8" path="res://assets/models/warehouse_old/MetalScratched007_NRM_3K.jpg" id="2_emlgc"]
 [ext_resource type="Script" uid="uid://bi8ssshhlhhd4" path="res://scripts/game/GameObjects/Triggerable/Trigger.cs" id="2_tsbdh"]
-[ext_resource type="Texture2D" uid="uid://csq13ergt6e3a" path="res://assets/models/warehouse_old/PrinterDisplay_TFS.jpg" id="3_gg7eq"]
 [ext_resource type="PackedScene" uid="uid://1ka68hkbpecx" path="res://scenes/ui/ingame/labelprintermonitor.tscn" id="4_emlgc"]
 [ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="5_nphrl"]
 [ext_resource type="AudioStream" uid="uid://bgg2116bt677y" path="res://assets/audio/environment/plastic_rough_scraping.wav" id="7_nphrl"]
@@ -34,13 +31,10 @@ metadata/extras = {
 resource_name = "TFSPlastic_V2_Dark"
 cull_mode = 2
 albedo_color = Color(0.27645487, 0.32542247, 0.411764, 1)
-metallic_texture = ExtResource("1_xx0ak")
 metallic_texture_channel = 2
 roughness = 0.25454545
-roughness_texture = ExtResource("1_xx0ak")
 roughness_texture_channel = 1
 normal_enabled = true
-normal_texture = ExtResource("2_emlgc")
 metadata/extras = {
 "blenderkit": {}
 }
@@ -431,10 +425,8 @@ shadow_mesh = SubResource("ArrayMesh_rq08p")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uiq5f"]
 resource_name = "Printer_Display"
 cull_mode = 2
-albedo_texture = ExtResource("3_gg7eq")
 roughness = 0.33181816
 emission_enabled = true
-emission_texture = ExtResource("3_gg7eq")
 metadata/extras = {
 "blenderkit": {}
 }

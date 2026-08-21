@@ -1,6 +1,7 @@
 using Godot;
 using Steamworks;
 using System;
+using System.Runtime.InteropServices;
 
 
 
@@ -29,7 +30,7 @@ public partial class Global : Node
     /// <summary>
     /// The SteamID of the user that launched the game. Is set to 0 if Steam Init fails.
     /// </summary>
-	public static ulong steamid = 0;
+    public static ulong steamid = 0;
 
     /// <summary>
     /// true if the game has succesfully connected to Steam's API - don't call Steamworks functions until after this is true
@@ -82,7 +83,7 @@ public partial class Global : Node
         instance = this;
 
 
-
+        RegisterSteamApiResolver(); //linux support
         SteamInit(); //We have to do Steam here in the Global autoload, doing it in a normal scene is too late for the SteamAPI hooks to work.
 
         Logging.Start(); //Also start logging here instead of Main so its ready super early to log stuff
@@ -113,6 +114,20 @@ public partial class Global : Node
         MPFPSMultiplayerAPI mpapi = new();
         mpapi.MultiplayerPeer = null;
         GetTree().SetMultiplayer(mpapi);
+    }
+
+    private void RegisterSteamApiResolver()
+    {
+        NativeLibrary.SetDllImportResolver(typeof(SteamAPI).Assembly, (libraryName, assembly, searchPath) =>
+        {
+            if (libraryName == "steam_api" || libraryName == "libsteam_api")
+            {
+                var path = OS.GetExecutablePath().GetBaseDir().PathJoin("lib/linux/libsteam_api.so");
+                return NativeLibrary.Load(path);
+            }
+
+            return IntPtr.Zero;
+        });
     }
 
     /// <summary>

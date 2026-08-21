@@ -1,13 +1,10 @@
-[gd_scene load_steps=20 format=4 uid="uid://72k7rfi0kvts"]
+[gd_scene format=4 uid="uid://72k7rfi0kvts"]
 
 [ext_resource type="Script" uid="uid://wshjks802r6a" path="res://scripts/game/GameObjects/Triggerable/GOLabelMonitor.cs" id="1_7w8ct"]
-[ext_resource type="Texture2D" uid="uid://dapgfmr5fr4ku" path="res://assets/models/warehouse/Monitor3a_Diffuse.jpg" id="2_3lxmq"]
-[ext_resource type="Texture2D" uid="uid://dw4kwuk1gsp20" path="res://assets/models/warehouse/Monitor3_Emission.png" id="3_5ts4f"]
-[ext_resource type="Texture2D" uid="uid://cq3v5vihmoiux" path="res://assets/models/warehouse/Monitor3_Roughness.png" id="4_ni7p5"]
-[ext_resource type="Texture2D" uid="uid://dledak8w4n2nv" path="res://assets/models/warehouse/happinessisefficiency.png" id="5_6flwn"]
-[ext_resource type="Texture2D" uid="uid://dw84rikvuk5mw" path="res://assets/models/warehouse/hanging_picture_frame_01_artwork_roughness_8k.png" id="6_yma4g"]
+[ext_resource type="Texture2D" uid="uid://bf07qkr3dg166" path="res://assets/models/map/computerdesk_Monitor5a_Diffuse.jpg" id="4_ni7p5"]
+[ext_resource type="Texture2D" uid="uid://y65ensf5j0kq" path="res://assets/models/map/computerdesk_happinessisefficiency.png" id="5_6flwn"]
+[ext_resource type="Texture2D" uid="uid://bxpeka0403e2n" path="res://assets/models/map/computerdesk_wood_5.png" id="6_yma4g"]
 [ext_resource type="Shader" uid="uid://d2cgrd2gvprri" path="res://assets/materials/MonitorShader.gdshader" id="7_3lxmq"]
-[ext_resource type="Texture2D" uid="uid://dbdl8oquvln6u" path="res://assets/models/warehouse/crt_screen_mp_1.png" id="8_3lxmq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovy27"]
 resource_name = "Monitor 3a"
@@ -17,7 +14,7 @@ metallic_texture_channel = 2
 roughness_texture = ExtResource("4_ni7p5")
 roughness_texture_channel = 1
 emission_enabled = true
-emission_texture = ExtResource("3_5ts4f")
+emission_texture = ExtResource("4_ni7p5")
 texture_filter = 2
 metadata/extras = {
 "blenderkit": {}
@@ -94,7 +91,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_cikkf")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3lxmq"]
-albedo_texture = ExtResource("2_3lxmq")
+albedo_texture = ExtResource("4_ni7p5")
 texture_filter = 0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_5ts4f"]
@@ -140,13 +137,13 @@ font_size = 64
 shadow_size = 5
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="GOLabelMonitor" type="StaticBody3D" node_paths=PackedStringArray("viewport")]
+[node name="GOLabelMonitor" type="StaticBody3D" unique_id=371985517 node_paths=PackedStringArray("viewport")]
 script = ExtResource("1_7w8ct")
 viewport = NodePath("screen")
 triggerables = Array[Object]([])
 metadata/_custom_type_script = "uid://wshjks802r6a"
 
-[node name="Mesh_LabelMonitor1" type="MeshInstance3D" parent="."]
+[node name="Mesh_LabelMonitor1" type="MeshInstance3D" parent="." unique_id=1897914049]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xkreb")
 skeleton = NodePath("")
@@ -173,27 +170,24 @@ metadata/size_x = "0.9414"
 metadata/size_z = "0.7557"
 metadata/size_y = "0.8323"
 
-[node name="CollisionShape3D_LabelMonitor1" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D_LabelMonitor1" type="CollisionShape3D" parent="." unique_id=1145954593]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0.42697525, 0)
 shape = SubResource("BoxShape3D_awrdi")
 debug_fill = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_2w72s")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=110937924]
+libraries/ = SubResource("AnimationLibrary_2w72s")
 
-[node name="screen" type="SubViewport" parent="."]
+[node name="screen" type="SubViewport" parent="." unique_id=1010952428]
 
-[node name="TextureRect" type="TextureRect" parent="screen"]
+[node name="TextureRect" type="TextureRect" parent="screen" unique_id=279174993]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("8_3lxmq")
 
-[node name="Label" type="Label" parent="screen"]
+[node name="Label" type="Label" parent="screen" unique_id=54431200]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
