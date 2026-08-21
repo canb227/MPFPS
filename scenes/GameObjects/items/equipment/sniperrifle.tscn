@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_nm88n"]
 [ext_resource type="AudioStream" uid="uid://bv3r20o11eaqu" path="res://assets/audio/weapons/basic/fire1.wav" id="3_vqgkx"]
 [ext_resource type="Texture2D" uid="uid://cs32t6fbodtq5" path="res://assets/models/weapons/sniper_Image_0.png" id="4_uawnh"]
+[ext_resource type="Material" uid="uid://cd3ojftk2l6ck" path="res://assets/materials/sniper_flash.tres" id="5_y82ny"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
 size = Vector3(1.64744, 0.3601513, 0.15637207)
@@ -90,6 +91,20 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_34beh")
 
+[sub_resource type="QuadMesh" id="QuadMesh_nm88n"]
+material = ExtResource("5_y82ny")
+size = Vector2(0.6, 0.6)
+orientation = 0
+
+[sub_resource type="QuadMesh" id="QuadMesh_vqgkx"]
+material = ExtResource("5_y82ny")
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="QuadMesh" id="QuadMesh_uawnh"]
+material = ExtResource("5_y82ny")
+size = Vector2(0.5, 0.5)
+orientation = 0
+
 [sub_resource type="Animation" id="Animation_hq15s"]
 length = 0.001
 tracks/0/type = "value"
@@ -143,7 +158,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("tps/flash:light_energy")
+tracks/4/path = NodePath("flash:light_energy")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -151,6 +166,42 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("tps/flashside_tps:transparency")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("tps/flashfront_tps:transparency")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("fps/v_pnevm_reference_sample_0/flashfront_fps:transparency")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
 }
 
 [sub_resource type="Animation" id="Animation_bs15t"]
@@ -162,22 +213,70 @@ tracks/0/path = NodePath("fps:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3333, 1),
+"times": PackedFloat32Array(0, 0.23333333, 1),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0.058381263, 0, 0), Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(0.017453292, 0, 0), Vector3(0, 0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("tps/flash:light_energy")
+tracks/1/path = NodePath("flash:light_energy")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.13333334),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [6.0, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("tps/flashside_tps:transparency")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("tps/flashfront_tps:transparency")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("fps/v_pnevm_reference_sample_0/flashfront_fps:transparency")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("fps:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.23333332, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0.095), Vector3(0, 0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_drkua"]
@@ -293,6 +392,12 @@ gi_mode = 2
 mesh = SubResource("ArrayMesh_5ay0r")
 skeleton = NodePath("")
 
+[node name="flashfront_fps" type="MeshInstance3D" parent="fps/v_pnevm_reference_sample_0" unique_id=953718007]
+transform = Transform3D(5.6456447e-06, -1.7386053e-06, -20.000002, 0.0349066, -19.999983, 1.7484557e-06, -19.999983, -0.0349066, -5.6426e-06, 0.3217082, 2.2218833, 28.027386)
+transparency = 1.0
+mesh = SubResource("QuadMesh_nm88n")
+skeleton = NodePath("../../../../..")
+
 [node name="tps" type="Node3D" parent="." unique_id=1106537747]
 transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 
@@ -302,8 +407,20 @@ gi_mode = 2
 mesh = SubResource("ArrayMesh_5ay0r")
 skeleton = NodePath("")
 
-[node name="flash" type="OmniLight3D" parent="tps" unique_id=1899963438]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38138482, 0.12050908, -1.4345977)
+[node name="flashfront_tps" type="MeshInstance3D" parent="tps" unique_id=2119377577]
+transform = Transform3D(1.3333334, 0, 0, 0, 1.3333334, 0, 0, 0, 1.3333334, 0.37502038, 0.10738151, -1.4118283)
+transparency = 1.0
+mesh = SubResource("QuadMesh_vqgkx")
+skeleton = NodePath("../../..")
+
+[node name="flashside_tps" type="MeshInstance3D" parent="tps" unique_id=703347232]
+transform = Transform3D(1.3333334, 0, 0, 0, 1.3333334, 0, 0, 0, 1.3333334, 0.37502038, 0.10738151, -1.4118283)
+transparency = 1.0
+mesh = SubResource("QuadMesh_uawnh")
+skeleton = NodePath("../../..")
+
+[node name="flash" type="OmniLight3D" parent="." unique_id=1899963438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2860386, 0.09038181, -1.0759482)
 light_color = Color(0.97582036, 0.9043445, 0.77304626, 1)
 light_energy = 0.0
 light_specular = 0.0

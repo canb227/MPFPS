@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dbgihkyi5gh7m"]
+
+[ext_resource type="Texture2D" uid="uid://oa718hgkbrqb" path="res://assets/materials/particles/star_09.png" id="1_b0tbd"]
+
+[resource]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(11.431173, 8.741353, 2.977452, 0.03529412)
+albedo_texture = ExtResource("1_b0tbd")
