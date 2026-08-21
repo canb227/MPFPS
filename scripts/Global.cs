@@ -122,7 +122,7 @@ public partial class Global : Node
         {
             if (libraryName == "steam_api" || libraryName == "libsteam_api")
             {
-                var path = OS.GetExecutablePath().GetBaseDir().PathJoin("lib/linux/libsteam_api.so");
+                var path = ProjectSettings.GlobalizePath("res://lib/linux/libsteam_api.so");
                 return NativeLibrary.Load(path);
             }
 
@@ -137,23 +137,23 @@ public partial class Global : Node
     {
         Logging.Log("Initializing Steam API...", "SteamAPI");
 
-        try
-        {
-            //SteamAPI call that checks if steam is running in the background. If it is not, it starts steam then starts the game once steam is started.
-            //We close the game so we don't end up with two instances open.
+        // try
+        // {
+        //     //SteamAPI call that checks if steam is running in the background. If it is not, it starts steam then starts the game once steam is started.
+        //     //We close the game so we don't end up with two instances open.
 
-            if (SteamAPI.RestartAppIfNecessary((AppId_t)APP_ID)) //ALWAYS RETURNS FALSE IF app_id.txt IS PRESENT IN ROOT FOLDER
-            {
-                GD.PushError("Steam is not running. Starting Steam then relaunching game", "SteamAPI");
-                GetTree().Quit();
-            }
-        }
-        catch (System.DllNotFoundException)
-        {
-            //nothing works if the steam dll for our OS isn't present. We only support Windows at the moment.
-            GD.PushError("steam_api64.dll not found. steam_api64.dll is expected in the game root folder.", "SteamAPI");
-            throw;
-        }
+        //     if (SteamAPI.RestartAppIfNecessary((AppId_t)APP_ID)) //ALWAYS RETURNS FALSE IF app_id.txt IS PRESENT IN ROOT FOLDER
+        //     {
+        //         GD.PushError("Steam is not running. Starting Steam then relaunching game", "SteamAPI");
+        //         GetTree().Quit();
+        //     }
+        // }
+        // catch (System.DllNotFoundException)
+        // {
+        //     //nothing works if the steam dll for our OS isn't present. We only support Windows at the moment.
+        //     GD.PushError("steam_api64.dll not found. steam_api64.dll is expected in the game root folder.", "SteamAPI");
+        //     throw;
+        // }
 
         if (SteamAPI.Init())
         {
