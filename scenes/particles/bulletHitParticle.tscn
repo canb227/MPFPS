@@ -1,40 +1,49 @@
 [gd_scene format=3 uid="uid://df04p8j6ft1s"]
 
 [ext_resource type="Script" uid="uid://hco6kv34txxq" path="res://scripts/game/particle/ParticleDespawner.cs" id="1_1oke2"]
-[ext_resource type="Texture2D" uid="uid://wvs6v3f064an" path="res://assets/materials/particles/dirt_02.png" id="2_jdld6"]
+[ext_resource type="Texture2D" uid="uid://ck64gop8p82jg" path="res://assets/materials/particles/fire_01.png" id="2_pchi5"]
+
+[sub_resource type="Curve" id="Curve_jdld6"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.08450704, 1), 0.0, 0.0, 0, 0, Vector2(0.21478873, 0.02803731), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_vusxu"]
+curve = SubResource("Curve_jdld6")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_05moy"]
-lifetime_randomness = 0.5
-angle_min = -374.8
-angle_max = 314.30002
-direction = Vector3(0, 0, 1)
-spread = 33.228
-initial_velocity_min = 5.0
-initial_velocity_max = 7.0
+angle_min = -179.99998
+angle_max = 180.00002
+direction = Vector3(0, 24, 1)
+spread = 180.0
+flatness = 0.8
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
 angular_velocity_min = -1.6093254e-05
-angular_velocity_max = 332.46997
-scale_min = 0.02
-scale_max = 0.099999994
+angular_velocity_max = 0.9999839
+gravity = Vector3(0, 0, 0)
+alpha_curve = SubResource("CurveTexture_vusxu")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uhks6"]
 transparency = 1
 blend_mode = 1
-albedo_color = Color(0.48785955, 0.3990522, 0.29407978, 1)
-albedo_texture = ExtResource("2_jdld6")
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.6378432, 0.6378432, 0.63784313, 1)
+albedo_texture = ExtResource("2_pchi5")
 emission_enabled = true
 billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_w68xi"]
 material = SubResource("StandardMaterial3D_uhks6")
+size = Vector2(0.3, 0.3)
 
 [node name="BulletHitParticle" type="Node3D" unique_id=523268235]
 script = ExtResource("1_1oke2")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=2004696225]
 emitting = false
-amount = 1
+amount = 6
+lifetime = 0.2
 one_shot = true
 explosiveness = 0.95
-randomness = 0.98
 process_material = SubResource("ParticleProcessMaterial_05moy")
 draw_pass_1 = SubResource("QuadMesh_w68xi")

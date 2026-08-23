@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c8qqkk4fdcvhj"]
+
+[ext_resource type="Texture2D" uid="uid://dhg0nvmstratp" path="res://assets/materials/particles/star_06.png" id="1_ig6u0"]
+[ext_resource type="Script" uid="uid://50rl71qk5wvx" path="res://scripts/game/particle/BulletDecal.cs" id="2_d20ug"]
+[ext_resource type="Texture2D" uid="uid://dfdlvjaquo28b" path="res://assets/materials/decals/bullet_decal_1.png" id="3_31gr0"]
+[ext_resource type="Texture2D" uid="uid://kkpihair1eo" path="res://assets/materials/decals/bullet_decal_2.png" id="4_i5o8v"]
+
+[node name="Node" type="Node3D" unique_id=395108536]
+
+[node name="Decal" type="Decal" parent="." unique_id=924177828]
+transform = Transform3D(1.9106855e-15, 4.371139e-08, -1, 1, -4.371139e-08, 0, -4.371139e-08, -1, -4.371139e-08, 0, 0, 0)
+size = Vector3(0.2, 0.2, 0.2)
+texture_albedo = ExtResource("1_ig6u0")
+upper_fade = 11.41636
+lower_fade = 11.4
+script = ExtResource("2_d20ug")
+lifetime = 60.0
+decal1 = ExtResource("3_31gr0")
+decal2 = ExtResource("4_i5o8v")

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dl524mp8g0aei" path="res://scripts/game/GameObjects/InventoryItems/weapons/BasicGun.cs" id="1_vcw5l"]
 [ext_resource type="PackedScene" uid="uid://df04p8j6ft1s" path="res://scenes/particles/bulletHitParticle.tscn" id="2_weoqn"]
+[ext_resource type="PackedScene" uid="uid://c8qqkk4fdcvhj" path="res://scenes/other/bullet_hit_decal.tscn" id="3_6h40m"]
 [ext_resource type="AudioStream" uid="uid://bv3r20o11eaqu" path="res://assets/audio/weapons/basic/fire1.wav" id="3_c5mbw"]
 [ext_resource type="Texture2D" uid="uid://o84j8kuu7qmb" path="res://assets/models/weapons/shotgun_1_shotgun_1.png" id="4_6h40m"]
 [ext_resource type="Material" uid="uid://dbgihkyi5gh7m" path="res://assets/materials/shotgun_flash.tres" id="5_weoqn"]
@@ -317,6 +318,7 @@ script = ExtResource("1_vcw5l")
 audioStreamPlayer1 = NodePath("AudioPlayer")
 audioStreamPlayer2 = NodePath("AudioPlayer2")
 shotHitParticle = ExtResource("2_weoqn")
+shotHitDecal = ExtResource("3_6h40m")
 fireRate = 1.0
 ammoType = 0
 currentMagazineAmmo = 8

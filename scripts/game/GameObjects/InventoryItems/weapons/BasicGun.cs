@@ -24,6 +24,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
     [Export] public AudioStreamPlayer3D audioStreamPlayer1 { get; set; }
     [Export] public AudioStreamPlayer3D audioStreamPlayer2 { get; set; }
     [Export] public PackedScene shotHitParticle { get; set; }
+    [Export] public PackedScene shotHitDecal {get; set; }
     [Export] public double fireRate { get; set; } = 8; //number of shots per second
     [Export] public AmmoType ammoType { get; set; } = AmmoType.RifleAmmo;
     [Export] public int currentMagazineAmmo { get; set; } = 30;
@@ -72,6 +73,8 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
         // Warm up the hit particle scene
         var warmup = shotHitParticle.Instantiate() as Node3D;
         warmup.Visible = false;
+        var warmup2 = shotHitDecal.Instantiate() as Node3D;
+        warmup2.Visible = false;
     }
 
 
@@ -220,6 +223,7 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
             while (true)
             {
                 bool particlesSpawned = false;
+                bool decalSpawned = false;
                 var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd);
                 query.CollisionMask = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3);
                 query.CollideWithBodies = true;
@@ -364,6 +368,19 @@ public partial class BasicGun : GOBaseInventoryItem, IsHoldable
                     Vector3 direction = hitParticle.GlobalPosition - (Vector3)hitResult["normal"];
                     Vector3 up = Math.Abs(direction.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
                     hitParticle.LookAt(direction, up);
+                }
+                if (shotHitDecal != null && !decalSpawned)
+                {
+                    decalSpawned = true;
+                    var decal = shotHitDecal.Instantiate() as Node3D;
+                    GetTree().Root.AddChild(decal);
+                    decal.GlobalPosition = (Vector3)hitResult["position"];
+
+                    //janky solution to avoid the error using dot product
+                    Vector3 direction = decal.GlobalPosition - (Vector3)hitResult["normal"];
+                    Vector3 adjustedDirection = new Vector3(direction.X, direction.Y, direction.Z);
+                    Vector3 up = Math.Abs(adjustedDirection.Dot(Vector3.Up)) > 0.99f ? Vector3.Right : Vector3.Up;
+                    decal.LookAt(adjustedDirection, up);
                 }
                 break; // stop if not SwarmRobot or no penetrations left
             }
