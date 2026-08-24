@@ -32,9 +32,8 @@ resource_name = "TFSPlastic_V2_Dark"
 cull_mode = 2
 albedo_color = Color(0.27645487, 0.32542247, 0.411764, 1)
 metallic_texture_channel = 2
-roughness = 0.25454545
+roughness = 0.22
 roughness_texture_channel = 1
-normal_enabled = true
 metadata/extras = {
 "blenderkit": {}
 }

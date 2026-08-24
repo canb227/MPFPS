@@ -45,7 +45,7 @@ public partial class DebugScreen : Control
 	public static List<string> directLoadMap_mapPaths = new()
 	{
 		"res://scenes/world/tutorial.tscn",
-		"res://scenes/world/warehouse.tscn",
+		"res://scenes/world/warehouse.scn",
 		"res://scenes/world/ai_testscene.tscn",
 		"res://scenes/world/devLevel.tscn",
 	};

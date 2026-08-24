@@ -1,7 +1,8 @@
-[gd_scene load_steps=30 format=4 uid="uid://cergi4lpkn7h0"]
+[gd_scene format=4 uid="uid://cergi4lpkn7h0"]
 
 [ext_resource type="Script" uid="uid://bl0741xk0s7iw" path="res://scripts/game/GameObjects/Interactable/GODeliveryGameMonitor.cs" id="1_4hkts"]
 [ext_resource type="Shader" uid="uid://cyd4agfsye7jb" path="res://assets/materials/8BitShader.gdshader" id="2_4hkts"]
+[ext_resource type="Texture2D" uid="uid://iobm2jdwdv5a" path="res://assets/models/warehouse/wood_4.png" id="2_keq7u"]
 [ext_resource type="Script" uid="uid://d0mgvdrwiponf" path="res://scripts/game/other/DeliveryVehicle2D.cs" id="2_qh3yw"]
 [ext_resource type="AudioStream" uid="uid://b8us4f56vbk8y" path="res://assets/audio/music/deliverygamesong.wav" id="4_qh3yw"]
 
@@ -272,8 +273,8 @@ roughness = 0.25
 resource_name = "CabinetBody"
 cull_mode = 2
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.3606394, 0.37103367, 0.32355663, 1)
-roughness = 0.44285715
+albedo_texture = ExtResource("2_keq7u")
+roughness = 0.58
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pmtkh"]
 resource_name = "CabinetButtonRed"
@@ -464,7 +465,7 @@ shadow_color = Color(0, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_4hkts"]
 font_size = 64
 
-[node name="GODeliveryGameMonitor" type="StaticBody3D" node_paths=PackedStringArray("lockCameraPosition", "lockPlayerPosition", "animationPlayer", "vehicle2D", "finishArea", "audioStreamPlayer3D")]
+[node name="GODeliveryGameMonitor" type="StaticBody3D" unique_id=646361268 node_paths=PackedStringArray("lockCameraPosition", "lockPlayerPosition", "animationPlayer", "vehicle2D", "finishArea", "audioStreamPlayer3D")]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_4hkts")
@@ -476,172 +477,170 @@ finishArea = NodePath("SubViewport/Node2D/FinishArea")
 audioStreamPlayer3D = NodePath("SteamAudioPlayer")
 metadata/_custom_type_script = "uid://bl0741xk0s7iw"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_keq7u")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1896199189]
+libraries/ = SubResource("AnimationLibrary_keq7u")
 
-[node name="ArcadeCabinet" type="MeshInstance3D" parent="."]
+[node name="ArcadeCabinet" type="MeshInstance3D" parent="." unique_id=34115417]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
 mesh = SubResource("ArrayMesh_jygwb")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_qh3yw")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1098415246]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, -0.03242562, 0)
 shape = SubResource("ConvexPolygonShape3D_qlejo")
 
-[node name="CameraPosition" type="Node3D" parent="."]
+[node name="CameraPosition" type="Node3D" parent="." unique_id=1720707146]
 transform = Transform3D(1, 0, 0, 0, 0.8649674, 0.5018278, 0, -0.5018278, 0.8649674, -0.0012639165, 1.6756061, 0.570295)
 
-[node name="PlayerPosition" type="Node3D" parent="."]
+[node name="PlayerPosition" type="Node3D" parent="." unique_id=849658616]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0152231455, 0.79270214)
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1732402905]
 size = Vector2i(1024, 1024)
 size_2d_override = Vector2i(1024, 1024)
 size_2d_override_stretch = true
 
-[node name="Node2D" type="Node2D" parent="SubViewport"]
+[node name="Node2D" type="Node2D" parent="SubViewport" unique_id=1789761824]
 position = Vector2(138, 317)
 
-[node name="2DDeliveryVehicle" type="CharacterBody2D" parent="SubViewport/Node2D"]
+[node name="2DDeliveryVehicle" type="CharacterBody2D" parent="SubViewport/Node2D" unique_id=405624493]
 position = Vector2(716, 575)
 rotation = -1.5707964
 script = ExtResource("2_qh3yw")
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="SubViewport/Node2D/2DDeliveryVehicle"]
+[node name="MeshInstance2D" type="MeshInstance2D" parent="SubViewport/Node2D/2DDeliveryVehicle" unique_id=1556659006]
 position = Vector2(1.7881393e-07, 1.9073486e-06)
 rotation = 1.5707964
 scale = Vector2(19.999998, 15.000001)
 mesh = SubResource("CapsuleMesh_niev0")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/2DDeliveryVehicle"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/2DDeliveryVehicle" unique_id=889573951]
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_a4tbi")
 
-[node name="FinishArea" type="Area2D" parent="SubViewport/Node2D"]
+[node name="FinishArea" type="Area2D" parent="SubViewport/Node2D" unique_id=351473138]
 
-[node name="MeshInstance2D5" type="MeshInstance2D" parent="SubViewport/Node2D/FinishArea"]
+[node name="MeshInstance2D5" type="MeshInstance2D" parent="SubViewport/Node2D/FinishArea" unique_id=154864851]
 position = Vector2(0, -200)
 scale = Vector2(25, 25)
 mesh = SubResource("BoxMesh_qym7b")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/FinishArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/FinishArea" unique_id=343945335]
 visible = false
 position = Vector2(0, -200)
 shape = SubResource("RectangleShape2D_s2k1w")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="SubViewport/Node2D"]
+[node name="StaticBody2D" type="StaticBody2D" parent="SubViewport/Node2D" unique_id=1106633579]
 position = Vector2(-14, -10)
 scale = Vector2(1.065, 1.025)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=393693184]
 position = Vector2(-83.5, 245.75)
 shape = SubResource("RectangleShape2D_4hkts")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=93199466]
 position = Vector2(838, 246)
 shape = SubResource("RectangleShape2D_4hkts")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=890921499]
 position = Vector2(378, -274)
 rotation = 1.5707964
 shape = SubResource("RectangleShape2D_4hkts")
 
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=1356627626]
 position = Vector2(376, 708)
 rotation = 1.5707964
 shape = SubResource("RectangleShape2D_4hkts")
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="MeshInstance2D" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=1214392451]
 position = Vector2(-85, 220)
 mesh = SubResource("QuadMesh_qh3yw")
 
-[node name="MeshInstance2D2" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="MeshInstance2D2" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=1844696860]
 position = Vector2(837, 217)
 mesh = SubResource("QuadMesh_qh3yw")
 
-[node name="MeshInstance2D3" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="MeshInstance2D3" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=1983041148]
 position = Vector2(372, -276)
 rotation = 1.5707964
 mesh = SubResource("QuadMesh_qh3yw")
 
-[node name="MeshInstance2D4" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D"]
+[node name="MeshInstance2D4" type="MeshInstance2D" parent="SubViewport/Node2D/StaticBody2D" unique_id=180843511]
 position = Vector2(375, 707)
 rotation = 1.5707964
 mesh = SubResource("QuadMesh_qh3yw")
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="SubViewport/Node2D"]
+[node name="StaticBody2D2" type="StaticBody2D" parent="SubViewport/Node2D" unique_id=552994221]
 
-[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D2"]
+[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D2" unique_id=63772923]
 position = Vector2(851, 684)
 polygon = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
 uv = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D2" unique_id=966083384]
 position = Vector2(850, 684)
 polygon = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
 
-[node name="StaticBody2D3" type="StaticBody2D" parent="SubViewport/Node2D"]
+[node name="StaticBody2D3" type="StaticBody2D" parent="SubViewport/Node2D" unique_id=419251692]
 
-[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D3"]
+[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D3" unique_id=378590858]
 position = Vector2(714, 24)
 polygon = PackedVector2Array(22.999481, -5.7184906, -44.68094, 57.61548, -117.328735, -16.274147, -234.56909, -48.21286, -324.9187, 49.223022, -319.60413, 187.40482, -302.95667, 338.51846, -285.41663, 508.05695, -343.87805, 560.6723, -423.7755, 515.8518, -454.95496, 332.67233, -466.97894, 106.32146, -421.08386, -18.000336, -321.69693, -87.83722, -169.44286, -139.48987, -98.67824, -140.07016, -30.237587, -98.14021)
 uv = PackedVector2Array(22.999481, -5.7184906, -44.68094, 57.61548, -117.328735, -16.274147, -234.56909, -48.21286, -324.9187, 49.223022, -319.60413, 187.40482, -302.95667, 338.51846, -285.41663, 508.05695, -343.87805, 560.6723, -423.7755, 515.8518, -454.95496, 332.67233, -480.28894, 172.87146, -488.08386, -22.000336, -404.28894, -195.43622, -184.08386, -170.10287, -57.417236, -92.15416, 28.326416, -119.43622)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D3"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D3" unique_id=1837862791]
 position = Vector2(714, 24)
 polygon = PackedVector2Array(22.999481, -5.7184906, -44.68094, 57.61548, -117.328735, -16.274147, -234.56909, -48.21286, -324.9187, 49.223022, -319.60413, 187.40482, -302.95667, 338.51846, -285.41663, 508.05695, -343.87805, 560.6723, -423.7755, 515.8518, -454.95496, 332.67233, -466.97894, 106.32146, -421.08386, -18.000336, -321.69693, -87.83722, -169.44286, -139.48987, -98.67824, -140.07016, -30.237587, -98.14021)
 
-[node name="StaticBody2D4" type="StaticBody2D" parent="SubViewport/Node2D"]
+[node name="StaticBody2D4" type="StaticBody2D" parent="SubViewport/Node2D" unique_id=93251575]
 
-[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D4"]
+[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D4" unique_id=10711094]
 position = Vector2(577, 683)
 polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D4"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D4" unique_id=798534019]
 position = Vector2(578, 684)
 polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="StaticBody2D5" type="StaticBody2D" parent="SubViewport/Node2D"]
+[node name="StaticBody2D5" type="StaticBody2D" parent="SubViewport/Node2D" unique_id=361268254]
 
-[node name="Polygon2D2" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D5"]
+[node name="Polygon2D2" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D5" unique_id=882001836]
 position = Vector2(66, 687)
 scale = Vector2(-1.28, 1)
 polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="Polygon2D3" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D5"]
+[node name="Polygon2D3" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D5" unique_id=237148718]
 position = Vector2(99.99999, -93)
 rotation = 4.7996554
 scale = Vector2(-1.28, 1)
 polygon = PackedVector2Array(-96.97888, 271.8548, 73.21213, 88.50778, 121.79713, -168.62021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D5"]
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D5" unique_id=1904784444]
 position = Vector2(66, 687)
 scale = Vector2(-1.28, 1)
 polygon = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D5"]
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D5" unique_id=2132872213]
 position = Vector2(99.99999, -93)
 rotation = 4.7996554
 scale = Vector2(-1.28, 1)
 polygon = PackedVector2Array(-96.97888, 271.8548, 73.21213, 88.50778, 121.79713, -168.62021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="StaticBody2D6" type="StaticBody2D" parent="SubViewport/Node2D"]
+[node name="StaticBody2D6" type="StaticBody2D" parent="SubViewport/Node2D" unique_id=1028986278]
 
-[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D6"]
+[node name="Polygon2D" type="Polygon2D" parent="SubViewport/Node2D/StaticBody2D6" unique_id=756698878]
 position = Vector2(82, -117)
 uv = PackedVector2Array(-84.99988, -1.0002136, 4.000122, -2.0002136, 6.000122, -142.00021, 22.000122, -327.00024, 20.000122, -434.00024, -23.999878, -532.00024, -30.999878, -602.00024, -62.999878, -591.00024, -53.999878, -483.00024, -30.999878, -306.00024, -26.999878, -180.00024, -26.999878, -57.000244)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D6"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SubViewport/Node2D/StaticBody2D6" unique_id=726399942]
 position = Vector2(850, 684)
 polygon = PackedVector2Array(-88.96753, -4.0547485, -6.227051, 1.6514893, 22.303955, -143.85754, 22.303955, -386.3726, -3.3740234, -560.4128, -126.058105, -663.125, -180.26733, -606.0626, -88.96753, -483.3786, -77.555176, -175.24182)
 
-[node name="ColorRect" type="ColorRect" parent="SubViewport"]
+[node name="ColorRect" type="ColorRect" parent="SubViewport" unique_id=1772115188]
 material = SubResource("ShaderMaterial_qh3yw")
 anchors_preset = 15
 anchor_right = 1.0
@@ -651,7 +650,7 @@ offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="SubViewport"]
+[node name="Label" type="Label" parent="SubViewport" unique_id=1791799323]
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
@@ -670,7 +669,7 @@ label_settings = SubResource("LabelSettings_qb2kn")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ColorRect2" type="ColorRect" parent="SubViewport"]
+[node name="ColorRect2" type="ColorRect" parent="SubViewport" unique_id=1145909229]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -678,7 +677,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.29954746, 0.29954746, 0.29954743, 1)
 
-[node name="Label2" type="Label" parent="SubViewport"]
+[node name="Label2" type="Label" parent="SubViewport" unique_id=639642487]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -690,7 +689,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="."]
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="." unique_id=622962035]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7111533, 0)
 stream = ExtResource("4_qh3yw")
 attenuation_model = 2

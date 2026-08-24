@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://duyj13ci6wny5" path="res://assets/audio/environment/elevbell1.wav" id="5_exdc2"]
 [ext_resource type="AudioStream" uid="uid://c8k8usi85aevf" path="res://assets/audio/environment/shippingTube/garage_move1.wav" id="6_qbjmv"]
 [ext_resource type="AudioStream" uid="uid://blxpt2irn6rri" path="res://assets/audio/environment/klaxon1.wav" id="7_5m41q"]
+[ext_resource type="Material" uid="uid://dmv18hxgmby3s" path="res://assets/materials/button_tex.tres" id="9_22u12"]
 [ext_resource type="Script" uid="uid://chlcmntip4s3" path="res://scripts/game/other/Hurtbox.cs" id="9_qbjmv"]
 [ext_resource type="Shader" uid="uid://dhmlaapeefvwi" path="res://assets/shaders/outline.gdshader" id="10_5m41q"]
 
@@ -394,8 +395,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_5r44a")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a1pik"]
-
 [sub_resource type="ArrayMesh" id="ArrayMesh_y8len"]
 _surfaces = [{
 "aabb": AABB(0.8886941, 1.358034, 1.6388897, 0.13380474, 0.55735874, 0.20566249),
@@ -417,7 +416,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 210,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAADAAAABAAFAAMABAAGAAUABgAEAAcACAAEAAAACAAAAAkACAAKAAsADAAKAAgADAAIAAkADAAJAA0ADQAJAA4ADQAOAA8AEAARABIAEAATABEAFAAQABIAFAASABUAFgAUABUAFgAVABcAGAAZABoAGAAbABkAHAAbABgAHAAdABsAHgAfACAAHgAhAB8AIgAhAB4AIgAjACEAJAAlACYAJAAnACUAJQAoACYAKQAoACUAKAApACoAKAAqACsALAAmACgALAAoAC0ALQAuACwALgAtAC8ALgAvADAALAAuADEAMgAsADEAMgAzACwANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUASABJAEoASwBMAE0ATABOAE0ATgBMAE8ATwBMAFAATwBQAFEAUABSAFEAUwBUAFUAVgBXAFgAVgBZAFcAWgBbAFwAWgBdAFsAXgBfAGAAXgBhAF8AYgBjAGQAZQBjAGIAZQBmAGMAZgBlAGcA"),
-"material": SubResource("StandardMaterial3D_a1pik"),
+"material": ExtResource("9_22u12"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 104,
