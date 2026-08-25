@@ -15,6 +15,10 @@ public partial class GOGenerator : GOBaseStaticBody
 	public float generatorHealthInSecondsPerRobot = 0.0f;
 	public float generatorMaxHealth = 300.0f;
 	private bool generatorPowered;
+	public bool GetGeneratorPowered()
+	{
+		return generatorPowered;
+	}
 	public override void _Ready()
 	{
 		base._Ready();

@@ -71,6 +71,14 @@ public partial class AIManager : Node3D
         }
     }
 
+    public void UpdateAllAgentPaths()
+    {
+        foreach(HordeAgent agent in controlledNPCs)
+        {
+            agent.recomputePath = true;
+        }
+    }
+
     public void CreateAgentPool(int agentPoolCount = 300)
     {
         agentPool.Clear();
@@ -262,6 +270,18 @@ public partial class AIManager : Node3D
                 agent.ApplyThreadedSteering(_resultsBuffer[agent], (float)delta);
             }
         }
+        //FEELS LIKE THIS SHOULD BE MUTEX'D BUT I DONT WANT TO BLOCK MAIN
+        // if(_resultbuffermutex.WaitOne(1))
+        // {
+        //     foreach(var agent in controlledNPCs)
+        //     {
+        //             if (_resultsBuffer.ContainsKey(agent))
+        //             {
+        //                 agent.ApplyThreadedSteering(_resultsBuffer[agent], (float)delta);
+        //             }
+        //     }
+        //     _resultbuffermutex.ReleaseMutex();
+        // }
     }
 
     public override void _Process(double delta)
@@ -282,7 +302,7 @@ public partial class AIManager : Node3D
     private Dictionary<HordeAgent, Vector3> _resultsBuffer = new();
     public System.Threading.Mutex _mutex = new();
 
-    private void AvoidanceLoop() {
+    private void AvoidanceLoop() { //this loop is all in a thread
         while (_running) 
         {
             var localResults = new Dictionary<HordeAgent, Vector3>();
@@ -294,6 +314,10 @@ public partial class AIManager : Node3D
                 {
                     if(agent.state==HordeAgentState.SWARM || agent.state == HordeAgentState.SIMPLECHASE)
                     {
+                        if(agent.recomputePath)
+                        {
+                            ComputeNewPath(agent);
+                        }
                         localResults[agent] = ComputeAgentMoveThreaded(agent);
                     }
                 }
@@ -306,6 +330,16 @@ public partial class AIManager : Node3D
             }
 
             OS.DelayMsec(1); // prevents CPU hogging
+        }
+    }
+
+    public static void ComputeNewPath(HordeAgent agent)
+    {
+        if(agent._mutex.WaitOne(1))
+        {
+            agent.UpdatePath(agent.RecalculatePath());
+            agent.recomputePath = false;
+            agent._mutex.ReleaseMutex();
         }
     }
 
