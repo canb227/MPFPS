@@ -69,9 +69,9 @@ public partial class BasicPlayerCharacter : GOBasePlayerCharacter, IsDamagable, 
     };
     public Dictionary<AmmoType, int> maxAmmoStored = new()
     {
-        {AmmoType.ShotgunAmmo, 24 },
-        {AmmoType.RifleAmmo, 60 },
-        {AmmoType.SniperAmmo, 30 },
+        {AmmoType.ShotgunAmmo, 32 },
+        {AmmoType.RifleAmmo, 120 },
+        {AmmoType.SniperAmmo, 40 },
         {AmmoType.MediDart, 5 },
     };
 

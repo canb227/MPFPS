@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://tlnu6i7rw7ia"]
+[gd_scene format=3 uid="uid://tlnu6i7rw7ia"]
 
 [ext_resource type="Script" uid="uid://iswe8cik68ip" path="res://scripts/game/GameObjects/RigidBodies/GOAmmoBox.cs" id="1_q32vy"]
 [ext_resource type="PackedScene" uid="uid://dhi87trpclvfc" path="res://assets/models/weapons/ammo_box_mp_5.glb" id="2_5sa6v"]
@@ -6,19 +6,19 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_r1kn8"]
 size = Vector3(0.3062048, 0.14813232, 0.14932632)
 
-[node name="GOAmmoBox" type="RigidBody3D" node_paths=PackedStringArray("collider")]
+[node name="GOAmmoBox" type="RigidBody3D" unique_id=1427132048 node_paths=PackedStringArray("collider")]
 collision_layer = 8
 collision_mask = 11
 continuous_cd = true
 script = ExtResource("1_q32vy")
 collider = NodePath("CollisionShape3D")
 ammoType = 1
-ammoAmount = 20
+ammoAmount = 40
 metadata/_custom_type_script = "uid://iswe8cik68ip"
 
-[node name="ammo_box_mp_52" parent="." instance=ExtResource("2_5sa6v")]
+[node name="ammo_box_mp_52" parent="." unique_id=2063951638 instance=ExtResource("2_5sa6v")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2109792770]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0018715858, 0.07357788, -0.0006046295)
 shape = SubResource("BoxShape3D_r1kn8")

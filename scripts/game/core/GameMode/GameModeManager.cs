@@ -76,7 +76,7 @@ public partial class GameModeManager : Node
     public int numPlayers;
     public int numTraitors;
     public int numManagers;
-
+    public bool lightsOn;
     public string codeWords;
     public List<string> possibleCodeWords = new List<string>
     {
@@ -332,7 +332,9 @@ public partial class GameModeManager : Node
             }
         }
         DisableEmission(cases);
+        lightsOn = false;
     }
+    
 
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TurnOnAllSpotLights()
@@ -345,6 +347,7 @@ public partial class GameModeManager : Node
             }
         }
         EnableEmission(cases);
+        lightsOn = true;
     }
 
     public void LocalPlayInfoBeep()

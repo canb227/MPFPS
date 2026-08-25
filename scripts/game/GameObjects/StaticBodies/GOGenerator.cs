@@ -26,6 +26,10 @@ public partial class GOGenerator : GOBaseStaticBody
 		generatorPowered = true;
 	}
 	private int robotsInArea = 0;
+	public bool GetGeneratorPowered()
+	{
+		return generatorPowered;
+	}
 	private void OnBodyEntered(Node3D body)
 	{
 		if (body.IsInGroup("enemies"))

@@ -113,4 +113,3 @@ public partial class GOAnimatedButton : GOButton
     }
 
 }
-
