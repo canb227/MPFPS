@@ -324,6 +324,7 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TurnOffAllSpotLights()
     {
+        lightsOn = false;
         foreach(var light in spotLights)
         {
             if(IsInstanceValid(light))
@@ -339,6 +340,7 @@ public partial class GameModeManager : Node
     [RPCMethod(mode = RPCMode.SendToAllPeers)]
     public void TurnOnAllSpotLights()
     {
+        lightsOn = true;
         foreach(var light in spotLights)
         {
             if(IsInstanceValid(light))
@@ -392,11 +394,11 @@ public partial class GameModeManager : Node
             minimumItemTypeCount.Clear();
             Global.gameState.ResetGameState();
             MapManager.ResetMap();
+            TurnOnAllSpotLights();
             if(Global.gameState.gameModeManager.options.hordeRobots)
             {
                 Global.gameState.AIManager.NewRound();
             }
-
             SpawnNewLocalPlayerCharacter(GameObjectType.Ghost);
             if(Global.gameState.GetCharacterControlledBy(Global.steamid) != null)
             {

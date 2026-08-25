@@ -39,6 +39,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private float midRange = 25f;
     private float nearRange = 15f;
     private int updateCounter = 0;
+    public bool recomputePath;
 
     //threading info
     public Vector3 SnapshotPosition;
@@ -76,7 +77,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public HordeAgent SpawnAgent(Vector3 spawnPosition, int index)
     {
-
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
@@ -131,36 +131,20 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private int tickIndex;
 
     
-    private void RecalculatePath(double delta)
+    public List<Vector3> RecalculatePath()
     {
         //Distance to target
         BasicPlayerCharacter bpc = GetNearestAlivePlayer(GlobalPosition);
-        if (bpc == null) return;
-
-        float distToTarget = (bpc.GlobalPosition - GlobalPosition).Length();
-
-        //Distance between path endpoint and player
-        float distPathEndToPlayer = path.Count > 0
-            ? (path[path.Count - 1] - bpc.GlobalPosition).Length()
-            : distToTarget;
-        pathUpdateRate = Mathf.Clamp(
-            distToTarget * 0.05f + distPathEndToPlayer * 0.1f,
-            0.25f, 3.0f
+        if (bpc == null) return new List<Vector3>();
+        
+        var navMap = GetWorld3D().NavigationMap;
+        var pathPoints = NavigationServer3D.MapGetPath(
+            navMap,
+            GlobalPosition,
+            bpc.GlobalPosition,
+            true
         );
-
-        if (timeSincePathUpdate >= pathUpdateRate)
-        {
-            timeSincePathUpdate = 0f;
-
-            var navMap = GetWorld3D().NavigationMap;
-            var pathPoints = NavigationServer3D.MapGetPath(
-                navMap,
-                GlobalPosition,
-                bpc.GlobalPosition,
-                true
-            );
-            path = new List<Vector3>(pathPoints);
-        }
+        return new List<Vector3>(pathPoints);
     }
 
     public override void PerTickShared(double delta)
@@ -433,6 +417,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     {
         this.path = path;
         currentIndex = 0;
+        positionTimer = 0;
     }
 
     public void UpdateGridLocation()
