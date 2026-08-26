@@ -672,7 +672,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         if(currentIndex > temppath.Count - 1)
         {
-            currentIndex = 0;
+           currentIndex = FindClosestWaypointIndex(temppath, GlobalPosition, 3.0f);
         }
         if ((temppath[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold &&
             currentIndex < temppath.Count - 1 &&
@@ -689,9 +689,27 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             positionOneSecondAgo = GlobalPosition;
         }
     }
+    int FindClosestWaypointIndex(List<Vector3> path, Vector3 position, float maxDistance)
+    {
+        int bestIndex = 0;
+        float bestDistSq = float.MaxValue;
 
+        for (int i = 0; i < path.Count; i++)
+        {
+            float distSq = path[i].DistanceSquaredTo(position);
+            if (distSq < bestDistSq && distSq < maxDistance * maxDistance)
+            {
+                bestDistSq = distSq;
+                bestIndex = i;
+            }
+        }
 
+        return bestIndex;
+    }
 }
+
+
+
 
 [MessagePackObject]
 public struct HordeAgentStateMessage
