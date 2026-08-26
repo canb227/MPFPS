@@ -196,6 +196,18 @@ tracks/14/keys = {
 "update": 0,
 "values": [false]
 }
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Node3D/lightprojector5/projector_002/projector_002_M_Light_01_0/SpotLight3D:visible")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_pagf7"]
 resource_name = "ramp_down"
@@ -378,6 +390,18 @@ tracks/14/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
+"values": [true]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Node3D/lightprojector5/projector_002/projector_002_M_Light_01_0/SpotLight3D:visible")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
 "values": [true]
 }
 
@@ -1135,7 +1159,7 @@ mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")
 
 [node name="lightprojector2" type="Node3D" parent="Node3D" unique_id=100585423]
-transform = Transform3D(0.6989572, 0, -0.5812959, 0, 0.9090909, 0, 0.5812959, 0, 0.6989572, 35.393032, 5.5378132e-05, 18.00488)
+transform = Transform3D(0.69895726, 0, -0.58129597, 0, 0.9090909, 0, 0.5812959, 0, 0.69895726, 39.595016, 5.5378132e-05, 20.816164)
 
 [node name="projector_002" type="Node3D" parent="Node3D/lightprojector2" unique_id=1791204822]
 transform = Transform3D(0.0647686, 0, 0, 0, 0.064768605, 0, 0, 0, 0.064768605, 0, 0.708249, 0)
@@ -1175,6 +1199,28 @@ spot_range = 10.707144
 spot_angle = 46.989365
 
 [node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector3/projector_002" unique_id=400759894]
+mesh = SubResource("ArrayMesh_k47s7")
+skeleton = NodePath("")
+
+[node name="lightprojector5" type="Node3D" parent="Node3D" unique_id=1909868555]
+transform = Transform3D(-0.8005208, 0, 0.43082798, 0, 0.9090909, 0, -0.43082806, 0, -0.80052066, 33.12218, -0.56904006, 34.70841)
+
+[node name="projector_002" type="Node3D" parent="Node3D/lightprojector5" unique_id=78650152]
+transform = Transform3D(0.0647686, 0, 0, 0, 0.064768605, 0, 0, 0, 0.064768605, 0, 0.708249, 0)
+
+[node name="projector_002_M_Light_01_0" type="MeshInstance3D" parent="Node3D/lightprojector5/projector_002" unique_id=1030589797]
+transform = Transform3D(1.0000001, 0, 0, 0, 0.9646588, 0.26350272, 0, -0.26350272, 0.9646588, 0, 0, 0.5431456)
+mesh = SubResource("ArrayMesh_k4kxc")
+skeleton = NodePath("")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Node3D/lightprojector5/projector_002/projector_002_M_Light_01_0" unique_id=733512117]
+transform = Transform3D(-1, -2.2839753e-08, -1.4925843e-07, 0, 0.98849386, -0.15126085, 1.509958e-07, -0.15126085, -0.98849386, -0.00863617, 3.3725243, 0.6011506)
+visible = false
+light_energy = 16.0
+spot_range = 10.707144
+spot_angle = 46.989365
+
+[node name="projector_002_M_Projector_0" type="MeshInstance3D" parent="Node3D/lightprojector5/projector_002" unique_id=495276844]
 mesh = SubResource("ArrayMesh_k47s7")
 skeleton = NodePath("")
 
