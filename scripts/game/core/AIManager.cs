@@ -60,14 +60,30 @@ public partial class AIManager : Node3D
         //RPCManager.RPC(this, "SpawnAgents", [hordeSpawnLocation, targetLocation]);
     }
 
+    public List<HordeAgent> hordeLeaders = new();
+
     public void SpawnAgents(Transform3D hordeSpawnLocation, Vector3 targetLocation)
     {
-        path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
+        if(Global.gameState.gameModeManager.evacuationStarted)
+        {
+            path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
+        }
+        else
+        {
+            path = CalculatePath(new Vector3(hordeSpawnLocation.Origin.X, hordeSpawnLocation.Origin.Y+1.0f, hordeSpawnLocation.Origin.Z), new Vector3(targetLocation.X, targetLocation.Y+1.0f, targetLocation.Z));
+        }
         var agentPoolSnapshot = agentPool.ToList();
+        
         for(int i = 0; i < hordeSize && i < agentPoolSnapshot.Count(); i ++)
         {
             //spawn the agent and set its path
-            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin, i).UpdatePath(path);
+            if(i == 0)
+            {
+                hordeLeaders.Add(agentPoolSnapshot[i]);
+                agentPoolSnapshot[i].isLeader = true;
+            }
+            agentPoolSnapshot[i].SpawnAgent(hordeSpawnLocation.Origin, i, hordeLeaders.Last());
+            agentPoolSnapshot[i].UpdatePath(path);
         }
     }
 
@@ -83,6 +99,7 @@ public partial class AIManager : Node3D
     {
         agentPool.Clear();
         controlledNPCs.Clear();
+        hordeLeaders.Clear();
         if(Global.Lobby.bIsLobbyHost)
         {
             for(int i = 0; i < agentPoolCount; i++)

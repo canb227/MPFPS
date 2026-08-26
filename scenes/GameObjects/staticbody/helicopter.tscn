@@ -26,7 +26,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(1.7505653, 0, 0)]
+"values": [Vector3(1.0000737, 0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -1034,7 +1034,7 @@ mesh = SubResource("ArrayMesh_8svsk")
 skeleton = NodePath("")
 
 [node name="Ramp" type="StaticBody3D" parent="." unique_id=121259691]
-transform = Transform3D(0.35947555, 0, 0, 0, -0.06427503, -0.35368255, 0, 0.35368255, -0.06427503, -0.0025226306, 0.9268015, 0.6977081)
+transform = Transform3D(0.35947555, 0, 0, 0, 0.19420312, -0.30250248, 0, 0.30250248, 0.19420312, -0.0025226306, 0.9268015, 0.6977081)
 
 [node name="RampCollider" type="CollisionShape3D" parent="Ramp" unique_id=2107631633]
 shape = SubResource("ConcavePolygonShape3D_ly7q5")

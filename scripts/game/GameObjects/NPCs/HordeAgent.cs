@@ -75,8 +75,9 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     }
 
-    public HordeAgent SpawnAgent(Vector3 spawnPosition, int index)
+    public void SpawnAgent(Vector3 spawnPosition, int index, HordeAgent leader)
     {
+        this.leader = leader;
         currentHealth = maxHealth;
         root.Visible = true;
         Global.gameState.AIManager.agentPool.Remove(this);
@@ -113,7 +114,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         }
 
         state = HordeAgentState.SWARM;
-        return this;
     }
 
     public override void _Process(double delta)
@@ -129,6 +129,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
     private double timeSincePathUpdate = 0;
     private double pathUpdateRate = 3;
     private int tickIndex;
+    private HordeAgent leader;
+    public bool isLeader;
+
+    public void UpdateLeader(HordeAgent leader)
+    {
+        this.leader = leader;
+    }
 
     
     public List<Vector3> RecalculatePath()
@@ -141,7 +148,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         var pathPoints = NavigationServer3D.MapGetPath(
             navMap,
             GlobalPosition,
-            bpc.GlobalPosition,
+            new Vector3(bpc.GlobalPosition.X, bpc.GlobalPosition.Y+1.0f, bpc.GlobalPosition.Z),
             true
         );
         return new List<Vector3>(pathPoints);
@@ -192,7 +199,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
                 PerTickAgentAuth(delta);
                 break;
             case HordeAgentState.SIMPLECHASE:
-                
+                PerTickAgentAuth(delta);
                 break;
             default:
                 break;
@@ -237,7 +244,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             AttackTick();
         }
-        //LerpAgent((float)delta, 1);
     }
     
 
@@ -257,7 +263,6 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
             }
         }
         
-
         // Decide update frequency
         if (dist > midRange)
         {
@@ -274,14 +279,14 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
         deltaAccumulator += delta;
         updateCounter = 0;
-        if(path != null)
+        if(deltaAccumulator >= 0.4f)
         {
-            //MoveAgent(deltaAccumulator);
-            //UpdateGridLocation();
+            if(isLeader && Global.gameState.gameModeManager.evacuationStarted)
+            {
+                path = RecalculatePath();
+            }
+            deltaAccumulator = 0;
         }
-
-        deltaAccumulator = 0;
-        //LerpAgent((float)delta, 1); //must move on host
     }
     
     private Vector3 lastInterpPos;
@@ -560,7 +565,7 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         {
             Global.gameState.gameModeManager.playerStats[byID].RobotKills++;
         }
-        Position = new Vector3(0, -10, 0);
+        Position = new Vector3(Position.X, -10, Position.Z);
         if(Global.gameState.AIManager._gridMutex.WaitOne(1))
         {
             UpdateGridLocation();
@@ -616,11 +621,17 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
 
     public void ApplyThreadedSteering(Vector3 steering, float delta)
     {
-        if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) > 20)
+        path = leader.path;
+        var temppath = path.ToList();
+        if(temppath == null || temppath.Count == 0)
+        {
+            GD.Print("temppath null");
+        }
+        if(distanceLastCheck < 0.5 && temppath.Last().DistanceSquaredTo(GlobalPosition) > 20)
         {
             stuck = true;
         }
-        else if(distanceLastCheck < 0.5 && path.Last().DistanceSquaredTo(GlobalPosition) < 20)
+        else if(distanceLastCheck < 0.5 && temppath.Last().DistanceSquaredTo(GlobalPosition) < 20)
         {
             //GD.Print("GO IDLE");
             state = HordeAgentState.IDLE;
@@ -659,9 +670,13 @@ public partial class HordeAgent : GOBaseHordeNPC, IsDamagable
         SmoothRotateY(velocity, delta);
         GlobalPosition += velocity * delta;
 
-        if ((path[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold &&
-            currentIndex < path.Count - 1 &&
-            HasLineOfSight(GlobalPosition, path[currentIndex + 1]))
+        if(currentIndex > temppath.Count - 1)
+        {
+            currentIndex = 0;
+        }
+        if ((temppath[currentIndex] - GlobalPosition).LengthSquared() < waypointThreshold &&
+            currentIndex < temppath.Count - 1 &&
+            HasLineOfSight(GlobalPosition, temppath[currentIndex + 1]))
         {
             currentIndex++;
         }
