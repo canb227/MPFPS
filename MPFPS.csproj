@@ -21,11 +21,18 @@
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="Tomlyn" Version="0.19.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Steamworks.NET">
-      <HintPath>lib\Steamworks.NET.dll</HintPath>
-    </Reference>
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+      <Reference Include="Steamworks.NET">
+          <HintPath>lib/windows/Steamworks.NET.dll</HintPath>
+      </Reference>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(OS)' == 'Unix'">
+      <Reference Include="Steamworks.NET">
+          <HintPath>lib/linux/Steamworks.NET.dll</HintPath>
+      </Reference>
+  </ItemGroup>
+
   <ItemGroup>
     <None Include="addons\limbo_console.cfg" />
   </ItemGroup>
