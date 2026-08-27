@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using MessagePack;
 using System;
+using System.Linq;
 using System.Net.Sockets;
 
 
@@ -34,11 +35,14 @@ public partial class GOButton : GOBaseStaticInteractable, IsButton
         else
         {
             RPCManager.RPC(this, MethodName.PressedSuccessfully, [byID, onTick]);
-            foreach (Triggers t in triggers)
+            if(triggers != null && triggers.Any())
             {
-                if (GetNode<HasTriggerables>(t.triggerableNode).IsTriggerReady(t.triggerName))
+                foreach (Triggers t in triggers)
                 {
-                    RPCManager.RPC(GetNode(t.triggerableNode), "Trigger", [t.triggerName, byID, onTick]);
+                    if (GetNode<HasTriggerables>(t.triggerableNode).IsTriggerReady(t.triggerName))
+                    {
+                        RPCManager.RPC(GetNode(t.triggerableNode), "Trigger", [t.triggerName, byID, onTick]);
+                    }
                 }
             }
             return;
@@ -79,18 +83,27 @@ public partial class GOButton : GOBaseStaticInteractable, IsButton
     {
         bool allReady = true;
         bool anyReady = false;
-        foreach (Triggers t in triggers)
+        if(triggers != null && triggers.Any())
         {
-            HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
-            if (!triggerableNode.IsTriggerReady(t.triggerName))
+            foreach (Triggers t in triggers)
             {
-                allReady = false;
-            }
-            else
-            {
-                anyReady = true;
+                HasTriggerables triggerableNode = GetNode<HasTriggerables>(t.triggerableNode);
+                if (!triggerableNode.IsTriggerReady(t.triggerName))
+                {
+                    allReady = false;
+                }
+                else
+                {
+                    anyReady = true;
+                }
             }
         }
+        else
+        {
+            allReady = true;
+            anyReady = true;
+        }
+
         if (ButtonDisableCondition == ButtonDisableCondition.DisableIfAnyTriggersOnCooldown)
         {
             if (allReady && !enabled)

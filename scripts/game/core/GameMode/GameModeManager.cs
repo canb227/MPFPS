@@ -76,7 +76,7 @@ public partial class GameModeManager : Node
     public int numPlayers;
     public int numTraitors;
     public int numManagers;
-    public bool lightsOn;
+    public bool lightsOn = true;
     public string codeWords;
     public List<string> possibleCodeWords = new List<string>
     {

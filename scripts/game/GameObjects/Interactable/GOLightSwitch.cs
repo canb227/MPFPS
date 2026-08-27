@@ -22,6 +22,25 @@ public partial class GOLightSwitch: GOButton
         }
     }
 
+    private bool lightOnStorage = true;
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        if(Global.gameState.gameModeManager.lightsOn != lightOnStorage)
+        {
+            if(Global.gameState.gameModeManager.lightsOn)
+            {
+                animationPlayer.Play("switch_on");
+            }
+            else
+            {
+                animationPlayer.Play("switch_off");
+            }
+        }
+
+        lightOnStorage = Global.gameState.gameModeManager.lightsOn;
+    }
+
     public override void PressedFailed(ulong byID, ulong onTick)
     {
         base.PressedFailed(byID, onTick);
@@ -29,19 +48,17 @@ public partial class GOLightSwitch: GOButton
 
     public override void PressedSuccessfully(ulong byID, ulong onTick)
     {
-        //this is RPC'd to everybody when we press successful so we dont need to RPC the on/off
+        //this is RPC'd to everybody when we press successful so we dont need to RPC the on/off (though maybe thats begging for desync'd light states, will test)
         base.PressedSuccessfully(byID, onTick);
         if(Global.gameState.gameModeManager.generator.GetGeneratorPowered())
         {
             if(Global.gameState.gameModeManager.lightsOn)
             {
                 Global.gameState.gameModeManager.TurnOffAllSpotLights();
-                animationPlayer.Play("turnoff");
             }
             else
             {
                 Global.gameState.gameModeManager.TurnOnAllSpotLights();
-                animationPlayer.Play("turnon");
             }
         }
         
