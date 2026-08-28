@@ -35,7 +35,7 @@ public partial class Announcer : GOBaseStaticBody
         {
             swarmMusicTimer -= (float)delta;
         }
-        else if (audioStreamPlayerMusic.Playing && !hordeFinished)
+        else if (audioStreamPlayerMusic.Playing && !hordeFinished && !Global.gameState.gameModeManager.evacuationStarted)
         {
             hordeFinished = true;
             audioStreamPlayerMusic.Stream = GD.Load<AudioStream>("res://assets/audio/music/horde/hordefinished.mp3");
