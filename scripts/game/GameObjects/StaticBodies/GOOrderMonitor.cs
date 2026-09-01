@@ -16,6 +16,7 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     [Export] public int orderNumber { get; set; }
     [Export] public bool rotateOrders { get; set; }
     [Export] public double rotateTime { get; set; } = 6;
+    public int monitorCount = 2;
 
     public override string GenerateStateString()
     {
@@ -105,10 +106,10 @@ public partial class GOOrderMonitor : GOBaseStaticBody
     }
     public void ShowOrderAsFinished(int orderNumber)
     {
-        if(rotateOrders && orderNumber < Global.gameState.gameModeManager.packageOrders.Count)
+        if(rotateOrders && orderNumber + monitorCount < Global.gameState.gameModeManager.packageOrders.Count)
         {
             //go to next order
-            this.orderNumber++;
+            this.orderNumber += monitorCount;
             UpdateDisplayedOrder();
         }
         else

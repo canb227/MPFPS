@@ -212,7 +212,7 @@ public partial class DebugScreen : Control
 		opts.mainhordeDelay = float.Parse(MainHordeDelay.Text);
 		opts.usePackageOverride = UsePackageOverride.ButtonPressed;
 		opts.roundTime = int.Parse(RoundTime.Text);
-		opts.timeAddedPerPackage = int.Parse(ExtraTime.Text);
+		opts.timePerPackage = int.Parse(ExtraTime.Text);
 
 		opts.percentTraitors = float.Parse(PercentTraitors.Text);
 		//opts.maxTraitors = int.Parse(MaxTraitors.Text);

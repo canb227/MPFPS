@@ -501,8 +501,8 @@ public partial class GameModeManager : Node
             //pick some random item enums
             List<GameObjectType> allPossibleTypes = GameObjectLoader.GetAllObjectsOfType(typeof(GOPackageItem));
             List<GameObjectType> randomTypes = new();
-            int randomizer = 1;//rand.Next(3) - 1; //between 0 and 2 (-1) -1 to 1
-            for (int j = 0; j < options.itemsPerPackage + randomizer; j++)
+            //int randomizer = 1;//rand.Next(3) - 1; //between 0 and 2 (-1) -1 to 1
+            for (int j = 0; j < options.itemsPerPackage; j++)
             {
                 GameObjectType randomType = allPossibleTypes[rand.Next(allPossibleTypes.Count)];
                 randomTypes.Add(randomType);
@@ -660,7 +660,7 @@ public partial class GameModeManager : Node
         numFinishedOrders = numFinished;
         if(Global.Lobby.bIsLobbyHost)
         {
-            RPCManager.RPC(this, "SetRoundTime", [(float)(remainingRoundTime-120), (float)(publicRemainingRoundTime-120)]);
+            RPCManager.RPC(this, "SetRoundTime", [(float)(remainingRoundTime-options.timePerPackage), (float)(publicRemainingRoundTime-options.timePerPackage)]);
         }
     }
 
