@@ -269,7 +269,7 @@ public partial class AIManager : Node3D
 
                 announcedHorde = false;
             }
-            if(controlledNPCs.Count <= 10 && hordeActive)
+            if(controlledNPCs.Count <= 5 && hordeActive)
             {
                 hordeActive = false;
                 RPCManager.RPC(Global.gameState.gameModeManager, "TriggerSwarmDefeatedEvent", []);

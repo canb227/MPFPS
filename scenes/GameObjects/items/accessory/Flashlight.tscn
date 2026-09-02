@@ -13,8 +13,7 @@ radius = 0.20996094
 resource_name = "flashlight_1"
 cull_mode = 2
 albedo_texture = ExtResource("2_tgcn5")
-emission_enabled = true
-emission_energy_multiplier = 10.0
+emission_energy_multiplier = 16.0
 emission_texture = ExtResource("3_oybiq")
 texture_filter = 2
 
@@ -68,7 +67,7 @@ center_of_mass = Vector3(0.33, -0.1, 0)
 continuous_cd = true
 script = ExtResource("1_tgcn5")
 spotLight3D = NodePath("SpotLight3D")
-omniLight3D = NodePath("OmniLight3D")
+omniLight3D = NodePath("")
 audioStreamPlayer = NodePath("SteamAudioPlayer")
 iconPath = "res://assets/ui/icons/flashlight.png"
 firstPersonScene = NodePath("fps")
@@ -80,18 +79,19 @@ metadata/_custom_type_script = "uid://c365uud2bvxyv"
 transform = Transform3D(0.4, 0, 0, 0, -1.7484556e-08, -0.4, 0, 0.4, -1.7484556e-08, 0.33404714, 0.00091967575, -0.047851563)
 shape = SubResource("CylinderShape3D_dbqib")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=789143588]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33438244, 0.0046986677, -0.29671288)
-visible = false
-light_specular = 0.1
-omni_range = 0.1
-
 [node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=50563392]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33246216, 0.0006111264, -0.28638643)
 light_energy = 6.0
 light_specular = 0.1
+shadow_enabled = true
 spot_range = 25.0
 spot_angle = 18.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SpotLight3D" unique_id=1372659795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.010156065)
+light_energy = 0.5
+light_size = 0.1
+omni_range = 1.4000983
 
 [node name="fps" type="Node3D" parent="." unique_id=716934181]
 

@@ -329,7 +329,10 @@ public partial class GameModeManager : Node
         {
             if(IsInstanceValid(light))
             {
-                light.Visible = false;
+                //light.Visible = false;
+                light.LightEnergy = 5.0f;
+                light.SpotAngle = 60.0f;
+                light.LightColor = new Godot.Color(0.5f,0.0f,0.0f);
             }
         }
         DisableEmission(cases);
@@ -345,7 +348,10 @@ public partial class GameModeManager : Node
         {
             if(IsInstanceValid(light))
             {
-                light.Visible = true;
+                //light.Visible = true;
+                light.LightEnergy = 10.0f;
+                light.SpotAngle = 90.0f;
+                light.LightColor = new Godot.Color(1.0f,1.0f,1.0f);
             }
         }
         EnableEmission(cases);
@@ -958,8 +964,8 @@ public partial class GameModeManager : Node
                     continue;
 
                 //mat.EmissionEnabled = false;
-                mat.EmissionEnergyMultiplier = 0.3f;
-                mat.Emission = new Color(.4f,0,0);
+                mat.EmissionEnergyMultiplier = 1.0f;
+                mat.Emission = new Color(0.8f,0,0);
             }
         }
     }
