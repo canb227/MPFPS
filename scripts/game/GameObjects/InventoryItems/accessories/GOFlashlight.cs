@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 public partial class GOFlashlight : GOBaseAccessory
 {
     [Export] SpotLight3D spotLight3D { get; set; }
-    [Export] OmniLight3D omniLight3D { get; set; }
     [Export] AudioStreamPlayer3D audioStreamPlayer { get; set; }
     public override void HandleInput(ActionFlags input)
     {
@@ -47,7 +46,6 @@ public partial class GOFlashlight : GOBaseAccessory
         if(spotLight3D.Visible)
         {
             spotLight3D.Visible = false;
-            omniLight3D.Visible = false;
             audioStreamPlayer.Play();
         }
     }
