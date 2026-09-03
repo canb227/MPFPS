@@ -203,7 +203,14 @@ public partial class Hands : GOBaseInventoryItem
         if(heldObject != null)
         {
             (heldObject as GameObject).priority = 10;
-            (heldObject as RigidBody3D).RemoveCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
+            try
+            {
+                (heldObject as RigidBody3D).RemoveCollisionExceptionWith(Global.gameState.GetCharacterControlledBy(equippedBySteamID));
+            }
+            catch
+            {
+                Logging.Warn("Holder SteamID Invalid OnDrop", "Hands");
+            }
             heldObject.OnRelease(equippedBySteamID);
             heldObject.currentlyHeldBy = 0;
             heldObject = null;
@@ -266,4 +273,3 @@ public partial class Hands : GOBaseInventoryItem
         return true;
     }
 }
-

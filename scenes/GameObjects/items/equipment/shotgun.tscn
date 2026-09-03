@@ -8,7 +8,7 @@
 [ext_resource type="Material" uid="uid://dbgihkyi5gh7m" path="res://assets/materials/shotgun_flash.tres" id="5_weoqn"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
-size = Vector3(1.4375, 0.171875, 0.06713867)
+size = Vector3(1.1011963, 0.171875, 0.06713867)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4xtq8"]
 resource_name = "shotgun_1"
@@ -336,7 +336,7 @@ type = 9
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1854138161]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.3900894, 0.0107421875, -0.004598178)
+transform = Transform3D(-0.20783114, -9.0845855e-09, -0.97816473, 4.371139e-08, -1, -2.0733825e-15, -0.97816473, -4.275694e-08, 0.20783114, -0.012862287, 0.0107421875, -0.16253838)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=261497763]
@@ -367,7 +367,7 @@ mesh = SubResource("QuadMesh_c5mbw")
 skeleton = NodePath("../../..")
 
 [node name="tps" type="Node3D" parent="." unique_id=150688919]
-transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 
 [node name="shotgun_1" type="MeshInstance3D" parent="tps" unique_id=570748005]
 transform = Transform3D(4.3711385e-08, 3.8213705e-15, -0.99999994, 8.742277e-08, -0.99999994, 0, -0.99999994, -8.742277e-08, -4.3711385e-08, 0.3567911, 1.4655803e-09, -0.016764268)

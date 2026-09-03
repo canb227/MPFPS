@@ -7,7 +7,7 @@
 [ext_resource type="Material" uid="uid://cibpivmh6yq3l" path="res://assets/materials/rifle_flash.tres" id="4_7vhgp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pmrh1"]
-size = Vector3(1.3521881, 0.45162964, 0.15637207)
+size = Vector3(1.0405617, 0.45162964, 0.15637207)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gwn1e"]
 resource_name = "main"
@@ -443,7 +443,7 @@ collision_layer = 8
 collision_mask = 11
 mass = 9.0
 center_of_mass_mode = 1
-center_of_mass = Vector3(0.39, 0.01, 0)
+center_of_mass = Vector3(0, 0, -0.25)
 continuous_cd = true
 script = ExtResource("1_07fvj")
 audioStreamPlayer1 = NodePath("AudioPlayer")
@@ -464,7 +464,7 @@ type = 28
 metadata/_custom_type_script = "uid://dl524mp8g0aei"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=888688540]
-transform = Transform3D(-4.371139e-08, 0, -1, 4.371139e-08, -1, -1.9106855e-15, -1, -4.371139e-08, 4.371139e-08, 0.39710844, -0.0485382, -0.10046153)
+transform = Transform3D(-0.121389076, -5.306083e-09, -0.99260503, 4.371139e-08, -1, -2.0745722e-15, -0.99260503, -4.3388145e-08, 0.121389076, 0.022832256, -0.0485382, -0.22030374)
 shape = SubResource("BoxShape3D_pmrh1")
 
 [node name="AudioPlayer" type="SteamAudioPlayer" parent="." unique_id=1810917358]
@@ -492,7 +492,7 @@ transparency = 1.0
 mesh = SubResource("QuadMesh_7vhgp")
 
 [node name="tps" type="Node3D" parent="." unique_id=1649983280]
-transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.77, 0, 0, 0)
 
 [node name="Cube_001" type="MeshInstance3D" parent="tps" unique_id=1644062355]
 transform = Transform3D(-2.6226832e-10, 0, 0.006, 0, 0.006, 0, -0.006, 0, -2.6226832e-10, 0.39582276, -0.016174775, -0.0050991233)
