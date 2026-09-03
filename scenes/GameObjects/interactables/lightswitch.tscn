@@ -4,6 +4,7 @@
 [ext_resource type="Material" uid="uid://c156felb6kslr" path="res://scenes/world/rusty_metal.tres" id="2_v02im"]
 [ext_resource type="Texture2D" uid="uid://da5cwxpaomtr0" path="res://assets/materials/hazardstrip.webp" id="3_ppdui"]
 [ext_resource type="Texture2D" uid="uid://oq124kwus50s" path="res://assets/models/warehouse/wall_rg_2.png" id="4_ysgjr"]
+[ext_resource type="AudioStream" uid="uid://b76yxas6tlsr8" path="res://assets/audio/environment/blip1.wav" id="5_ppdui"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_r3lt1"]
 _surfaces = [{
@@ -130,3 +131,7 @@ skeleton = NodePath("")
 transform = Transform3D(0.25, 0, 0, 0, 1, 0, 0, 0, 0.13, 0, 1.4245517, -0.9582588)
 mesh = SubResource("ArrayMesh_5tvx2")
 skeleton = NodePath("")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=957357194]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -0.98924094)
+stream = ExtResource("5_ppdui")

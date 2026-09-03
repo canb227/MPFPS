@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dlhq2iua0bqbi" path="res://assets/models/weapons/ammo_box_mp_4_1.glb" id="2_2pvok"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r1kn8"]
-size = Vector3(0.18661118, 0.07739258, 0.086868286)
+size = Vector3(0.25130367, 0.10345459, 0.11657143)
 
 [node name="GOAmmoBox" type="RigidBody3D" unique_id=302155372 node_paths=PackedStringArray("collider")]
 collision_layer = 8
@@ -20,5 +20,5 @@ metadata/_custom_type_script = "uid://iswe8cik68ip"
 transform = Transform3D(2, 0, 0, 0, 1.706, 0, 0, 0, 1.92, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1069989723]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00012779236, 0.038208008, -0.00019073486)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0005745888, 0.051239014, -0.00049877167)
 shape = SubResource("BoxShape3D_r1kn8")

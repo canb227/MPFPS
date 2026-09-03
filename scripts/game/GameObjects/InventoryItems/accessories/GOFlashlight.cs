@@ -28,7 +28,6 @@ public partial class GOFlashlight : GOBaseAccessory
     public void ToggleFlashLight()
     {
         spotLight3D.Visible = !spotLight3D.Visible;
-        omniLight3D.Visible = !omniLight3D.Visible;
         audioStreamPlayer.Play();
     }
     public override void OnDropped(ulong bySteamID)

@@ -13,7 +13,8 @@ radius = 0.20996094
 resource_name = "flashlight_1"
 cull_mode = 2
 albedo_texture = ExtResource("2_tgcn5")
-emission_energy_multiplier = 16.0
+emission_enabled = true
+emission_energy_multiplier = 5.0
 emission_texture = ExtResource("3_oybiq")
 texture_filter = 2
 
@@ -59,16 +60,15 @@ _data = {
 &"RESET": SubResource("Animation_oybiq")
 }
 
-[node name="GOFlashlight" type="RigidBody3D" unique_id=1003149077 node_paths=PackedStringArray("spotLight3D", "omniLight3D", "audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
+[node name="GOFlashlight" type="RigidBody3D" unique_id=1003149077 node_paths=PackedStringArray("spotLight3D", "audioStreamPlayer", "firstPersonScene", "thirdPersonScene", "animationPlayer")]
 collision_layer = 8
 collision_mask = 11
 center_of_mass_mode = 1
 center_of_mass = Vector3(0.33, -0.1, 0)
 continuous_cd = true
 script = ExtResource("1_tgcn5")
-spotLight3D = NodePath("SpotLight3D")
-omniLight3D = NodePath("")
-audioStreamPlayer = NodePath("SteamAudioPlayer")
+spotLight3D = NodePath("flashlight")
+audioStreamPlayer = NodePath("")
 iconPath = "res://assets/ui/icons/flashlight.png"
 firstPersonScene = NodePath("fps")
 thirdPersonScene = NodePath("tps")
@@ -79,19 +79,13 @@ metadata/_custom_type_script = "uid://c365uud2bvxyv"
 transform = Transform3D(0.4, 0, 0, 0, -1.7484556e-08, -0.4, 0, 0.4, -1.7484556e-08, 0.33404714, 0.00091967575, -0.047851563)
 shape = SubResource("CylinderShape3D_dbqib")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=50563392]
+[node name="flashlight" type="SpotLight3D" parent="." unique_id=50563392]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33246216, 0.0006111264, -0.28638643)
 light_energy = 6.0
 light_specular = 0.1
 shadow_enabled = true
 spot_range = 25.0
 spot_angle = 18.0
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SpotLight3D" unique_id=1372659795]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.010156065)
-light_energy = 0.5
-light_size = 0.1
-omni_range = 1.4000983
 
 [node name="fps" type="Node3D" parent="." unique_id=716934181]
 
@@ -110,7 +104,7 @@ skeleton = NodePath("")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1414769692]
 libraries/ = SubResource("AnimationLibrary_dbqib")
 
-[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="." unique_id=773525091]
+[node name="SteamAudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=46632251]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3473552, 0, -0.12783986)
 stream = ExtResource("4_oybiq")
 unit_size = 3.0
